@@ -1,29 +1,29 @@
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51D671DA63F
-	for <linux-trace-devel@vger.kernel.org>; Mon, 28 Oct 2024 12:21:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 181E81D8E1D
+	for <linux-trace-devel@vger.kernel.org>; Mon, 28 Oct 2024 12:22:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730118119; cv=none; b=d0tz9VgJHizlfaCZSBULR/s1kTE5pa072x6aygYXegWxrq4Zf74tHg1KuGlOkWILq9EfQmQ0ghvUGFsXuFuC1SqJKBWHXAStGRnyiW8/jgPiNCxxlBOQZn5gMD+fQgQmA3Brh42DNzHVIy7X1m1MaAQFD0fNChw6vcjkUCwAe1w=
+	t=1730118186; cv=none; b=UToAjzxlzx0YzeT5306Ny9du58kIS6LP4wNMSQIGpqiBCjP2wepgB4sbiFOu2o4FeqesTbG+G4VzQfztUpsR5EJi8Ot5ahSRMrlLa3acOOPyBkTOPLTL8Sn+LrF3S+CRoRWpWDXr+I3L4Es2zO6qOSz3ePa85x1u7saEGnwBYDw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730118119; c=relaxed/simple;
-	bh=FCx0bzAAuYxX2V339iMm9e7CLj67BOAxFM7wIvZykJA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jHTVoZl8R1khl7MNAfZe/rebUtNF2s2vynzFZHyTOn+tTQHwk3O2GAjhDjT3D+A6I/n9GLv0kdJkuQTqQxzgA/dYIp+O89aBdVgD7jcqcjEcUP8jEZmDjMHCKaa8eLCwj3+LsLM/U8KqMa43lwecDG5CpDfzn8TQ4GMCR36+vD8=
+	s=arc-20240116; t=1730118186; c=relaxed/simple;
+	bh=nRFm6r+DQwyF0d8CL6yEkPbRthqQ9s3KMQKKlZ7P3kA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UIAt2wG53wicB6JM1p5kjZGONOvs/N00mmTXVncTLUNi335zuGC68Z4ba1FGIHgL2AG4wY+vlrEPpsGQAFGtZmF0f4NkSMCdge3jNguzDwHfPUjFSS8Ujbwwt/Jp8QwyKaaJOM7aD2zeyBpBND0WIDAvtAurslxDimcpQub0xDA=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 76479497;
-	Mon, 28 Oct 2024 05:22:20 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3DAAA497;
+	Mon, 28 Oct 2024 05:23:26 -0700 (PDT)
 Received: from e133381.cambridge.arm.com (e133381.arm.com [10.1.198.34])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 918373F73B;
-	Mon, 28 Oct 2024 05:21:49 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7BD223F73B;
+	Mon, 28 Oct 2024 05:22:55 -0700 (PDT)
 From: Metin Kaya <metin.kaya@arm.com>
 To: linux-trace-devel@vger.kernel.org
 Cc: metin.kaya@arm.com,
 	Douglas Raillard <douglas.raillard@arm.com>
-Subject: [PATCH] libtracefs: utest: Rename private functions to fix static building
-Date: Mon, 28 Oct 2024 12:21:43 +0000
-Message-Id: <20241028122143.1594614-1-metin.kaya@arm.com>
+Subject: [PATCH] trace-cmd: libtracecmd: Rename private functions to fix static building
+Date: Mon, 28 Oct 2024 12:22:47 +0000
+Message-Id: <20241028122247.1594967-1-metin.kaya@arm.com>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -34,2351 +34,2989 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 Building trace-cmd statically fails because of duplicated symbols for
-strstrip() function which is also implemented in trace-cmd. The __hidden
-attribute does not resolve these conflicts for static builds due to the
-lack of namespacing support in C. Refer to the associated Bugzilla page
-[1] for further details.
+strstrip() function which is also implemented in libtracefs. The
+__hidden attribute does not resolve these conflicts for static builds
+due to the lack of namespacing support in C. Refer to the associated
+Bugzilla page [1] for further details.
 
 Although only strstrip() breaks the static build as of now, we should
 fix the underlying issue comprehensively across the libtraceevent,
 libtracefs, and trace-cmd packages. The recommendation on [1] is
-prepending package name (e.g., "tracefs_") to private functions (tagged
+prepending package name (e.g., "tracecmd_") to private functions (tagged
 with __hidden attribute).
 
 Thus:
-1. If a private function starts with "trace_", then just change its
-   prefix to "tracefs_" (e.g., trace_list_pop() to tracefs_list_pop()).
-2. If prepending "tracefs_" prefix to a private function's name clashes
+1. Retain private functions which already start with "tracecmd_".
+2. If a private function starts with "trace_", then just change its
+   prefix to "tracecmd_".
+3. If prepending "tracecmd_" prefix to a private function's name clashes
    with an existing one, rename one of the functions per its context
-   (e.g., rename find_tracing_dir() to tracefs_find_debug_tracing_dir()
-   and synth_add_start_field() to tracefs_do_synth_add_start_field()).
-3. Prepend "tracefs_" prefix to all remaining "__hidden" functions as
-   well as variables.
+   (e.g., rename trace_load_plugins() to
+   tracecmd_load_plugins_from_handle() and trace_append_options() to
+   tracecmd_append_options_to_file()).
+4. Prepend "tracecmd_" prefix to all remaining "__hidden" functions.
 
 Future __hidden functions should follow this prefixing schemed to avoid
 new naming conflicts.
-
-Also remove spaces after * in function signatures.
 
 [1] https://bugzilla.kernel.org/show_bug.cgi?id=217768
 
 Cc: Douglas Raillard <douglas.raillard@arm.com>
 Signed-off-by: Metin Kaya <metin.kaya@arm.com>
 ---
- include/tracefs-local.h | 110 ++++++++++++++-------------
- include/tracefs.h       |   2 +-
- src/sqlhist-lex.c       |  12 +--
- src/sqlhist-parse.h     |  32 ++++----
- src/sqlhist.l           |  12 +--
- src/sqlhist.tab.c       |  70 ++++++++---------
- src/sqlhist.y           |  70 ++++++++---------
- src/tracefs-dynevents.c |  12 +--
- src/tracefs-eprobes.c   |   2 +-
- src/tracefs-events.c    |  51 +++++++------
- src/tracefs-filter.c    |  63 +++++++--------
- src/tracefs-hist.c      | 165 ++++++++++++++++++++--------------------
- src/tracefs-instance.c  |  24 +++---
- src/tracefs-kprobes.c   |   2 +-
- src/tracefs-mmap.c      |  12 +--
- src/tracefs-record.c    |  16 ++--
- src/tracefs-sqlhist.c   |  75 +++++++++---------
- src/tracefs-tools.c     |   6 +-
- src/tracefs-uprobes.c   |   2 +-
- src/tracefs-utils.c     |  28 +++----
- utest/tracefs-utest.c   |   6 +-
- 21 files changed, 393 insertions(+), 379 deletions(-)
+ .../include/private/trace-cmd-private.h       |  14 +-
+ lib/trace-cmd/include/private/trace-hash.h    |  10 +-
+ lib/trace-cmd/include/private/trace-rbtree.h  |   4 +-
+ lib/trace-cmd/include/trace-cmd-local.h       |  56 ++--
+ lib/trace-cmd/trace-hash.c                    |  10 +-
+ lib/trace-cmd/trace-input.c                   | 206 ++++++------
+ lib/trace-cmd/trace-maps.c                    |  20 +-
+ lib/trace-cmd/trace-msg.c                     |   6 +-
+ lib/trace-cmd/trace-output.c                  | 303 +++++++++---------
+ lib/trace-cmd/trace-perf.c                    |  22 +-
+ lib/trace-cmd/trace-rbtree.c                  |   6 +-
+ lib/trace-cmd/trace-timesync.c                |   2 +-
+ lib/trace-cmd/trace-util.c                    |  18 +-
+ tracecmd/include/trace-local.h                |  24 +-
+ tracecmd/trace-agent.c                        |  12 +-
+ tracecmd/trace-check-events.c                 |   2 +-
+ tracecmd/trace-list.c                         |   4 +-
+ tracecmd/trace-listen.c                       |   6 +-
+ tracecmd/trace-profile.c                      |  58 ++--
+ tracecmd/trace-read.c                         |  10 +-
+ tracecmd/trace-record.c                       |  28 +-
+ tracecmd/trace-vm.c                           |   2 +-
+ tracecmd/trace-vsock.c                        |  14 +-
+ 23 files changed, 419 insertions(+), 418 deletions(-)
 
-diff --git a/include/tracefs-local.h b/include/tracefs-local.h
-index ffc9d33..397ff5b 100644
---- a/include/tracefs-local.h
-+++ b/include/tracefs-local.h
-@@ -63,25 +63,25 @@ struct tracefs_buffer_stat {
- 	ssize_t				read_events;
+diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
+index e2f22315..a0f397a3 100644
+--- a/lib/trace-cmd/include/private/trace-cmd-private.h
++++ b/lib/trace-cmd/include/private/trace-cmd-private.h
+@@ -28,7 +28,7 @@
+ 
+ #define TSCNSEC_CLOCK	"tsc2nsec"
+ 
+-struct tep_plugin_list *trace_load_plugins(struct tep_handle *tep, int flags);
++struct tep_plugin_list *tracecmd_load_plugins_from_handle(struct tep_handle *tep, int flags);
+ 
+ int *tracecmd_add_id(int *list, int id, int len);
+ 
+@@ -504,7 +504,7 @@ enum tracecmd_time_sync_role {
+ 
+ void tracecmd_tsync_init(void);
+ int tracecmd_tsync_proto_getall(struct tracecmd_tsync_protos **protos, const char *clock, int role);
+-bool tsync_proto_is_supported(const char *proto_name);
++bool tracecmd_tsync_proto_is_supported(const char *proto_name);
+ struct tracecmd_time_sync *
+ tracecmd_tsync_with_host(int fd, const char *proto, const char *clock,
+ 			 int remote_id, int local_id);
+@@ -571,8 +571,8 @@ int tracecmd_load_chunks_info(struct tracecmd_compression *handle,
+ /* --- Plugin handling --- */
+ extern struct tep_plugin_option trace_ftrace_options[];
+ 
+-char **trace_util_find_plugin_files(const char *suffix);
+-void trace_util_free_plugin_files(char **files);
++char **tracecmd_util_find_plugin_files(const char *suffix);
++void tracecmd_util_free_plugin_files(char **files);
+ 
+ /* Used for trace-cmd list */
+ void tracecmd_ftrace_load_options(void);
+@@ -633,9 +633,9 @@ struct trace_perf {
+ 	struct perf_event_attr pe;
+ 	struct perf_event_mmap_page *mmap;
  };
- 
--extern const struct tep_format_field common_stacktrace;
-+extern const struct tep_format_field tracefs_common_stacktrace;
- 
--extern pthread_mutex_t toplevel_lock;
-+extern pthread_mutex_t tracefs_toplevel_lock;
- 
- static inline pthread_mutex_t *trace_get_lock(struct tracefs_instance *instance)
- {
--	return instance ? &instance->lock : &toplevel_lock;
-+	return instance ? &instance->lock : &tracefs_toplevel_lock;
- }
- 
--void trace_put_instance(struct tracefs_instance *instance);
--int trace_get_instance(struct tracefs_instance *instance);
-+void tracefs_put_instance(struct tracefs_instance *instance);
-+int tracefs_get_instance(struct tracefs_instance *instance);
- 
- /* Can be overridden */
- void tracefs_warning(const char *fmt, ...);
- 
--char *strstrip(char *str);
--int str_read_file(const char *file, char **buffer, bool warn);
--char *trace_append_file(const char *dir, const char *name);
--char *trace_find_tracing_dir(bool debugfs);
-+char *tracefs_strstrip(char *str);
-+int tracefs_str_read_file(const char *file, char **buffer, bool warn);
-+char *tracefs_append_file(const char *dir, const char *name);
-+char *tracefs_find_tracing_dir(bool debugfs);
- 
- #ifndef ACCESSPERMS
- #define ACCESSPERMS (S_IRWXU|S_IRWXG|S_IRWXO) /* 0777 */
-@@ -96,41 +96,43 @@ char *trace_find_tracing_dir(bool debugfs);
+-int trace_perf_init(struct trace_perf *perf, int pages, int cpu, int pid);
+-int trace_perf_open(struct trace_perf *perf);
+-void trace_perf_close(struct trace_perf *perf);
++int tracecmd_perf_init(struct trace_perf *perf, int pages, int cpu, int pid);
++int tracecmd_perf_open(struct trace_perf *perf);
++void tracecmd_perf_close(struct trace_perf *perf);
  #endif
  
- struct tracefs_options_mask *
--supported_opts_mask(struct tracefs_instance *instance);
-+tracefs_supported_opts_mask(struct tracefs_instance *instance);
- 
- struct tracefs_options_mask *
--enabled_opts_mask(struct tracefs_instance *instance);
--
--char **trace_list_create_empty(void);
--int trace_list_pop(char **list);
--
--char *append_string(char *str, const char *delim, const char *add);
--int trace_test_state(int state);
--bool trace_verify_event_field(struct tep_event *event,
--			      const char *field_name,
--			      const struct tep_format_field **ptr_field);
--int trace_append_filter(char **filter, unsigned int *state,
--			unsigned int *open_parens,
--			struct tep_event *event,
--			enum tracefs_filter type,
--			const char *field_name,
--			enum tracefs_compare compare,
--			 const char *val);
--
--void *trace_mmap(int fd, struct kbuffer *kbuf);
--void trace_unmap(void *mapping);
--int trace_mmap_load_subbuf(void *mapping, struct kbuffer *kbuf);
--int trace_mmap_read(void *mapping, void *buffer);
--
--struct tracefs_synth *synth_init_from(struct tep_handle *tep,
--				      const char *start_system,
--				      const char *start_event);
-+tracefs_enabled_opts_mask(struct tracefs_instance *instance);
-+
-+char **tracefs_list_create_empty(void);
-+int tracefs_list_pop(char **list);
-+
-+char *tracefs_append_string(char *str, const char *delim, const char *add);
-+int tracefs_test_state(int state);
-+bool tracefs_verify_event_field(struct tep_event *event,
-+				const char *field_name,
-+				const struct tep_format_field **ptr_field);
-+int tracefs_append_filter(char **filter, unsigned int *state,
-+			  unsigned int *open_parens,
-+			  struct tep_event *event,
-+			  enum tracefs_filter type,
-+			  const char *field_name,
-+			  enum tracefs_compare compare,
-+			  const char *val);
-+
-+void *tracefs_mmap(int fd, struct kbuffer *kbuf);
-+void tracefs_unmap(void *mapping);
-+int tracefs_mmap_load_subbuf(void *mapping, struct kbuffer *kbuf);
-+int tracefs_mmap_read(void *mapping, void *buffer);
-+
-+struct tracefs_synth *
-+tracefs_synth_init_from(struct tep_handle *tep,
-+			const char *start_system,
-+			const char *start_event);
- 
- #define HIST_COUNTER_TYPE	(TRACEFS_HIST_KEY_MAX + 100)
--int synth_add_start_field(struct tracefs_synth *synth,
--			  const char *start_field,
--			  const char *name,
--			  enum tracefs_hist_key_type type, int cnt);
-+int tracefs_do_synth_add_start_field(struct tracefs_synth *synth,
-+				     const char *start_field,
-+				     const char *name,
-+				     enum tracefs_hist_key_type type,
-+				     int cnt);
- 
- /* Internal interface for ftrace dynamic events */
- 
-@@ -145,17 +147,21 @@ struct tracefs_dynevent {
+ #endif /* _TRACE_CMD_PRIVATE_H */
+diff --git a/lib/trace-cmd/include/private/trace-hash.h b/lib/trace-cmd/include/private/trace-hash.h
+index aa92cdfe..74906555 100644
+--- a/lib/trace-cmd/include/private/trace-hash.h
++++ b/lib/trace-cmd/include/private/trace-hash.h
+@@ -18,10 +18,10 @@ struct trace_hash {
+ 	int			power;
  };
  
- struct tracefs_dynevent *
--dynevent_alloc(enum tracefs_dynevent_type type, const char *system,
--	       const char *event, const char *address, const char *format);
--int dynevent_get_count(unsigned int types, const char *system);
--
--int trace_load_events(struct tep_handle *tep,
--		      const char *tracing_dir, const char *system);
--int trace_rescan_events(struct tep_handle *tep,
--			const char *tracing_dir, const char *system);
--struct tep_event *get_tep_event(struct tep_handle *tep,
--				const char *system, const char *name);
--
--unsigned int quick_hash(const char *str);
-+tracefs_dynevent_alloc(enum tracefs_dynevent_type type, const char *system,
-+		       const char *event, const char *address, const char *format);
-+int tracefs_dynevent_get_count(unsigned int types, const char *system);
-+
-+int tracefs_load_events(struct tep_handle *tep,
-+			const char *tracing_dir,
-+			const char *system);
-+int tracefs_rescan_events(struct tep_handle *tep,
-+			  const char *tracing_dir,
-+			  const char *system);
-+struct tep_event *
-+tracefs_get_tep_event(struct tep_handle *tep,
-+		      const char *system,
-+		      const char *name);
-+
-+unsigned int tracefs_quick_hash(const char *str);
+-int trace_hash_init(struct trace_hash *hash, int buckets);
+-void trace_hash_free(struct trace_hash *hash);
+-int trace_hash_add(struct trace_hash *hash, struct trace_hash_item *item);
+-int trace_hash_empty(struct trace_hash *hash);
++int tracecmd_hash_init(struct trace_hash *hash, int buckets);
++void tracecmd_hash_free(struct trace_hash *hash);
++int tracecmd_hash_add(struct trace_hash *hash, struct trace_hash_item *item);
++int tracecmd_hash_empty(struct trace_hash *hash);
  
- #endif /* _TRACE_FS_LOCAL_H */
-diff --git a/include/tracefs.h b/include/tracefs.h
-index b6e0f6b..88abb2e 100644
---- a/include/tracefs.h
-+++ b/include/tracefs.h
-@@ -593,7 +593,7 @@ int tracefs_event_verify_filter(struct tep_event *event, const char *filter,
- #define TRACEFS_TIMESTAMP "common_timestamp"
- #define TRACEFS_TIMESTAMP_USECS "common_timestamp.usecs"
- 
--#define TRACEFS_STACKTRACE "common_stacktrace"
-+#define TRACEFS_STACKTRACE "tracefs_common_stacktrace"
- 
- enum tracefs_synth_handler {
- 	TRACEFS_SYNTH_HANDLE_NONE	= 0,
-diff --git a/src/sqlhist-lex.c b/src/sqlhist-lex.c
-index 5c75280..0b32e44 100644
---- a/src/sqlhist-lex.c
-+++ b/src/sqlhist-lex.c
-@@ -509,10 +509,10 @@ static const flex_int16_t yy_chk[234] =
- #include <stdarg.h>
- #include "sqlhist-parse.h"
- 
--extern int my_yyinput(void *extra, char *buf, int max);
-+extern int tracefs_my_yyinput(void *extra, char *buf, int max);
- 
- #undef YY_INPUT
--#define YY_INPUT(b, r, m) ({r = my_yyinput(yyextra, b, m);})
-+#define YY_INPUT(b, r, m) ({r = tracefs_my_yyinput(yyextra, b, m);})
- 
- #define YY_NO_INPUT
- #define YY_NO_UNPUT
-@@ -899,7 +899,7 @@ YY_RULE_SETUP
- #line 43 "sqlhist.l"
+ static inline void trace_hash_del(struct trace_hash_item *item)
  {
- 	HANDLE_COLUMN;
--	yylval->string = store_str(TRACE_SB, yyg->yytext_r);
-+	yylval->string = tracefs_store_str(TRACE_SB, yyg->yytext_r);
- 	return FIELD;
- }
- 	YY_BREAK
-@@ -909,7 +909,7 @@ YY_RULE_SETUP
- #line 49 "sqlhist.l"
- {
- 	HANDLE_COLUMN;
--	yylval->string = store_str(TRACE_SB, yyg->yytext_r);
-+	yylval->string = tracefs_store_str(TRACE_SB, yyg->yytext_r);
- 	return STRING;
- }
- 	YY_BREAK
-@@ -920,7 +920,7 @@ YY_RULE_SETUP
- 	const char *str = yyg->yytext_r;
- 	HANDLE_COLUMN;
- 	if (str[0] == '\\') { str++; };
--	yylval->string = store_str(TRACE_SB, str);
-+	yylval->string = tracefs_store_str(TRACE_SB, str);
- 	return FIELD;
- }
- 	YY_BREAK
-@@ -2198,7 +2198,7 @@ void yyerror(struct sqlhist_bison *sb, char *fmt, ...)
- 	va_list ap;
+@@ -49,7 +49,7 @@ static inline void trace_hash_del(struct trace_hash_item *item)
+ typedef int (*trace_hash_func)(struct trace_hash_item *item, void *data);
  
- 	va_start(ap, fmt);
--	sql_parse_error(sb, yytext, fmt, ap);
-+	tracefs_sql_parse_error(sb, yytext, fmt, ap);
- 	va_end(ap);
- }
+ struct trace_hash_item *
+-trace_hash_find(struct trace_hash *hash, unsigned long long key,
++tracecmd_hash_find(struct trace_hash *hash, unsigned long long key,
+ 		trace_hash_func match, void *data);
  
-diff --git a/src/sqlhist-parse.h b/src/sqlhist-parse.h
-index 7bd2a63..e5861fa 100644
---- a/src/sqlhist-parse.h
-+++ b/src/sqlhist-parse.h
-@@ -51,27 +51,29 @@ enum compare_type {
- 	COMPARE_OR,
+ #endif /* _TRACE_HASH_H */
+diff --git a/lib/trace-cmd/include/private/trace-rbtree.h b/lib/trace-cmd/include/private/trace-rbtree.h
+index 82211199..a0ee1d71 100644
+--- a/lib/trace-cmd/include/private/trace-rbtree.h
++++ b/lib/trace-cmd/include/private/trace-rbtree.h
+@@ -24,11 +24,11 @@ struct trace_rbtree {
+ 	size_t				nr_nodes;
  };
  
--char * store_str(struct sqlhist_bison *sb, const char *str);
-+char *tracefs_store_str(struct sqlhist_bison *sb, const char *str);
- 
--int table_start(struct sqlhist_bison *sb);
-+int tracefs_table_start(struct sqlhist_bison *sb);
- 
--void *add_field(struct sqlhist_bison *sb, const char *field, const char *label);
-+void *tracefs_add_field(struct sqlhist_bison *sb, const char *field, const char *label);
- 
--void *add_filter(struct sqlhist_bison *sb, void *A, void *B, enum filter_type op);
-+void *tracefs_add_filter(struct sqlhist_bison *sb, void *A, void *B, enum filter_type op);
- 
--int add_match(struct sqlhist_bison *sb, void *A, void *B);
--void *add_compare(struct sqlhist_bison *sb, void *A, void *B, enum compare_type type);
--int add_where(struct sqlhist_bison *sb, void *expr);
-+int tracefs_add_match(struct sqlhist_bison *sb, void *A, void *B);
-+void *tracefs_add_compare(struct sqlhist_bison *sb, void *A, void *B, enum compare_type type);
-+int tracefs_add_where(struct sqlhist_bison *sb, void *expr);
- 
--int add_selection(struct sqlhist_bison *sb, void *item, const char *label);
--int add_from(struct sqlhist_bison *sb, void *item);
--int add_to(struct sqlhist_bison *sb, void *item);
--void *add_cast(struct sqlhist_bison *sb, void *field, const char *type);
-+int tracefs_add_selection(struct sqlhist_bison *sb, void *item, const char *label);
-+int tracefs_add_from(struct sqlhist_bison *sb, void *item);
-+int tracefs_add_to(struct sqlhist_bison *sb, void *item);
-+void *tracefs_add_cast(struct sqlhist_bison *sb, void *field, const char *type);
- 
--void *add_string(struct sqlhist_bison *sb, const char *str);
--void *add_number(struct sqlhist_bison *sb, long val);
-+void *tracefs_add_string(struct sqlhist_bison *sb, const char *str);
-+void *tracefs_add_number(struct sqlhist_bison *sb, long val);
- 
--extern void sql_parse_error(struct sqlhist_bison *sb, const char *text,
--			    const char *fmt, va_list ap);
-+extern void tracefs_sql_parse_error(struct sqlhist_bison *sb,
-+				    const char *text,
-+				    const char *fmt,
-+				    va_list ap);
- 
- #endif
-diff --git a/src/sqlhist.l b/src/sqlhist.l
-index 4df475a..a7fd1cf 100644
---- a/src/sqlhist.l
-+++ b/src/sqlhist.l
-@@ -4,10 +4,10 @@
- #include <stdarg.h>
- #include "sqlhist-parse.h"
- 
--extern int my_yyinput(void *extra, char *buf, int max);
-+extern int tracefs_my_yyinput(void *extra, char *buf, int max);
- 
- #undef YY_INPUT
--#define YY_INPUT(b, r, m) ({r = my_yyinput(yyextra, b, m);})
-+#define YY_INPUT(b, r, m) ({r = tracefs_my_yyinput(yyextra, b, m);})
- 
- #define YY_NO_INPUT
- #define YY_NO_UNPUT
-@@ -42,13 +42,13 @@ cast { HANDLE_COLUMN; return CAST; }
- 
- sym-offset {
- 	HANDLE_COLUMN;
--	yylval->string = store_str(TRACE_SB, yyg->yytext_r);
-+	yylval->string = tracefs_store_str(TRACE_SB, yyg->yytext_r);
- 	return FIELD;
- }
- 
- {qstring} {
- 	HANDLE_COLUMN;
--	yylval->string = store_str(TRACE_SB, yyg->yytext_r);
-+	yylval->string = tracefs_store_str(TRACE_SB, yyg->yytext_r);
- 	return STRING;
- }
- 
-@@ -56,7 +56,7 @@ sym-offset {
- 	const char *str = yyg->yytext_r;
- 	HANDLE_COLUMN;
- 	if (str[0] == '\\') { str++; };
--	yylval->string = store_str(TRACE_SB, str);
-+	yylval->string = tracefs_store_str(TRACE_SB, str);
- 	return FIELD;
- }
- 
-@@ -99,6 +99,6 @@ void yyerror(struct sqlhist_bison *sb, char *fmt, ...)
- 	va_list ap;
- 
- 	va_start(ap, fmt);
--	sql_parse_error(sb, yytext, fmt, ap);
-+	tracefs_sql_parse_error(sb, yytext, fmt, ap);
- 	va_end(ap);
- }
-diff --git a/src/sqlhist.tab.c b/src/sqlhist.tab.c
-index 6393e95..d771f0a 100644
---- a/src/sqlhist.tab.c
-+++ b/src/sqlhist.tab.c
-@@ -1323,26 +1323,26 @@ yyreduce:
-     {
-   case 3:
- #line 78 "sqlhist.y"
--                { CHECK_RETURN_PTR((yyval.string) = store_str(sb, (yyvsp[0].string))); }
-+                { CHECK_RETURN_PTR((yyval.string) = tracefs_store_str(sb, (yyvsp[0].string))); }
- #line 1328 "sqlhist.tab.c"
-     break;
- 
-   case 4:
- #line 79 "sqlhist.y"
--        { CHECK_RETURN_PTR((yyval.string) = store_str(sb, (yyvsp[0].string))); }
-+        { CHECK_RETURN_PTR((yyval.string) = tracefs_store_str(sb, (yyvsp[0].string))); }
- #line 1334 "sqlhist.tab.c"
-     break;
- 
-   case 5:
- #line 82 "sqlhist.y"
--                 { table_start(sb); }
-+                 { tracefs_table_start(sb); }
- #line 1340 "sqlhist.tab.c"
-     break;
- 
-   case 9:
- #line 96 "sqlhist.y"
-                                 {
--					CHECK_RETURN_VAL(add_selection(sb, (yyvsp[0].expr), NULL));
-+					CHECK_RETURN_VAL(tracefs_add_selection(sb, (yyvsp[0].expr), NULL));
- 				}
- #line 1348 "sqlhist.tab.c"
-     break;
-@@ -1350,7 +1350,7 @@ yyreduce:
-   case 10:
- #line 100 "sqlhist.y"
-                                 {
--					CHECK_RETURN_VAL(add_selection(sb, (yyvsp[-1].expr), (yyvsp[0].string)));
-+					CHECK_RETURN_VAL(tracefs_add_selection(sb, (yyvsp[-1].expr), (yyvsp[0].string)));
- 				}
- #line 1356 "sqlhist.tab.c"
-     break;
-@@ -1370,7 +1370,7 @@ yyreduce:
-   case 15:
- #line 110 "sqlhist.y"
-                                 {
--					 (yyval.expr) = add_cast(sb, (yyvsp[-3].expr), (yyvsp[-1].string));
-+					 (yyval.expr) = tracefs_add_cast(sb, (yyvsp[-3].expr), (yyvsp[-1].string));
- 					 CHECK_RETURN_PTR((yyval.expr));
- 				}
- #line 1377 "sqlhist.tab.c"
-@@ -1379,7 +1379,7 @@ yyreduce:
-   case 16:
- #line 118 "sqlhist.y"
-                                 {
--					(yyval.expr) = add_compare(sb, (yyvsp[-2].expr), (yyvsp[0].expr), COMPARE_ADD);
-+					(yyval.expr) = tracefs_add_compare(sb, (yyvsp[-2].expr), (yyvsp[0].expr), COMPARE_ADD);
- 					CHECK_RETURN_PTR((yyval.expr));
- 				}
- #line 1386 "sqlhist.tab.c"
-@@ -1388,7 +1388,7 @@ yyreduce:
-   case 17:
- #line 123 "sqlhist.y"
-                                 {
--					(yyval.expr) = add_compare(sb, (yyvsp[-2].expr), (yyvsp[0].expr), COMPARE_SUB);
-+					(yyval.expr) = tracefs_add_compare(sb, (yyvsp[-2].expr), (yyvsp[0].expr), COMPARE_SUB);
- 					CHECK_RETURN_PTR((yyval.expr));
- 				}
- #line 1395 "sqlhist.tab.c"
-@@ -1396,163 +1396,163 @@ yyreduce:
- 
-   case 20:
- #line 135 "sqlhist.y"
--                { (yyval.expr) = add_field(sb, (yyvsp[0].string), NULL); CHECK_RETURN_PTR((yyval.expr)); }
-+                { (yyval.expr) = tracefs_add_field(sb, (yyvsp[0].string), NULL); CHECK_RETURN_PTR((yyval.expr)); }
- #line 1401 "sqlhist.tab.c"
-     break;
- 
-   case 21:
- #line 139 "sqlhist.y"
--               { (yyval.expr) = add_field(sb, (yyvsp[-1].string), (yyvsp[0].string)); CHECK_RETURN_PTR((yyval.expr)); }
-+               { (yyval.expr) = tracefs_add_field(sb, (yyvsp[-1].string), (yyvsp[0].string)); CHECK_RETURN_PTR((yyval.expr)); }
- #line 1407 "sqlhist.tab.c"
-     break;
- 
-   case 23:
- #line 147 "sqlhist.y"
--                { (yyval.expr) = add_string(sb, (yyvsp[0].string)); CHECK_RETURN_PTR((yyval.expr)); }
-+                { (yyval.expr) = tracefs_add_string(sb, (yyvsp[0].string)); CHECK_RETURN_PTR((yyval.expr)); }
- #line 1413 "sqlhist.tab.c"
-     break;
- 
-   case 25:
- #line 152 "sqlhist.y"
--                { (yyval.expr) = add_number(sb, (yyvsp[0].number)); CHECK_RETURN_PTR((yyval.expr)); }
-+                { (yyval.expr) = tracefs_add_number(sb, (yyvsp[0].number)); CHECK_RETURN_PTR((yyval.expr)); }
- #line 1419 "sqlhist.tab.c"
-     break;
- 
-   case 26:
- #line 157 "sqlhist.y"
--                        { (yyval.expr) = add_filter(sb, (yyvsp[-2].expr), (yyvsp[0].expr), FILTER_LT); CHECK_RETURN_PTR((yyval.expr)); }
-+                        { (yyval.expr) = tracefs_add_filter(sb, (yyvsp[-2].expr), (yyvsp[0].expr), FILTER_LT); CHECK_RETURN_PTR((yyval.expr)); }
- #line 1425 "sqlhist.tab.c"
-     break;
- 
-   case 27:
- #line 158 "sqlhist.y"
--                        { (yyval.expr) = add_filter(sb, (yyvsp[-2].expr), (yyvsp[0].expr), FILTER_GT); CHECK_RETURN_PTR((yyval.expr)); }
-+                        { (yyval.expr) = tracefs_add_filter(sb, (yyvsp[-2].expr), (yyvsp[0].expr), FILTER_GT); CHECK_RETURN_PTR((yyval.expr)); }
- #line 1431 "sqlhist.tab.c"
-     break;
- 
-   case 28:
- #line 159 "sqlhist.y"
--                { (yyval.expr) = add_filter(sb, (yyvsp[-2].expr), (yyvsp[0].expr), FILTER_LE); CHECK_RETURN_PTR((yyval.expr)); }
-+                { (yyval.expr) = tracefs_add_filter(sb, (yyvsp[-2].expr), (yyvsp[0].expr), FILTER_LE); CHECK_RETURN_PTR((yyval.expr)); }
- #line 1437 "sqlhist.tab.c"
-     break;
- 
-   case 29:
- #line 160 "sqlhist.y"
--                { (yyval.expr) = add_filter(sb, (yyvsp[-2].expr), (yyvsp[0].expr), FILTER_GE); CHECK_RETURN_PTR((yyval.expr)); }
-+                { (yyval.expr) = tracefs_add_filter(sb, (yyvsp[-2].expr), (yyvsp[0].expr), FILTER_GE); CHECK_RETURN_PTR((yyval.expr)); }
- #line 1443 "sqlhist.tab.c"
-     break;
- 
-   case 30:
- #line 161 "sqlhist.y"
--                        { (yyval.expr) = add_filter(sb, (yyvsp[-2].expr), (yyvsp[0].expr), FILTER_EQ); CHECK_RETURN_PTR((yyval.expr)); }
-+                        { (yyval.expr) = tracefs_add_filter(sb, (yyvsp[-2].expr), (yyvsp[0].expr), FILTER_EQ); CHECK_RETURN_PTR((yyval.expr)); }
- #line 1449 "sqlhist.tab.c"
-     break;
- 
-   case 31:
- #line 162 "sqlhist.y"
--                { (yyval.expr) = add_filter(sb, (yyvsp[-2].expr), (yyvsp[0].expr), FILTER_EQ); CHECK_RETURN_PTR((yyval.expr)); }
-+                { (yyval.expr) = tracefs_add_filter(sb, (yyvsp[-2].expr), (yyvsp[0].expr), FILTER_EQ); CHECK_RETURN_PTR((yyval.expr)); }
- #line 1455 "sqlhist.tab.c"
-     break;
- 
-   case 32:
- #line 163 "sqlhist.y"
--                        { (yyval.expr) = add_filter(sb, (yyvsp[-2].expr), (yyvsp[0].expr), FILTER_NE); CHECK_RETURN_PTR((yyval.expr)); }
-+                        { (yyval.expr) = tracefs_add_filter(sb, (yyvsp[-2].expr), (yyvsp[0].expr), FILTER_NE); CHECK_RETURN_PTR((yyval.expr)); }
- #line 1461 "sqlhist.tab.c"
-     break;
- 
-   case 33:
- #line 164 "sqlhist.y"
--                        { (yyval.expr) = add_filter(sb, (yyvsp[-2].expr), (yyvsp[0].expr), FILTER_NE); CHECK_RETURN_PTR((yyval.expr)); }
-+                        { (yyval.expr) = tracefs_add_filter(sb, (yyvsp[-2].expr), (yyvsp[0].expr), FILTER_NE); CHECK_RETURN_PTR((yyval.expr)); }
- #line 1467 "sqlhist.tab.c"
-     break;
- 
-   case 34:
- #line 165 "sqlhist.y"
--                        { (yyval.expr) = add_filter(sb, (yyvsp[-2].expr), (yyvsp[0].expr), FILTER_BIN_AND); CHECK_RETURN_PTR((yyval.expr)); }
-+                        { (yyval.expr) = tracefs_add_filter(sb, (yyvsp[-2].expr), (yyvsp[0].expr), FILTER_BIN_AND); CHECK_RETURN_PTR((yyval.expr)); }
- #line 1473 "sqlhist.tab.c"
-     break;
- 
-   case 35:
- #line 166 "sqlhist.y"
--                        { (yyval.expr) = add_filter(sb, (yyvsp[-2].expr), (yyvsp[0].expr), FILTER_STR_CMP); CHECK_RETURN_PTR((yyval.expr)); }
-+                        { (yyval.expr) = tracefs_add_filter(sb, (yyvsp[-2].expr), (yyvsp[0].expr), FILTER_STR_CMP); CHECK_RETURN_PTR((yyval.expr)); }
- #line 1479 "sqlhist.tab.c"
-     break;
- 
-   case 36:
- #line 170 "sqlhist.y"
--                                        { (yyval.expr) = add_filter(sb, (yyvsp[-2].expr), (yyvsp[0].expr), FILTER_OR); CHECK_RETURN_PTR((yyval.expr)); }
-+                                        { (yyval.expr) = tracefs_add_filter(sb, (yyvsp[-2].expr), (yyvsp[0].expr), FILTER_OR); CHECK_RETURN_PTR((yyval.expr)); }
- #line 1485 "sqlhist.tab.c"
-     break;
- 
-   case 37:
- #line 171 "sqlhist.y"
--                                        { (yyval.expr) = add_filter(sb, (yyvsp[-2].expr), (yyvsp[0].expr), FILTER_AND); CHECK_RETURN_PTR((yyval.expr)); }
-+                                        { (yyval.expr) = tracefs_add_filter(sb, (yyvsp[-2].expr), (yyvsp[0].expr), FILTER_AND); CHECK_RETURN_PTR((yyval.expr)); }
- #line 1491 "sqlhist.tab.c"
-     break;
- 
-   case 38:
- #line 172 "sqlhist.y"
--                                        { (yyval.expr) = add_filter(sb, (yyvsp[-1].expr), NULL, FILTER_NOT_GROUP); CHECK_RETURN_PTR((yyval.expr)); }
-+                                        { (yyval.expr) = tracefs_add_filter(sb, (yyvsp[-1].expr), NULL, FILTER_NOT_GROUP); CHECK_RETURN_PTR((yyval.expr)); }
- #line 1497 "sqlhist.tab.c"
-     break;
- 
-   case 39:
- #line 173 "sqlhist.y"
--                                        { (yyval.expr) = add_filter(sb, (yyvsp[0].expr), NULL, FILTER_NOT_GROUP); CHECK_RETURN_PTR((yyval.expr)); }
-+                                        { (yyval.expr) = tracefs_add_filter(sb, (yyvsp[0].expr), NULL, FILTER_NOT_GROUP); CHECK_RETURN_PTR((yyval.expr)); }
- #line 1503 "sqlhist.tab.c"
-     break;
- 
-   case 41:
- #line 178 "sqlhist.y"
--                                        { (yyval.expr) = add_filter(sb, (yyvsp[-2].expr), (yyvsp[0].expr), FILTER_OR); CHECK_RETURN_PTR((yyval.expr)); }
-+                                        { (yyval.expr) = tracefs_add_filter(sb, (yyvsp[-2].expr), (yyvsp[0].expr), FILTER_OR); CHECK_RETURN_PTR((yyval.expr)); }
- #line 1509 "sqlhist.tab.c"
-     break;
- 
-   case 42:
- #line 179 "sqlhist.y"
--                                        { (yyval.expr) = add_filter(sb, (yyvsp[-1].expr), NULL, FILTER_GROUP); CHECK_RETURN_PTR((yyval.expr)); }
-+                                        { (yyval.expr) = tracefs_add_filter(sb, (yyvsp[-1].expr), NULL, FILTER_GROUP); CHECK_RETURN_PTR((yyval.expr)); }
- #line 1515 "sqlhist.tab.c"
-     break;
- 
-   case 43:
- #line 180 "sqlhist.y"
--                                        { (yyval.expr) = add_filter(sb, (yyvsp[-1].expr), NULL, FILTER_NOT_GROUP); CHECK_RETURN_PTR((yyval.expr)); }
-+                                        { (yyval.expr) = tracefs_add_filter(sb, (yyvsp[-1].expr), NULL, FILTER_NOT_GROUP); CHECK_RETURN_PTR((yyval.expr)); }
- #line 1521 "sqlhist.tab.c"
-     break;
- 
-   case 44:
- #line 181 "sqlhist.y"
--                                        { (yyval.expr) = add_filter(sb, (yyvsp[0].expr), NULL, FILTER_NOT_GROUP); CHECK_RETURN_PTR((yyval.expr)); }
-+                                        { (yyval.expr) = tracefs_add_filter(sb, (yyvsp[0].expr), NULL, FILTER_NOT_GROUP); CHECK_RETURN_PTR((yyval.expr)); }
- #line 1527 "sqlhist.tab.c"
-     break;
- 
-   case 46:
- #line 186 "sqlhist.y"
--                                { CHECK_RETURN_VAL(add_where(sb, (yyvsp[0].expr))); }
-+                                { CHECK_RETURN_VAL(tracefs_add_where(sb, (yyvsp[0].expr))); }
- #line 1533 "sqlhist.tab.c"
-     break;
- 
-   case 56:
- #line 219 "sqlhist.y"
--                        { CHECK_RETURN_VAL(add_from(sb, (yyvsp[0].expr))); }
-+                        { CHECK_RETURN_VAL(tracefs_add_from(sb, (yyvsp[0].expr))); }
- #line 1539 "sqlhist.tab.c"
-     break;
- 
-   case 57:
- #line 234 "sqlhist.y"
--                                { add_to(sb, (yyvsp[-2].expr)); }
-+                                { tracefs_add_to(sb, (yyvsp[-2].expr)); }
- #line 1545 "sqlhist.tab.c"
-     break;
- 
-   case 58:
- #line 238 "sqlhist.y"
--                 { CHECK_RETURN_VAL(add_match(sb, (yyvsp[-2].expr), (yyvsp[0].expr))); }
-+                 { CHECK_RETURN_VAL(tracefs_add_match(sb, (yyvsp[-2].expr), (yyvsp[0].expr))); }
- #line 1551 "sqlhist.tab.c"
-     break;
- 
-   case 59:
- #line 239 "sqlhist.y"
--                { CHECK_RETURN_VAL(add_match(sb, (yyvsp[-2].expr), (yyvsp[0].expr))); }
-+                { CHECK_RETURN_VAL(tracefs_add_match(sb, (yyvsp[-2].expr), (yyvsp[0].expr))); }
- #line 1557 "sqlhist.tab.c"
-     break;
- 
-diff --git a/src/sqlhist.y b/src/sqlhist.y
-index fade9a4..8b30215 100644
---- a/src/sqlhist.y
-+++ b/src/sqlhist.y
-@@ -75,11 +75,11 @@ start :
-    select_statement
-  ;
- 
--label : AS name { CHECK_RETURN_PTR($$ = store_str(sb, $2)); }
-- | name { CHECK_RETURN_PTR($$ = store_str(sb, $1)); }
-+label : AS name { CHECK_RETURN_PTR($$ = tracefs_store_str(sb, $2)); }
-+ | name { CHECK_RETURN_PTR($$ = tracefs_store_str(sb, $1)); }
-  ;
- 
--select : SELECT  { table_start(sb); }
-+select : SELECT  { tracefs_table_start(sb); }
-   ;
- 
- select_statement :
-@@ -94,11 +94,11 @@ selection_list :
- selection :
-     selection_expr
- 				{
--					CHECK_RETURN_VAL(add_selection(sb, $1, NULL));
-+					CHECK_RETURN_VAL(tracefs_add_selection(sb, $1, NULL));
- 				}
-   | selection_expr label
- 				{
--					CHECK_RETURN_VAL(add_selection(sb, $1, $2));
-+					CHECK_RETURN_VAL(tracefs_add_selection(sb, $1, $2));
- 				}
-   ;
- 
-@@ -108,7 +108,7 @@ selection_expr :
-  | selection_addition
-  | '(' selection_addition ')'	{  $$ = $2; }
-  | CAST '(' field AS FIELD ')'	{
--					 $$ = add_cast(sb, $3, $5);
-+					 $$ = tracefs_add_cast(sb, $3, $5);
- 					 CHECK_RETURN_PTR($$);
- 				}
-  ;
-@@ -116,12 +116,12 @@ selection_expr :
- selection_addition :
-    field '+' field
- 				{
--					$$ = add_compare(sb, $1, $3, COMPARE_ADD);
-+					$$ = tracefs_add_compare(sb, $1, $3, COMPARE_ADD);
- 					CHECK_RETURN_PTR($$);
- 				}
-  | field '-' field
- 				{
--					$$ = add_compare(sb, $1, $3, COMPARE_SUB);
-+					$$ = tracefs_add_compare(sb, $1, $3, COMPARE_SUB);
- 					CHECK_RETURN_PTR($$);
- 				}
-  ;
-@@ -132,11 +132,11 @@ item :
-  ;
- 
- field :
--   FIELD	{ $$ = add_field(sb, $1, NULL); CHECK_RETURN_PTR($$); }
-+   FIELD	{ $$ = tracefs_add_field(sb, $1, NULL); CHECK_RETURN_PTR($$); }
-  ;
- 
- named_field :
--   FIELD label { $$ = add_field(sb, $1, $2); CHECK_RETURN_PTR($$); }
-+   FIELD label { $$ = tracefs_add_field(sb, $1, $2); CHECK_RETURN_PTR($$); }
-  ;
- 
- name :
-@@ -144,46 +144,46 @@ name :
-  ;
- 
- str_val :
--   STRING	{ $$ = add_string(sb, $1); CHECK_RETURN_PTR($$); }
-+   STRING	{ $$ = tracefs_add_string(sb, $1); CHECK_RETURN_PTR($$); }
-  ;
- 
- val :
-    str_val
-- | NUMBER	{ $$ = add_number(sb, $1); CHECK_RETURN_PTR($$); }
-+ | NUMBER	{ $$ = tracefs_add_number(sb, $1); CHECK_RETURN_PTR($$); }
-  ;
- 
- 
- compare :
--   field '<' val	{ $$ = add_filter(sb, $1, $3, FILTER_LT); CHECK_RETURN_PTR($$); }
-- | field '>' val	{ $$ = add_filter(sb, $1, $3, FILTER_GT); CHECK_RETURN_PTR($$); }
-- | field LE val	{ $$ = add_filter(sb, $1, $3, FILTER_LE); CHECK_RETURN_PTR($$); }
-- | field GE val	{ $$ = add_filter(sb, $1, $3, FILTER_GE); CHECK_RETURN_PTR($$); }
-- | field '=' val	{ $$ = add_filter(sb, $1, $3, FILTER_EQ); CHECK_RETURN_PTR($$); }
-- | field EQ val	{ $$ = add_filter(sb, $1, $3, FILTER_EQ); CHECK_RETURN_PTR($$); }
-- | field NEQ val	{ $$ = add_filter(sb, $1, $3, FILTER_NE); CHECK_RETURN_PTR($$); }
-- | field "!=" val	{ $$ = add_filter(sb, $1, $3, FILTER_NE); CHECK_RETURN_PTR($$); }
-- | field '&' val	{ $$ = add_filter(sb, $1, $3, FILTER_BIN_AND); CHECK_RETURN_PTR($$); }
-- | field '~' str_val	{ $$ = add_filter(sb, $1, $3, FILTER_STR_CMP); CHECK_RETURN_PTR($$); }
-+   field '<' val	{ $$ = tracefs_add_filter(sb, $1, $3, FILTER_LT); CHECK_RETURN_PTR($$); }
-+ | field '>' val	{ $$ = tracefs_add_filter(sb, $1, $3, FILTER_GT); CHECK_RETURN_PTR($$); }
-+ | field LE val	{ $$ = tracefs_add_filter(sb, $1, $3, FILTER_LE); CHECK_RETURN_PTR($$); }
-+ | field GE val	{ $$ = tracefs_add_filter(sb, $1, $3, FILTER_GE); CHECK_RETURN_PTR($$); }
-+ | field '=' val	{ $$ = tracefs_add_filter(sb, $1, $3, FILTER_EQ); CHECK_RETURN_PTR($$); }
-+ | field EQ val	{ $$ = tracefs_add_filter(sb, $1, $3, FILTER_EQ); CHECK_RETURN_PTR($$); }
-+ | field NEQ val	{ $$ = tracefs_add_filter(sb, $1, $3, FILTER_NE); CHECK_RETURN_PTR($$); }
-+ | field "!=" val	{ $$ = tracefs_add_filter(sb, $1, $3, FILTER_NE); CHECK_RETURN_PTR($$); }
-+ | field '&' val	{ $$ = tracefs_add_filter(sb, $1, $3, FILTER_BIN_AND); CHECK_RETURN_PTR($$); }
-+ | field '~' str_val	{ $$ = tracefs_add_filter(sb, $1, $3, FILTER_STR_CMP); CHECK_RETURN_PTR($$); }
- ;
- 
- compare_and_or :
--   compare_and_or OR compare_and_or	{ $$ = add_filter(sb, $1, $3, FILTER_OR); CHECK_RETURN_PTR($$); }
-- | compare_and_or AND compare_and_or	{ $$ = add_filter(sb, $1, $3, FILTER_AND); CHECK_RETURN_PTR($$); }
-- | '!' '(' compare_and_or ')'		{ $$ = add_filter(sb, $3, NULL, FILTER_NOT_GROUP); CHECK_RETURN_PTR($$); }
-- | '!' compare				{ $$ = add_filter(sb, $2, NULL, FILTER_NOT_GROUP); CHECK_RETURN_PTR($$); }
-+   compare_and_or OR compare_and_or	{ $$ = tracefs_add_filter(sb, $1, $3, FILTER_OR); CHECK_RETURN_PTR($$); }
-+ | compare_and_or AND compare_and_or	{ $$ = tracefs_add_filter(sb, $1, $3, FILTER_AND); CHECK_RETURN_PTR($$); }
-+ | '!' '(' compare_and_or ')'		{ $$ = tracefs_add_filter(sb, $3, NULL, FILTER_NOT_GROUP); CHECK_RETURN_PTR($$); }
-+ | '!' compare				{ $$ = tracefs_add_filter(sb, $2, NULL, FILTER_NOT_GROUP); CHECK_RETURN_PTR($$); }
-  | compare
-  ;
- 
- compare_items :
--   compare_items OR compare_items	{ $$ = add_filter(sb, $1, $3, FILTER_OR); CHECK_RETURN_PTR($$); }
-- | '(' compare_and_or ')'		{ $$ = add_filter(sb, $2, NULL, FILTER_GROUP); CHECK_RETURN_PTR($$); }
-- | '!' '(' compare_and_or ')'		{ $$ = add_filter(sb, $3, NULL, FILTER_NOT_GROUP); CHECK_RETURN_PTR($$); }
-- | '!' compare				{ $$ = add_filter(sb, $2, NULL, FILTER_NOT_GROUP); CHECK_RETURN_PTR($$); }
-+   compare_items OR compare_items	{ $$ = tracefs_add_filter(sb, $1, $3, FILTER_OR); CHECK_RETURN_PTR($$); }
-+ | '(' compare_and_or ')'		{ $$ = tracefs_add_filter(sb, $2, NULL, FILTER_GROUP); CHECK_RETURN_PTR($$); }
-+ | '!' '(' compare_and_or ')'		{ $$ = tracefs_add_filter(sb, $3, NULL, FILTER_NOT_GROUP); CHECK_RETURN_PTR($$); }
-+ | '!' compare				{ $$ = tracefs_add_filter(sb, $2, NULL, FILTER_NOT_GROUP); CHECK_RETURN_PTR($$); }
-  | compare
-  ;
- 
- compare_cmds :
--   compare_items		{ CHECK_RETURN_VAL(add_where(sb, $1)); }
-+   compare_items		{ CHECK_RETURN_VAL(tracefs_add_where(sb, $1)); }
-  ;
- 
- /*
-@@ -216,7 +216,7 @@ table_exp :
-  ;
- 
- from_clause :
--   FROM item		{ CHECK_RETURN_VAL(add_from(sb, $2)); }
-+   FROM item		{ CHECK_RETURN_VAL(tracefs_add_from(sb, $2)); }
- 
- /*
-  * Select from a from clause confuses the variable parsing.
-@@ -231,12 +231,12 @@ from_clause :
-  ;
- 
- join_clause :
-- JOIN item ON match_clause	{ add_to(sb, $2); }
-+ JOIN item ON match_clause	{ tracefs_add_to(sb, $2); }
-  ;
- 
- match :
--   item '=' item { CHECK_RETURN_VAL(add_match(sb, $1, $3)); }
-- | item EQ item { CHECK_RETURN_VAL(add_match(sb, $1, $3)); }
-+   item '=' item { CHECK_RETURN_VAL(tracefs_add_match(sb, $1, $3)); }
-+ | item EQ item { CHECK_RETURN_VAL(tracefs_add_match(sb, $1, $3)); }
- 
-  ;
- 
-diff --git a/src/tracefs-dynevents.c b/src/tracefs-dynevents.c
-index 6df7212..1a4a348 100644
---- a/src/tracefs-dynevents.c
-+++ b/src/tracefs-dynevents.c
-@@ -306,7 +306,7 @@ static struct dyn_events_desc *get_devent_desc(enum tracefs_dynevent_type type)
- }
- 
- /**
-- * dynevent_alloc - Allocate new dynamic event
-+ * tracefs_dynevent_alloc - Allocate new dynamic event
-  * @type: Type of the dynamic event
-  * @system: The system name (NULL for the default dynamic)
-  * @event: Name of the event
-@@ -326,8 +326,8 @@ static struct dyn_events_desc *get_devent_desc(enum tracefs_dynevent_type type)
-  * errno will be set to EINVAL if event is NULL.
-  */
- __hidden struct tracefs_dynevent *
--dynevent_alloc(enum tracefs_dynevent_type type, const char *system,
--	       const char *event, const char *address, const char *format)
-+tracefs_dynevent_alloc(enum tracefs_dynevent_type type, const char *system,
-+		       const char *event, const char *address, const char *format)
+-void trace_rbtree_init(struct trace_rbtree *tree, trace_rbtree_cmp_fn cmp_fn,
++void tracecmd_rbtree_init(struct trace_rbtree *tree, trace_rbtree_cmp_fn cmp_fn,
+ 		       trace_rbtree_search_fn search_fn);
+ struct trace_rbtree_node *trace_rbtree_find(struct trace_rbtree *tree, const void *data);
+ void trace_rbtree_delete(struct trace_rbtree *tree, struct trace_rbtree_node *node);
+-int trace_rbtree_insert(struct trace_rbtree *tree, struct trace_rbtree_node *node);
++int tracecmd_rbtree_insert(struct trace_rbtree *tree, struct trace_rbtree_node *node);
+ struct trace_rbtree_node *trace_rbtree_pop_nobalance(struct trace_rbtree *tree);
+ 
+ #endif /* _TRACE_RBTREE_H */
+diff --git a/lib/trace-cmd/include/trace-cmd-local.h b/lib/trace-cmd/include/trace-cmd-local.h
+index 1a37e817..82977dc3 100644
+--- a/lib/trace-cmd/include/trace-cmd-local.h
++++ b/lib/trace-cmd/include/trace-cmd-local.h
+@@ -52,42 +52,42 @@ struct data_file_write {
+ enum tracecmd_filters tracecmd_filter_match(struct tracecmd_filter *filter,
+ 					    struct tep_record *record);
+ 
+-void trace_set_guest_map(struct tracecmd_input *handle, struct tracecmd_cpu_map *map);
+-struct tracecmd_cpu_map *trace_get_guest_map(struct tracecmd_input *handle);
+-void trace_set_guest_map_cnt(struct tracecmd_input *handle, int count);
+-int trace_get_guest_map_cnt(struct tracecmd_input *handle);
+-void trace_guest_map_free(struct tracecmd_cpu_map *map);
++void tracecmd_set_guest_map(struct tracecmd_input *handle, struct tracecmd_cpu_map *map);
++struct tracecmd_cpu_map *tracecmd_get_guest_map(struct tracecmd_input *handle);
++void tracecmd_set_guest_map_cnt(struct tracecmd_input *handle, int count);
++int tracecmd_get_guest_map_cnt(struct tracecmd_input *handle);
++void tracecmd_guest_map_free(struct tracecmd_cpu_map *map);
+ 
+ void tracecmd_compress_init(void);
+ void tracecmd_compress_free(void);
+ 
+-bool check_file_state(unsigned long file_version, int current_state, int new_state);
+-bool check_out_state(struct tracecmd_output *handle, int new_state);
++bool tracecmd_check_file_state(unsigned long file_version, int current_state, int new_state);
++bool tracecmd_check_out_state(struct tracecmd_output *handle, int new_state);
+ 
+-int out_uncompress_block(struct tracecmd_output *handle);
+-int out_compression_start(struct tracecmd_output *handle, bool compress);
+-int out_compression_end(struct tracecmd_output *handle, bool compress);
+-void out_compression_reset(struct tracecmd_output *handle, bool compress);
+-bool out_check_compression(struct tracecmd_output *handle);
++int tracecmd_out_uncompress_block(struct tracecmd_output *handle);
++int tracecmd_out_compression_start(struct tracecmd_output *handle, bool compress);
++int tracecmd_out_compression_end(struct tracecmd_output *handle, bool compress);
++void tracecmd_out_compression_reset(struct tracecmd_output *handle, bool compress);
++bool tracecmd_out_check_compression(struct tracecmd_output *handle);
+ 
+-void out_set_file_state(struct tracecmd_output *handle, int new_state);
+-int out_save_options_offset(struct tracecmd_output *handle,
++void tracecmd_out_set_file_state(struct tracecmd_output *handle, int new_state);
++int tracecmd_out_save_options_offset(struct tracecmd_output *handle,
+ 			    unsigned long long start);
+-unsigned long long out_copy_fd_compress(struct tracecmd_output *handle,
++unsigned long long tracecmd_out_copy_fd_compress(struct tracecmd_output *handle,
+ 					int fd, unsigned long long max,
+ 					unsigned long long *write_size, int page);
+-void in_uncompress_reset(struct tracecmd_input *handle);
+-int in_uncompress_block(struct tracecmd_input *handle);
++void tracecmd_in_uncompress_reset(struct tracecmd_input *handle);
++int tracecmd_in_uncompress_block(struct tracecmd_input *handle);
+ 
+ unsigned long long
+-out_write_section_header(struct tracecmd_output *handle, unsigned short header_id,
++tracecmd_out_write_section_header(struct tracecmd_output *handle, unsigned short header_id,
+ 			 char *description, int flags, bool option);
+-int out_update_section_header(struct tracecmd_output *handle, unsigned long long offset);
++int tracecmd_out_update_section_header(struct tracecmd_output *handle, unsigned long long offset);
+ 
+-long long do_write_check(struct tracecmd_output *handle, const void *data, long long size);
++long long tracecmd_do_write_check(struct tracecmd_output *handle, const void *data, long long size);
+ 
+ struct tracecmd_option *
+-out_add_buffer_option(struct tracecmd_output *handle, const char *name,
++tracecmd_out_add_buffer_option(struct tracecmd_output *handle, const char *name,
+ 		      unsigned short id, unsigned long long data_offset,
+ 		      int cpus, struct data_file_write *cpu_data, int page_size);
+ 
+@@ -97,14 +97,14 @@ struct cpu_data_source {
+ 	off_t offset;
+ };
+ 
+-int out_write_cpu_data(struct tracecmd_output *handle, int cpus,
++int tracecmd_out_write_cpu_data(struct tracecmd_output *handle, int cpus,
+ 		       struct cpu_data_source *data, const char *buff_name);
+-int out_write_emty_cpu_data(struct tracecmd_output *handle, int cpus);
+-off_t msg_lseek(struct tracecmd_msg_handle *msg_handle, off_t offset, int whence);
+-unsigned long long get_last_option_offset(struct tracecmd_input *handle);
+-unsigned int get_meta_strings_size(struct tracecmd_input *handle);
+-int trace_append_options(struct tracecmd_output *handle, void *buf, size_t len);
+-void *trace_get_options(struct tracecmd_output *handle, size_t *len);
++int tracecmd_out_write_emty_cpu_data(struct tracecmd_output *handle, int cpus);
++off_t tracecmd_msg_lseek(struct tracecmd_msg_handle *msg_handle, off_t offset, int whence);
++unsigned long long tracecmd_get_last_option_offset(struct tracecmd_input *handle);
++unsigned int tracecmd_get_meta_strings_size(struct tracecmd_input *handle);
++int tracecmd_append_options_to_file(struct tracecmd_output *handle, void *buf, size_t len);
++void *tracecmd_get_options(struct tracecmd_output *handle, size_t *len);
+ 
+ /* filters */
+ struct tracecmd_filter *tracecmd_filter_get(struct tracecmd_input *handle);
+diff --git a/lib/trace-cmd/trace-hash.c b/lib/trace-cmd/trace-hash.c
+index bed97323..dc39f7da 100644
+--- a/lib/trace-cmd/trace-hash.c
++++ b/lib/trace-cmd/trace-hash.c
+@@ -12,7 +12,7 @@
+ #include "trace-cmd-private.h"
+ #include "trace-hash.h"
+ 
+-int __hidden trace_hash_init(struct trace_hash *hash, int buckets)
++int __hidden tracecmd_hash_init(struct trace_hash *hash, int buckets)
  {
- 	struct tracefs_dynevent *devent;
- 	struct dyn_events_desc *desc;
-@@ -688,7 +688,7 @@ int tracefs_dynevent_destroy_all(unsigned int types, bool force)
- }
+ 	memset(hash, 0, sizeof(*hash));
  
- /**
-- * dynevent_get_count - Count dynamic events of given types and system
-+ * tracefs_dynevent_get_count - Count dynamic events of given types and system
-  * @types: Dynamic event type, or bitmask of dynamic event types. If 0 is passed, all types
-  *	   are considered.
-  * @system: Count events from that system only. If @system is NULL, events from all systems
-@@ -696,7 +696,7 @@ int tracefs_dynevent_destroy_all(unsigned int types, bool force)
-  *
-  * Return the count of requested dynamic events
-  */
--__hidden int dynevent_get_count(unsigned int types, const char *system)
-+__hidden int tracefs_dynevent_get_count(unsigned int types, const char *system)
- {
- 	int count, all = 0;
- 	int i;
-@@ -787,5 +787,5 @@ tracefs_dynevent_get_event(struct tep_handle *tep, struct tracefs_dynevent *dyne
- 	if (!tep || !dynevent || !dynevent->event)
- 		return NULL;
- 
--	return get_tep_event(tep, dynevent->system, dynevent->event);
-+	return tracefs_get_tep_event(tep, dynevent->system, dynevent->event);
- }
-diff --git a/src/tracefs-eprobes.c b/src/tracefs-eprobes.c
-index cc25f8e..53e894d 100644
---- a/src/tracefs-eprobes.c
-+++ b/src/tracefs-eprobes.c
-@@ -48,7 +48,7 @@ tracefs_eprobe_alloc(const char *system, const char *event,
- 	if (asprintf(&target, "%s.%s", target_system, target_event) < 0)
- 		return NULL;
- 
--	kp = dynevent_alloc(TRACEFS_DYNEVENT_EPROBE, system, event, target, fetchargs);
-+	kp = tracefs_dynevent_alloc(TRACEFS_DYNEVENT_EPROBE, system, event, target, fetchargs);
- 	free(target);
- 
- 	return kp;
-diff --git a/src/tracefs-events.c b/src/tracefs-events.c
-index 77d1ba8..0aab00d 100644
---- a/src/tracefs-events.c
-+++ b/src/tracefs-events.c
-@@ -603,7 +603,7 @@ static int add_list_string(char ***list, const char *name)
+@@ -28,12 +28,12 @@ int __hidden trace_hash_init(struct trace_hash *hash, int buckets)
  	return 0;
  }
  
--__hidden char *trace_append_file(const char *dir, const char *name)
-+__hidden char *tracefs_append_file(const char *dir, const char *name)
+-void __hidden trace_hash_free(struct trace_hash *hash)
++void __hidden tracecmd_hash_free(struct trace_hash *hash)
  {
- 	char *file;
- 	int ret;
-@@ -819,7 +819,7 @@ char **tracefs_event_systems(const char *tracing_dir)
- 	if (!tracing_dir)
- 		return NULL;
- 
--	events_dir = trace_append_file(tracing_dir, "events");
-+	events_dir = tracefs_append_file(tracing_dir, "events");
- 	if (!events_dir)
- 		return NULL;
- 
-@@ -844,14 +844,14 @@ char **tracefs_event_systems(const char *tracing_dir)
- 		    strcmp(name, "..") == 0)
- 			continue;
- 
--		sys = trace_append_file(events_dir, name);
-+		sys = tracefs_append_file(events_dir, name);
- 		ret = stat(sys, &st);
- 		if (ret < 0 || !S_ISDIR(st.st_mode)) {
- 			free(sys);
- 			continue;
- 		}
- 
--		enable = trace_append_file(sys, "enable");
-+		enable = tracefs_append_file(sys, "enable");
- 
- 		ret = stat(enable, &st);
- 		free(enable);
-@@ -913,7 +913,7 @@ char **tracefs_system_events(const char *tracing_dir, const char *system)
- 		    strcmp(name, "..") == 0)
- 			continue;
- 
--		event = trace_append_file(system_dir, name);
-+		event = tracefs_append_file(system_dir, name);
- 		ret = stat(event, &st);
- 		if (ret < 0 || !S_ISDIR(st.st_mode)) {
- 			free(event);
-@@ -951,7 +951,7 @@ static char **list_tracers(const char *tracing_dir)
- 	if (!tracing_dir)
- 		return NULL;
- 
--	available_tracers = trace_append_file(tracing_dir, "available_tracers");
-+	available_tracers = tracefs_append_file(tracing_dir, "available_tracers");
- 	if (!available_tracers)
- 		return NULL;
- 
-@@ -959,7 +959,7 @@ static char **list_tracers(const char *tracing_dir)
- 	if (ret < 0)
- 		goto out_free;
- 
--	len = str_read_file(available_tracers, &buf, true);
-+	len = tracefs_str_read_file(available_tracers, &buf, true);
- 	if (len <= 0)
- 		goto out_free;
- 
-@@ -1063,7 +1063,7 @@ static int load_events(struct tep_handle *tep,
- 		if (check && tep_find_event_by_name(tep, system, events[i]))
- 			goto next_event;
- 
--		len = str_read_file(format, &buf, true);
-+		len = tracefs_str_read_file(format, &buf, true);
- 		if (len <= 0)
- 			goto next_event;
- 
-@@ -1079,21 +1079,24 @@ next_event:
- 	return failure;
+ 	free(hash->buckets);
  }
  
--__hidden int trace_rescan_events(struct tep_handle *tep,
--				const char *tracing_dir, const char *system)
-+__hidden int
-+tracefs_rescan_events(struct tep_handle *tep,
-+		      const char *tracing_dir, const char *system)
+-int __hidden trace_hash_empty(struct trace_hash *hash)
++int __hidden tracecmd_hash_empty(struct trace_hash *hash)
  {
- 	/* ToDo: add here logic for deleting removed events from tep handle */
- 	return load_events(tep, tracing_dir, system, true);
- }
+ 	struct trace_hash_item **bucket;
  
--__hidden int trace_load_events(struct tep_handle *tep,
--			       const char *tracing_dir, const char *system)
-+__hidden int
-+tracefs_load_events(struct tep_handle *tep,
-+		    const char *tracing_dir, const char *system)
- {
- 	return load_events(tep, tracing_dir, system, false);
- }
- 
--__hidden struct tep_event *get_tep_event(struct tep_handle *tep,
--					 const char *system, const char *name)
-+__hidden struct tep_event *
-+tracefs_get_tep_event(struct tep_handle *tep,
-+		      const char *system, const char *name)
- {
- 	struct tep_event *event;
- 
-@@ -1107,7 +1110,7 @@ __hidden struct tep_event *get_tep_event(struct tep_handle *tep,
- 		return event;
- 
- 	/* Try to load any new events from the given system */
--	if (trace_rescan_events(tep, NULL, system))
-+	if (tracefs_rescan_events(tep, NULL, system))
- 		return NULL;
- 
- 	return tep_find_event_by_name(tep, system, name);
-@@ -1121,13 +1124,13 @@ static int read_header(struct tep_handle *tep, const char *tracing_dir)
- 	int len;
- 	int ret = -1;
- 
--	header = trace_append_file(tracing_dir, "events/header_page");
-+	header = tracefs_append_file(tracing_dir, "events/header_page");
- 
- 	ret = stat(header, &st);
- 	if (ret < 0)
- 		goto out;
- 
--	len = str_read_file(header, &buf, true);
-+	len = tracefs_str_read_file(header, &buf, true);
- 	if (len <= 0)
- 		goto out;
- 
-@@ -1155,7 +1158,7 @@ static void load_kallsyms(struct tep_handle *tep)
- {
- 	char *buf;
- 
--	if (str_read_file("/proc/kallsyms", &buf, false) <= 0)
-+	if (tracefs_str_read_file("/proc/kallsyms", &buf, false) <= 0)
- 		return;
- 
- 	tep_parse_kallsyms(tep, buf);
-@@ -1169,11 +1172,11 @@ static int load_saved_cmdlines(const char *tracing_dir,
- 	char *buf;
- 	int ret;
- 
--	path = trace_append_file(tracing_dir, "saved_cmdlines");
-+	path = tracefs_append_file(tracing_dir, "saved_cmdlines");
- 	if (!path)
- 		return -1;
- 
--	ret = str_read_file(path, &buf, false);
-+	ret = tracefs_str_read_file(path, &buf, false);
- 	free(path);
- 	if (ret <= 0)
- 		return -1;
-@@ -1191,11 +1194,11 @@ static void load_printk_formats(const char *tracing_dir,
- 	char *buf;
- 	int ret;
- 
--	path = trace_append_file(tracing_dir, "printk_formats");
-+	path = tracefs_append_file(tracing_dir, "printk_formats");
- 	if (!path)
- 		return;
- 
--	ret = str_read_file(path, &buf, false);
-+	ret = tracefs_str_read_file(path, &buf, false);
- 	free(path);
- 	if (ret <= 0)
- 		return;
-@@ -1289,14 +1292,14 @@ static int fill_local_events_system(const char *tracing_dir,
- 	for (i = 0; systems[i]; i++) {
- 		if (sys_names && !contains(systems[i], sys_names))
- 			continue;
--		ret = trace_load_events(tep, tracing_dir, systems[i]);
-+		ret = tracefs_load_events(tep, tracing_dir, systems[i]);
- 		if (ret && parsing_failures)
- 			(*parsing_failures)++;
- 	}
- 
- 	/* Include ftrace, as it is excluded for not having "enable" file */
- 	if (!sys_names || contains("ftrace", sys_names))
--		trace_load_events(tep, tracing_dir, "ftrace");
-+		tracefs_load_events(tep, tracing_dir, "ftrace");
- 
- 	load_mappings(tracing_dir, tep);
- 
-diff --git a/src/tracefs-filter.c b/src/tracefs-filter.c
-index 1b1c60e..233f4fa 100644
---- a/src/tracefs-filter.c
-+++ b/src/tracefs-filter.c
-@@ -41,7 +41,7 @@ static const struct tep_format_field common_comm = {
- 	.size			= 16,
- };
- 
--const struct tep_format_field common_stacktrace __hidden = {
-+const struct tep_format_field tracefs_common_stacktrace __hidden = {
- 	.type			= "unsigned long[]",
- 	.name			= "stacktrace",
- 	.size			= 4,
-@@ -64,7 +64,7 @@ static const struct tep_format_field *get_event_field(struct tep_event *event,
- 		return &common_timestamp_usecs;
- 
- 	if (!strcmp(field_name, TRACEFS_STACKTRACE))
--		return &common_stacktrace;
-+		return &tracefs_common_stacktrace;
- 
- 	field = tep_find_any_field(event, field_name);
- 	if (!field && (!strcmp(field_name, "COMM") || !strcmp(field_name, "comm")))
-@@ -74,9 +74,9 @@ static const struct tep_format_field *get_event_field(struct tep_event *event,
- }
- 
- __hidden bool
--trace_verify_event_field(struct tep_event *event,
--			 const char *field_name,
--			 const struct tep_format_field **ptr_field)
-+tracefs_verify_event_field(struct tep_event *event,
-+			   const char *field_name,
-+			   const struct tep_format_field **ptr_field)
- {
- 	const struct tep_format_field *field;
- 
-@@ -92,7 +92,7 @@ trace_verify_event_field(struct tep_event *event,
- 	return true;
- }
- 
--__hidden int trace_test_state(int state)
-+__hidden int tracefs_test_state(int state)
- {
- 	switch (state) {
- 	case S_START:
-@@ -146,7 +146,7 @@ static int append_filter(char **filter, unsigned int *state,
- 		tmp = strdup(*filter);
- 		if (!tmp)
- 			return -1;
--		tmp = append_string(tmp, NULL, conj);
-+		tmp = tracefs_append_string(tmp, NULL, conj);
- 		if (!tmp)
- 			return -1;
- 		free(*filter);
-@@ -166,7 +166,7 @@ static int append_filter(char **filter, unsigned int *state,
- 		}
- 		if (*filter) {
- 			tmp = strdup(*filter);
--			tmp = append_string(tmp, NULL, "!");
-+			tmp = tracefs_append_string(tmp, NULL, "!");
- 		} else {
- 			tmp = strdup("!");
- 		}
-@@ -189,7 +189,7 @@ static int append_filter(char **filter, unsigned int *state,
- 		}
- 		if (*filter) {
- 			tmp = strdup(*filter);
--			tmp = append_string(tmp, NULL, "(");
-+			tmp = tracefs_append_string(tmp, NULL, "(");
- 		} else {
- 			tmp = strdup("(");
- 		}
-@@ -215,7 +215,7 @@ static int append_filter(char **filter, unsigned int *state,
- 		tmp = strdup(*filter);
- 		if (!tmp)
- 			return -1;
--		tmp = append_string(tmp, NULL, ")");
-+		tmp = tracefs_append_string(tmp, NULL, ")");
- 		if (!tmp)
- 			return -1;
- 		free(*filter);
-@@ -228,7 +228,7 @@ static int append_filter(char **filter, unsigned int *state,
- 	if (!field_name || !val)
- 		goto inval;
- 
--	if (!trace_verify_event_field(event, field_name, &field))
-+	if (!tracefs_verify_event_field(event, field_name, &field))
- 		return -1;
- 
- 	is_string = field->flags & TEP_FIELD_IS_STRING;
-@@ -240,18 +240,18 @@ static int append_filter(char **filter, unsigned int *state,
- 		tmp = strdup(*filter);
- 		if (!tmp)
- 			return -1;
--		tmp = append_string(tmp, NULL, field_name);
-+		tmp = tracefs_append_string(tmp, NULL, field_name);
- 	} else {
- 		tmp = strdup(field_name);
- 	}
- 
- 	switch (compare) {
--	case TRACEFS_COMPARE_EQ: tmp = append_string(tmp, NULL, " == "); break;
--	case TRACEFS_COMPARE_NE: tmp = append_string(tmp, NULL, " != "); break;
-+	case TRACEFS_COMPARE_EQ: tmp = tracefs_append_string(tmp, NULL, " == "); break;
-+	case TRACEFS_COMPARE_NE: tmp = tracefs_append_string(tmp, NULL, " != "); break;
- 	case TRACEFS_COMPARE_RE:
- 		if (!is_string)
- 			goto free;
--		tmp = append_string(tmp, NULL, "~");
-+		tmp = tracefs_append_string(tmp, NULL, "~");
- 		break;
- 	default:
- 		if (is_string)
-@@ -259,15 +259,15 @@ static int append_filter(char **filter, unsigned int *state,
- 	}
- 
- 	switch (compare) {
--	case TRACEFS_COMPARE_GT: tmp = append_string(tmp, NULL, " > "); break;
--	case TRACEFS_COMPARE_GE: tmp = append_string(tmp, NULL, " >= "); break;
--	case TRACEFS_COMPARE_LT: tmp = append_string(tmp, NULL, " < "); break;
--	case TRACEFS_COMPARE_LE: tmp = append_string(tmp, NULL, " <= "); break;
--	case TRACEFS_COMPARE_AND: tmp = append_string(tmp, NULL, " & "); break;
-+	case TRACEFS_COMPARE_GT: tmp = tracefs_append_string(tmp, NULL, " > "); break;
-+	case TRACEFS_COMPARE_GE: tmp = tracefs_append_string(tmp, NULL, " >= "); break;
-+	case TRACEFS_COMPARE_LT: tmp = tracefs_append_string(tmp, NULL, " < "); break;
-+	case TRACEFS_COMPARE_LE: tmp = tracefs_append_string(tmp, NULL, " <= "); break;
-+	case TRACEFS_COMPARE_AND: tmp = tracefs_append_string(tmp, NULL, " & "); break;
- 	default: break;
- 	}
- 
--	tmp = append_string(tmp, NULL, val);
-+	tmp = tracefs_append_string(tmp, NULL, val);
- 
- 	if (!tmp)
- 		return -1;
-@@ -349,13 +349,14 @@ static int count_parens(char *filter, unsigned int *state)
- 	return open;
- }
- 
--__hidden int trace_append_filter(char **filter, unsigned int *state,
--			 unsigned int *open_parens,
--			 struct tep_event *event,
--			 enum tracefs_filter type,
--			 const char *field_name,
--			 enum tracefs_compare compare,
--			 const char *val)
-+__hidden int
-+tracefs_append_filter(char **filter, unsigned int *state,
-+		      unsigned int *open_parens,
-+		      struct tep_event *event,
-+		      enum tracefs_filter type,
-+		      const char *field_name,
-+		      enum tracefs_compare compare,
-+		      const char *val)
- {
- 	return append_filter(filter, state, open_parens, event, type,
- 			     field_name, compare, val);
-@@ -485,9 +486,9 @@ static int error_msg(char **err, char *str,
- 	ws[i+1] = '\0';
- 
- 	errmsg = strdup(filter);
--	errmsg = append_string(errmsg, "\n", ws);
--	errmsg = append_string(errmsg, "\n", msg);
--	errmsg = append_string(errmsg, NULL, "\n");
-+	errmsg = tracefs_append_string(errmsg, "\n", ws);
-+	errmsg = tracefs_append_string(errmsg, "\n", msg);
-+	errmsg = tracefs_append_string(errmsg, NULL, "\n");
- 
- 	*err = errmsg;
- 	return -1;
-diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
-index 4f4971e..cc56755 100644
---- a/src/tracefs-hist.c
-+++ b/src/tracefs-hist.c
-@@ -703,10 +703,10 @@ int tracefs_hist_append_filter(struct tracefs_hist *hist,
- 			       enum tracefs_compare compare,
- 			       const char *val)
- {
--	return trace_append_filter(&hist->filter, &hist->filter_state,
--				   &hist->filter_parens,
--				   hist->event,
--				   type, field, compare, val);
-+	return tracefs_append_filter(&hist->filter, &hist->filter_state,
-+				     &hist->filter_parens,
-+				     hist->event,
-+				     type, field, compare, val);
- }
- 
- enum action_type {
-@@ -870,13 +870,11 @@ static bool verify_event_fields(struct tep_event *start_event,
- 	const struct tep_format_field *end_field;
- 	int start_flags, end_flags;
- 
--	if (!trace_verify_event_field(start_event, start_field_name,
--				      &start_field))
-+	if (!tracefs_verify_event_field(start_event, start_field_name, &start_field))
- 		return false;
- 
- 	if (end_event) {
--		if (!trace_verify_event_field(end_event, end_field_name,
--					      &end_field))
-+		if (!tracefs_verify_event_field(end_event, end_field_name, &end_field))
- 			return false;
- 
- 		/* A pointer can still match a long */
-@@ -896,7 +894,7 @@ static bool verify_event_fields(struct tep_event *start_event,
- 	return true;
- }
- 
--__hidden char *append_string(char *str, const char *space, const char *add)
-+__hidden char *tracefs_append_string(char *str, const char *space, const char *add)
- {
- 	char *new;
- 	int len;
-@@ -934,14 +932,14 @@ static char *add_synth_field(const struct tep_format_field *field,
- 	if (field->flags & TEP_FIELD_IS_ARRAY) {
- 		str = strdup(field->type);
- 		str = strtok(str, "[");
--		str = append_string(str, " ", name);
--		str = append_string(str, NULL, "[");
-+		str = tracefs_append_string(str, " ", name);
-+		str = tracefs_append_string(str, NULL, "[");
- 
- 		if (!(field->flags & TEP_FIELD_IS_DYNAMIC)) {
- 			snprintf(size, 64, "%d", field->size);
--			str = append_string(str, NULL, size);
-+			str = tracefs_append_string(str, NULL, size);
- 		}
--		return append_string(str, NULL, "];");
-+		return tracefs_append_string(str, NULL, "];");
- 	}
- 
- 	/* Synthetic events understand pid_t, gfp_t and bool */
-@@ -949,8 +947,8 @@ static char *add_synth_field(const struct tep_format_field *field,
- 	    strcmp(field->type, "gfp_t") == 0 ||
- 	    strcmp(field->type, "bool") == 0) {
- 		str = strdup(field->type);
--		str = append_string(str, " ", name);
--		return append_string(str, NULL, ";");
-+		str = tracefs_append_string(str, " ", name);
-+		return tracefs_append_string(str, NULL, ";");
- 	}
- 
- 	sign = field->flags & TEP_FIELD_IS_SIGNED;
-@@ -985,12 +983,12 @@ static char *add_synth_field(const struct tep_format_field *field,
- 		return NULL;
- 	}
- 
--	if (field == &common_stacktrace)
-+	if (field == &tracefs_common_stacktrace)
- 		type = field->type;
- 
- 	str = strdup(type);
--	str = append_string(str, " ", name);
--	return append_string(str, NULL, ";");
-+	str = tracefs_append_string(str, " ", name);
-+	return tracefs_append_string(str, NULL, ";");
- }
- 
- static int add_var(char ***list, const char *name, const char *var, bool is_var)
-@@ -1017,8 +1015,8 @@ static int add_var(char ***list, const char *name, const char *var, bool is_var)
- }
- 
- __hidden struct tracefs_synth *
--synth_init_from(struct tep_handle *tep, const char *start_system,
--		const char *start_event_name)
-+tracefs_synth_init_from(struct tep_handle *tep, const char *start_system,
-+			const char *start_event_name)
- {
- 	struct tep_event *start_event;
- 	struct tracefs_synth *synth;
-@@ -1056,11 +1054,11 @@ static int alloc_synthetic_event(struct tracefs_synth *synth)
- 
- 	for (i = 0; synth->synthetic_fields && synth->synthetic_fields[i]; i++) {
- 		field = synth->synthetic_fields[i];
--		format = append_string(format, i ? " " : NULL, field);
-+		format = tracefs_append_string(format, i ? " " : NULL, field);
- 	}
- 
--	synth->dyn_event = dynevent_alloc(TRACEFS_DYNEVENT_SYNTH, SYNTHETIC_GROUP,
--					  synth->name, NULL, format);
-+	synth->dyn_event = tracefs_dynevent_alloc(TRACEFS_DYNEVENT_SYNTH, SYNTHETIC_GROUP,
-+						  synth->name, NULL, format);
- 	free(format);
- 
- 	return synth->dyn_event ? 0 : -1;
-@@ -1150,7 +1148,7 @@ struct tracefs_synth *tracefs_synth_alloc(struct tep_handle *tep,
- 		return NULL;
- 	}
- 
--	synth = synth_init_from(tep, start_system, start_event_name);
-+	synth = tracefs_synth_init_from(tep, start_system, start_event_name);
- 	if (!synth)
- 		return NULL;
- 
-@@ -1201,14 +1199,14 @@ static int add_synth_fields(struct tracefs_synth *synth,
- 
- 	ret = asprintf(&str, "$%s", var ? : name);
- 	if (ret < 0) {
--		trace_list_pop(synth->synthetic_fields);
-+		tracefs_list_pop(synth->synthetic_fields);
- 		return -1;
- 	}
- 
- 	list = tracefs_list_add(synth->synthetic_args, str);
- 	free(str);
- 	if (!list) {
--		trace_list_pop(synth->synthetic_fields);
-+		tracefs_list_pop(synth->synthetic_fields);
- 		return -1;
- 	}
- 
-@@ -1261,7 +1259,7 @@ int tracefs_synth_add_match_field(struct tracefs_synth *synth,
- 
- 	list = tracefs_list_add(synth->end_keys, end_match_field);
- 	if (!list) {
--		trace_list_pop(synth->start_keys);
-+		tracefs_list_pop(synth->start_keys);
- 		return -1;
- 	}
- 	synth->end_keys = list;
-@@ -1281,8 +1279,8 @@ int tracefs_synth_add_match_field(struct tracefs_synth *synth,
- 	return 0;
- 
-  pop_lists:
--	trace_list_pop(synth->start_keys);
--	trace_list_pop(synth->end_keys);
-+	tracefs_list_pop(synth->start_keys);
-+	tracefs_list_pop(synth->end_keys);
- 	return -1;
- }
- 
-@@ -1320,7 +1318,7 @@ static char *new_name(struct tracefs_synth *synth, const char *name)
- 
- static struct name_hash *find_name(struct tracefs_synth *synth, const char *name)
- {
--	unsigned int key = quick_hash(name);
-+	unsigned int key = tracefs_quick_hash(name);
- 	struct name_hash *hash = synth->name_hash[key];
- 
- 	for (; hash; hash = hash->next) {
-@@ -1349,7 +1347,7 @@ static const char *hash_name(struct tracefs_synth *synth, const char *name)
- 		return name;
- 	}
- 
--	key = quick_hash(name);
-+	key = tracefs_quick_hash(name);
- 	hash->next = synth->name_hash[key];
- 	synth->name_hash[key] = hash;
- 
-@@ -1464,10 +1462,11 @@ int tracefs_synth_add_compare_field(struct tracefs_synth *synth,
- 	return ret ? -1 : 0;
- }
- 
--__hidden int synth_add_start_field(struct tracefs_synth *synth,
--				   const char *start_field,
--				   const char *name,
--				   enum tracefs_hist_key_type type, int count)
-+__hidden int
-+tracefs_do_synth_add_start_field(struct tracefs_synth *synth,
-+				 const char *start_field,
-+				 const char *name,
-+				 enum tracefs_hist_key_type type, int count)
- {
- 	const struct tep_format_field *field;
- 	const char *var;
-@@ -1487,7 +1486,7 @@ __hidden int synth_add_start_field(struct tracefs_synth *synth,
- 
- 	var = hash_name(synth, name);
- 
--	if (!trace_verify_event_field(synth->start_event, start_field, &field))
-+	if (!tracefs_verify_event_field(synth->start_event, start_field, &field))
- 		return -1;
- 
- 	start_arg = new_arg(synth);
-@@ -1551,7 +1550,7 @@ int tracefs_synth_add_start_field(struct tracefs_synth *synth,
- 				  const char *start_field,
- 				  const char *name)
- {
--	return synth_add_start_field(synth, start_field, name, 0, 0);
-+	return tracefs_do_synth_add_start_field(synth, start_field, name, 0, 0);
- }
- 
- /**
-@@ -1593,7 +1592,7 @@ int tracefs_synth_add_end_field(struct tracefs_synth *synth,
- 	if (!name)
- 		tmp_var = new_arg(synth);
- 
--	if (!trace_verify_event_field(synth->end_event, end_field, &field))
-+	if (!tracefs_verify_event_field(synth->end_event, end_field, &field))
- 		goto out;
- 
- 	ret = add_var(&synth->end_vars, name ? hname : tmp_var, end_field, false);
-@@ -1661,10 +1660,10 @@ int tracefs_synth_append_start_filter(struct tracefs_synth *synth,
- 				      enum tracefs_compare compare,
- 				      const char *val)
- {
--	return trace_append_filter(&synth->start_filter, &synth->start_state,
--				   &synth->start_parens,
--				   synth->start_event,
--				   type, field, compare, val);
-+	return tracefs_append_filter(&synth->start_filter, &synth->start_state,
-+				     &synth->start_parens,
-+				     synth->start_event,
-+				     type, field, compare, val);
- }
- 
- /**
-@@ -1684,10 +1683,10 @@ int tracefs_synth_append_end_filter(struct tracefs_synth *synth,
- 				    enum tracefs_compare compare,
- 				    const char *val)
- {
--	return trace_append_filter(&synth->end_filter, &synth->end_state,
--				   &synth->end_parens,
--				   synth->end_event,
--				   type, field, compare, val);
-+	return tracefs_append_filter(&synth->end_filter, &synth->end_state,
-+				     &synth->end_parens,
-+				     synth->end_event,
-+				     type, field, compare, val);
- }
- 
- static bool var_match(const char *match, const char *var, int match_len, int len)
-@@ -1908,11 +1907,11 @@ int tracefs_synth_save(struct tracefs_synth *synth,
- 	for (i = 0; fields[i]; i++) {
- 		char *delim = i ? "," : NULL;
- 
--		if (!trace_verify_event_field(synth->end_event, fields[i], NULL))
-+		if (!tracefs_verify_event_field(synth->end_event, fields[i], NULL))
- 			goto error;
--		save = append_string(save, delim, fields[i]);
-+		save = tracefs_append_string(save, delim, fields[i]);
- 	}
--	save = append_string(save, NULL, ")");
-+	save = tracefs_append_string(save, NULL, ")");
- 	if (!save)
- 		goto error;
- 
-@@ -1954,20 +1953,20 @@ static char *create_hist(char **keys, char **vars)
- 	for (i = 0; keys[i]; i++) {
- 		name = keys[i];
- 		if (i)
--			hist = append_string(hist, NULL, ",");
--		hist = append_string(hist, NULL, name);
-+			hist = tracefs_append_string(hist, NULL, ",");
-+		hist = tracefs_append_string(hist, NULL, name);
- 	}
- 
- 	if (!vars)
- 		return hist;
- 
--	hist = append_string(hist, NULL, ":");
-+	hist = tracefs_append_string(hist, NULL, ":");
- 
- 	for (i = 0; vars[i]; i++) {
- 		name = vars[i];
- 		if (i)
--			hist = append_string(hist, NULL, ",");
--		hist = append_string(hist, NULL, name);
-+			hist = tracefs_append_string(hist, NULL, ",");
-+		hist = tracefs_append_string(hist, NULL, name);
- 	}
- 
- 	return hist;
-@@ -1975,11 +1974,11 @@ static char *create_hist(char **keys, char **vars)
- 
- static char *create_onmatch(char *hist, struct tracefs_synth *synth)
- {
--	hist = append_string(hist, NULL, ":onmatch(");
--	hist = append_string(hist, NULL, synth->start_event->system);
--	hist = append_string(hist, NULL, ".");
--	hist = append_string(hist, NULL, synth->start_event->name);
--	return append_string(hist, NULL, ")");
-+	hist = tracefs_append_string(hist, NULL, ":onmatch(");
-+	hist = tracefs_append_string(hist, NULL, synth->start_event->system);
-+	hist = tracefs_append_string(hist, NULL, ".");
-+	hist = tracefs_append_string(hist, NULL, synth->start_event->name);
-+	return tracefs_append_string(hist, NULL, ")");
- }
- 
- static char *create_trace(char *hist, struct tracefs_synth *synth)
-@@ -1988,38 +1987,38 @@ static char *create_trace(char *hist, struct tracefs_synth *synth)
- 	int i;
- 
- 	if (synth->new_format) {
--		hist = append_string(hist, NULL, ".trace(");
--		hist = append_string(hist, NULL, synth->name);
--		hist = append_string(hist, NULL, ",");
-+		hist = tracefs_append_string(hist, NULL, ".trace(");
-+		hist = tracefs_append_string(hist, NULL, synth->name);
-+		hist = tracefs_append_string(hist, NULL, ",");
- 	} else {
--		hist = append_string(hist, NULL, ".");
--		hist = append_string(hist, NULL, synth->name);
--		hist = append_string(hist, NULL, "(");
-+		hist = tracefs_append_string(hist, NULL, ".");
-+		hist = tracefs_append_string(hist, NULL, synth->name);
-+		hist = tracefs_append_string(hist, NULL, "(");
- 	}
- 
- 	for (i = 0; synth->synthetic_args && synth->synthetic_args[i]; i++) {
- 		name = synth->synthetic_args[i];
- 
- 		if (i)
--			hist = append_string(hist, NULL, ",");
--		hist = append_string(hist, NULL, name);
-+			hist = tracefs_append_string(hist, NULL, ",");
-+		hist = tracefs_append_string(hist, NULL, name);
- 	}
- 
--	return append_string(hist, NULL, ")");
-+	return tracefs_append_string(hist, NULL, ")");
- }
- 
- static char *create_max(char *hist, struct tracefs_synth *synth, char *field)
- {
--	hist = append_string(hist, NULL, ":onmax(");
--	hist = append_string(hist, NULL, field);
--	return append_string(hist, NULL, ")");
-+	hist = tracefs_append_string(hist, NULL, ":onmax(");
-+	hist = tracefs_append_string(hist, NULL, field);
-+	return tracefs_append_string(hist, NULL, ")");
- }
- 
- static char *create_change(char *hist, struct tracefs_synth *synth, char *field)
- {
--	hist = append_string(hist, NULL, ":onchange(");
--	hist = append_string(hist, NULL, field);
--	return append_string(hist, NULL, ")");
-+	hist = tracefs_append_string(hist, NULL, ":onchange(");
-+	hist = tracefs_append_string(hist, NULL, field);
-+	return tracefs_append_string(hist, NULL, ")");
- }
- 
- static char *create_actions(char *hist, struct tracefs_synth *synth)
-@@ -2051,10 +2050,10 @@ static char *create_actions(char *hist, struct tracefs_synth *synth)
- 			hist = create_trace(hist, synth);
- 			break;
- 		case ACTION_SNAPSHOT:
--			hist = append_string(hist, NULL, ".snapshot()");
-+			hist = tracefs_append_string(hist, NULL, ".snapshot()");
- 			break;
- 		case ACTION_SAVE:
--			hist = append_string(hist, NULL, action->save);
-+			hist = tracefs_append_string(hist, NULL, action->save);
- 			break;
- 		default:
- 			continue;
-@@ -2139,17 +2138,17 @@ static char *append_filter(char *hist, char *filter, unsigned int parens)
- 	if (!filter)
- 		return hist;
- 
--	hist = append_string(hist, NULL, " if ");
--	hist = append_string(hist, NULL, filter);
-+	hist = tracefs_append_string(hist, NULL, " if ");
-+	hist = tracefs_append_string(hist, NULL, filter);
- 	for (i = 0; i < parens; i++)
--		hist = append_string(hist, NULL, ")");
-+		hist = tracefs_append_string(hist, NULL, ")");
- 	return hist;
- }
- 
- static int verify_state(struct tracefs_synth *synth)
- {
--	if (trace_test_state(synth->start_state) < 0 ||
--	    trace_test_state(synth->end_state) < 0)
-+	if (tracefs_test_state(synth->start_state) < 0 ||
-+	    tracefs_test_state(synth->end_state) < 0)
- 		return -1;
- 	return 0;
- }
-@@ -2440,7 +2439,7 @@ int tracefs_synth_echo_cmd(struct trace_seq *seq,
- 		new_event = true;
- 	}
- 
--	path = trace_find_tracing_dir(false);
-+	path = tracefs_find_tracing_dir(false);
- 	if (!path)
- 		goto out_free;
- 
-@@ -2499,5 +2498,5 @@ tracefs_synth_get_event(struct tep_handle *tep, struct tracefs_synth *synth)
- 	if (!tep || !synth || !synth->name)
- 		return NULL;
- 
--	return get_tep_event(tep, SYNTHETIC_GROUP, synth->name);
-+	return tracefs_get_tep_event(tep, SYNTHETIC_GROUP, synth->name);
- }
-diff --git a/src/tracefs-instance.c b/src/tracefs-instance.c
-index dd7decd..a9717bb 100644
---- a/src/tracefs-instance.c
-+++ b/src/tracefs-instance.c
-@@ -31,13 +31,13 @@ struct tracefs_options_mask	toplevel_supported_opts;
- struct tracefs_options_mask	toplevel_enabled_opts;
- 
- __hidden inline struct tracefs_options_mask *
--supported_opts_mask(struct tracefs_instance *instance)
-+tracefs_supported_opts_mask(struct tracefs_instance *instance)
- {
- 	return instance ? &instance->supported_opts : &toplevel_supported_opts;
- }
- 
- __hidden inline struct tracefs_options_mask *
--enabled_opts_mask(struct tracefs_instance *instance)
-+tracefs_enabled_opts_mask(struct tracefs_instance *instance)
- {
- 	return instance ? &instance->enabled_opts : &toplevel_enabled_opts;
- }
-@@ -85,7 +85,7 @@ error:
- }
- 
- 
--__hidden int trace_get_instance(struct tracefs_instance *instance)
-+__hidden int tracefs_get_instance(struct tracefs_instance *instance)
- {
- 	int ret;
- 
-@@ -100,7 +100,7 @@ __hidden int trace_get_instance(struct tracefs_instance *instance)
- 	return ret;
- }
- 
--__hidden void trace_put_instance(struct tracefs_instance *instance)
-+__hidden void tracefs_put_instance(struct tracefs_instance *instance)
- {
- 	pthread_mutex_lock(&instance->lock);
- 	if (--instance->ref < 0)
-@@ -141,7 +141,7 @@ void tracefs_instance_free(struct tracefs_instance *instance)
- 	if (!instance)
- 		return;
- 
--	trace_put_instance(instance);
-+	tracefs_put_instance(instance);
- }
- 
- static mode_t get_trace_file_permissions(char *name)
-@@ -337,7 +337,7 @@ char *tracefs_instance_get_dir(struct tracefs_instance *instance)
- 	int ret;
- 
- 	if (!instance) /* Top instance of default system trace directory */
--		return trace_find_tracing_dir(false);
-+		return tracefs_find_tracing_dir(false);
- 
- 	if (!instance->name)
- 		return strdup(instance->trace_dir);
-@@ -621,7 +621,7 @@ char *tracefs_instance_file_read(struct tracefs_instance *instance,
- 	if (!path)
- 		return NULL;
- 
--	size = str_read_file(path, &buf, true);
-+	size = tracefs_str_read_file(path, &buf, true);
- 
- 	tracefs_put_tracing_file(path);
- 	if (buf && psize)
-@@ -789,7 +789,7 @@ int tracefs_instances_walk(int (*callback)(const char *, void *), void *context)
- 		if (strcmp(dent->d_name, ".") == 0 ||
- 		    strcmp(dent->d_name, "..") == 0)
- 			continue;
--		instance = trace_append_file(path, dent->d_name);
-+		instance = tracefs_append_file(path, dent->d_name);
- 		ret = stat(instance, &st);
- 		free(instance);
- 		if (ret < 0 || !S_ISDIR(st.st_mode))
-@@ -870,7 +870,7 @@ char **tracefs_instances(const char *regex)
- 	} else {
- 		/* No matches should produce an empty list */
- 		if (!list.list)
--			list.list = trace_list_create_empty();
-+			list.list = tracefs_list_create_empty();
- 	}
- 	return list.list;
- }
-@@ -1323,7 +1323,7 @@ static int clear_trigger(const char *file)
- 	int len;
- 	int ret;
- 
--	size = str_read_file(file, &buf, true);
-+	size = tracefs_str_read_file(file, &buf, true);
- 	if (size < 1)
- 		return 0;
- 
-@@ -1348,7 +1348,7 @@ static int clear_trigger(const char *file)
- 	 * Some triggers have an order in removing them.
- 	 * They will not be removed if done in the wrong order.
- 	 */
--	size = str_read_file(file, &buf, true);
-+	size = tracefs_str_read_file(file, &buf, true);
- 	if (size < 1)
- 		return 0;
- 
-@@ -1372,7 +1372,7 @@ static void disable_func_stack_trace_instance(struct tracefs_instance *instance)
- 	content = tracefs_instance_file_read(instance, "current_tracer", &size);
- 	if (!content)
- 		return;
--	cond = strstrip(content);
-+	cond = tracefs_strstrip(content);
- 	if (memcmp(cond, "function", size - (cond - content)) != 0)
- 		goto out;
- 
-diff --git a/src/tracefs-kprobes.c b/src/tracefs-kprobes.c
-index 5c50b21..e7951ff 100644
---- a/src/tracefs-kprobes.c
-+++ b/src/tracefs-kprobes.c
-@@ -45,7 +45,7 @@ kprobe_alloc(enum tracefs_dynevent_type type, const char *system, const char *ev
- 			*tmp = '\0';
- 	}
- 
--	kp = dynevent_alloc(type, sys, ename, addr, format);
-+	kp = tracefs_dynevent_alloc(type, sys, ename, addr, format);
- 	if (!event)
- 		free((char *)ename);
- 
-diff --git a/src/tracefs-mmap.c b/src/tracefs-mmap.c
-index 44d1597..fb85d1d 100644
---- a/src/tracefs-mmap.c
-+++ b/src/tracefs-mmap.c
-@@ -63,7 +63,7 @@ struct trace_mmap {
- };
- 
- /**
-- * trace_mmap - try to mmap the ring buffer
-+ * tracefs_mmap - try to mmap the ring buffer
-  * @fd: The file descriptor to the trace_pipe_raw file
-  * @kbuf: The kbuffer to load the subbuffer to
-  *
-@@ -71,7 +71,7 @@ struct trace_mmap {
-  * if not, will return NULL, otherwise it returns a descriptor
-  * to handle the mapping.
-  */
--__hidden void *trace_mmap(int fd, struct kbuffer *kbuf)
-+__hidden void *tracefs_mmap(int fd, struct kbuffer *kbuf)
- {
- 	struct trace_mmap *tmap;
- 	int page_size;
-@@ -143,7 +143,7 @@ __hidden void *trace_mmap(int fd, struct kbuffer *kbuf)
- 	return tmap;
- }
- 
--__hidden void trace_unmap(void *mapping)
-+__hidden void tracefs_unmap(void *mapping)
- {
- 	struct trace_mmap *tmap = mapping;
- 
-@@ -161,7 +161,7 @@ static int get_reader(struct trace_mmap *tmap)
- 	return ioctl(tmap->fd, TRACE_MMAP_IOCTL_GET_READER);
- }
- 
--__hidden int trace_mmap_load_subbuf(void *mapping, struct kbuffer *kbuf)
-+__hidden int tracefs_mmap_load_subbuf(void *mapping, struct kbuffer *kbuf)
- {
- 	struct trace_mmap *tmap = mapping;
- 	void *data;
-@@ -222,7 +222,7 @@ __hidden int trace_mmap_load_subbuf(void *mapping, struct kbuffer *kbuf)
+@@ -43,7 +43,7 @@ int __hidden trace_hash_empty(struct trace_hash *hash)
  	return 1;
  }
  
--__hidden int trace_mmap_read(void *mapping, void *buffer)
-+__hidden int tracefs_mmap_read(void *mapping, void *buffer)
+-int __hidden trace_hash_add(struct trace_hash *hash, struct trace_hash_item *item)
++int __hidden tracecmd_hash_add(struct trace_hash *hash, struct trace_hash_item *item)
  {
- 	struct trace_mmap *tmap = mapping;
- 	struct kbuffer *kbuf;
-@@ -233,7 +233,7 @@ __hidden int trace_mmap_read(void *mapping, void *buffer)
+ 	struct trace_hash_item *next;
+ 	int bucket = hash->power ? item->key & hash->power :
+@@ -64,7 +64,7 @@ int __hidden trace_hash_add(struct trace_hash *hash, struct trace_hash_item *ite
+ }
  
- 	kbuf = tmap->kbuf;
+  __hidden struct trace_hash_item *
+-trace_hash_find(struct trace_hash *hash, unsigned long long key,
++tracecmd_hash_find(struct trace_hash *hash, unsigned long long key,
+ 		trace_hash_func match, void *data)
+ {
+ 	struct trace_hash_item *item;
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index 8b6e3d0c..88f1ed4a 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -325,29 +325,29 @@ static const char *show_records(struct page **pages, int nr_pages)
+ #endif
  
--	ret = trace_mmap_load_subbuf(mapping, kbuf);
-+	ret = tracefs_mmap_load_subbuf(mapping, kbuf);
- 	/* Return for error or no more events */
- 	if (ret <= 0)
+ /**
+- * trace_set_guest_map - set map to input handle
++ * tracecmd_set_guest_map - set map to input handle
+  * @handle: The handle to set the cpu map to
+  * @map: The cpu map for this handle (to the host)
+  *
+  * Assign the mapping of host to guest for a guest handle.
+  */
+-__hidden void trace_set_guest_map(struct tracecmd_input *handle,
++__hidden void tracecmd_set_guest_map(struct tracecmd_input *handle,
+ 				  struct tracecmd_cpu_map *map)
+ {
+ 	handle->map = map;
+ }
+ 
+-__hidden struct tracecmd_cpu_map *trace_get_guest_map(struct tracecmd_input *handle)
++__hidden struct tracecmd_cpu_map *tracecmd_get_guest_map(struct tracecmd_input *handle)
+ {
+ 	return handle->map;
+ }
+ 
+-__hidden void trace_set_guest_map_cnt(struct tracecmd_input *handle, int count)
++__hidden void tracecmd_set_guest_map_cnt(struct tracecmd_input *handle, int count)
+ {
+ 	handle->map_cnt = count;
+ }
+ 
+-__hidden int trace_get_guest_map_cnt(struct tracecmd_input *handle)
++__hidden int tracecmd_get_guest_map_cnt(struct tracecmd_input *handle)
+ {
+ 	return handle->map_cnt;
+ }
+@@ -500,7 +500,7 @@ static int read8(struct tracecmd_input *handle, unsigned long long *size)
+ 	return 0;
+ }
+ 
+-__hidden void in_uncompress_reset(struct tracecmd_input *handle)
++__hidden void tracecmd_in_uncompress_reset(struct tracecmd_input *handle)
+ {
+ 	if (handle->compress) {
+ 		handle->read_compress = false;
+@@ -508,7 +508,7 @@ __hidden void in_uncompress_reset(struct tracecmd_input *handle)
+ 	}
+ }
+ 
+-__hidden int in_uncompress_block(struct tracecmd_input *handle)
++__hidden int tracecmd_in_uncompress_block(struct tracecmd_input *handle)
+ {
+ 	int ret = 0;
+ 
+@@ -542,7 +542,7 @@ static struct file_section *section_open(struct tracecmd_input *handle, int id)
+ 	if (lseek(handle->fd, sec->data_offset, SEEK_SET) == (off_t)-1)
+ 		return NULL;
+ 
+-	if ((sec->flags & TRACECMD_SEC_FL_COMPRESS) && in_uncompress_block(handle))
++	if ((sec->flags & TRACECMD_SEC_FL_COMPRESS) && tracecmd_in_uncompress_block(handle))
+ 		return NULL;
+ 
+ 	return sec;
+@@ -551,7 +551,7 @@ static struct file_section *section_open(struct tracecmd_input *handle, int id)
+ static void section_close(struct tracecmd_input *handle, struct file_section *sec)
+ {
+ 	if (sec->flags & TRACECMD_SEC_FL_COMPRESS)
+-		in_uncompress_reset(handle);
++		tracecmd_in_uncompress_reset(handle);
+ }
+ 
+ static int section_add_or_update(struct tracecmd_input *handle, int id, int flags,
+@@ -1181,7 +1181,7 @@ static int handle_section(struct tracecmd_input *handle, struct file_section *se
+ 		return -1;
+ 
+ 	section->data_offset = lseek(handle->fd, 0, SEEK_CUR);
+-	if ((section->flags & TRACECMD_SEC_FL_COMPRESS) && in_uncompress_block(handle))
++	if ((section->flags & TRACECMD_SEC_FL_COMPRESS) && tracecmd_in_uncompress_block(handle))
+ 		return -1;
+ 
+ 	switch (section->id) {
+@@ -1209,7 +1209,7 @@ static int handle_section(struct tracecmd_input *handle, struct file_section *se
+ 	}
+ 
+ 	if (section->flags & TRACECMD_SEC_FL_COMPRESS)
+-		in_uncompress_reset(handle);
++		tracecmd_in_uncompress_reset(handle);
+ 
+ 	return ret;
+ }
+@@ -1441,7 +1441,7 @@ static void *read_zpage(struct tracecmd_input *handle, int cpu, off_t offset)
+ 	cache->ref = 1;
+ 	cache->chunk = chunk;
+ 	cache->map = map;
+-	trace_rbtree_insert(&cpu_data->compress.cache, &cache->node);
++	tracecmd_rbtree_insert(&cpu_data->compress.cache, &cache->node);
+ 
+ 	/* a chunk can hold multiple pages, get the requested one */
+ out:
+@@ -3411,7 +3411,7 @@ static int init_cpu(struct tracecmd_input *handle, int cpu)
+ 
+ 	list_head_init(&cpu_data->page_maps);
+ 
+-	trace_rbtree_init(&cpu_data->compress.cache, compress_cmp, compress_search);
++	tracecmd_rbtree_init(&cpu_data->compress.cache, compress_cmp, compress_search);
+ 
+ 	if (!cpu_data->size) {
+ 		tracecmd_info("CPU %d is empty", cpu);
+@@ -3829,12 +3829,12 @@ tracecmd_search_task_map(struct tracecmd_input *handle,
+ 	return lib;
+ }
+ 
+-__hidden unsigned int get_meta_strings_size(struct tracecmd_input *handle)
++__hidden unsigned int tracecmd_get_meta_strings_size(struct tracecmd_input *handle)
+ {
+ 	return handle->strings_size;
+ }
+ 
+-__hidden unsigned long long get_last_option_offset(struct tracecmd_input *handle)
++__hidden unsigned long long tracecmd_get_last_option_offset(struct tracecmd_input *handle)
+ {
+ 	return handle->options_last_offset;
+ }
+@@ -4021,7 +4021,7 @@ static int handle_options(struct tracecmd_input *handle)
+ 			compress = true;
+ 	}
+ 
+-	if (compress && in_uncompress_block(handle))
++	if (compress && tracecmd_in_uncompress_block(handle))
+ 		return -1;
+ 
+ 	for (;;) {
+@@ -4180,7 +4180,7 @@ static int handle_options(struct tracecmd_input *handle)
+ 			break;
+ 		case TRACECMD_OPTION_DONE:
+ 			if (compress)
+-				in_uncompress_reset(handle);
++				tracecmd_in_uncompress_reset(handle);
+ 			ret = handle_option_done(handle, buf, size);
+ 			free(buf);
+ 			return ret;
+@@ -4198,7 +4198,7 @@ static int handle_options(struct tracecmd_input *handle)
+ 
+ out:
+ 	if (compress)
+-		in_uncompress_reset(handle);
++		tracecmd_in_uncompress_reset(handle);
+ 	return ret;
+ }
+ 
+@@ -4836,14 +4836,14 @@ static int read_metadata_strings(struct tracecmd_input *handle)
+ 				read4(handle, &csize);
+ 				read4(handle, &rsize);
+ 				do_lseek(handle, -8, SEEK_CUR);
+-				if (in_uncompress_block(handle))
++				if (tracecmd_in_uncompress_block(handle))
+ 					break;
+ 			} else {
+ 				rsize = size;
+ 			}
+ 			init_metadata_strings(handle, rsize);
+ 			if (flags & TRACECMD_SEC_FL_COMPRESS)
+-				in_uncompress_reset(handle);
++				tracecmd_in_uncompress_reset(handle);
+ 		} else {
+ 			if (lseek(handle->fd, size, SEEK_CUR) == (off_t)-1)
+ 				break;
+@@ -4940,7 +4940,7 @@ struct tracecmd_input *tracecmd_alloc_fd(int fd, int flags)
+ 	    !(flags & TRACECMD_FL_LOAD_NO_SYSTEM_PLUGINS))
+ 		tracecmd_ftrace_overrides(handle, &handle->finfo);
+ 
+-	handle->plugin_list = trace_load_plugins(handle->pevent, flags);
++	handle->plugin_list = tracecmd_load_plugins_from_handle(handle->pevent, flags);
+ 
+ 	tep_set_file_bigendian(handle->pevent, buf[0]);
+ 	tep_set_local_bigendian(handle->pevent, tracecmd_host_bigendian());
+@@ -5197,7 +5197,7 @@ void tracecmd_close(struct tracecmd_input *handle)
+ 	free(handle->version);
+ 	free(handle->followers);
+ 	free(handle->missed_followers);
+-	trace_guest_map_free(handle->map);
++	tracecmd_guest_map_free(handle->map);
+ 	close(handle->fd);
+ 	free(handle->latz.chunks);
+ 	if (handle->latz.fd >= 0) {
+@@ -5244,7 +5244,7 @@ static int read_copy_size8(struct tracecmd_input *in_handle,
+ 	if (do_read_check(in_handle, size, 8))
+ 		return -1;
+ 
+-	if (do_write_check(out_handle, size, 8))
++	if (tracecmd_do_write_check(out_handle, size, 8))
+ 		return -1;
+ 
+ 	*size = tep_read_number(in_handle->pevent, size, 8);
+@@ -5258,7 +5258,7 @@ static int read_copy_size4(struct tracecmd_input *in_handle, struct tracecmd_out
+ 	if (do_read_check(in_handle, size, 4))
+ 		return -1;
+ 
+-	if (do_write_check(out_handle, size, 4))
++	if (tracecmd_do_write_check(out_handle, size, 4))
+ 		return -1;
+ 
+ 	*size = tep_read_number(in_handle->pevent, size, 4);
+@@ -5277,7 +5277,7 @@ static int read_copy_data(struct tracecmd_input *in_handle,
+ 	if (do_read_check(in_handle, buf, size))
+ 		goto failed_read;
+ 
+-	if (do_write_check(out_handle, buf, size))
++	if (tracecmd_do_write_check(out_handle, buf, size))
+ 		goto failed_read;
+ 	
+ 	free(buf);
+@@ -5292,28 +5292,28 @@ static int read_copy_data(struct tracecmd_input *in_handle,
+ 
+ static bool check_in_state(struct tracecmd_input *handle, int new_state)
+ {
+-	return check_file_state(handle->file_version, handle->file_state, new_state);
++	return tracecmd_check_file_state(handle->file_version, handle->file_state, new_state);
+ }
+ 
+ static int copy_header_files(struct tracecmd_input *in_handle,
+ 			     struct tracecmd_output *out_handle)
+ {
+-	bool compress = out_check_compression(out_handle);
++	bool compress = tracecmd_out_check_compression(out_handle);
+ 	struct file_section *sec;
+ 	unsigned long long offset;
+ 	unsigned long long size;
+ 
+ 	if (!check_in_state(in_handle, TRACECMD_FILE_HEADERS) ||
+-	    !check_out_state(out_handle, TRACECMD_FILE_HEADERS))
++	    !tracecmd_check_out_state(out_handle, TRACECMD_FILE_HEADERS))
+ 		return -1;
+ 
+ 	sec = section_open(in_handle, TRACECMD_OPTION_HEADER_INFO);
+ 	if (!sec)
+ 		return -1;
+ 
+-	offset = out_write_section_header(out_handle, TRACECMD_OPTION_HEADER_INFO,
++	offset = tracecmd_out_write_section_header(out_handle, TRACECMD_OPTION_HEADER_INFO,
+ 					  "headers", TRACECMD_SEC_FL_COMPRESS, true);
+-	out_compression_start(out_handle, compress);
++	tracecmd_out_compression_start(out_handle, compress);
+ 
+ 	/* "header_page"  */
+ 	if (read_copy_data(in_handle, 12, out_handle) < 0)
+@@ -5336,25 +5336,25 @@ static int copy_header_files(struct tracecmd_input *in_handle,
+ 		goto error;
+ 
+ 	in_handle->file_state = TRACECMD_FILE_HEADERS;
+-	if (out_compression_end(out_handle, compress))
++	if (tracecmd_out_compression_end(out_handle, compress))
+ 		goto error;
+ 
+-	out_set_file_state(out_handle, in_handle->file_state);
++	tracecmd_out_set_file_state(out_handle, in_handle->file_state);
+ 	section_close(in_handle, sec);
+ 
+-	if (out_update_section_header(out_handle, offset))
++	if (tracecmd_out_update_section_header(out_handle, offset))
+ 		goto error;
+ 
+ 	return 0;
+ error:
+-	out_compression_reset(out_handle, compress);
++	tracecmd_out_compression_reset(out_handle, compress);
+ 	section_close(in_handle, sec);
+ 	return -1;
+ }
+ 
+ static int copy_ftrace_files(struct tracecmd_input *in_handle, struct tracecmd_output *out_handle)
+ {
+-	bool compress = out_check_compression(out_handle);
++	bool compress = tracecmd_out_check_compression(out_handle);
+ 	struct file_section *sec;
+ 	unsigned long long offset;
+ 	unsigned long long size;
+@@ -5362,16 +5362,16 @@ static int copy_ftrace_files(struct tracecmd_input *in_handle, struct tracecmd_o
+ 	unsigned int i;
+ 
+ 	if (!check_in_state(in_handle, TRACECMD_FILE_FTRACE_EVENTS) ||
+-	    !check_out_state(out_handle, TRACECMD_FILE_FTRACE_EVENTS))
++	    !tracecmd_check_out_state(out_handle, TRACECMD_FILE_FTRACE_EVENTS))
+ 		return -1;
+ 
+ 	sec = section_open(in_handle, TRACECMD_OPTION_FTRACE_EVENTS);
+ 	if (!sec)
+ 		return -1;
+-	offset = out_write_section_header(out_handle, TRACECMD_OPTION_FTRACE_EVENTS,
++	offset = tracecmd_out_write_section_header(out_handle, TRACECMD_OPTION_FTRACE_EVENTS,
+ 					  "ftrace events", TRACECMD_SEC_FL_COMPRESS, true);
+ 
+-	out_compression_start(out_handle, compress);
++	tracecmd_out_compression_start(out_handle, compress);
+ 
+ 	if (read_copy_size4(in_handle, out_handle, &count) < 0)
+ 		goto error;
+@@ -5386,26 +5386,26 @@ static int copy_ftrace_files(struct tracecmd_input *in_handle, struct tracecmd_o
+ 	}
+ 
+ 	in_handle->file_state = TRACECMD_FILE_FTRACE_EVENTS;
+-	if (out_compression_end(out_handle, compress))
++	if (tracecmd_out_compression_end(out_handle, compress))
+ 		goto error;
+ 
+-	out_set_file_state(out_handle, in_handle->file_state);
++	tracecmd_out_set_file_state(out_handle, in_handle->file_state);
+ 
+ 	section_close(in_handle, sec);
+ 
+-	if (out_update_section_header(out_handle, offset))
++	if (tracecmd_out_update_section_header(out_handle, offset))
+ 		goto error;
+ 
+ 	return 0;
+ error:
+-	out_compression_reset(out_handle, compress);
++	tracecmd_out_compression_reset(out_handle, compress);
+ 	section_close(in_handle, sec);
+ 	return -1;
+ }
+ 
+ static int copy_event_files(struct tracecmd_input *in_handle, struct tracecmd_output *out_handle)
+ {
+-	bool compress = out_check_compression(out_handle);
++	bool compress = tracecmd_out_check_compression(out_handle);
+ 	struct file_section *sec;
+ 	unsigned long long offset;
+ 	unsigned long long size;
+@@ -5415,16 +5415,16 @@ static int copy_event_files(struct tracecmd_input *in_handle, struct tracecmd_ou
+ 	unsigned int i,x;
+ 
+ 	if (!check_in_state(in_handle, TRACECMD_FILE_ALL_EVENTS) ||
+-	    !check_out_state(out_handle, TRACECMD_FILE_ALL_EVENTS))
++	    !tracecmd_check_out_state(out_handle, TRACECMD_FILE_ALL_EVENTS))
+ 		return -1;
+ 
+ 	sec = section_open(in_handle, TRACECMD_OPTION_EVENT_FORMATS);
+ 	if (!sec)
+ 		return -1;
+-	offset = out_write_section_header(out_handle, TRACECMD_OPTION_EVENT_FORMATS,
++	offset = tracecmd_out_write_section_header(out_handle, TRACECMD_OPTION_EVENT_FORMATS,
+ 					  "events format", TRACECMD_SEC_FL_COMPRESS, true);
+ 
+-	out_compression_start(out_handle, compress);
++	tracecmd_out_compression_start(out_handle, compress);
+ 
+ 	if (read_copy_size4(in_handle, out_handle, &systems) < 0)
+ 		goto error;
+@@ -5433,7 +5433,7 @@ static int copy_event_files(struct tracecmd_input *in_handle, struct tracecmd_ou
+ 		system = read_string(in_handle);
+ 		if (!system)
+ 			goto error;
+-		if (do_write_check(out_handle, system, strlen(system) + 1)) {
++		if (tracecmd_do_write_check(out_handle, system, strlen(system) + 1)) {
+ 			free(system);
+ 			goto error;
+ 		}
+@@ -5452,41 +5452,41 @@ static int copy_event_files(struct tracecmd_input *in_handle, struct tracecmd_ou
+ 	}
+ 
+ 	in_handle->file_state = TRACECMD_FILE_ALL_EVENTS;
+-	if (out_compression_end(out_handle, compress))
++	if (tracecmd_out_compression_end(out_handle, compress))
+ 		goto error;
+ 
+-	out_set_file_state(out_handle, in_handle->file_state);
++	tracecmd_out_set_file_state(out_handle, in_handle->file_state);
+ 
+ 	section_close(in_handle, sec);
+ 
+-	if (out_update_section_header(out_handle, offset))
++	if (tracecmd_out_update_section_header(out_handle, offset))
+ 		goto error;
+ 
+ 	return 0;
+ error:
+-	out_compression_reset(out_handle, compress);
++	tracecmd_out_compression_reset(out_handle, compress);
+ 	section_close(in_handle, sec);
+ 	return -1;
+ }
+ 
+ static int copy_proc_kallsyms(struct tracecmd_input *in_handle, struct tracecmd_output *out_handle)
+ {
+-	bool compress = out_check_compression(out_handle);
++	bool compress = tracecmd_out_check_compression(out_handle);
+ 	struct file_section *sec;
+ 	unsigned long long offset;
+ 	unsigned int size;
+ 
+ 	if (!check_in_state(in_handle, TRACECMD_FILE_KALLSYMS) ||
+-	    !check_out_state(out_handle, TRACECMD_FILE_KALLSYMS))
++	    !tracecmd_check_out_state(out_handle, TRACECMD_FILE_KALLSYMS))
+ 		return -1;
+ 
+ 	sec = section_open(in_handle, TRACECMD_OPTION_KALLSYMS);
+ 	if (!sec)
+ 		return -1;
+-	offset = out_write_section_header(out_handle, TRACECMD_OPTION_KALLSYMS,
++	offset = tracecmd_out_write_section_header(out_handle, TRACECMD_OPTION_KALLSYMS,
+ 					  "kallsyms", TRACECMD_SEC_FL_COMPRESS, true);
+ 
+-	out_compression_start(out_handle, compress);
++	tracecmd_out_compression_start(out_handle, compress);
+ 	if (read_copy_size4(in_handle, out_handle, &size) < 0)
+ 		goto error;
+ 
+@@ -5497,42 +5497,42 @@ static int copy_proc_kallsyms(struct tracecmd_input *in_handle, struct tracecmd_
+ 		goto error;
+ out:
+ 	in_handle->file_state = TRACECMD_FILE_KALLSYMS;
+-	if (out_compression_end(out_handle, compress))
++	if (tracecmd_out_compression_end(out_handle, compress))
+ 		goto error;
+ 
+-	out_set_file_state(out_handle, in_handle->file_state);
++	tracecmd_out_set_file_state(out_handle, in_handle->file_state);
+ 
+ 	section_close(in_handle, sec);
+ 
+-	if (out_update_section_header(out_handle, offset))
++	if (tracecmd_out_update_section_header(out_handle, offset))
+ 		goto error;
+ 
+ 	return 0;
+ error:
+-	out_compression_reset(out_handle, compress);
++	tracecmd_out_compression_reset(out_handle, compress);
+ 	section_close(in_handle, sec);
+ 	return -1;
+ }
+ 
+ static int copy_ftrace_printk(struct tracecmd_input *in_handle, struct tracecmd_output *out_handle)
+ {
+-	bool compress = out_check_compression(out_handle);
++	bool compress = tracecmd_out_check_compression(out_handle);
+ 	struct file_section *sec;
+ 	unsigned long long offset;
+ 	unsigned int size;
+ 
+ 	if (!check_in_state(in_handle, TRACECMD_FILE_PRINTK) ||
+-	    !check_out_state(out_handle, TRACECMD_FILE_PRINTK))
++	    !tracecmd_check_out_state(out_handle, TRACECMD_FILE_PRINTK))
+ 		return -1;
+ 
+ 	sec = section_open(in_handle, TRACECMD_OPTION_PRINTK);
+ 	if (!sec)
+ 		return -1;
+ 
+-	offset = out_write_section_header(out_handle, TRACECMD_OPTION_PRINTK,
++	offset = tracecmd_out_write_section_header(out_handle, TRACECMD_OPTION_PRINTK,
+ 					  "printk", TRACECMD_SEC_FL_COMPRESS, true);
+ 
+-	out_compression_start(out_handle, compress);
++	tracecmd_out_compression_start(out_handle, compress);
+ 
+ 	if (read_copy_size4(in_handle, out_handle, &size) < 0)
+ 		goto error;
+@@ -5545,41 +5545,41 @@ static int copy_ftrace_printk(struct tracecmd_input *in_handle, struct tracecmd_
+ 
+ out:
+ 	in_handle->file_state = TRACECMD_FILE_PRINTK;
+-	if (out_compression_end(out_handle, compress))
++	if (tracecmd_out_compression_end(out_handle, compress))
+ 		goto error;
+ 
+-	out_set_file_state(out_handle, in_handle->file_state);
++	tracecmd_out_set_file_state(out_handle, in_handle->file_state);
+ 
+ 	section_close(in_handle, sec);
+ 
+-	if (out_update_section_header(out_handle, offset))
++	if (tracecmd_out_update_section_header(out_handle, offset))
+ 		goto error;
+ 
+ 	return 0;
+ error:
+-	out_compression_reset(out_handle, compress);
++	tracecmd_out_compression_reset(out_handle, compress);
+ 	section_close(in_handle, sec);
+ 	return -1;
+ }
+ 
+ static int copy_command_lines(struct tracecmd_input *in_handle, struct tracecmd_output *out_handle)
+ {
+-	bool compress = out_check_compression(out_handle);
++	bool compress = tracecmd_out_check_compression(out_handle);
+ 	struct file_section *sec;
+ 	unsigned long long offset;
+ 	unsigned long long size;
+ 
+ 	if (!check_in_state(in_handle, TRACECMD_FILE_CMD_LINES) ||
+-	    !check_out_state(out_handle, TRACECMD_FILE_CMD_LINES))
++	    !tracecmd_check_out_state(out_handle, TRACECMD_FILE_CMD_LINES))
+ 		return -1;
+ 
+ 	sec = section_open(in_handle, TRACECMD_OPTION_CMDLINES);
+ 	if (!sec)
+ 		return -1;
+-	offset = out_write_section_header(out_handle, TRACECMD_OPTION_CMDLINES,
++	offset = tracecmd_out_write_section_header(out_handle, TRACECMD_OPTION_CMDLINES,
+ 					  "command lines", TRACECMD_SEC_FL_COMPRESS, true);
+ 
+-	out_compression_start(out_handle, compress);
++	tracecmd_out_compression_start(out_handle, compress);
+ 
+ 	if (read_copy_size8(in_handle, out_handle, &size) < 0)
+ 		goto error;
+@@ -5592,19 +5592,19 @@ static int copy_command_lines(struct tracecmd_input *in_handle, struct tracecmd_
+ 
+ out:
+ 	in_handle->file_state = TRACECMD_FILE_CMD_LINES;
+-	if (out_compression_end(out_handle, compress))
++	if (tracecmd_out_compression_end(out_handle, compress))
+ 		goto error;
+ 
+-	out_set_file_state(out_handle, in_handle->file_state);
++	tracecmd_out_set_file_state(out_handle, in_handle->file_state);
+ 
+ 	section_close(in_handle, sec);
+ 
+-	if (out_update_section_header(out_handle, offset))
++	if (tracecmd_out_update_section_header(out_handle, offset))
+ 		goto error;
+ 
+ 	return 0;
+ error:
+-	out_compression_reset(out_handle, compress);
++	tracecmd_out_compression_reset(out_handle, compress);
+ 	section_close(in_handle, sec);
+ 	return -1;
+ }
+@@ -5614,7 +5614,7 @@ static int copy_cpu_count(struct tracecmd_input *in_handle, struct tracecmd_outp
+ 	unsigned int cpus;
+ 
+ 	if (!check_in_state(in_handle, TRACECMD_FILE_CPU_COUNT) ||
+-	    !check_out_state(out_handle, TRACECMD_FILE_CPU_COUNT))
++	    !tracecmd_check_out_state(out_handle, TRACECMD_FILE_CPU_COUNT))
+ 		return -1;
+ 
+ 	if (!HAS_SECTIONS(in_handle)) {
+@@ -5626,14 +5626,14 @@ static int copy_cpu_count(struct tracecmd_input *in_handle, struct tracecmd_outp
+ 
+ 	if (tracecmd_get_out_file_version(out_handle) < FILE_VERSION_SECTIONS) {
+ 		cpus = tep_read_number(in_handle->pevent, &cpus, 4);
+-		if (do_write_check(out_handle, &cpus, 4))
++		if (tracecmd_do_write_check(out_handle, &cpus, 4))
+ 			return -1;
+ 	} else {
+ 		tracecmd_add_option(out_handle, TRACECMD_OPTION_CPUCOUNT, sizeof(int), &cpus);
+ 	}
+ 
+ 	in_handle->file_state = TRACECMD_FILE_CPU_COUNT;
+-	out_set_file_state(out_handle, in_handle->file_state);
++	tracecmd_out_set_file_state(out_handle, in_handle->file_state);
+ 
+ 	return 0;
+ }
+@@ -5813,7 +5813,7 @@ static int copy_options_recursive(struct tracecmd_input *in_handle,
+ 			if (id != TRACECMD_OPTION_DONE)
+ 				return -1;
+ 
+-			if (flags & TRACECMD_SEC_FL_COMPRESS && in_uncompress_block(in_handle))
++			if (flags & TRACECMD_SEC_FL_COMPRESS && tracecmd_in_uncompress_block(in_handle))
+ 				return -1;
+ 
+ 			return copy_options_recursive(in_handle, out_handle);
+@@ -5838,10 +5838,10 @@ static int copy_options_recursive(struct tracecmd_input *in_handle,
+ 			do_lseek(in_handle, en4, SEEK_CUR);
+ 			continue;
+ 		}
+-		if (do_write_check(out_handle, &option, 2))
++		if (tracecmd_do_write_check(out_handle, &option, 2))
+ 			return -1;
+ 
+-		if (do_write_check(out_handle, &size, 4))
++		if (tracecmd_do_write_check(out_handle, &size, 4))
+ 			return -1;
+ 
+ 		if (read_copy_data(in_handle, en4, out_handle))
+@@ -5864,48 +5864,48 @@ static int copy_options(struct tracecmd_input *in_handle, struct tracecmd_output
+ 		if (id != TRACECMD_OPTION_DONE)
+ 			return -1;
+ 
+-		if (flags & TRACECMD_SEC_FL_COMPRESS && in_uncompress_block(in_handle))
++		if (flags & TRACECMD_SEC_FL_COMPRESS && tracecmd_in_uncompress_block(in_handle))
+ 			return -1;
+ 	}
+ 	start = tracecmd_get_out_file_offset(out_handle);
+ 	if (tracecmd_get_out_file_version(out_handle) < FILE_VERSION_SECTIONS) {
+-		if (do_write_check(out_handle, "options  ", 10))
++		if (tracecmd_do_write_check(out_handle, "options  ", 10))
+ 			return -1;
+ 	}
+ 
+-	offset = out_write_section_header(out_handle, TRACECMD_OPTION_DONE, "options", 0, false);
++	offset = tracecmd_out_write_section_header(out_handle, TRACECMD_OPTION_DONE, "options", 0, false);
+ 
+ 	if (copy_options_recursive(in_handle, out_handle))
+ 		goto error;
+ 
+ 	id = TRACECMD_OPTION_DONE;
+ 	en2 = tep_read_number(in_handle->pevent, &id, 2);
+-	if (do_write_check(out_handle, &en2, 2))
++	if (tracecmd_do_write_check(out_handle, &en2, 2))
+ 		goto error;
+ 
+ 	if (tracecmd_get_out_file_version(out_handle) < FILE_VERSION_SECTIONS) {
+-		out_save_options_offset(out_handle, start);
++		tracecmd_out_save_options_offset(out_handle, start);
+ 	} else {
+ 		tmp = 8;
+-		if (do_write_check(out_handle, &tmp, 4))
++		if (tracecmd_do_write_check(out_handle, &tmp, 4))
+ 			goto error;
+ 
+-		out_save_options_offset(out_handle, start);
++		tracecmd_out_save_options_offset(out_handle, start);
+ 		start = 0;
+-		if (do_write_check(out_handle, &start, 8))
++		if (tracecmd_do_write_check(out_handle, &start, 8))
+ 			goto error;
+ 	}
+-	out_update_section_header(out_handle, offset);
++	tracecmd_out_update_section_header(out_handle, offset);
+ 	if (flags & TRACECMD_SEC_FL_COMPRESS)
+-		in_uncompress_reset(in_handle);
++		tracecmd_in_uncompress_reset(in_handle);
+ 	in_handle->file_state = TRACECMD_FILE_OPTIONS;
+-	out_set_file_state(out_handle, in_handle->file_state);
++	tracecmd_out_set_file_state(out_handle, in_handle->file_state);
+ 	/* Append local options */
+ 	return tracecmd_append_options(out_handle);
+ 
+ error:
+ 	if (flags & TRACECMD_SEC_FL_COMPRESS)
+-		in_uncompress_reset(in_handle);
++		tracecmd_in_uncompress_reset(in_handle);
+ 	return 0;
+ }
+ 
+@@ -5913,7 +5913,7 @@ int tracecmd_copy_options(struct tracecmd_input *in_handle,
+ 			  struct tracecmd_output *out_handle)
+ {
+ 	if (!check_in_state(in_handle, TRACECMD_FILE_OPTIONS) ||
+-	    !check_out_state(out_handle, TRACECMD_FILE_OPTIONS))
++	    !tracecmd_check_out_state(out_handle, TRACECMD_FILE_OPTIONS))
+ 		return -1;
+ 
+ 	if (!in_handle->options_start)
+@@ -5937,17 +5937,17 @@ static int copy_trace_latency(struct tracecmd_input *in_handle,
+ 	int fd;
+ 
+ 	if (tracecmd_get_out_file_version(out_handle) < FILE_VERSION_SECTIONS &&
+-	    do_write_check(out_handle, "latency  ", 10))
++	    tracecmd_do_write_check(out_handle, "latency  ", 10))
+ 		return -1;
+ 
+ 	offset = tracecmd_get_out_file_offset(out_handle);
+ 
+ 	if (tracecmd_get_out_file_version(out_handle) >= FILE_VERSION_SECTIONS &&
+-	    !out_add_buffer_option(out_handle, buf_name, TRACECMD_OPTION_BUFFER_TEXT,
++	    !tracecmd_out_add_buffer_option(out_handle, buf_name, TRACECMD_OPTION_BUFFER_TEXT,
+ 				   offset, 0, NULL, page_size))
+ 		return -1;
+ 
+-	offset = out_write_section_header(out_handle, TRACECMD_OPTION_BUFFER_TEXT,
++	offset = tracecmd_out_write_section_header(out_handle, TRACECMD_OPTION_BUFFER_TEXT,
+ 					  "buffer latency", TRACECMD_SEC_FL_COMPRESS, false);
+ 
+ 	if (in_handle->latz.fd >= 0)
+@@ -5955,13 +5955,13 @@ static int copy_trace_latency(struct tracecmd_input *in_handle,
+ 	else
+ 		fd = in_handle->fd;
+ 
+-	if (!out_copy_fd_compress(out_handle, fd, 0, &wsize, page_size))
++	if (!tracecmd_out_copy_fd_compress(out_handle, fd, 0, &wsize, page_size))
+ 		return -1;
+ 
+-	if (out_update_section_header(out_handle, offset))
++	if (tracecmd_out_update_section_header(out_handle, offset))
+ 		return -1;
+ 
+-	out_set_file_state(out_handle, TRACECMD_FILE_CPU_LATENCY);
++	tracecmd_out_set_file_state(out_handle, TRACECMD_FILE_CPU_LATENCY);
+ 	return 0;
+ }
+ 
+@@ -5996,7 +5996,7 @@ static int copy_trace_flyrecord_data(struct tracecmd_input *in_handle,
+ 		}
+ 	}
+ 	if (total_size || tracecmd_get_out_file_version(out_handle) < FILE_VERSION_SECTIONS)
+-		ret = out_write_cpu_data(out_handle, cpus, data, buff_name);
++		ret = tracecmd_out_write_cpu_data(out_handle, cpus, data, buff_name);
+ 	else
+ 		ret = 0;
+ 	free(data);
+@@ -6083,7 +6083,7 @@ static int copy_trace_data_from_v7(struct tracecmd_input *in_handle,
+ 		ret = copy_trace_flyrecord_data(in_handle, out_handle,
+ 						in_handle->top_buffer.name);
+ 	else if (tracecmd_get_out_file_version(out_handle) < FILE_VERSION_SECTIONS)
+-		ret = out_write_emty_cpu_data(out_handle, in_handle->max_cpu);
++		ret = tracecmd_out_write_emty_cpu_data(out_handle, in_handle->max_cpu);
+ 	if (ret)
  		return ret;
-diff --git a/src/tracefs-record.c b/src/tracefs-record.c
-index 932e8b4..defbec9 100644
---- a/src/tracefs-record.c
-+++ b/src/tracefs-record.c
-@@ -276,7 +276,7 @@ void tracefs_cpu_free_fd(struct tracefs_cpu *tcpu)
- 	close_fd(tcpu->splice_pipe[0]);
- 	close_fd(tcpu->splice_pipe[1]);
  
--	trace_unmap(tcpu->mapping);
-+	tracefs_unmap(tcpu->mapping);
- 	kbuffer_free(tcpu->kbuf);
- 	free(tcpu);
- }
-@@ -341,7 +341,7 @@ int tracefs_cpu_map(struct tracefs_cpu *tcpu)
- 	if (tcpu->mapping)
- 		return 0;
- 
--	tcpu->mapping = trace_mmap(tcpu->fd, tcpu->kbuf);
-+	tcpu->mapping = tracefs_mmap(tcpu->fd, tcpu->kbuf);
- 	return tcpu->mapping ? 0 : -1;
- }
- 
-@@ -350,7 +350,7 @@ void tracefs_cpu_unmap(struct tracefs_cpu *tcpu)
- 	if (!tcpu->mapping)
- 		return;
- 
--	trace_unmap(tcpu->mapping);
-+	tracefs_unmap(tcpu->mapping);
- }
- 
- static void set_nonblock(struct tracefs_cpu *tcpu)
-@@ -427,7 +427,7 @@ static int mmap_read(struct tracefs_cpu *tcpu, void *buffer, bool nonblock)
- 	void *mapping = tcpu->mapping;
+@@ -6099,7 +6099,7 @@ __hidden int tracecmd_copy_trace_data(struct tracecmd_input *in_handle,
  	int ret;
  
--	ret = trace_mmap_read(mapping, buffer);
-+	ret = tracefs_mmap_read(mapping, buffer);
- 	if (ret <= 0) {
- 		if (!ret && nonblock)
- 			errno = EAGAIN;
-@@ -523,7 +523,7 @@ struct kbuffer *tracefs_cpu_read_buf(struct tracefs_cpu *tcpu, bool nonblock)
- 		if (ret <= 0)
- 			return NULL;
+ 	if (!check_in_state(in_handle, TRACECMD_FILE_CPU_FLYRECORD) ||
+-	    !check_out_state(out_handle, TRACECMD_FILE_CPU_FLYRECORD))
++	    !tracecmd_check_out_state(out_handle, TRACECMD_FILE_CPU_FLYRECORD))
+ 		return -1;
  
--		ret = trace_mmap_load_subbuf(tcpu->mapping, tcpu->kbuf);
-+		ret = tracefs_mmap_load_subbuf(tcpu->mapping, tcpu->kbuf);
- 		return ret > 0 ? tcpu->kbuf : NULL;
- 	}
- 
-@@ -550,7 +550,7 @@ static int init_splice(struct tracefs_cpu *tcpu)
- 	if (ret < 0)
- 		return ret;
- 
--	if (str_read_file("/proc/sys/fs/pipe-max-size", &buf, false)) {
-+	if (tracefs_str_read_file("/proc/sys/fs/pipe-max-size", &buf, false)) {
- 		int size = atoi(buf);
- 		fcntl(tcpu->splice_pipe[0], F_SETPIPE_SZ, &size);
- 		free(buf);
-@@ -664,7 +664,7 @@ struct kbuffer *tracefs_cpu_buffered_read_buf(struct tracefs_cpu *tcpu, bool non
- 		if (ret <= 0)
- 			return NULL;
- 
--		ret = trace_mmap_load_subbuf(tcpu->mapping, tcpu->kbuf);
-+		ret = tracefs_mmap_load_subbuf(tcpu->mapping, tcpu->kbuf);
- 		return ret > 0 ? tcpu->kbuf : NULL;
- 	}
- 
-@@ -786,7 +786,7 @@ struct kbuffer *tracefs_cpu_flush_buf(struct tracefs_cpu *tcpu)
- 	if (tcpu->mapping) {
- 		/* Make sure that reading is now non blocking */
- 		set_nonblock(tcpu);
--		ret = trace_mmap_load_subbuf(tcpu->mapping, tcpu->kbuf);
-+		ret = tracefs_mmap_load_subbuf(tcpu->mapping, tcpu->kbuf);
- 		return ret > 0 ? tcpu->kbuf : NULL;
- 	}
- 
-diff --git a/src/tracefs-sqlhist.c b/src/tracefs-sqlhist.c
-index 08bd0fa..c97be54 100644
---- a/src/tracefs-sqlhist.c
-+++ b/src/tracefs-sqlhist.c
-@@ -116,7 +116,7 @@ struct sql_table {
- 	struct expr		**next_selection;
- };
- 
--__hidden int my_yyinput(void *extra, char *buf, int max)
-+__hidden int tracefs_my_yyinput(void *extra, char *buf, int max)
- {
- 	struct sqlhist_bison *sb = extra;
- 
-@@ -134,8 +134,9 @@ __hidden int my_yyinput(void *extra, char *buf, int max)
- 	return max;
- }
- 
--__hidden void sql_parse_error(struct sqlhist_bison *sb, const char *text,
--			      const char *fmt, va_list ap)
-+__hidden void
-+tracefs_sql_parse_error(struct sqlhist_bison *sb,
-+			const char *text, const char *fmt, va_list ap)
- {
- 	const char *buffer = sb->buffer;
- 	struct trace_seq s;
-@@ -177,11 +178,11 @@ static void parse_error(struct sqlhist_bison *sb, const char *text,
- 	va_list ap;
- 
- 	va_start(ap, fmt);
--	sql_parse_error(sb, text, fmt, ap);
-+	tracefs_sql_parse_error(sb, text, fmt, ap);
- 	va_end(ap);
- }
- 
--__hidden unsigned int quick_hash(const char *str)
-+__hidden unsigned int tracefs_quick_hash(const char *str)
- {
- 	unsigned int val = 0;
- 	int len = strlen(str);
-@@ -203,7 +204,7 @@ __hidden unsigned int quick_hash(const char *str)
- 
- static struct str_hash *find_string(struct sqlhist_bison *sb, const char *str)
- {
--	unsigned int key = quick_hash(str);
-+	unsigned int key = tracefs_quick_hash(str);
- 	struct str_hash *hash = sb->str_hash[key];
- 
- 	for (; hash; hash = hash->next) {
-@@ -215,7 +216,7 @@ static struct str_hash *find_string(struct sqlhist_bison *sb, const char *str)
- 
- /*
-  * If @str is found, then return the hash string.
-- * This lets store_str() know to free str.
-+ * This lets tracefs_store_str() know to free str.
-  */
- static char **add_hash(struct sqlhist_bison *sb, const char *str)
- {
-@@ -229,14 +230,14 @@ static char **add_hash(struct sqlhist_bison *sb, const char *str)
- 	hash = malloc(sizeof(*hash));
- 	if (!hash)
- 		return NULL;
--	key = quick_hash(str);
-+	key = tracefs_quick_hash(str);
- 	hash->next = sb->str_hash[key];
- 	sb->str_hash[key] = hash;
- 	hash->str = NULL;
- 	return &hash->str;
- }
- 
--__hidden char *store_str(struct sqlhist_bison *sb, const char *str)
-+__hidden char *tracefs_store_str(struct sqlhist_bison *sb, const char *str)
- {
- 	char **pstr = add_hash(sb, str);
- 
-@@ -249,8 +250,7 @@ __hidden char *store_str(struct sqlhist_bison *sb, const char *str)
- 	return *pstr;
- }
- 
--__hidden void *add_cast(struct sqlhist_bison *sb,
--			void *data, const char *type)
-+__hidden void *tracefs_add_cast(struct sqlhist_bison *sb, void *data, const char *type)
- {
- 	struct expr *expr = data;
- 	struct field *field = &expr->field;
-@@ -259,8 +259,8 @@ __hidden void *add_cast(struct sqlhist_bison *sb,
- 	return expr;
- }
- 
--__hidden int add_selection(struct sqlhist_bison *sb, void *select,
--			   const char *name)
-+__hidden int
-+tracefs_add_selection(struct sqlhist_bison *sb, void *select, const char *name)
- {
- 	struct sql_table *table = sb->table;
- 	struct expr *expr = select;
-@@ -375,8 +375,9 @@ static void *create_expr(struct sqlhist_bison *sb,
- #define create_number(var, expr)			\
- 	__create_expr(var, long, NUMBER, expr)
- 
--__hidden void *add_field(struct sqlhist_bison *sb,
--			 const char *field_name, const char *label)
-+__hidden void *
-+tracefs_add_field(struct sqlhist_bison *sb,
-+		  const char *field_name, const char *label)
- {
- 	struct sql_table *table = sb->table;
- 	struct expr *expr;
-@@ -417,7 +418,7 @@ __hidden void *add_field(struct sqlhist_bison *sb,
- 			fieldB->raw = field_nameB;
+ 	if (in_handle->file_version < FILE_VERSION_SECTIONS)
+diff --git a/lib/trace-cmd/trace-maps.c b/lib/trace-cmd/trace-maps.c
+index bd16486f..31689364 100644
+--- a/lib/trace-cmd/trace-maps.c
++++ b/lib/trace-cmd/trace-maps.c
+@@ -74,8 +74,8 @@ int tracecmd_map_vcpus(struct tracecmd_input **handles, int nr_handles)
+ 			gmap[k].self = &gmap[k];
  		}
  
--		return add_compare(sb, exprA, exprB, COMPARE_SUB);
-+		return tracefs_add_compare(sb, exprA, exprB, COMPARE_SUB);
- 	}
+-		trace_set_guest_map(handles[i], gmap);
+-		trace_set_guest_map_cnt(handles[i], vcpu_count);
++		tracecmd_set_guest_map(handles[i], gmap);
++		tracecmd_set_guest_map_cnt(handles[i], vcpu_count);
  
- 	expr = find_field(sb, field_name, label);
-@@ -435,8 +436,9 @@ __hidden void *add_field(struct sqlhist_bison *sb,
- 	return expr;
+ 		/* Update the host mapping of all guests to the host */
+ 		map = realloc(vcpu_maps, sizeof(*map) * (nr_vcpu_maps + vcpu_count));
+@@ -96,8 +96,8 @@ int tracecmd_map_vcpus(struct tracecmd_input **handles, int nr_handles)
+ 	/* We want to do a binary search via host_pid to find these mappings */
+ 	qsort(vcpu_maps, nr_vcpu_maps, sizeof(*map), cmp_map);
+ 
+-	trace_set_guest_map(handles[0], vcpu_maps);
+-	trace_set_guest_map_cnt(handles[0], nr_vcpu_maps);
++	tracecmd_set_guest_map(handles[0], vcpu_maps);
++	tracecmd_set_guest_map_cnt(handles[0], nr_vcpu_maps);
+ 
+ 	return mappings;
+ 
+@@ -106,7 +106,7 @@ int tracecmd_map_vcpus(struct tracecmd_input **handles, int nr_handles)
+ 	return -1;
  }
  
--__hidden void *add_filter(struct sqlhist_bison *sb,
--			  void *A, void *B, enum filter_type op)
-+__hidden void *
-+tracefs_add_filter(struct sqlhist_bison *sb,
-+		   void *A, void *B, enum filter_type op)
+-__hidden void trace_guest_map_free(struct tracecmd_cpu_map *map)
++__hidden void tracecmd_guest_map_free(struct tracecmd_cpu_map *map)
  {
- 	struct filter *filter;
- 	struct expr *expr;
-@@ -451,7 +453,7 @@ __hidden void *add_filter(struct sqlhist_bison *sb,
- 	return expr;
+ 	free(map);
+ }
+@@ -118,7 +118,7 @@ struct tracecmd_cpu_map *tracecmd_map_find_by_host_pid(struct tracecmd_input *ha
+ 	struct tracecmd_cpu_map key;
+ 	int nr_maps;
+ 
+-	map = trace_get_guest_map(handle);
++	map = tracecmd_get_guest_map(handle);
+ 	if (!map)
+ 		return NULL;
+ 
+@@ -126,11 +126,11 @@ struct tracecmd_cpu_map *tracecmd_map_find_by_host_pid(struct tracecmd_input *ha
+ 	handle = map->host_handle;
+ 
+ 	/* And again, get the mapping of the host, as it has all the mappings */
+-	map = trace_get_guest_map(handle);
++	map = tracecmd_get_guest_map(handle);
+ 	if (!map)
+ 		return NULL;
+ 
+-	nr_maps = trace_get_guest_map_cnt(handle);
++	nr_maps = tracecmd_get_guest_map_cnt(handle);
+ 
+ 	key.host_pid = host_pid;
+ 
+@@ -168,10 +168,10 @@ struct tracecmd_cpu_map *tracecmd_get_cpu_map(struct tracecmd_input *handle, int
+ 	struct tracecmd_cpu_map *map;
+ 	int cnt;
+ 
+-	map = trace_get_guest_map(handle);
++	map = tracecmd_get_guest_map(handle);
+ 	/* Make sure it's for the guest handle, as this could be a host handle */
+ 	map = map->self;
+-	cnt = trace_get_guest_map_cnt(map->guest_handle);
++	cnt = tracecmd_get_guest_map_cnt(map->guest_handle);
+ 	if (cnt <= cpu)
+ 		return NULL;
+ 
+diff --git a/lib/trace-cmd/trace-msg.c b/lib/trace-cmd/trace-msg.c
+index f5c604f1..ac409591 100644
+--- a/lib/trace-cmd/trace-msg.c
++++ b/lib/trace-cmd/trace-msg.c
+@@ -183,7 +183,7 @@ static int __msg_write(int fd, struct tracecmd_msg *msg, bool network)
+ 	return __do_write_check(fd, msg->buf, data_size);
  }
  
--__hidden int add_match(struct sqlhist_bison *sb, void *A, void *B)
-+__hidden int tracefs_add_match(struct sqlhist_bison *sb, void *A, void *B)
+-__hidden off_t msg_lseek(struct tracecmd_msg_handle *msg_handle, off_t offset, int whence)
++__hidden off_t tracecmd_msg_lseek(struct tracecmd_msg_handle *msg_handle, off_t offset, int whence)
  {
- 	struct sql_table *table = sb->table;
- 	struct match *match;
-@@ -468,8 +470,9 @@ __hidden int add_match(struct sqlhist_bison *sb, void *A, void *B)
+ 	off_t cache_offset = msg_handle->cache_start_offset;
+ 	off_t ret;
+@@ -855,7 +855,7 @@ int tracecmd_msg_send_options(struct tracecmd_msg_handle *msg_handle,
+ 	void *buf;
+ 	int ret;
  
- 	return 0;
- }
--__hidden void *add_compare(struct sqlhist_bison *sb,
--			   void *A, void *B, enum compare_type type)
-+__hidden void *
-+tracefs_add_compare(struct sqlhist_bison *sb,
-+		    void *A, void *B, enum compare_type type)
- {
- 	struct compare *compare;
- 	struct expr *expr;
-@@ -484,7 +487,7 @@ __hidden void *add_compare(struct sqlhist_bison *sb,
- 	return expr;
- }
- 
--__hidden int add_where(struct sqlhist_bison *sb, void *item)
-+__hidden int tracefs_add_where(struct sqlhist_bison *sb, void *item)
- {
- 	struct expr *expr = item;
- 	struct sql_table *table = sb->table;
-@@ -501,7 +504,7 @@ __hidden int add_where(struct sqlhist_bison *sb, void *item)
- 	return 0;
- }
- 
--__hidden int add_from(struct sqlhist_bison *sb, void *item)
-+__hidden int tracefs_add_from(struct sqlhist_bison *sb, void *item)
- {
- 	struct expr *expr = item;
- 
-@@ -513,7 +516,7 @@ __hidden int add_from(struct sqlhist_bison *sb, void *item)
- 	return 0;
- }
- 
--__hidden int add_to(struct sqlhist_bison *sb, void *item)
-+__hidden int tracefs_add_to(struct sqlhist_bison *sb, void *item)
- {
- 	struct expr *expr = item;
- 
-@@ -525,7 +528,7 @@ __hidden int add_to(struct sqlhist_bison *sb, void *item)
- 	return 0;
- }
- 
--__hidden void *add_string(struct sqlhist_bison *sb, const char *str)
-+__hidden void *tracefs_add_string(struct sqlhist_bison *sb, const char *str)
- {
- 	struct expr *expr;
- 	const char **str_p;
-@@ -535,7 +538,7 @@ __hidden void *add_string(struct sqlhist_bison *sb, const char *str)
- 	return expr;
- }
- 
--__hidden void *add_number(struct sqlhist_bison *sb, long val)
-+__hidden void *tracefs_add_number(struct sqlhist_bison *sb, long val)
- {
- 	struct expr *expr;
- 	long *num;
-@@ -545,7 +548,7 @@ __hidden void *add_number(struct sqlhist_bison *sb, long val)
- 	return expr;
- }
- 
--__hidden int table_start(struct sqlhist_bison *sb)
-+__hidden int tracefs_table_start(struct sqlhist_bison *sb)
- {
- 	struct sql_table *table;
- 
-@@ -669,7 +672,7 @@ static int update_vars(struct tep_handle *tep,
- 		str = strndup(raw, p - raw);
- 		if (!str)
- 			return -1;
--		event_field->system = store_str(sb, str);
-+		event_field->system = tracefs_store_str(sb, str);
- 		free(str);
- 		if (!event_field->system)
- 			return -1;
-@@ -678,7 +681,7 @@ static int update_vars(struct tep_handle *tep,
- 		p = raw;
- 	}
- 
--	event_field->event_name = store_str(sb, p);
-+	event_field->event_name = tracefs_store_str(sb, p);
- 	if (!event_field->event_name)
+-	buf = trace_get_options(handle, &len);
++	buf = tracecmd_get_options(handle, &len);
+ 	if (!buf)
  		return -1;
  
-@@ -686,7 +689,7 @@ static int update_vars(struct tep_handle *tep,
- 		return -1;
- 
- 	if (!event_field->system)
--		event_field->system = store_str(sb, event->system);
-+		event_field->system = tracefs_store_str(sb, event->system);
- 
- 	if (!event_field->system)
- 		return -1;
-@@ -753,11 +756,11 @@ static int update_vars(struct tep_handle *tep,
- 		field->ftype = ftype;
- 
- 		if (!strcmp(field->field, "TIMESTAMP"))
--			field->field = store_str(sb, TRACEFS_TIMESTAMP);
-+			field->field = tracefs_store_str(sb, TRACEFS_TIMESTAMP);
- 		if (!strcmp(field->field, "TIMESTAMP_USECS"))
--			field->field = store_str(sb, TRACEFS_TIMESTAMP_USECS);
-+			field->field = tracefs_store_str(sb, TRACEFS_TIMESTAMP_USECS);
- 		if (!strcmp(field->field, "STACKTRACE"))
--			field->field = store_str(sb, TRACEFS_STACKTRACE);
-+			field->field = tracefs_store_str(sb, TRACEFS_STACKTRACE);
- 		if (test_field_exists(tep, sb, expr))
- 			return -1;
+@@ -963,7 +963,7 @@ int tracecmd_msg_read_options(struct tracecmd_msg_handle *msg_handle,
  	}
-@@ -809,7 +812,7 @@ static int update_fields(struct tep_handle *tep,
- 			p = strndup(field_name, len);
- 			if (!p)
+ 	msg_free(&msg);
+ 
+-	ret = trace_append_options(handle, buf, len);
++	ret = tracecmd_append_options_to_file(handle, buf, len);
+ 	free(buf);
+ 
+ 	return ret;
+diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
+index 66e11ddc..de265149 100644
+--- a/lib/trace-cmd/trace-output.c
++++ b/lib/trace-cmd/trace-output.c
+@@ -100,7 +100,7 @@ static int write_options(struct tracecmd_output *handle);
+ static int save_string_section(struct tracecmd_output *handle, bool compress);
+ 
+ __hidden long long
+-do_write_check(struct tracecmd_output *handle, const void *data, long long size)
++tracecmd_do_write_check(struct tracecmd_output *handle, const void *data, long long size)
+ {
+ 	if (handle->do_compress)
+ 		return tracecmd_compress_buffer_write(handle->compress, data, size);
+@@ -117,7 +117,7 @@ static inline off_t do_lseek(struct tracecmd_output *handle, off_t offset, int w
+ 		return tracecmd_compress_lseek(handle->compress, offset, whence);
+ 
+ 	if (handle->msg_handle)
+-		return msg_lseek(handle->msg_handle, offset, whence);
++		return tracecmd_msg_lseek(handle->msg_handle, offset, whence);
+ 
+ 	return lseek(handle->fd, offset, whence);
+ }
+@@ -155,7 +155,7 @@ static unsigned long long convert_endian_8(struct tracecmd_output *handle,
+ 	return tep_read_number(handle->pevent, &val, 8);
+ }
+ 
+-__hidden void out_compression_reset(struct tracecmd_output *handle, bool compress)
++__hidden void tracecmd_out_compression_reset(struct tracecmd_output *handle, bool compress)
+ {
+ 	if (!compress || !handle->compress)
+ 		return;
+@@ -164,7 +164,7 @@ __hidden void out_compression_reset(struct tracecmd_output *handle, bool compres
+ 	handle->do_compress = false;
+ }
+ 
+-__hidden int out_uncompress_block(struct tracecmd_output *handle)
++__hidden int tracecmd_out_uncompress_block(struct tracecmd_output *handle)
+ {
+ 	int ret = 0;
+ 
+@@ -178,7 +178,7 @@ __hidden int out_uncompress_block(struct tracecmd_output *handle)
+ 	return ret;
+ }
+ 
+-__hidden int out_compression_start(struct tracecmd_output *handle, bool compress)
++__hidden int tracecmd_out_compression_start(struct tracecmd_output *handle, bool compress)
+ {
+ 	if (!compress || !handle->compress)
+ 		return 0;
+@@ -189,7 +189,7 @@ __hidden int out_compression_start(struct tracecmd_output *handle, bool compress
+ 	return 0;
+ }
+ 
+-__hidden int out_compression_end(struct tracecmd_output *handle, bool compress)
++__hidden int tracecmd_out_compression_end(struct tracecmd_output *handle, bool compress)
+ {
+ 	if (!compress || !handle->compress)
+ 		return 0;
+@@ -355,7 +355,7 @@ static tsize_t copy_file_fd(struct tracecmd_output *handle, int fd, unsigned lon
+ 		r = read(fd, buf, rsize);
+ 		if (r > 0) {
+ 			size += r;
+-			if (do_write_check(handle, buf, r))
++			if (tracecmd_do_write_check(handle, buf, r))
+ 				return 0;
+ 			if (max) {
+ 				max -= r;
+@@ -386,7 +386,7 @@ static tsize_t copy_file(struct tracecmd_output *handle,
+ }
+ 
+ #define PAGES_IN_CHUNK 10
+-__hidden unsigned long long out_copy_fd_compress(struct tracecmd_output *handle,
++__hidden unsigned long long tracecmd_out_copy_fd_compress(struct tracecmd_output *handle,
+ 						 int fd, unsigned long long max,
+ 						 unsigned long long *write_size,
+ 						 int page)
+@@ -428,7 +428,7 @@ static tsize_t copy_file_compress(struct tracecmd_output *handle,
+ 		return 0;
+ 	}
+ 
+-	ret = out_copy_fd_compress(handle, fd, 0, write_size, getpagesize());
++	ret = tracecmd_out_copy_fd_compress(handle, fd, 0, write_size, getpagesize());
+ 	if (!ret)
+ 		tracecmd_warning("Can't compress '%s'", file);
+ 
+@@ -500,7 +500,7 @@ int tracecmd_ftrace_enable(int set)
+ }
+ 
+ __hidden unsigned long long
+-out_write_section_header(struct tracecmd_output *handle, unsigned short header_id,
++tracecmd_out_write_section_header(struct tracecmd_output *handle, unsigned short header_id,
+ 			 char *description, int flags, bool option)
+ {
+ 	tsize_t endian8;
+@@ -524,12 +524,12 @@ out_write_section_header(struct tracecmd_output *handle, unsigned short header_i
+ 	}
+ 	/* Section ID */
+ 	endian2 = convert_endian_2(handle, header_id);
+-	if (do_write_check(handle, &endian2, 2))
++	if (tracecmd_do_write_check(handle, &endian2, 2))
+ 		return (off_t)-1;
+ 
+ 	/* Section flags */
+ 	endian2 = convert_endian_2(handle, flags);
+-	if (do_write_check(handle, &endian2, 2))
++	if (tracecmd_do_write_check(handle, &endian2, 2))
+ 		return (off_t)-1;
+ 
+ 	/* Section description */
+@@ -538,18 +538,18 @@ out_write_section_header(struct tracecmd_output *handle, unsigned short header_i
+ 	else
+ 		desc = -1;
+ 	endian4 = convert_endian_4(handle, desc);
+-	if (do_write_check(handle, &endian4, 4))
++	if (tracecmd_do_write_check(handle, &endian4, 4))
+ 		return (off_t)-1;
+ 
+ 	offset = do_lseek(handle, 0, SEEK_CUR);
+ 	size = 0;
+ 	/* Reserve for section size */
+-	if (do_write_check(handle, &size, 8))
++	if (tracecmd_do_write_check(handle, &size, 8))
+ 		return (off_t)-1;
+ 	return offset;
+ }
+ 
+-__hidden int out_update_section_header(struct tracecmd_output *handle, tsize_t offset)
++__hidden int tracecmd_out_update_section_header(struct tracecmd_output *handle, tsize_t offset)
+ {
+ 	tsize_t current;
+ 	tsize_t endian8;
+@@ -570,7 +570,7 @@ __hidden int out_update_section_header(struct tracecmd_output *handle, tsize_t o
+ 		return -1;
+ 
+ 	endian8 = convert_endian_8(handle, size);
+-	if (do_write_check(handle, &endian8, 8))
++	if (tracecmd_do_write_check(handle, &endian8, 8))
+ 		return -1;
+ 	if (do_lseek(handle, current, SEEK_SET) == (off_t)-1)
+ 		return -1;
+@@ -585,7 +585,7 @@ static int save_string_section(struct tracecmd_output *handle, bool compress)
+ 	if (!handle->strings || !handle->strings_p)
+ 		return 0;
+ 
+-	if (!check_out_state(handle, TRACECMD_OPTION_STRINGS)) {
++	if (!tracecmd_check_out_state(handle, TRACECMD_OPTION_STRINGS)) {
+ 		tracecmd_warning("Cannot write strings, unexpected state 0x%X",
+ 				 handle->file_state);
+ 		return -1;
+@@ -593,19 +593,19 @@ static int save_string_section(struct tracecmd_output *handle, bool compress)
+ 
+ 	if (compress)
+ 		flags |= TRACECMD_SEC_FL_COMPRESS;
+-	offset = out_write_section_header(handle, TRACECMD_OPTION_STRINGS, "strings", flags, false);
++	offset = tracecmd_out_write_section_header(handle, TRACECMD_OPTION_STRINGS, "strings", flags, false);
+ 	if (offset == (off_t)-1)
+ 		return -1;
+ 
+-	out_compression_start(handle, compress);
++	tracecmd_out_compression_start(handle, compress);
+ 
+-	if (do_write_check(handle, handle->strings, handle->strings_p))
++	if (tracecmd_do_write_check(handle, handle->strings, handle->strings_p))
+ 		goto error;
+ 
+-	if (out_compression_end(handle, compress))
++	if (tracecmd_out_compression_end(handle, compress))
+ 		goto error;
+ 
+-	if (out_update_section_header(handle, offset))
++	if (tracecmd_out_update_section_header(handle, offset))
+ 		return -1;
+ 
+ 	handle->strings_offs += handle->strings_p;
+@@ -616,7 +616,7 @@ static int save_string_section(struct tracecmd_output *handle, bool compress)
+ 	return 0;
+ 
+ error:
+-	out_compression_reset(handle, compress);
++	tracecmd_out_compression_reset(handle, compress);
+ 	return -1;
+ }
+ 
+@@ -630,7 +630,7 @@ static int read_header_files(struct tracecmd_output *handle, bool compress)
+ 	int fd = -1;
+ 	int ret;
+ 
+-	if (!check_out_state(handle, TRACECMD_FILE_HEADERS)) {
++	if (!tracecmd_check_out_state(handle, TRACECMD_FILE_HEADERS)) {
+ 		tracecmd_warning("Cannot read header files, unexpected state 0x%X",
+ 				 handle->file_state);
+ 		return -1;
+@@ -642,30 +642,30 @@ static int read_header_files(struct tracecmd_output *handle, bool compress)
+ 
+ 	if (compress)
+ 		flags |= TRACECMD_SEC_FL_COMPRESS;
+-	offset = out_write_section_header(handle, TRACECMD_OPTION_HEADER_INFO,
++	offset = tracecmd_out_write_section_header(handle, TRACECMD_OPTION_HEADER_INFO,
+ 					  "headers", flags, true);
+ 	if (offset == (off_t)-1) {
+ 		put_tracing_file(path);
+ 		return -1;
+ 	}
+ 
+-	out_compression_start(handle, compress);
++	tracecmd_out_compression_start(handle, compress);
+ 	ret = stat(path, &st);
+ 	if (ret < 0) {
+ 		/* old style did not show this info, just add zero */
+ 		put_tracing_file(path);
+-		if (do_write_check(handle, "header_page", 12))
++		if (tracecmd_do_write_check(handle, "header_page", 12))
+ 			goto out_close;
+ 		size = 0;
+-		if (do_write_check(handle, &size, 8))
++		if (tracecmd_do_write_check(handle, &size, 8))
+ 			goto out_close;
+-		if (do_write_check(handle, "header_event", 13))
++		if (tracecmd_do_write_check(handle, "header_event", 13))
+ 			goto out_close;
+-		if (do_write_check(handle, &size, 8))
++		if (tracecmd_do_write_check(handle, &size, 8))
+ 			goto out_close;
+-		if (out_compression_end(handle, compress))
++		if (tracecmd_out_compression_end(handle, compress))
+ 			goto out_close;
+-		if (out_update_section_header(handle, offset))
++		if (tracecmd_out_update_section_header(handle, offset))
+ 			goto out_close;
+ 		return 0;
+ 	}
+@@ -679,10 +679,10 @@ static int read_header_files(struct tracecmd_output *handle, bool compress)
+ 	/* unfortunately, you can not stat debugfs files for size */
+ 	size = get_size_fd(fd);
+ 
+-	if (do_write_check(handle, "header_page", 12))
++	if (tracecmd_do_write_check(handle, "header_page", 12))
+ 		goto out_free;
+ 	endian8 = convert_endian_8(handle, size);
+-	if (do_write_check(handle, &endian8, 8))
++	if (tracecmd_do_write_check(handle, &endian8, 8))
+ 		goto out_free;
+ 	check_size = copy_file_fd(handle, fd, 0);
+ 	if (size != check_size) {
+@@ -705,10 +705,10 @@ static int read_header_files(struct tracecmd_output *handle, bool compress)
+ 
+ 	size = get_size_fd(fd);
+ 
+-	if (do_write_check(handle, "header_event", 13))
++	if (tracecmd_do_write_check(handle, "header_event", 13))
+ 		goto out_free;
+ 	endian8 = convert_endian_8(handle, size);
+-	if (do_write_check(handle, &endian8, 8))
++	if (tracecmd_do_write_check(handle, &endian8, 8))
+ 		goto out_free;
+ 	check_size = copy_file_fd(handle, fd, 0);
+ 	close(fd);
+@@ -717,10 +717,10 @@ static int read_header_files(struct tracecmd_output *handle, bool compress)
+ 		goto out_free;
+ 	}
+ 	put_tracing_file(path);
+-	if (out_compression_end(handle, compress))
++	if (tracecmd_out_compression_end(handle, compress))
+ 		goto out_close;
+ 
+-	if (out_update_section_header(handle, offset))
++	if (tracecmd_out_update_section_header(handle, offset))
+ 		goto out_close;
+ 	handle->file_state = TRACECMD_FILE_HEADERS;
+ 
+@@ -729,7 +729,7 @@ static int read_header_files(struct tracecmd_output *handle, bool compress)
+  out_free:
+ 	put_tracing_file(path);
+  out_close:
+-	out_compression_reset(handle, compress);
++	tracecmd_out_compression_reset(handle, compress);
+ 	if (fd >= 0)
+ 		close(fd);
+ 	return -1;
+@@ -750,7 +750,7 @@ static int copy_event_system(struct tracecmd_output *handle,
+ 		count++;
+ 
+ 	endian4 = convert_endian_4(handle, count);
+-	if (do_write_check(handle, &endian4, 4))
++	if (tracecmd_do_write_check(handle, &endian4, 4))
+ 		return -1;
+ 
+ 	for (elist = slist->events; elist; elist = elist->next) {
+@@ -761,7 +761,7 @@ static int copy_event_system(struct tracecmd_output *handle,
+ 			/* unfortunately, you can not stat debugfs files for size */
+ 			size = get_size(format);
+ 			endian8 = convert_endian_8(handle, size);
+-			if (do_write_check(handle, &endian8, 8))
++			if (tracecmd_do_write_check(handle, &endian8, 8))
  				return -1;
--			field_name = store_str(sb, p);
-+			field_name = tracefs_store_str(sb, p);
- 			free((char *)p);
- 			if (!field_name)
- 				return -1;
-@@ -1485,7 +1488,7 @@ static struct tracefs_synth *build_synth(struct tep_handle *tep,
- 		start_system = table->from->field.system;
- 		start_event = table->from->field.event_name;
+ 			check_size = copy_file(handle, format);
+ 			if (size != check_size) {
+@@ -968,7 +968,7 @@ static int read_ftrace_files(struct tracecmd_output *handle, bool compress)
+ 	tsize_t offset;
+ 	int ret;
  
--		synth = synth_init_from(tep, start_system, start_event);
-+		synth = tracefs_synth_init_from(tep, start_system, start_event);
- 		if (!synth)
- 			return synth_init_error(tep, table);
- 		goto hist_only;
-@@ -1556,7 +1559,7 @@ static struct tracefs_synth *build_synth(struct tep_handle *tep,
- 					goto free;
- 				if (type != HIST_COUNTER_TYPE)
- 					non_val = true;
--				ret = synth_add_start_field(synth,
-+				ret = tracefs_do_synth_add_start_field(synth,
- 						field->field, field->label,
- 						type, cnt);
- 			} else if (table->to) {
-diff --git a/src/tracefs-tools.c b/src/tracefs-tools.c
-index 74cfe91..7e50254 100644
---- a/src/tracefs-tools.c
-+++ b/src/tracefs-tools.c
-@@ -21,7 +21,7 @@
- #include "tracefs.h"
- #include "tracefs-local.h"
+-	if (!check_out_state(handle, TRACECMD_FILE_FTRACE_EVENTS)) {
++	if (!tracecmd_check_out_state(handle, TRACECMD_FILE_FTRACE_EVENTS)) {
+ 		tracecmd_warning("Cannot read ftrace files, unexpected state 0x%X",
+ 				 handle->file_state);
+ 		return -1;
+@@ -976,24 +976,24 @@ static int read_ftrace_files(struct tracecmd_output *handle, bool compress)
  
--__hidden pthread_mutex_t toplevel_lock = PTHREAD_MUTEX_INITIALIZER;
-+__hidden pthread_mutex_t tracefs_toplevel_lock = PTHREAD_MUTEX_INITIALIZER;
+ 	if (compress)
+ 		flags |= TRACECMD_SEC_FL_COMPRESS;
+-	offset = out_write_section_header(handle, TRACECMD_OPTION_FTRACE_EVENTS,
++	offset = tracecmd_out_write_section_header(handle, TRACECMD_OPTION_FTRACE_EVENTS,
+ 					  "ftrace events", flags, true);
+ 	if (offset == (off_t)-1)
+ 		return -1;
  
- #define TRACE_CTRL		"tracing_on"
- #define TRACE_FILTER		"set_ftrace_filter"
-@@ -248,8 +248,8 @@ trace_get_options(struct tracefs_instance *instance, bool enabled)
+ 	create_event_list_item(handle, &systems, &list);
+-	out_compression_start(handle, compress);
++	tracecmd_out_compression_start(handle, compress);
+ 
+ 	ret = copy_event_system(handle, systems);
+ 	if (!ret)
+-		ret = out_compression_end(handle, compress);
++		ret = tracecmd_out_compression_end(handle, compress);
+ 	else
+-		out_compression_reset(handle, compress);
++		tracecmd_out_compression_reset(handle, compress);
+ 
+ 	free_list_events(systems);
+ 	if (ret)
+ 		return ret;
+-	if (out_update_section_header(handle, offset))
++	if (tracecmd_out_update_section_header(handle, offset))
+ 		return -1;
+ 
+ 	handle->file_state = TRACECMD_FILE_FTRACE_EVENTS;
+@@ -1027,7 +1027,7 @@ static int read_event_files(struct tracecmd_output *handle,
+ 	int endian4;
+ 	int ret;
+ 
+-	if (!check_out_state(handle, TRACECMD_FILE_ALL_EVENTS)) {
++	if (!tracecmd_check_out_state(handle, TRACECMD_FILE_ALL_EVENTS)) {
+ 		tracecmd_warning("Cannot read event files, unexpected state 0x%X",
+ 				 handle->file_state);
+ 		return -1;
+@@ -1035,7 +1035,7 @@ static int read_event_files(struct tracecmd_output *handle,
+ 
+ 	if (compress)
+ 		flags |= TRACECMD_SEC_FL_COMPRESS;
+-	offset = out_write_section_header(handle, TRACECMD_OPTION_EVENT_FORMATS,
++	offset = tracecmd_out_write_section_header(handle, TRACECMD_OPTION_EVENT_FORMATS,
+ 					  "events format", flags, true);
+ 	if (offset == (off_t)-1)
+ 		return -1;
+@@ -1055,15 +1055,15 @@ static int read_event_files(struct tracecmd_output *handle,
+ 
+ 	for (slist = systems; slist; slist = slist->next)
+ 		count++;
+-	out_compression_start(handle, compress);
++	tracecmd_out_compression_start(handle, compress);
+ 	ret = -1;
+ 	endian4 = convert_endian_4(handle, count);
+-	if (do_write_check(handle, &endian4, 4))
++	if (tracecmd_do_write_check(handle, &endian4, 4))
+ 		goto out_free;
+ 
+ 	ret = 0;
+ 	for (slist = systems; !ret && slist; slist = slist->next) {
+-		if (do_write_check(handle, slist->name,
++		if (tracecmd_do_write_check(handle, slist->name,
+ 				   strlen(slist->name) + 1)) {
+ 			ret = -1;
+ 			continue;
+@@ -1073,16 +1073,16 @@ static int read_event_files(struct tracecmd_output *handle,
+ 	if (ret)
+ 		goto out_free;
+ 
+-	ret = out_compression_end(handle, compress);
++	ret = tracecmd_out_compression_end(handle, compress);
+ 	if (ret)
+ 		goto out_free;
+-	ret = out_update_section_header(handle, offset);
++	ret = tracecmd_out_update_section_header(handle, offset);
+ 
+  out_free:
+ 	if (!ret)
+ 		handle->file_state = TRACECMD_FILE_ALL_EVENTS;
+ 	else
+-		out_compression_reset(handle, compress);
++		tracecmd_out_compression_reset(handle, compress);
+ 
+ 	free_list_events(systems);
+ 
+@@ -1138,7 +1138,7 @@ static int read_proc_kallsyms(struct tracecmd_output *handle, bool compress)
+ 	struct stat st;
+ 	int ret;
+ 
+-	if (!check_out_state(handle, TRACECMD_FILE_KALLSYMS)) {
++	if (!tracecmd_check_out_state(handle, TRACECMD_FILE_KALLSYMS)) {
+ 		tracecmd_warning("Cannot read kallsyms, unexpected state 0x%X",
+ 				 handle->file_state);
+ 		return -1;
+@@ -1149,23 +1149,23 @@ static int read_proc_kallsyms(struct tracecmd_output *handle, bool compress)
+ 
+ 	if (compress)
+ 		flags |= TRACECMD_SEC_FL_COMPRESS;
+-	offset = out_write_section_header(handle, TRACECMD_OPTION_KALLSYMS,
++	offset = tracecmd_out_write_section_header(handle, TRACECMD_OPTION_KALLSYMS,
+ 					  "kallsyms", flags, true);
+ 	if (offset == (off_t)-1)
+ 		return -1;
+ 
+-	out_compression_start(handle, compress);
++	tracecmd_out_compression_start(handle, compress);
+ 	ret = stat(path, &st);
+ 	if (ret < 0) {
+ 		/* not found */
+ 		size = 0;
+ 		endian4 = convert_endian_4(handle, size);
+-		ret = do_write_check(handle, &endian4, 4);
++		ret = tracecmd_do_write_check(handle, &endian4, 4);
+ 		goto out;
+ 	}
+ 	size = get_size(path);
+ 	endian4 = convert_endian_4(handle, size);
+-	ret = do_write_check(handle, &endian4, 4);
++	ret = tracecmd_do_write_check(handle, &endian4, 4);
+ 	if (ret)
+ 		goto out;
+ 
+@@ -1180,16 +1180,16 @@ static int read_proc_kallsyms(struct tracecmd_output *handle, bool compress)
+ 	}
+ 	set_proc_kptr_restrict(1);
+ 
+-	ret = out_compression_end(handle, compress);
++	ret = tracecmd_out_compression_end(handle, compress);
+ 	if (ret)
+ 		goto out;
+ 
+-	ret = out_update_section_header(handle, offset);
++	ret = tracecmd_out_update_section_header(handle, offset);
+ out:
+ 	if (!ret)
+ 		handle->file_state = TRACECMD_FILE_KALLSYMS;
+ 	else
+-		out_compression_reset(handle, compress);
++		tracecmd_out_compression_reset(handle, compress);
+ 	return ret;
+ }
+ 
+@@ -1202,7 +1202,7 @@ static int read_ftrace_printk(struct tracecmd_output *handle, bool compress)
  	char *path;
  	int ret;
  
--	bitmask = enabled ? enabled_opts_mask(instance) :
--			   supported_opts_mask(instance);
-+	bitmask = enabled ? tracefs_enabled_opts_mask(instance) :
-+			   tracefs_supported_opts_mask(instance);
+-	if (!check_out_state(handle, TRACECMD_FILE_PRINTK)) {
++	if (!tracecmd_check_out_state(handle, TRACECMD_FILE_PRINTK)) {
+ 		tracecmd_warning("Cannot read printk, unexpected state 0x%X",
+ 				 handle->file_state);
+ 		return -1;
+@@ -1214,25 +1214,25 @@ static int read_ftrace_printk(struct tracecmd_output *handle, bool compress)
  
- 	for (id = 1; id < TRACEFS_OPTION_MAX; id++) {
- 		snprintf(file, PATH_MAX, "options/%s", options_map[id]);
-diff --git a/src/tracefs-uprobes.c b/src/tracefs-uprobes.c
-index aa39b75..f57bac8 100644
---- a/src/tracefs-uprobes.c
-+++ b/src/tracefs-uprobes.c
-@@ -29,7 +29,7 @@ uprobe_alloc(enum tracefs_dynevent_type type, const char *system, const char *ev
- 	if (asprintf(&target, "%s:0x%0*llx", file, (int)(sizeof(void *) * 2), offset) < 0)
- 		return NULL;
+ 	if (compress)
+ 		flags |= TRACECMD_SEC_FL_COMPRESS;
+-	offset = out_write_section_header(handle, TRACECMD_OPTION_PRINTK, "printk", flags, true);
++	offset = tracecmd_out_write_section_header(handle, TRACECMD_OPTION_PRINTK, "printk", flags, true);
+ 	if (offset == (off_t)-1) {
+ 		put_tracing_file(path);
+ 		return -1;
+ 	}
  
--	kp = dynevent_alloc(type, system, event, target, fetchargs);
-+	kp = tracefs_dynevent_alloc(type, system, event, target, fetchargs);
- 	free(target);
+-	out_compression_start(handle, compress);
++	tracecmd_out_compression_start(handle, compress);
+ 	ret = stat(path, &st);
+ 	if (ret < 0) {
+ 		/* not found */
+ 		size = 0;
+ 		endian4 = convert_endian_4(handle, size);
+-		if (do_write_check(handle, &endian4, 4))
++		if (tracecmd_do_write_check(handle, &endian4, 4))
+ 			goto fail;
+ 		goto out;
+ 	}
+ 	size = get_size(path);
+ 	endian4 = convert_endian_4(handle, size);
+-	if (do_write_check(handle, &endian4, 4))
++	if (tracecmd_do_write_check(handle, &endian4, 4))
+ 		goto fail;
+ 	check_size = copy_file(handle, path);
+ 	if (size != check_size) {
+@@ -1243,16 +1243,16 @@ static int read_ftrace_printk(struct tracecmd_output *handle, bool compress)
  
- 	return kp;
-diff --git a/src/tracefs-utils.c b/src/tracefs-utils.c
-index 50a7c74..ab7eeaa 100644
---- a/src/tracefs-utils.c
-+++ b/src/tracefs-utils.c
-@@ -86,7 +86,7 @@ static int mount_debugfs(void)
+  out:
+ 	put_tracing_file(path);
+-	if (out_compression_end(handle, compress))
++	if (tracecmd_out_compression_end(handle, compress))
+ 		return -1;
+ 
+-	if (out_update_section_header(handle, offset))
++	if (tracecmd_out_update_section_header(handle, offset))
+ 		return -1;
+ 	handle->file_state = TRACECMD_FILE_PRINTK;
+ 	return 0;
+  fail:
+ 	put_tracing_file(path);
+-	out_compression_reset(handle, compress);
++	tracecmd_out_compression_reset(handle, compress);
+ 	return -1;
  }
  
- /* Exported for testing purpose only */
--__hidden char *find_tracing_dir(bool debugfs, bool mount)
-+__hidden char *tracefs_find_debug_tracing_dir(bool debugfs, bool mount)
- {
- 	char *debug_str = NULL;
- 	char fspath[PATH_MAX+1];
-@@ -175,7 +175,7 @@ int tracefs_tracing_dir_is_mounted(bool mount, const char **path)
- {
- 	const char *dir;
+@@ -1274,7 +1274,7 @@ static int save_tracing_file_data(struct tracecmd_output *handle,
+ 	if (ret >= 0) {
+ 		size = get_size(file);
+ 		endian8 = convert_endian_8(handle, size);
+-		if (do_write_check(handle, &endian8, 8))
++		if (tracecmd_do_write_check(handle, &endian8, 8))
+ 			goto out_free;
+ 		check_size = copy_file(handle, file);
+ 		if (size != check_size) {
+@@ -1285,7 +1285,7 @@ static int save_tracing_file_data(struct tracecmd_output *handle,
+ 	} else {
+ 		size = 0;
+ 		endian8 = convert_endian_8(handle, size);
+-		if (do_write_check(handle, &endian8, 8))
++		if (tracecmd_do_write_check(handle, &endian8, 8))
+ 			goto out_free;
+ 	}
+ 	ret = 0;
+@@ -1307,10 +1307,10 @@ static int write_compression_header(struct tracecmd_output *handle)
+ 		ver = "";
+ 	}
  
--	dir = find_tracing_dir(false, false);
-+	dir = tracefs_find_debug_tracing_dir(false, false);
- 	if (dir) {
- 		if (path)
- 			*path = dir;
-@@ -184,7 +184,7 @@ int tracefs_tracing_dir_is_mounted(bool mount, const char **path)
- 	if (!mount)
+-	if (do_write_check(handle, name, strlen(name) + 1))
++	if (tracecmd_do_write_check(handle, name, strlen(name) + 1))
+ 		return -1;
+ 
+-	if (do_write_check(handle, ver, strlen(ver) + 1))
++	if (tracecmd_do_write_check(handle, ver, strlen(ver) + 1))
+ 		return -1;
+ 
+ 	return 0;
+@@ -1622,27 +1622,27 @@ static int output_write_init(struct tracecmd_output *handle)
+ 	buf[2] = 68;
+ 	memcpy(buf + 3, "tracing", 7);
+ 
+-	if (do_write_check(handle, buf, 10))
++	if (tracecmd_do_write_check(handle, buf, 10))
+ 		return -1;
+ 
+ 	sprintf(buf, "%lu", handle->file_version);
+-	if (do_write_check(handle, buf, strlen(buf) + 1))
++	if (tracecmd_do_write_check(handle, buf, strlen(buf) + 1))
+ 		return -1;
+ 
+ 	if (handle->big_endian)
+ 		buf[0] = 1;
+ 	else
+ 		buf[0] = 0;
+-	if (do_write_check(handle, buf, 1))
++	if (tracecmd_do_write_check(handle, buf, 1))
+ 		return -1;
+ 
+ 	/* save size of long (this may not be what the kernel is) */
+ 	buf[0] = sizeof(long);
+-	if (do_write_check(handle, buf, 1))
++	if (tracecmd_do_write_check(handle, buf, 1))
+ 		return -1;
+ 
+ 	endian4 = convert_endian_4(handle, handle->page_size);
+-	if (do_write_check(handle, &endian4, 4))
++	if (tracecmd_do_write_check(handle, &endian4, 4))
+ 		return -1;
+ 
+ 	if (handle->file_version >= FILE_VERSION_COMPRESSION) {
+@@ -1654,7 +1654,7 @@ static int output_write_init(struct tracecmd_output *handle)
+ 		/* Write 0 as options offset and save its location */
+ 		offset = 0;
+ 		handle->options_start = do_lseek(handle, 0, SEEK_CUR);
+-		if (do_write_check(handle, &offset, 8))
++		if (tracecmd_do_write_check(handle, &offset, 8))
+ 			return -1;
+ 	}
+ 
+@@ -1793,7 +1793,7 @@ int tracecmd_write_cpus(struct tracecmd_output *handle, int cpus)
+ {
+ 	int ret;
+ 
+-	if (!check_out_state(handle, TRACECMD_FILE_CPU_COUNT)) {
++	if (!tracecmd_check_out_state(handle, TRACECMD_FILE_CPU_COUNT)) {
+ 		tracecmd_warning("Cannot write CPU count into the file, unexpected state 0x%X",
+ 				 handle->file_state);
+ 		return -1;
+@@ -1801,7 +1801,7 @@ int tracecmd_write_cpus(struct tracecmd_output *handle, int cpus)
+ 
+ 	if (!HAS_SECTIONS(handle)) {
+ 		cpus = convert_endian_4(handle, cpus);
+-		ret = do_write_check(handle, &cpus, 4);
++		ret = tracecmd_do_write_check(handle, &cpus, 4);
+ 		if (ret < 0)
+ 			return ret;
+ 	} else {
+@@ -1822,35 +1822,35 @@ static int write_options_v6(struct tracecmd_output *handle)
+ 	/* If already written, ignore */
+ 	if (handle->file_state == TRACECMD_FILE_OPTIONS)
+ 		return 0;
+-	if (!check_out_state(handle, TRACECMD_FILE_OPTIONS)) {
++	if (!tracecmd_check_out_state(handle, TRACECMD_FILE_OPTIONS)) {
+ 		tracecmd_warning("Cannot write options into the file, unexpected state 0x%X",
+ 				 handle->file_state);
+ 		return -1;
+ 	}
+ 
+-	if (do_write_check(handle, "options  ", 10))
++	if (tracecmd_do_write_check(handle, "options  ", 10))
+ 		return -1;
+ 	handle->options_start = do_lseek(handle, 0, SEEK_CUR);
+ 	list_for_each_entry(options, &handle->options, list) {
+ 		endian2 = convert_endian_2(handle, options->id);
+-		if (do_write_check(handle, &endian2, 2))
++		if (tracecmd_do_write_check(handle, &endian2, 2))
+ 			return -1;
+ 
+ 		endian4 = convert_endian_4(handle, options->size);
+-		if (do_write_check(handle, &endian4, 4))
++		if (tracecmd_do_write_check(handle, &endian4, 4))
+ 			return -1;
+ 
+ 		/* Save the data location in case it needs to be updated */
+ 		options->offset = do_lseek(handle, 0, SEEK_CUR);
+ 
+-		if (do_write_check(handle, options->data,
++		if (tracecmd_do_write_check(handle, options->data,
+ 				   options->size))
+ 			return -1;
+ 	}
+ 
+ 	option = TRACECMD_OPTION_DONE;
+ 
+-	if (do_write_check(handle, &option, 2))
++	if (tracecmd_do_write_check(handle, &option, 2))
+ 		return -1;
+ 
+ 	handle->file_state = TRACECMD_FILE_OPTIONS;
+@@ -1862,7 +1862,7 @@ static int update_options_start(struct tracecmd_output *handle, off_t offset)
+ 	if (do_lseek(handle, handle->options_start, SEEK_SET) == (off_t)-1)
+ 		return -1;
+ 	offset = convert_endian_8(handle, offset);
+-	if (do_write_check(handle, &offset, 8))
++	if (tracecmd_do_write_check(handle, &offset, 8))
+ 		return -1;
+ 	return 0;
+ }
+@@ -1946,7 +1946,7 @@ static tsize_t write_options_start(struct tracecmd_output *handle)
+ 			return -1;
+ 	}
+ 
+-	return out_write_section_header(handle, TRACECMD_OPTION_DONE, "options", 0, false);
++	return tracecmd_out_write_section_header(handle, TRACECMD_OPTION_DONE, "options", 0, false);
+ }
+ 
+ static tsize_t write_options_end(struct tracecmd_output *handle, tsize_t offset)
+@@ -1956,16 +1956,16 @@ static tsize_t write_options_end(struct tracecmd_output *handle, tsize_t offset)
+ 	unsigned int endian4;
+ 
+ 	endian2 = convert_endian_2(handle, TRACECMD_OPTION_DONE);
+-	if (do_write_check(handle, &endian2, 2))
++	if (tracecmd_do_write_check(handle, &endian2, 2))
+ 		return -1;
+ 	endian4 = convert_endian_4(handle, 8);
+-	if (do_write_check(handle, &endian4, 4))
++	if (tracecmd_do_write_check(handle, &endian4, 4))
+ 		return -1;
+ 	endian8 = 0;
+ 	handle->options_start = do_lseek(handle, 0, SEEK_CUR);
+-	if (do_write_check(handle, &endian8, 8))
++	if (tracecmd_do_write_check(handle, &endian8, 8))
+ 		return -1;
+-	if (out_update_section_header(handle, offset))
++	if (tracecmd_out_update_section_header(handle, offset))
+ 		return -1;
+ 
+ 	return 0;
+@@ -2003,14 +2003,14 @@ static int write_options(struct tracecmd_output *handle)
+ 		if (options->offset)
+ 			continue;
+ 		endian2 = convert_endian_2(handle, options->id);
+-		if (do_write_check(handle, &endian2, 2))
++		if (tracecmd_do_write_check(handle, &endian2, 2))
+ 			return -1;
+ 		endian4 = convert_endian_4(handle, options->size);
+-		if (do_write_check(handle, &endian4, 4))
++		if (tracecmd_do_write_check(handle, &endian4, 4))
+ 			return -1;
+ 		/* Save the data location */
+ 		options->offset = do_lseek(handle, 0, SEEK_CUR);
+-		if (do_write_check(handle, options->data, options->size))
++		if (tracecmd_do_write_check(handle, options->data, options->size))
+ 			return -1;
+ 	}
+ 
+@@ -2018,7 +2018,7 @@ static int write_options(struct tracecmd_output *handle)
+ }
+ 
+ /**
+- * trace_get_options - Get the current options from the output file handle
++ * tracecmd_get_options - Get the current options from the output file handle
+  * @handle: The output file descriptor that has options.
+  * @len: Returns the length of the buffer allocated and returned.
+  *
+@@ -2033,7 +2033,7 @@ static int write_options(struct tracecmd_output *handle)
+  *   the options to send, with @len set to the size of the content.
+  *   NULL on error (and @len is undefined).
+  */
+-__hidden void *trace_get_options(struct tracecmd_output *handle, size_t *len)
++__hidden void *tracecmd_get_options(struct tracecmd_output *handle, size_t *len)
+ {
+ 	struct tracecmd_msg_handle msg_handle;
+ 	struct tracecmd_output out_handle;
+@@ -2058,14 +2058,14 @@ __hidden void *trace_get_options(struct tracecmd_output *handle, size_t *len)
+ 		if (options->offset)
+ 			continue;
+ 		endian2 = convert_endian_2(handle, options->id);
+-		if (do_write_check(&out_handle, &endian2, 2))
++		if (tracecmd_do_write_check(&out_handle, &endian2, 2))
+ 			goto out;
+ 		endian4 = convert_endian_4(handle, options->size);
+-		if (do_write_check(&out_handle, &endian4, 4))
++		if (tracecmd_do_write_check(&out_handle, &endian4, 4))
+ 			goto out;
+ 		/* The option can not be referenced again */
+ 		options->offset = -1;
+-		if (do_write_check(&out_handle, options->data, options->size))
++		if (tracecmd_do_write_check(&out_handle, options->data, options->size))
+ 			goto out;
+ 	}
+ 
+@@ -2088,7 +2088,7 @@ __hidden void *trace_get_options(struct tracecmd_output *handle, size_t *len)
+ }
+ 
+ /**
+- * trace_append_options - Append options to the file
++ * tracecmd_append_options_to_file - Append options to the file
+  * @handle: The output file descriptor that has options.
+  * @buf: The options to append.
+  * @len: The length of @buf.
+@@ -2099,8 +2099,9 @@ __hidden void *trace_get_options(struct tracecmd_output *handle, size_t *len)
+  *
+  * Returns 0 on success and -1 on error.
+  */
+-__hidden int trace_append_options(struct tracecmd_output *handle, void *buf,
+-				  size_t len)
++__hidden int
++tracecmd_append_options_to_file(struct tracecmd_output *handle, void *buf,
++				size_t len)
+ {
+ 	tsize_t offset;
+ 
+@@ -2108,7 +2109,7 @@ __hidden int trace_append_options(struct tracecmd_output *handle, void *buf,
+ 	if (offset == (off_t)-1)
+ 		return -1;
+ 
+-	if (do_write_check(handle, buf, len))
++	if (tracecmd_do_write_check(handle, buf, len))
+ 		return -1;
+ 
+ 	return write_options_end(handle, offset);
+@@ -2157,24 +2158,24 @@ static int append_options_v6(struct tracecmd_output *handle)
+ 
+ 	list_for_each_entry(options, &handle->options, list) {
+ 		endian2 = convert_endian_2(handle, options->id);
+-		if (do_write_check(handle, &endian2, 2))
++		if (tracecmd_do_write_check(handle, &endian2, 2))
+ 			return -1;
+ 
+ 		endian4 = convert_endian_4(handle, options->size);
+-		if (do_write_check(handle, &endian4, 4))
++		if (tracecmd_do_write_check(handle, &endian4, 4))
+ 			return -1;
+ 
+ 		/* Save the data location in case it needs to be updated */
+ 		options->offset = do_lseek(handle, 0, SEEK_CUR);
+ 
+-		if (do_write_check(handle, options->data,
++		if (tracecmd_do_write_check(handle, options->data,
+ 				   options->size))
+ 			return -1;
+ 	}
+ 
+ 	option = TRACECMD_OPTION_DONE;
+ 
+-	if (do_write_check(handle, &option, 2))
++	if (tracecmd_do_write_check(handle, &option, 2))
+ 		return -1;
+ 
+ 	return 0;
+@@ -2272,7 +2273,7 @@ int tracecmd_write_cmdlines(struct tracecmd_output *handle)
+ 	tsize_t offset;
+ 	int ret;
+ 
+-	if (!check_out_state(handle, TRACECMD_FILE_CMD_LINES)) {
++	if (!tracecmd_check_out_state(handle, TRACECMD_FILE_CMD_LINES)) {
+ 		tracecmd_warning("Cannot write command lines into the file, unexpected state 0x%X",
+ 				 handle->file_state);
+ 		return -1;
+@@ -2283,23 +2284,23 @@ int tracecmd_write_cmdlines(struct tracecmd_output *handle)
+ 
+ 	if (compress)
+ 		flags |= TRACECMD_SEC_FL_COMPRESS;
+-	offset = out_write_section_header(handle, TRACECMD_OPTION_CMDLINES,
++	offset = tracecmd_out_write_section_header(handle, TRACECMD_OPTION_CMDLINES,
+ 					  "command lines", flags, true);
+ 	if (offset == (off_t)-1)
+ 		return -1;
+ 
+-	out_compression_start(handle, compress);
++	tracecmd_out_compression_start(handle, compress);
+ 
+ 	ret = save_tracing_file_data(handle, "saved_cmdlines");
+ 	if (ret < 0) {
+-		out_compression_reset(handle, compress);
++		tracecmd_out_compression_reset(handle, compress);
+ 		return ret;
+ 	}
+ 
+-	if (out_compression_end(handle, compress))
++	if (tracecmd_out_compression_end(handle, compress))
+ 		return -1;
+ 
+-	if (out_update_section_header(handle, offset))
++	if (tracecmd_out_update_section_header(handle, offset))
+ 		return -1;
+ 
+ 	handle->file_state = TRACECMD_FILE_CMD_LINES;
+@@ -2331,7 +2332,7 @@ static char *get_clock(struct tracecmd_output *handle)
+ }
+ 
+ __hidden struct tracecmd_option *
+-out_add_buffer_option(struct tracecmd_output *handle, const char *name,
++tracecmd_out_add_buffer_option(struct tracecmd_output *handle, const char *name,
+ 		      unsigned short id, unsigned long long data_offset,
+ 		      int cpus, struct data_file_write *cpu_data, int page_size)
+ {
+@@ -2453,13 +2454,13 @@ struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, in
+ 	if (tracecmd_write_options(handle) < 0)
+ 		goto out_free;
+ 
+-	if (!check_out_state(handle, TRACECMD_FILE_CPU_LATENCY)) {
++	if (!tracecmd_check_out_state(handle, TRACECMD_FILE_CPU_LATENCY)) {
+ 		tracecmd_warning("Cannot write latency data into the file, unexpected state 0x%X",
+ 				 handle->file_state);
+ 		goto out_free;
+ 	}
+ 
+-	if (!HAS_SECTIONS(handle) && do_write_check(handle, "latency  ", 10))
++	if (!HAS_SECTIONS(handle) && tracecmd_do_write_check(handle, "latency  ", 10))
+ 		goto out_free;
+ 
+ 	path = get_tracing_file(handle, "trace");
+@@ -2468,17 +2469,17 @@ struct tracecmd_output *tracecmd_create_file_latency(const char *output_file, in
+ 
+ 	offset = do_lseek(handle, 0, SEEK_CUR);
+ 	if (HAS_SECTIONS(handle) &&
+-	    !out_add_buffer_option(handle, "", TRACECMD_OPTION_BUFFER_TEXT,
++	    !tracecmd_out_add_buffer_option(handle, "", TRACECMD_OPTION_BUFFER_TEXT,
+ 				   offset, 0, NULL, getpagesize()))
+ 		goto out_free;
+ 	if (handle->compress)
+ 		flags |= TRACECMD_SEC_FL_COMPRESS;
+ 
+-	offset = out_write_section_header(handle, TRACECMD_OPTION_BUFFER_TEXT,
++	offset = tracecmd_out_write_section_header(handle, TRACECMD_OPTION_BUFFER_TEXT,
+ 					  "buffer latency", flags, false);
+ 
+ 	copy_file_compress(handle, path, NULL);
+-	if (out_update_section_header(handle, offset))
++	if (tracecmd_out_update_section_header(handle, offset))
+ 		goto out_free;
+ 
+ 	put_tracing_file(path);
+@@ -2506,10 +2507,10 @@ static int save_clock(struct tracecmd_output *handle, char *clock)
+ 		return -1;
+ 
+ 	endian8 = convert_endian_8(handle, strlen(str));
+-	ret = do_write_check(handle, &endian8, 8);
++	ret = tracecmd_do_write_check(handle, &endian8, 8);
+ 	if (ret)
+ 		goto out;
+-	ret = do_write_check(handle, str, strlen(str));
++	ret = tracecmd_do_write_check(handle, str, strlen(str));
+ 
+ out:
+ 	free(str);
+@@ -2539,7 +2540,7 @@ static int update_buffer_cpu_offset_v6(struct tracecmd_output *handle,
+ 		return -1;
+ 	}
+ 
+-	if (do_write_check(handle, &offset, 8))
++	if (tracecmd_do_write_check(handle, &offset, 8))
+ 		return -1;
+ 
+ 	/* Go back to end of file */
+@@ -2550,7 +2551,7 @@ static int update_buffer_cpu_offset_v6(struct tracecmd_output *handle,
+ 	return 0;
+ }
+ 
+-__hidden int out_write_emty_cpu_data(struct tracecmd_output *handle, int cpus)
++__hidden int tracecmd_out_write_emty_cpu_data(struct tracecmd_output *handle, int cpus)
+ {
+ 	unsigned long long zero = 0;
+ 	char *clock;
+@@ -2561,7 +2562,7 @@ __hidden int out_write_emty_cpu_data(struct tracecmd_output *handle, int cpus)
  		return 0;
  
--	dir = find_tracing_dir(false, mount);
-+	dir = tracefs_find_debug_tracing_dir(false, mount);
- 	if (!dir)
+ 	ret = handle->file_state == TRACECMD_FILE_CPU_FLYRECORD ? 0 :
+-				    check_file_state(handle->file_version,
++				    tracecmd_check_file_state(handle->file_version,
+ 						     handle->file_state,
+ 						     TRACECMD_FILE_CPU_FLYRECORD);
+ 	if (ret < 0) {
+@@ -2570,15 +2571,15 @@ __hidden int out_write_emty_cpu_data(struct tracecmd_output *handle, int cpus)
+ 		return ret;
+ 	}
+ 
+-	if (do_write_check(handle, "flyrecord", 10))
++	if (tracecmd_do_write_check(handle, "flyrecord", 10))
  		return -1;
- 	if (path)
-@@ -193,15 +193,15 @@ int tracefs_tracing_dir_is_mounted(bool mount, const char **path)
+ 
+ 	for (i = 0; i < cpus; i++) {
+ 		/* Write 0 for trace data offset and size */
+-		if (do_write_check(handle, &zero, 8))
++		if (tracecmd_do_write_check(handle, &zero, 8))
+ 			return -1;
+ 
+-		if (do_write_check(handle, &zero, 8))
++		if (tracecmd_do_write_check(handle, &zero, 8))
+ 			return -1;
+ 	}
+ 	clock = get_clock(handle);
+@@ -2589,7 +2590,7 @@ __hidden int out_write_emty_cpu_data(struct tracecmd_output *handle, int cpus)
+ 	return 0;
+ }
+ 
+-__hidden int out_write_cpu_data(struct tracecmd_output *handle,
++__hidden int tracecmd_out_write_cpu_data(struct tracecmd_output *handle,
+ 				int cpus, struct cpu_data_source *data, const char *buff_name)
+ {
+ 	struct data_file_write *data_files = NULL;
+@@ -2605,7 +2606,7 @@ __hidden int out_write_cpu_data(struct tracecmd_output *handle,
+ 
+ 	/* This can be called multiple times (when recording instances) */
+ 	ret = handle->file_state == TRACECMD_FILE_CPU_FLYRECORD ? 0 :
+-				    check_file_state(handle->file_version,
++				    tracecmd_check_file_state(handle->file_version,
+ 						     handle->file_state,
+ 						     TRACECMD_FILE_CPU_FLYRECORD);
+ 	if (ret < 0) {
+@@ -2620,14 +2621,14 @@ __hidden int out_write_cpu_data(struct tracecmd_output *handle,
+ 		page_size = get_trace_page_size(handle, buff_name);
+ 
+ 	data_offs = do_lseek(handle, 0, SEEK_CUR);
+-	if (!HAS_SECTIONS(handle) && do_write_check(handle, "flyrecord", 10))
++	if (!HAS_SECTIONS(handle) && tracecmd_do_write_check(handle, "flyrecord", 10))
+ 		goto out_free;
+ 
+ 	if (handle->compress)
+ 		flags |= TRACECMD_SEC_FL_COMPRESS;
+ 	if (asprintf(&str, "buffer flyrecord %s", buff_name) < 1)
+ 		goto out_free;
+-	offset = out_write_section_header(handle, TRACECMD_OPTION_BUFFER, str, flags, false);
++	offset = tracecmd_out_write_section_header(handle, TRACECMD_OPTION_BUFFER, str, flags, false);
+ 	free(str);
+ 	if (offset == (off_t)-1)
+ 		goto out_free;
+@@ -2645,10 +2646,10 @@ __hidden int out_write_cpu_data(struct tracecmd_output *handle,
+ 		if (!HAS_SECTIONS(handle)) {
+ 			endian8 = 0;
+ 			data_files[i].file_data_offset = do_lseek(handle, 0, SEEK_CUR);
+-			if (do_write_check(handle, &endian8, 8))
++			if (tracecmd_do_write_check(handle, &endian8, 8))
+ 				goto out_free;
+ 			data_files[i].file_write_size = do_lseek(handle, 0, SEEK_CUR);
+-			if (do_write_check(handle, &endian8, 8))
++			if (tracecmd_do_write_check(handle, &endian8, 8))
+ 				goto out_free;
+ 		}
+ 	}
+@@ -2677,7 +2678,7 @@ __hidden int out_write_cpu_data(struct tracecmd_output *handle,
+ 		if (data[i].size) {
+ 			if (lseek(data[i].fd, data[i].offset, SEEK_SET) == (off_t)-1)
+ 				goto out_free;
+-			read_size = out_copy_fd_compress(handle, data[i].fd,
++			read_size = tracecmd_out_copy_fd_compress(handle, data[i].fd,
+ 							 data[i].size, &data_files[i].write_size,
+ 							 page_size);
+ 
+@@ -2696,13 +2697,13 @@ __hidden int out_write_cpu_data(struct tracecmd_output *handle,
+ 			if (do_lseek(handle, data_files[i].file_data_offset, SEEK_SET) == (off_t)-1)
+ 				goto out_free;
+ 			endian8 = convert_endian_8(handle, data_files[i].data_offset);
+-			if (do_write_check(handle, &endian8, 8))
++			if (tracecmd_do_write_check(handle, &endian8, 8))
+ 				goto out_free;
+ 			/* Write the real CPU data size in the file */
+ 			if (do_lseek(handle, data_files[i].file_write_size, SEEK_SET) == (off_t)-1)
+ 				goto out_free;
+ 			endian8 = convert_endian_8(handle, data_files[i].write_size);
+-			if (do_write_check(handle, &endian8, 8))
++			if (tracecmd_do_write_check(handle, &endian8, 8))
+ 				goto out_free;
+ 			offset = data_files[i].data_offset + data_files[i].write_size;
+ 			if (do_lseek(handle, offset, SEEK_SET) == (off_t)-1)
+@@ -2719,7 +2720,7 @@ __hidden int out_write_cpu_data(struct tracecmd_output *handle,
+ 	}
+ 
+ 	if (HAS_SECTIONS(handle) &&
+-	    !out_add_buffer_option(handle, buff_name,  TRACECMD_OPTION_BUFFER,
++	    !tracecmd_out_add_buffer_option(handle, buff_name,  TRACECMD_OPTION_BUFFER,
+ 				   data_offs, cpus, data_files, page_size))
+ 		goto out_free;
+ 
+@@ -2727,7 +2728,7 @@ __hidden int out_write_cpu_data(struct tracecmd_output *handle,
+ 	if (do_lseek(handle, 0, SEEK_END) == (off_t)-1)
+ 		return -1;
+ 
+-	if (out_update_section_header(handle, offset))
++	if (tracecmd_out_update_section_header(handle, offset))
+ 		goto out_free;
+ 
+ 	handle->file_state = TRACECMD_FILE_CPU_FLYRECORD;
+@@ -2779,7 +2780,7 @@ int tracecmd_write_cpu_data(struct tracecmd_output *handle,
+ 	if (i < cpus)
+ 		ret = -1;
+ 	else
+-		ret = out_write_cpu_data(handle, cpus, data, buff_name);
++		ret = tracecmd_out_write_cpu_data(handle, cpus, data, buff_name);
+ 
+ 	for (i--; i >= 0; i--)
+ 		close(data[i].fd);
+@@ -2853,8 +2854,8 @@ struct tracecmd_output *tracecmd_get_output_handle_fd(int fd)
+ 	tep_ref(handle->pevent);
+ 	handle->page_size = tracecmd_page_size(ihandle);
+ 	handle->file_version = tracecmd_get_in_file_version(ihandle);
+-	handle->options_start = get_last_option_offset(ihandle);
+-	handle->strings_offs = get_meta_strings_size(ihandle);
++	handle->options_start = tracecmd_get_last_option_offset(ihandle);
++	handle->strings_offs = tracecmd_get_meta_strings_size(ihandle);
+ 	list_head_init(&handle->options);
+ 	list_head_init(&handle->buffers);
+ 
+@@ -2968,22 +2969,22 @@ out_free:
+ 	return NULL;
+ }
+ 
+-__hidden void out_set_file_state(struct tracecmd_output *handle, int new_state)
++__hidden void tracecmd_out_set_file_state(struct tracecmd_output *handle, int new_state)
+ {
+ 	handle->file_state = new_state;
+ }
+ 
+-__hidden bool check_out_state(struct tracecmd_output *handle, int new_state)
++__hidden bool tracecmd_check_out_state(struct tracecmd_output *handle, int new_state)
+ {
+-	return check_file_state(handle->file_version, handle->file_state, new_state);
++	return tracecmd_check_file_state(handle->file_version, handle->file_state, new_state);
+ }
+ 
+-__hidden bool out_check_compression(struct tracecmd_output *handle)
++__hidden bool tracecmd_out_check_compression(struct tracecmd_output *handle)
+ {
+ 	return (handle->compress != NULL);
+ }
+ 
+-__hidden int out_save_options_offset(struct tracecmd_output *handle, unsigned long long start)
++__hidden int tracecmd_out_save_options_offset(struct tracecmd_output *handle, unsigned long long start)
+ {
+ 	unsigned long long new, en8;
+ 
+@@ -2997,7 +2998,7 @@ __hidden int out_save_options_offset(struct tracecmd_output *handle, unsigned lo
+ 			return -1;
+ 
+ 		en8 = convert_endian_8(handle, start);
+-		if (do_write_check(handle, &en8, 8))
++		if (tracecmd_do_write_check(handle, &en8, 8))
+ 			return -1;
+ 
+ 		handle->options_start = new;
+diff --git a/lib/trace-cmd/trace-perf.c b/lib/trace-cmd/trace-perf.c
+index a10da55d..d3df75b6 100644
+--- a/lib/trace-cmd/trace-perf.c
++++ b/lib/trace-cmd/trace-perf.c
+@@ -31,7 +31,7 @@ static void default_perf_init_pe(struct perf_event_attr *pe)
  }
  
  /**
-- * trace_find_tracing_dir - Find tracing directory
-+ * tracefs_find_tracing_dir - Find tracing directory
-  * @debugfs: Boolean to just return the debugfs directory
+- * trace_perf_init - Initialize perf context
++ * tracecmd_perf_init - Initialize perf context
   *
-  * Returns string containing the full path to the system's tracing directory.
-  * The string must be freed by free()
+  * @perf: structure, representing perf context, that will be initialized.
+  * @pages: Number of perf memory mapped pages.
+@@ -39,12 +39,12 @@ static void default_perf_init_pe(struct perf_event_attr *pe)
+  * @pid: PID, associated with this perf context.
+  *
+  * The perf context in initialized with default values. The caller can set
+- * custom perf parameters in perf->pe, before calling trace_perf_open() API.
++ * custom perf parameters in perf->pe, before calling tracecmd_perf_open() API.
+  *
+  * Returns 0 on success, or -1 in case of an error.
+  *
   */
--__hidden char *trace_find_tracing_dir(bool debugfs)
-+__hidden char *tracefs_find_tracing_dir(bool debugfs)
+-int __hidden trace_perf_init(struct trace_perf *perf, int pages, int cpu, int pid)
++int __hidden tracecmd_perf_init(struct trace_perf *perf, int pages, int cpu, int pid)
  {
--	return find_tracing_dir(debugfs, false);
-+	return tracefs_find_debug_tracing_dir(debugfs, false);
+ 	if (!perf)
+ 		return -1;
+@@ -60,13 +60,13 @@ int __hidden trace_perf_init(struct trace_perf *perf, int pages, int cpu, int pi
  }
  
  /**
-@@ -258,7 +258,7 @@ const char *tracefs_tracing_dir(void)
- 		return tracing_dir;
- 
- 	free(tracing_dir);
--	tracing_dir = find_tracing_dir(false, true);
-+	tracing_dir = tracefs_find_debug_tracing_dir(false, true);
- 	return tracing_dir;
- }
- 
-@@ -276,7 +276,7 @@ const char *tracefs_debug_dir(void)
- 	if (debug_dir && test_dir(debug_dir, "tracing"))
- 		return debug_dir;
- 
--	debug_dir = find_tracing_dir(true, true);
-+	debug_dir = tracefs_find_debug_tracing_dir(true, true);
- 	return debug_dir;
- }
- 
-@@ -321,7 +321,7 @@ void tracefs_put_tracing_file(char *name)
- }
- 
- /* The function is copied from trace-cmd */
--__hidden char *strstrip(char *str)
-+__hidden char *tracefs_strstrip(char *str)
+- * trace_perf_close - Close perf session
++ * tracecmd_perf_close - Close perf session
+  *
+  * @perf: structure, representing context of a running perf session, opened
+- *	  with trace_perf_open()
++ *	  with tracecmd_perf_open()
+  *
+  */
+-void __hidden trace_perf_close(struct trace_perf *perf)
++void __hidden tracecmd_perf_close(struct trace_perf *perf)
  {
- 	char *s;
- 
-@@ -340,7 +340,7 @@ __hidden char *strstrip(char *str)
- 	return s;
+ 	if (perf->fd >= 0)
+ 		close(perf->fd);
+@@ -77,15 +77,15 @@ void __hidden trace_perf_close(struct trace_perf *perf)
  }
  
--__hidden int str_read_file(const char *file, char **buffer, bool warn)
-+__hidden int tracefs_str_read_file(const char *file, char **buffer, bool warn)
+ /**
+- * trace_perf_open - Open perf session
++ * tracecmd_perf_open - Open perf session
+  *
+  * @perf: structure, representing perf context that will be opened. It must be
+- *	  initialized with trace_perf_init().
++ *	  initialized with tracecmd_perf_init().
+  *
+  * Returns 0 on success, or -1 in case of an error. In case of success, the
+- * session must be closed with trace_perf_close()
++ * session must be closed with tracecmd_perf_close()
+  */
+-int __hidden trace_perf_open(struct trace_perf *perf)
++int __hidden tracecmd_perf_open(struct trace_perf *perf)
  {
- 	char stbuf[BUFSIZ];
- 	char *buf = NULL;
-@@ -401,7 +401,7 @@ char *tracefs_error_all(struct tracefs_instance *instance)
- 	path = tracefs_instance_get_file(instance, ERROR_LOG);
- 	if (!path)
+ 	perf->fd = syscall(__NR_perf_event_open, &perf->pe, perf->pid, perf->cpu, -1, 0);
+ 	if (perf->fd < 0)
+@@ -100,6 +100,6 @@ int __hidden trace_perf_open(struct trace_perf *perf)
+ 	return 0;
+ 
+ error:
+-	trace_perf_close(perf);
++	tracecmd_perf_close(perf);
+ 	return -1;
+ }
+diff --git a/lib/trace-cmd/trace-rbtree.c b/lib/trace-cmd/trace-rbtree.c
+index 90671819..62c785c5 100644
+--- a/lib/trace-cmd/trace-rbtree.c
++++ b/lib/trace-cmd/trace-rbtree.c
+@@ -13,7 +13,7 @@ enum {
+ 	BLACK,
+ };
+ 
+-void __hidden trace_rbtree_init(struct trace_rbtree *tree, trace_rbtree_cmp_fn cmp_fn,
++void __hidden tracecmd_rbtree_init(struct trace_rbtree *tree, trace_rbtree_cmp_fn cmp_fn,
+ 				trace_rbtree_search_fn search_fn)
+ {
+ 	memset(tree, 0, sizeof(*tree));
+@@ -163,7 +163,7 @@ static void check_tree(struct trace_rbtree *tree)
+ static inline void check_tree(struct trace_rbtree *tree) { }
+ #endif
+ 
+-int __hidden trace_rbtree_insert(struct trace_rbtree *tree,
++int __hidden tracecmd_rbtree_insert(struct trace_rbtree *tree,
+ 				 struct trace_rbtree_node *node)
+ {
+ 	struct trace_rbtree_node *uncle;
+@@ -371,7 +371,7 @@ void trace_rbtree_delete(struct trace_rbtree *tree, struct trace_rbtree_node *no
+ 	check_tree(tree);
+ }
+ 
+-__hidden struct trace_rbtree_node *trace_rbtree_next(struct trace_rbtree *tree,
++__hidden struct trace_rbtree_node *tracecmd_rbtree_next(struct trace_rbtree *tree,
+ 						     struct trace_rbtree_node *node)
+ {
+ 	check_tree(tree);
+diff --git a/lib/trace-cmd/trace-timesync.c b/lib/trace-cmd/trace-timesync.c
+index 6ee4e643..7dfb9523 100644
+--- a/lib/trace-cmd/trace-timesync.c
++++ b/lib/trace-cmd/trace-timesync.c
+@@ -116,7 +116,7 @@ int tracecmd_tsync_proto_unregister(char *proto_name)
+ 	return -1;
+ }
+ 
+-bool __hidden tsync_proto_is_supported(const char *proto_name)
++bool __hidden tracecmd_tsync_proto_is_supported(const char *proto_name)
+ {
+ 	if (tsync_proto_find(proto_name))
+ 		return true;
+diff --git a/lib/trace-cmd/trace-util.c b/lib/trace-cmd/trace-util.c
+index 37caab45..e44c3036 100644
+--- a/lib/trace-cmd/trace-util.c
++++ b/lib/trace-cmd/trace-util.c
+@@ -280,7 +280,7 @@ static void add_plugin_file(struct tep_handle *pevent, const char *path,
+ }
+ 
+ /**
+- * trace_util_find_plugin_files - find list of possible plugin files
++ * tracecmd_util_find_plugin_files - find list of possible plugin files
+  * @suffix: The suffix of the plugin files to find
+  *
+  * Searches the plugin directory for files that end in @suffix, and
+@@ -291,9 +291,9 @@ static void add_plugin_file(struct tep_handle *pevent, const char *path,
+  * the errno will be returned with the TRACECMD_ERR_MSK to denote
+  * such an error occurred.
+  *
+- * Use trace_util_free_plugin_files() to free the result.
++ * Use tracecmd_util_free_plugin_files() to free the result.
+  */
+-__hidden char **trace_util_find_plugin_files(const char *suffix)
++__hidden char **tracecmd_util_find_plugin_files(const char *suffix)
+ {
+ 	struct add_plugin_data pdata;
+ 
+@@ -308,12 +308,12 @@ __hidden char **trace_util_find_plugin_files(const char *suffix)
+ }
+ 
+ /**
+- * trace_util_free_plugin_files - free the result of trace_util_find_plugin_files()
+- * @files: The result from trace_util_find_plugin_files()
++ * tracecmd_util_free_plugin_files - free the result of tracecmd_util_find_plugin_files()
++ * @files: The result from tracecmd_util_find_plugin_files()
+  *
+- * Frees the contents that were allocated by trace_util_find_plugin_files().
++ * Frees the contents that were allocated by tracecmd_util_find_plugin_files().
+  */
+-void __hidden trace_util_free_plugin_files(char **files)
++void __hidden tracecmd_util_free_plugin_files(char **files)
+ {
+ 	int i;
+ 
+@@ -349,7 +349,7 @@ static char *get_source_plugins_dir(void)
+ }
+ 
+ __hidden struct tep_plugin_list *
+-trace_load_plugins(struct tep_handle *tep, int flags)
++tracecmd_load_plugins_from_handle(struct tep_handle *tep, int flags)
+ {
+ 	struct tep_plugin_list *list;
+ 	char *path;
+@@ -659,7 +659,7 @@ static void __attribute__((destructor)) tracecmd_lib_free(void)
+ 	tracecmd_compress_free();
+ }
+ 
+-__hidden bool check_file_state(unsigned long file_version, int current_state, int new_state)
++__hidden bool tracecmd_check_file_state(unsigned long file_version, int current_state, int new_state)
+ {
+ 	if (file_version >= FILE_VERSION_SECTIONS) {
+ 		if (current_state < TRACECMD_FILE_INIT)
+diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
+index 1515fbbe..74de6b35 100644
+--- a/tracecmd/include/trace-local.h
++++ b/tracecmd/include/trace-local.h
+@@ -399,27 +399,27 @@ int get_local_cid(unsigned int *cid);
+ char *trace_get_guest_file(const char *file, const char *guest);
+ 
+ #ifdef VSOCK
+-int trace_vsock_open(unsigned int cid, unsigned int port);
+-int trace_vsock_make(unsigned int port);
+-int trace_vsock_make_any(void);
++int tracecmd_vsock_open(unsigned int cid, unsigned int port);
++int tracecmd_vsock_make(unsigned int port);
++int tracecmd_vsock_make_any(void);
+ int get_vsocket_params(int fd, unsigned int *lcid, unsigned int *rcid);
+-int trace_vsock_get_port(int sd, unsigned int *port);
+-bool trace_vsock_can_splice_read(void);
+-int trace_vsock_local_cid(void);
++int tracecmd_vsock_get_port(int sd, unsigned int *port);
++bool tracecmd_vsock_can_splice_read(void);
++int tracecmd_vsock_local_cid(void);
+ int trace_vsock_print_connection(int fd);
+ #else
+-static inline int trace_vsock_open(unsigned int cid, unsigned int port)
++static inline int tracecmd_vsock_open(unsigned int cid, unsigned int port)
+ {
+ 	return -ENOTSUP;
+ }
+ 
+-static inline int trace_vsock_make(unsigned int port)
++static inline int tracecmd_vsock_make(unsigned int port)
+ {
+ 	return -ENOTSUP;
+ 
+ }
+ 
+-static inline int trace_vsock_make_any(void)
++static inline int tracecmd_vsock_make_any(void)
+ {
+ 	return -ENOTSUP;
+ 
+@@ -430,17 +430,17 @@ static inline int get_vsocket_params(int fd, unsigned int *lcid, unsigned int *r
+ 	return -ENOTSUP;
+ }
+ 
+-static inline int trace_vsock_get_port(int sd, unsigned int *port)
++static inline int tracecmd_vsock_get_port(int sd, unsigned int *port)
+ {
+ 	return -ENOTSUP;
+ }
+ 
+-static inline bool trace_vsock_can_splice_read(void)
++static inline bool tracecmd_vsock_can_splice_read(void)
+ {
+ 	return false;
+ }
+ 
+-static inline int trace_vsock_local_cid(void)
++static inline int tracecmd_vsock_local_cid(void)
+ {
+ 	return -ENOTSUP;
+ }
+diff --git a/tracecmd/trace-agent.c b/tracecmd/trace-agent.c
+index b6b44f58..16d3de76 100644
+--- a/tracecmd/trace-agent.c
++++ b/tracecmd/trace-agent.c
+@@ -32,11 +32,11 @@ static void make_vsocks(int nr, int *fds, unsigned int *ports)
+ 	int i, fd, ret;
+ 
+ 	for (i = 0; i < nr; i++) {
+-		fd = trace_vsock_make_any();
++		fd = tracecmd_vsock_make_any();
+ 		if (fd < 0)
+ 			die("Failed to open vsocket");
+ 
+-		ret = trace_vsock_get_port(fd, &port);
++		ret = tracecmd_vsock_get_port(fd, &port);
+ 		if (ret < 0)
+ 			die("Failed to get vsocket address");
+ 
+@@ -223,9 +223,9 @@ static void agent_handle(int sd, int nr_cpus, int page_size,
+ 				remote_id = -1;
+ 				local_id = -2;
+ 			}
+-			fd = trace_vsock_make_any();
++			fd = tracecmd_vsock_make_any();
+ 			if (fd >= 0 &&
+-			    trace_vsock_get_port(fd, &tsync_port) < 0) {
++			    tracecmd_vsock_get_port(fd, &tsync_port) < 0) {
+ 				close(fd);
+ 				fd = -1;
+ 			}
+@@ -327,13 +327,13 @@ static void agent_serve(unsigned int port, bool do_daemon, int proxy_id,
+ 		if (listen(sd, 5) < 0)
+ 			die("Failed to listen on %d\n", port);
+ 	} else
+-		sd = trace_vsock_make(port);
++		sd = tracecmd_vsock_make(port);
+ 	if (sd < 0)
+ 		die("Failed to open socket");
+ 	tracecmd_tsync_init();
+ 
+ 	if (!network) {
+-		cid = trace_vsock_local_cid();
++		cid = tracecmd_vsock_local_cid();
+ 		if (cid >= 0)
+ 			printf("listening on @%u:%u\n", cid, port);
+ 	}
+diff --git a/tracecmd/trace-check-events.c b/tracecmd/trace-check-events.c
+index 46f57e17..e5b39352 100644
+--- a/tracecmd/trace-check-events.c
++++ b/tracecmd/trace-check-events.c
+@@ -59,7 +59,7 @@ void trace_check_events(int argc, char **argv)
+ 	if (!pevent)
+ 		exit(EINVAL);
+ 
+-	list = trace_load_plugins(pevent, open_flags);
++	list = tracecmd_load_plugins_from_handle(pevent, open_flags);
+ 	ret = tracefs_fill_local_events(tracing, pevent, &parsing_failures);
+ 	if (ret || parsing_failures)
+ 		ret = EINVAL;
+diff --git a/tracecmd/trace-list.c b/tracecmd/trace-list.c
+index 8badd1f2..55542707 100644
+--- a/tracecmd/trace-list.c
++++ b/tracecmd/trace-list.c
+@@ -551,7 +551,7 @@ static void show_plugin_options(void)
+ 
+ 	trace_seq_init(&s);
+ 
+-	list = trace_load_plugins(pevent, 0);
++	list = tracecmd_load_plugins_from_handle(pevent, 0);
+ 	tep_plugin_print_options(&s);
+ 	trace_seq_do_printf(&s);
+ 	tep_unload_plugins(list, pevent);
+@@ -577,7 +577,7 @@ static void show_plugins(void)
+ 
+ 	trace_seq_init(&s);
+ 
+-	list = trace_load_plugins(pevent, 0);
++	list = tracecmd_load_plugins_from_handle(pevent, 0);
+ 	tep_print_plugins(&s, "  ", "\n", list);
+ 
+ 	trace_seq_do_printf(&s);
+diff --git a/tracecmd/trace-listen.c b/tracecmd/trace-listen.c
+index e11bca03..68286c5b 100644
+--- a/tracecmd/trace-listen.c
++++ b/tracecmd/trace-listen.c
+@@ -225,7 +225,7 @@ static int setup_vsock_port(int start_port, int *sfd)
+ {
+ 	int sd;
+ 
+-	sd = trace_vsock_make(start_port);
++	sd = tracecmd_vsock_make(start_port);
+ 	if (sd < 0)
+ 		return -errno;
+ 	*sfd = sd;
+@@ -1022,11 +1022,11 @@ static int get_vsock(const char *port)
+ 	unsigned int cid;
+ 	int sd;
+ 
+-	sd = trace_vsock_make(atoi(port));
++	sd = tracecmd_vsock_make(atoi(port));
+ 	if (sd < 0)
+ 		return sd;
+ 
+-	cid = trace_vsock_local_cid();
++	cid = tracecmd_vsock_local_cid();
+ 	if (cid >= 0)
+ 		printf("listening on @%u:%s\n", cid, port);
+ 
+diff --git a/tracecmd/trace-profile.c b/tracecmd/trace-profile.c
+index d12a0e5e..e351bf5e 100644
+--- a/tracecmd/trace-profile.c
++++ b/tracecmd/trace-profile.c
+@@ -226,7 +226,7 @@ add_start(struct task_data *task,
+ 	start->event_data = event_data;
+ 	start->cpu = record->cpu;
+ 	start->task = task;
+-	trace_hash_add(&task->start_hash, &start->hash);
++	tracecmd_hash_add(&task->start_hash, &start->hash);
+ 	if (event_data->migrate)
+ 		list_add(&start->list, &task->handle->migrate_starts);
+ 	else
+@@ -270,7 +270,7 @@ find_event_hash(struct task_data *task, struct event_data_match *edata)
+ 		(unsigned long)edata->search_val +
+ 		(unsigned long)edata->val;
+ 	key = trace_hash(key);
+-	item = trace_hash_find(&task->event_hash, key, match_event, edata);
++	item = tracecmd_hash_find(&task->event_hash, key, match_event, edata);
+ 	if (item)
+ 		return event_from_item(item);
+ 
+@@ -283,9 +283,9 @@ find_event_hash(struct task_data *task, struct event_data_match *edata)
+ 	event_hash->search_val = edata->search_val;
+ 	event_hash->val = edata->val;
+ 	event_hash->hash.key = key;
+-	trace_hash_init(&event_hash->stacks, 32);
++	tracecmd_hash_init(&event_hash->stacks, 32);
+ 
+-	trace_hash_add(&task->event_hash, &event_hash->hash);
++	tracecmd_hash_add(&task->event_hash, &event_hash->hash);
+ 
+ 	return event_hash;
+ }
+@@ -316,7 +316,7 @@ find_start(struct task_data *task, struct event_data *event_data,
+ 	edata.event_data = event_data;
+ 	edata.search_val = search_val;
+ 
+-	item = trace_hash_find(&task->start_hash, key, match_start, data);
++	item = tracecmd_hash_find(&task->start_hash, key, match_start, data);
+ 	if (!item)
  		return NULL;
--	size = str_read_file(path, &content, false);
-+	size = tracefs_str_read_file(path, &content, false);
- 	tracefs_put_tracing_file(path);
  
- 	if (size <= 0)
-@@ -514,7 +514,7 @@ void tracefs_list_free(char **list)
+@@ -360,7 +360,7 @@ static void add_event_stack(struct event_hash *event_hash,
+ 	for (key = 0, i = 0; i <= size - sizeof(int); i += sizeof(int))
+ 		key += trace_hash(*(int *)(caller + i));
+ 
+-	item = trace_hash_find(&event_hash->stacks, key, match_stack, &match);
++	item = tracecmd_hash_find(&event_hash->stacks, key, match_stack, &match);
+ 	if (!item) {
+ 		stack = malloc(sizeof(*stack) + size);
+ 		if (!stack) {
+@@ -371,7 +371,7 @@ static void add_event_stack(struct event_hash *event_hash,
+ 		memcpy(&stack->caller, caller, size);
+ 		stack->size = size;
+ 		stack->hash.key = key;
+-		trace_hash_add(&event_hash->stacks, &stack->hash);
++		tracecmd_hash_add(&event_hash->stacks, &stack->hash);
+ 	} else
+ 		stack = stack_from_item(item);
+ 
+@@ -474,8 +474,8 @@ static void init_task(struct handle_data *h, struct task_data *task)
+ {
+ 	task->handle = h;
+ 
+-	trace_hash_init(&task->start_hash, 16);
+-	trace_hash_init(&task->event_hash, 32);
++	tracecmd_hash_init(&task->start_hash, 16);
++	tracecmd_hash_init(&task->event_hash, 32);
  }
  
+ static struct task_data *
+@@ -493,7 +493,7 @@ add_task(struct handle_data *h, int pid)
  
--__hidden char ** trace_list_create_empty(void)
-+__hidden char **tracefs_list_create_empty(void)
- {
- 	char **list;
+ 	task->pid = pid;
+ 	task->hash.key = key;
+-	trace_hash_add(&h->task_hash, &task->hash);
++	tracecmd_hash_add(&h->task_hash, &task->hash);
  
-@@ -575,13 +575,13 @@ char **tracefs_list_add(char **list, const char *string)
+ 	init_task(h, task);
+ 
+@@ -511,7 +511,7 @@ find_task(struct handle_data *h, int pid)
+ 	if (last_task && last_task->pid == pid)
+ 		return last_task;
+ 
+-	item = trace_hash_find(&h->task_hash, key, match_task, data);
++	item = tracecmd_hash_find(&h->task_hash, key, match_task, data);
+ 
+ 	if (item)
+ 		last_task = task_from_item(item);
+@@ -726,7 +726,7 @@ find_event_data(struct handle_data *h, int id)
+ 	unsigned long long key = trace_hash(id);
+ 	void *data = (void *)(unsigned long)id;
+ 
+-	item = trace_hash_find(&h->events, key, match_event_data, data);
++	item = tracecmd_hash_find(&h->events, key, match_event_data, data);
+ 	if (item)
+ 		return event_data_from_item(item);
+ 	return NULL;
+@@ -818,7 +818,7 @@ add_event(struct handle_data *h, const char *system, const char *event_name,
+ 	event_data->type = type;
+ 	event_data->hash.key = trace_hash(event_data->event->id);
+ 
+-	trace_hash_add(&h->events, &event_data->hash);
++	tracecmd_hash_add(&h->events, &event_data->hash);
+ 
+ 	return event_data;
+ }
+@@ -1298,9 +1298,9 @@ void trace_init_profile(struct tracecmd_input *handle, struct hook_list *hook,
+ 	h->next = handles;
+ 	handles = h;
+ 
+-	trace_hash_init(&h->task_hash, 1024);
+-	trace_hash_init(&h->events, 1024);
+-	trace_hash_init(&h->group_hash, 512);
++	tracecmd_hash_init(&h->task_hash, 1024);
++	tracecmd_hash_init(&h->events, 1024);
++	tracecmd_hash_init(&h->group_hash, 512);
+ 
+ 	h->handle = handle;
+ 	h->pevent = pevent;
+@@ -2120,7 +2120,7 @@ static void free_event_hash(struct event_hash *event_hash)
+ 			free(stack);
+ 		}
+ 	}
+-	trace_hash_free(&event_hash->stacks);
++	tracecmd_hash_free(&event_hash->stacks);
+ 	free(event_hash);
  }
  
- /*
-- * trace_list_pop - Removes the last string added
-+ * tracefs_list_pop - Removes the last string added
-  * @list: The list to remove the last event from
-  *
-  * Returns 0 on success, -1 on error.
-  * Returns 1 if the list is empty or NULL.
-  */
--__hidden int trace_list_pop(char **list)
-+__hidden int tracefs_list_pop(char **list)
- {
- 	unsigned long size;
+@@ -2143,7 +2143,7 @@ static void __free_task(struct task_data *task)
+ 			free(start);
+ 		}
+ 	}
+-	trace_hash_free(&task->start_hash);
++	tracecmd_hash_free(&task->start_hash);
  
-diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
-index 5bfd665..d0244d7 100644
---- a/utest/tracefs-utest.c
-+++ b/utest/tracefs-utest.c
-@@ -1770,7 +1770,7 @@ static void test_follow_events_clear(void)
- 	test_instance_follow_events_clear(test_instance);
+ 	trace_hash_for_each_bucket(bucket, &task->event_hash) {
+ 		trace_hash_while_item(item, bucket) {
+@@ -2152,7 +2152,7 @@ static void __free_task(struct task_data *task)
+ 			free_event_hash(event_hash);
+ 		}
+ 	}
+-	trace_hash_free(&task->event_hash);
++	tracecmd_hash_free(&task->event_hash);
+ 
+ 	if (task->last_stack)
+ 		tracecmd_free_record(task->last_stack);
+@@ -2179,14 +2179,14 @@ static void free_group(struct group_data *group)
+ 			free_event_hash(event_hash);
+ 		}
+ 	}
+-	trace_hash_free(&group->event_hash);
++	tracecmd_hash_free(&group->event_hash);
+ 	free(group);
  }
  
--extern char *find_tracing_dir(bool debugfs, bool mount);
-+extern char *tracefs_find_debug_tracing_dir(bool debugfs, bool mount);
- static void test_mounting(void)
+ static void show_global_task(struct handle_data *h,
+ 			     struct task_data *task)
  {
- 	const char *tracing_dir;
-@@ -1784,7 +1784,7 @@ static void test_mounting(void)
+-	if (trace_hash_empty(&task->event_hash))
++	if (tracecmd_hash_empty(&task->event_hash))
+ 		return;
  
- 	/* First, unmount all instances of debugfs */
- 	do {
--		dir = find_tracing_dir(true, false);
-+		dir = tracefs_find_debug_tracing_dir(true, false);
- 		if (dir) {
- 			ret = umount(dir);
- 			CU_TEST(ret == 0);
-@@ -1800,7 +1800,7 @@ static void test_mounting(void)
+ 	output_task(h, task);
+@@ -2294,10 +2294,10 @@ static void merge_event_stack(struct event_hash *event,
  
- 	/* Next, unmount all instances of tracefs */
- 	do {
--		dir = find_tracing_dir(false, false);
-+		dir = tracefs_find_debug_tracing_dir(false, false);
- 		if (dir) {
- 			ret = umount(dir);
- 			CU_TEST(ret == 0);
+ 	match.caller = stack->caller;
+ 	match.size = stack->size;
+-	item = trace_hash_find(&event->stacks, stack->hash.key, match_stack,
++	item = tracecmd_hash_find(&event->stacks, stack->hash.key, match_stack,
+ 			       &match);
+ 	if (!item) {
+-		trace_hash_add(&event->stacks, &stack->hash);
++		tracecmd_hash_add(&event->stacks, &stack->hash);
+ 		return;
+ 	}
+ 	exist = stack_from_item(item);
+@@ -2357,10 +2357,10 @@ static void merge_event_into_group(struct group_data *group,
+ 	edata.search_val = event->search_val;
+ 	edata.val = event->val;
+ 
+-	item = trace_hash_find(&group->event_hash, key, match_event, &edata);
++	item = tracecmd_hash_find(&group->event_hash, key, match_event, &edata);
+ 	if (!item) {
+ 		event->hash.key = key;
+-		trace_hash_add(&group->event_hash, &event->hash);
++		tracecmd_hash_add(&group->event_hash, &event->hash);
+ 		return;
+ 	}
+ 
+@@ -2394,7 +2394,7 @@ static void add_group(struct handle_data *h, struct task_data *task)
+ 
+ 	key = trace_hash_str(task->comm);
+ 
+-	item = trace_hash_find(&h->group_hash, key, match_group, data);
++	item = tracecmd_hash_find(&h->group_hash, key, match_group, data);
+ 	if (item) {
+ 		grp = group_from_item(item);
+ 	} else {
+@@ -2409,8 +2409,8 @@ static void add_group(struct handle_data *h, struct task_data *task)
+ 		if (!grp->comm)
+ 			die("strdup");
+ 		grp->hash.key = key;
+-		trace_hash_add(&h->group_hash, &grp->hash);
+-		trace_hash_init(&grp->event_hash, 32);
++		tracecmd_hash_add(&h->group_hash, &grp->hash);
++		tracecmd_hash_init(&grp->event_hash, 32);
+ 	}
+ 	task->group = grp;
+ 
+@@ -2447,7 +2447,7 @@ int do_trace_profile(void)
+ 		if (merge_like_comms)
+ 			merge_tasks(h);
+ 		output_handle(h);
+-		trace_hash_free(&h->task_hash);
++		tracecmd_hash_free(&h->task_hash);
+ 	}
+ 
+ 	return 0;
+diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
+index a5a0e10a..6d88d730 100644
+--- a/tracecmd/trace-read.c
++++ b/tracecmd/trace-read.c
+@@ -609,7 +609,7 @@ static void init_wakeup(struct tracecmd_input *handle)
+ 
+ 	pevent = tracecmd_get_tep(handle);
+ 
+-	trace_hash_init(&wakeup_hash, WAKEUP_HASH_SIZE);
++	tracecmd_hash_init(&wakeup_hash, WAKEUP_HASH_SIZE);
+ 
+ 	event = tep_find_event_by_name(pevent, "sched", "sched_wakeup");
+ 	if (!event)
+@@ -657,7 +657,7 @@ static void add_wakeup(unsigned int val, unsigned long long start)
+ 	struct wakeup_info *info;
+ 	struct trace_hash_item *item;
+ 
+-	item = trace_hash_find(&wakeup_hash, key, NULL, NULL);
++	item = tracecmd_hash_find(&wakeup_hash, key, NULL, NULL);
+ 	if (item) {
+ 		info = container_of(item, struct wakeup_info, hash);
+ 		/* Hmm, double wakeup? */
+@@ -670,7 +670,7 @@ static void add_wakeup(unsigned int val, unsigned long long start)
+ 		die("Failed to allocate wakeup info");
+ 	info->hash.key = key;
+ 	info->start = start;
+-	trace_hash_add(&wakeup_hash, &info->hash);
++	tracecmd_hash_add(&wakeup_hash, &info->hash);
+ }
+ 
+ static unsigned long long max_lat = 0;
+@@ -690,7 +690,7 @@ static void add_sched(unsigned int val, unsigned long long end, int rt)
+ 	struct wakeup_info *info;
+ 	unsigned long long cal;
+ 
+-	item = trace_hash_find(&wakeup_hash, key, NULL, NULL);
++	item = tracecmd_hash_find(&wakeup_hash, key, NULL, NULL);
+ 	if (!item)
+ 		return;
+ 
+@@ -817,7 +817,7 @@ static void finish_wakeup(void)
+ 		}
+ 	}
+ 
+-	trace_hash_free(&wakeup_hash);
++	tracecmd_hash_free(&wakeup_hash);
+ }
+ 
+ void trace_show_data(struct tracecmd_input *handle, struct tep_record *record)
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index a008cdfd..ac2a0c72 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -3438,7 +3438,7 @@ static int connect_port(const char *host, unsigned int port, enum port_type type
+ 	int sfd;
+ 
+ 	if (type == USE_VSOCK)
+-		return trace_vsock_open(atoi(host), port);
++		return tracecmd_vsock_open(atoi(host), port);
+ 
+ 	results = do_getaddrinfo(host, port, type);
+ 
+@@ -3579,14 +3579,14 @@ create_recorder_instance(struct buffer_instance *instance, const char *file, int
+ 			fd = connect_addr(result);
+ 			freeaddrinfo(result);
+ 		} else
+-			fd = trace_vsock_open(instance->cid, instance->client_ports[cpu]);
++			fd = tracecmd_vsock_open(instance->cid, instance->client_ports[cpu]);
+ 		if (fd < 0)
+ 			die("Failed to connect to agent");
+ 
+ 		flags = recorder_flags;
+ 		if (instance->use_fifos)
+ 			flags |= TRACECMD_RECORD_NOBRASS;
+-		else if (!trace_vsock_can_splice_read())
++		else if (!tracecmd_vsock_can_splice_read())
+ 			flags |= TRACECMD_RECORD_NOSPLICE;
+ 		return tracecmd_create_recorder_virt(file, cpu, flags, fd, max_kb);
+ 	}
+@@ -3842,7 +3842,7 @@ static int connect_vsock(char *vhost)
+ 	if (!port)
+ 		die("vsocket must have format of 'CID:PORT'");
+ 
+-	sd = trace_vsock_open(atoi(cid), atoi(port));
++	sd = tracecmd_vsock_open(atoi(cid), atoi(port));
+ 
+ 	return sd;
+ }
+@@ -4102,7 +4102,7 @@ static int host_tsync(struct common_record_context *ctx,
+ 				  instance->port_type);
+ 	} else {
+ 		guest_id = instance->cid;
+-		fd = trace_vsock_open(instance->cid, tsync_port);
++		fd = tracecmd_vsock_open(instance->cid, tsync_port);
+ 	}
+ 
+ 	if (is_proxy(instance)) {
+@@ -4148,7 +4148,7 @@ static void connect_to_agent(struct common_record_context *ctx,
+ 			role = TRACECMD_TIME_SYNC_ROLE_GUEST;
+ 		else
+ 			role = TRACECMD_TIME_SYNC_ROLE_HOST;
+-		sd = trace_vsock_open(instance->cid, instance->port);
++		sd = tracecmd_vsock_open(instance->cid, instance->port);
+ 		if (sd < 0)
+ 			die("Failed to connect to vsocket @%u:%u",
+ 			    instance->cid, instance->port);
+@@ -4189,7 +4189,7 @@ static void connect_to_agent(struct common_record_context *ctx,
+ 	if (ret < 0)
+ 		die("Failed to receive trace response %d", ret);
+ 	if (tsync_protos_reply && tsync_protos_reply[0]) {
+-		if (tsync_proto_is_supported(tsync_protos_reply)) {
++		if (tracecmd_tsync_proto_is_supported(tsync_protos_reply)) {
+ 			printf("Negotiated %s time sync protocol with guest %s\n",
+ 				tsync_protos_reply,
+ 				instance->name);
+@@ -6322,17 +6322,17 @@ static int get_tsc_nsec(int *shift, int *mult)
+ 		goto out;
+ 
+ 	supported = -1;
+-	if (trace_perf_init(&perf, 1, 0, getpid()))
++	if (tracecmd_perf_init(&perf, 1, 0, getpid()))
+ 		return -1;
+-	if (trace_perf_open(&perf))
++	if (tracecmd_perf_open(&perf))
+ 		return -1;
+ 	cpu_shift = perf.mmap->time_shift;
+ 	cpu_mult = perf.mmap->time_mult;
+ 	for (i = 1; i < cpus; i++) {
+-		trace_perf_close(&perf);
+-		if (trace_perf_init(&perf, 1, i, getpid()))
++		tracecmd_perf_close(&perf);
++		if (tracecmd_perf_init(&perf, 1, i, getpid()))
+ 			break;
+-		if (trace_perf_open(&perf))
++		if (tracecmd_perf_open(&perf))
+ 			break;
+ 		if (perf.mmap->time_shift != cpu_shift ||
+ 		    perf.mmap->time_mult != cpu_mult) {
+@@ -6341,7 +6341,7 @@ static int get_tsc_nsec(int *shift, int *mult)
+ 			break;
+ 		}
+ 	}
+-	trace_perf_close(&perf);
++	tracecmd_perf_close(&perf);
+ 	if (i < cpus)
+ 		return -1;
+ 
+@@ -7104,7 +7104,7 @@ static void set_tsync_params(struct common_record_context *ctx)
+ 	 * force using the x86-tsc clock for this host-guest tracing session
+ 	 * and store TSC to nsec multiplier and shift.
+ 	 */
+-		if (tsync_proto_is_supported("kvm") &&
++		if (tracecmd_tsync_proto_is_supported("kvm") &&
+ 		    trace_have_guests_pid() &&
+ 		    clock_is_supported(NULL, TSC_CLOCK) &&
+ 		    !get_tsc_nsec(&shift, &mult) && mult) {
+diff --git a/tracecmd/trace-vm.c b/tracecmd/trace-vm.c
+index 960ed5d5..3122e22a 100644
+--- a/tracecmd/trace-vm.c
++++ b/tracecmd/trace-vm.c
+@@ -325,7 +325,7 @@ static void find_pid_by_cid(struct trace_guest *guest)
+ 	int fd;
+ 
+ 	instance = start_trace_connect();
+-	fd = trace_vsock_open(guest->cid, -1);
++	fd = tracecmd_vsock_open(guest->cid, -1);
+ 	guest->pid = stop_trace_connect(instance);
+ 	/* Just in case! */
+ 	if (fd >= 0)
+diff --git a/tracecmd/trace-vsock.c b/tracecmd/trace-vsock.c
+index df1a9800..4aa5182c 100644
+--- a/tracecmd/trace-vsock.c
++++ b/tracecmd/trace-vsock.c
+@@ -6,7 +6,7 @@
+ 
+ #include "trace-cmd-private.h"
+ 
+-int __hidden trace_vsock_open(unsigned int cid, unsigned int port)
++int __hidden tracecmd_vsock_open(unsigned int cid, unsigned int port)
+ {
+ 	struct sockaddr_vm addr = {
+ 		.svm_family = AF_VSOCK,
+@@ -27,7 +27,7 @@ int __hidden trace_vsock_open(unsigned int cid, unsigned int port)
+ 	return sd;
+ }
+ 
+-int __hidden trace_vsock_make(unsigned int port)
++int __hidden tracecmd_vsock_make(unsigned int port)
+ {
+ 	struct sockaddr_vm addr = {
+ 		.svm_family = AF_VSOCK,
+@@ -55,12 +55,12 @@ error:
+ 	return -errno;
+ }
+ 
+-int __hidden trace_vsock_make_any(void)
++int __hidden tracecmd_vsock_make_any(void)
+ {
+-	return trace_vsock_make(VMADDR_PORT_ANY);
++	return tracecmd_vsock_make(VMADDR_PORT_ANY);
+ }
+ 
+-int __hidden trace_vsock_get_port(int sd, unsigned int *port)
++int __hidden tracecmd_vsock_get_port(int sd, unsigned int *port)
+ {
+ 	struct sockaddr_vm addr;
+ 	socklen_t addr_len = sizeof(addr);
+@@ -155,7 +155,7 @@ out_close_sd:
+ 	return ret;
+ }
+ 
+-bool __hidden trace_vsock_can_splice_read(void)
++bool __hidden tracecmd_vsock_can_splice_read(void)
+ {
+ 	static bool initialized, res;
+ 
+@@ -169,7 +169,7 @@ bool __hidden trace_vsock_can_splice_read(void)
+ 
+ #define GET_LOCAL_CID	0x7b9
+ 
+-int __hidden trace_vsock_local_cid(void)
++int __hidden tracecmd_vsock_local_cid(void)
+ {
+ 	int cid;
+ 	int fd;
 
-base-commit: 78d8d2e277af222a97647ace0846e28d0cae6a70
+base-commit: bbea061f69dab3a55dc5c077bf89a02f8f08cb6a
 -- 
 2.34.1
 
