@@ -1,65 +1,65 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDD581DF243
-	for <linux-trace-devel@vger.kernel.org>; Tue, 29 Oct 2024 06:26:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5187B1E0B93
+	for <linux-trace-devel@vger.kernel.org>; Tue, 29 Oct 2024 06:31:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730183197; cv=none; b=aPsEdJPKV4xJzl2WMTAy6yVfia6SCI96pGMZcpuhBVWdQFMWETeY5FFnBRRCbjdMfge/UapD3bpgJtAAaLfTT/sbj/EVtFPGcp+1ONErl69MpRHISYZV8S3ujFhQVuuNZjb813LmWYIa2zkx+7WYRIbaL53d1daO8lNUdpktrYA=
+	t=1730183475; cv=none; b=sLyGLTMHpL976NHqv3zkdSURd+WiJHKg4anfO34aLedC6AXCGMUy28FXMuUzQRuohjVCjqyzz7qQ1pL5u4u7+5xPrS0AAXX4xghTrw2UctHCJ66oFf7KRjMb4AzO/24seJQnfCXnYsq693FC6K6dT7dr8he3GYLBp5q3u2nPxK0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730183197; c=relaxed/simple;
-	bh=teFlDRLGcve0h0VM3908V92ag2wcxPkjtpGDkBu8fic=;
+	s=arc-20240116; t=1730183475; c=relaxed/simple;
+	bh=oMgKs41ivLixYwsYIlCtK1EmySQr2ThG1xI4eiJyxuQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GXIm9R6qTACSVipkQdQYXf70L7fYfa6AntOprPIMqBmLE8JfGWrTq9RGcDmI2lFuGYXHlfzsJuJE7o88npqofrpt1wrLPlMjwj3jKwYdskIsuaUhfLd44hgfjE7fLZ3cHHZ/J/fMzt2RvLmkTnAId7iICX0R+vbgmTHMuMhH/O0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GQ872FF9; arc=none smtp.client-ip=170.10.129.124
+	 In-Reply-To:Content-Type; b=Y4fT52BCUy/xT7migAUsSDRRGqLYefAQ6DpaqICKxMU0V8yBsIKsAjno+C1k8xY8ilOINXdyAc6ZeVG0x4tXND/fPx9dZQUmRHg0pcmYV7GZ4ubCvlaWaXz/nOs9NoQmMqegyPfKKTsoM32J6KuZZz6tMeS/1Z5qduIBAaVJs8Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DtXvgac+; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GQ872FF9"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DtXvgac+"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1730183193;
+	s=mimecast20190719; t=1730183472;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=3HSkBFif48WCfm5xljA5kOm8S6LMvdjxCC6pAk23cRA=;
-	b=GQ872FF9ha1PGK1uKvsjXi1DlZRwxIMMx8D6knt80xpVSjORFCKebokwQcPE4Cf+k0nowj
-	YiTgSVKhVM62MRM02VVd1DL/2XkMLw01egQEi4icYnzc6hWavau2OGOy42zW81WSDc+ogl
-	dKY5Qx1mzbvPflIKia8Rke4lO3OrV0I=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=s3u6aPY4lw7aoG3dsiWKHP/mT7w9yiTXqj91vt/x0y4=;
+	b=DtXvgac+bMCyUopnWkLQaKBJi+YCDsjYONbVgr4VY46iC3Xwv7+f28RZ4IH/WHz/zpbt0b
+	lspKE7y22yi2d1fzax5APFNs6DWUtitL/HjU0kFMbs0YQq/Kp+ByGCKYeH2cEfA7zqu/9s
+	Fq+/0bTDFysbQrGb87cgIt25ov9eVXE=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-131-s83J2n_WPziJPYhiy5BtgA-1; Tue, 29 Oct 2024 02:26:31 -0400
-X-MC-Unique: s83J2n_WPziJPYhiy5BtgA-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-37d458087c0so3569178f8f.1
-        for <linux-trace-devel@vger.kernel.org>; Mon, 28 Oct 2024 23:26:30 -0700 (PDT)
+ us-mta-592-_yCIjiD0M_2oaaZmVypyyQ-1; Tue, 29 Oct 2024 02:31:10 -0400
+X-MC-Unique: _yCIjiD0M_2oaaZmVypyyQ-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4315d98a873so35160225e9.1
+        for <linux-trace-devel@vger.kernel.org>; Mon, 28 Oct 2024 23:31:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730183190; x=1730787990;
+        d=1e100.net; s=20230601; t=1730183468; x=1730788268;
         h=content-transfer-encoding:in-reply-to:content-language:from
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3HSkBFif48WCfm5xljA5kOm8S6LMvdjxCC6pAk23cRA=;
-        b=bPFnokUEA2yJuWChorPZ3zrUhai/npj5JJD2rRC+mZLTqyQ7sj/ECPcGaZr+9ABIis
-         MHRiWDV0DP8UTp4v6uvUlGK/LZiePBSRv1fdDwMwogszB0tUHgXhb96jUOLop5xAd1NV
-         AGhAlMW8/Er0voaTmM2t97h2ceZ9ZdxDXKD763JbMVl7oqRN+cb12EH+5eNH6DHOYDd5
-         tqUOuxNsFlAbRFb9oQX0Ris6Z+ZSpcxtbKQlTq8jbfJi+Ik3Vvgmr7mgiymkIf/Jll7n
-         TtMEGbL8RTOqz4wPurkzMYFwyYOA+V6jRSI0uBXs39QYooliLPuuVrB28L+R+wGuVitr
-         G/dg==
-X-Gm-Message-State: AOJu0YyvvCGx9mW0lxk7yHh2FA+IM1mo6iijhHaKrCtb8ZeYJYc/l2fA
-	96K/0ZhlL6IqI4aY8UsIebj/+rmR0dC1y1JZHnr/ryTb8enLmvARNlruDic7cYELMDJhGIN4q80
-	fDWmq10+oihVJgIkJ5DBMVW5vns5lJ6wl+s7k7NOnJ6mfcrzWidI0ZNlFJyOYzY3drYGtzltRIf
-	B2
-X-Received: by 2002:a5d:6603:0:b0:37c:cce8:4acc with SMTP id ffacd0b85a97d-38159d83653mr623185f8f.13.1730183189727;
-        Mon, 28 Oct 2024 23:26:29 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHdROO3MnKdHEryU32KlbWozQ8MvoRnexHHS3lVSMO/0NGPFhYdfdYFPD/LUCRIffNkI32qgw==
-X-Received: by 2002:a5d:6603:0:b0:37c:cce8:4acc with SMTP id ffacd0b85a97d-38159d83653mr623174f8f.13.1730183189382;
-        Mon, 28 Oct 2024 23:26:29 -0700 (PDT)
+        bh=s3u6aPY4lw7aoG3dsiWKHP/mT7w9yiTXqj91vt/x0y4=;
+        b=Db6S8+1mE1dNhbRn381Uazpg9UGInmYrQ3kBKadaRW5BCZBSEJkzROSEYTThtX3Hnf
+         1EuSYZiuo0zPxV2EIv5Ppp6vEmETgL7eMkBeeWfGEU6YCRTMcpIYM5S6Mh4doAot6WF4
+         sLDonbohWFeP2+PG0IJ4QgwoWTIJ+RFrwAL35JwnqX09WfSQq6lH65kQ9u/0HYLgx/Cq
+         lX9HL7JvFqzL4hmon0w7oMIY+C0UOvrwKAspPFnjsGjRZcLp0AyCvUumdAIp3YIlMa9f
+         B5uBR9xE9hZTtyVkguV+w+8dZJMDrGJBeIc/q4iTjmnpiylpWwpyWXf1Gw5TDKcEnOzO
+         Alfw==
+X-Gm-Message-State: AOJu0YxH6sfQoFwmBCSIeumOTxSS7BoyairG54g67l5shPdpdBWyoIpl
+	JWRY6mjQCbXaIrVXoSeDxQ/fWKfizIHpm9RH9yRh9WBQQErIC48zNRqODgy+Va/X64O46nmnSPq
+	z6eX0cQFbariIWIPui4q+RbhI1xyOTFg0tIVmqoBwOKOdcc6oFetaiBxc4mCVG/p+V9IjnCG2Tf
+	96
+X-Received: by 2002:a05:600c:1c14:b0:431:5871:6c5d with SMTP id 5b1f17b1804b1-4319ac6faefmr100158845e9.3.1730183468113;
+        Mon, 28 Oct 2024 23:31:08 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH9RB3imj/n/ERLCW8rnRXwjtXTSMJaHW/qDwlhp+GV5tgqBvv7UYq3E875Sb8QO2aROHJC1g==
+X-Received: by 2002:a05:600c:1c14:b0:431:5871:6c5d with SMTP id 5b1f17b1804b1-4319ac6faefmr100158685e9.3.1730183467727;
+        Mon, 28 Oct 2024 23:31:07 -0700 (PDT)
 Received: from [192.168.0.227] (ip-89-103-134-229.bb.vodafone.cz. [89.103.134.229])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38058b3c1f7sm11558948f8f.43.2024.10.28.23.26.28
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4318b5707e8sm163435045e9.36.2024.10.28.23.31.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Oct 2024 23:26:28 -0700 (PDT)
-Message-ID: <9ee7426a-5117-46c4-a9cf-c669385a3167@redhat.com>
-Date: Tue, 29 Oct 2024 07:26:28 +0100
+        Mon, 28 Oct 2024 23:31:07 -0700 (PDT)
+Message-ID: <daa77477-5c02-4585-a381-5c7d02ca7ecf@redhat.com>
+Date: Tue, 29 Oct 2024 07:31:06 +0100
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
@@ -67,72 +67,75 @@ List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 08/38] trace-cmd lib: prevent a memory leak in
- create_event_list_item()
+Subject: Re: [PATCH 13/38] trace-cmd record: prevent a memory leak in
+ show_error()
 To: Steven Rostedt <rostedt@goodmis.org>
 Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
 References: <20240605134054.2626953-1-jmarchan@redhat.com>
- <20240605134054.2626953-9-jmarchan@redhat.com>
- <20240717163119.0c3e816c@rorschach.local.home>
+ <20240605134054.2626953-14-jmarchan@redhat.com>
+ <20240717165143.7259d261@rorschach.local.home>
 From: Jerome Marchand <jmarchan@redhat.com>
 Content-Language: en-US
-In-Reply-To: <20240717163119.0c3e816c@rorschach.local.home>
+In-Reply-To: <20240717165143.7259d261@rorschach.local.home>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Hi Steven,
-
-Sorry for the long delay. I was on PTO and then this got at the bottom 
-of my pile.
-
-On 17/07/2024 22:31, Steven Rostedt wrote:
-> On Wed,  5 Jun 2024 15:40:23 +0200
+On 17/07/2024 22:51, Steven Rostedt wrote:
+> On Wed,  5 Jun 2024 15:40:28 +0200
 > "Jerome Marchand" <jmarchan@redhat.com> wrote:
 > 
->> Free ptr if malloc() fails.
+>> In show_error() the pointer p is used for several functions. At some
+>> point it is used to contain the error log file. It's not freed before
+>> being replaced by the result of read_file(path), which is not freed
+>> either. Free p in both case.
+> 
+> This isn't that big of a deal as this is just an application that is
+> about to exit anyway. But I'm fine with freeing it. That said:
+> 
 >>
 >> Fixes a RESOURCE_LEAK error (CWE-772)
 >>
 >> Signed-off-by: Jerome Marchand <jmarchan@redhat.com>
 >> ---
->>   lib/trace-cmd/trace-output.c | 3 ++-
->>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>   tracecmd/trace-record.c | 5 ++++-
+>>   1 file changed, 4 insertions(+), 1 deletion(-)
 >>
->> diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
->> index 59498edc..4a9ecc5d 100644
->> --- a/lib/trace-cmd/trace-output.c
->> +++ b/lib/trace-cmd/trace-output.c
->> @@ -955,7 +955,8 @@ create_event_list_item(struct tracecmd_output *handle,
->>   	free(str);
->>   	return;
->>    err_mem:
->> -	 tracecmd_warning("Insufficient memory");
->> +	free(ptr);
->> +	tracecmd_warning("Insufficient memory");
+>> diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+>> index f05a58d1..3e29f922 100644
+>> --- a/tracecmd/trace-record.c
+>> +++ b/tracecmd/trace-record.c
+>> @@ -2364,13 +2364,16 @@ static void show_error(const char *file,
+>> const char *type) goto read_file;
+>>   		}
+>>   		read_error_log(p);
+>> +		free(p);
+>>   		goto out;
+>>   	}
+>>   
+>>    read_file:
+>>   	p = read_file(path);
+>> -	if (p)
+>> +	if (p) {
+>>   		printf("%s", p);
+>> +		free(p);
+>> +	}
+>>   
+>>    out:
 > 
-> This function starts with:
+> It would be much cleaner to just add:
 > 
-> 	char *ptr;
-> 	char *str;
+> 	free(p);
 > 
-> 	str = strdup(list->glob);
-> 	if (!str)
-> 		goto err_mem;
-> 
-> Where ptr is not defined yet.
-> 
-> I'm going to skip this patch.
+> here, and remove the above two calls.
 
-After taking an other look at this, it looks like it was a false 
-positive of the static analyzer anyway.
+Good point. I'll update the description which is incorrect too.
 
 Jerome
 
 > 
+>>   	printf("Failed %s of %s\n", type, file);
+> 
+> I'll skip this patch too.
+> 
 > -- Steve
-> 
->>   }
->>   
->>   static int read_ftrace_files(struct tracecmd_output *handle, bool compress)
-> 
 
