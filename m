@@ -1,64 +1,65 @@
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A1251E0B93
-	for <linux-trace-devel@vger.kernel.org>; Tue, 29 Oct 2024 06:34:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB517200CBC
+	for <linux-trace-devel@vger.kernel.org>; Tue, 29 Oct 2024 06:36:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730183650; cv=none; b=tOeo0Sbg9XO1rr+rFKyeyTnVtG9IIGlDHqB8ARBgDuwYqNjdTK9cHRAOgWqr7rFIZOcTgDaa7I3ByJtFuvVVq/Sqm0NQmBBCa99YEPnQJx5I8T5JEqiVD8vLSrp4XNXFq55ALKRojEP4GkN6LpW4fc9ZwYMZtYJaY/8m9kAZq7Y=
+	t=1730183817; cv=none; b=gbVMcZW5tvjVpaYpFTl7N4P7kgoO5gGUZIXyI/Mg0TOrJeZV7DaCcpGTTqKG/BI636HmI0+fMQAxOgOB0Pf5TQy8eps7TFNE208XF2Vy2KJCg1w2CyIC4ncjiCiDIexNn+JQhyvJdSLc1YRE0Y1VZbhr6wdiv4kRyt3J8EeEtBU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730183650; c=relaxed/simple;
-	bh=m3rClkSd/MgadrtxDIFIsq/pJLfXdAtGG8qJZO4Sai8=;
+	s=arc-20240116; t=1730183817; c=relaxed/simple;
+	bh=fEOn/5WkqT8Ea+1itN099jzBe1TmoD5GNV8LIZ559Yk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DPCfyNVUsVzi1TXgS+HlRowHyhNSQ16nCPhoqLr/fTA98EuKoLxl7F9rBIjW+wze6Ki/XhMZpGXL6g7bBfrU5DmicDVA9S++FrlbnSbkWGc1SIFNAhPKvE1UXEIp09amvQciHIuhtSOGBsnDowEirrI1BkCAZXkjsG5rTdQCFx0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SGw5pMvu; arc=none smtp.client-ip=170.10.133.124
+	 In-Reply-To:Content-Type; b=N1ZXs20klRJIoodS9NoX3TtlDxj9zu8koq1y3SCrTA9TDB4DWfFvAUhKvEMUuTFl9+uvzIHpHd8wbx5zRw4qAKj4E0xQFQaAw0AXtnZMVCh7cphKu1UnJbR/VWuIAnIORnFlOJPZNb6ZdKP2YolP5E6wadJPgvgZUjmD/Lu10KM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=L47QClFm; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SGw5pMvu"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="L47QClFm"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1730183647;
+	s=mimecast20190719; t=1730183813;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=1U1+gQO7f2XSDUu2eBTztDHTL4L1iaib/cTRCq2UMUw=;
-	b=SGw5pMvu4q+e5Q5+IhABrEdFKpco1ygjXvr5KArwpXU+UPSrLbXJSElAwQauOXaqJqeZMf
-	CweJIxIItMDrLG3bMqeVGqq5r+mgBJM9JpDt/jfz/ppZWsTC2pAQ2boyedeOFxKQiISfzC
-	f+8QL+1xzwop6ipCyTMD+4xg92JUkog=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=Lsinm3624GNVz1PyvB1AXYZL+m3Kz/DLLfTd1Ud82Vg=;
+	b=L47QClFmnDd+Vvva5Mu1NLEOp3/o/E2MKuDv/fBy8OIxGyMFu2BkAIxLbECCaEDrHPNi5O
+	2n1RNa1t4HA6vRaFi9K2IfOn+fwRw2Su323qaVl0NMDouc92huNtWgGmamzqrshMGsDPES
+	XdF9UeAYuzHmOpOWPWzfzjWgn8sat3g=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-440-aNZJTwXZPQ26MPXnSHQAeA-1; Tue, 29 Oct 2024 02:34:03 -0400
-X-MC-Unique: aNZJTwXZPQ26MPXnSHQAeA-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-37d458087c0so3573446f8f.1
-        for <linux-trace-devel@vger.kernel.org>; Mon, 28 Oct 2024 23:34:03 -0700 (PDT)
+ us-mta-408-f92wMUonNmKkFnegM5gCJw-1; Tue, 29 Oct 2024 02:36:52 -0400
+X-MC-Unique: f92wMUonNmKkFnegM5gCJw-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4315e8e9b1cso28464565e9.1
+        for <linux-trace-devel@vger.kernel.org>; Mon, 28 Oct 2024 23:36:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730183642; x=1730788442;
+        d=1e100.net; s=20230601; t=1730183811; x=1730788611;
         h=content-transfer-encoding:in-reply-to:content-language:from
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1U1+gQO7f2XSDUu2eBTztDHTL4L1iaib/cTRCq2UMUw=;
-        b=Ik9pZkDrZsrl7PSlQppR5GZ2wUDH2TdPFAZ1cdScrLyUh+lE7q2F1v7Lr2VeZhr3Vn
-         PecFKrq+76KVhNojt1gz4Ams8gN2w7P1pqOEjj8q5yAsUsQFC5IVv9qbghEvw38BTjjo
-         PBEVO3XdcVYqXENbpTI5pkYsUFFGFOM86osQrx89847RaaOmeNdpUara3dBAM9oiUas5
-         l/SQyiir1JTWKO0ewY7qt0pWn77Qjnlzbb6z0lEH8oXC5mAJ5pGlw6Df4Qp8gUjk2LPY
-         THlm4qiZOkuSNL6QHjEnR2bG8gaK4Xra5WE8BLaSlAza5IT0HqC5Uuyo8Q/SreuXK8uL
-         YnRg==
-X-Gm-Message-State: AOJu0YzkdtJUST4tkAtUSXk4KvwePPPbWiUNKXBG0T6iWowxPbF9HH54
-	SQwgv1IFn6UcM3U0XghUNI53LrCCAQFVOjh7tD3F3Sgwl/FDCaIog2NsXCtrPNKAH/tC1y5U+3V
-	JzeQsujMfJaJUAmnA+5g2wr9DXhOERrKti/zmZnZmVzwCI5t6cA7vwhOsCOrCOhyt5ziZ
-X-Received: by 2002:a5d:4f8d:0:b0:37d:34e7:6d24 with SMTP id ffacd0b85a97d-38162907d1amr573471f8f.18.1730183642031;
-        Mon, 28 Oct 2024 23:34:02 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFow5NFi76Kmom2AX5Jitxu0LFTANwqaj1yKvtLWJc+utTj1Sq8CnszXFi4jAZtufO7DBtaKA==
-X-Received: by 2002:a5d:4f8d:0:b0:37d:34e7:6d24 with SMTP id ffacd0b85a97d-38162907d1amr573459f8f.18.1730183641701;
-        Mon, 28 Oct 2024 23:34:01 -0700 (PDT)
+        bh=Lsinm3624GNVz1PyvB1AXYZL+m3Kz/DLLfTd1Ud82Vg=;
+        b=MNbETd6gwdy3OGDtl/+k0wWJPmKZ1Z4rdbjPIfG6Uw/buBMwAGqAYHymzZH1MTJgGx
+         3a8zbWzUT/6kewrLZDDjbSvLdF0bbmT8W6U/+d878Sk3SLlpCUC7b0AHj0LDG9MpcRM/
+         hFoQW9nW9kzxhh9DjU+BZDfzFO3B+mOfiBvKStuSqjcCeizb/Rb1hQr/Qi7F3qrNkg6I
+         7+hi773FS9lntYWuv6+1rkkImzzwvDwEHWr/icnKlyeLEUfkRR6OHwLxD8DCgKz0g2PA
+         Eie/GOUzR5WxghSh2bU5UfhkleBPCkAhr6qId7Eg19gpVS5JuTPM9tckrwTxG9IYOPCd
+         fhsQ==
+X-Gm-Message-State: AOJu0Yw1PMEAW5GmJ/xtgP4DwhBxm6sRjwnvKy1I+3jdI3xJOIhJEHPD
+	I/LAG/AshhMAcfPuKdeXXrynetBlJXwZgfsSEEUEZ1E+XJQ71IzfCpCjebrhAg5t/MsPWftrY6i
+	qo+9tpGs1Bgyuu+7eEZcQfH9WxdsoTRcHH95piNFf9eep8YNttrsMQlb0hOD7jcDfo2JPA6KRut
+	F8
+X-Received: by 2002:a05:600c:1549:b0:431:15f1:421d with SMTP id 5b1f17b1804b1-431b5636485mr6602695e9.16.1730183810840;
+        Mon, 28 Oct 2024 23:36:50 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGP7s7rgwsxlc6+DLTZzlI5QN7tX39BG/D+6ZFvuXNvCxAdKsea3r/8teXjTik1INqf5lHTcw==
+X-Received: by 2002:a05:600c:1549:b0:431:15f1:421d with SMTP id 5b1f17b1804b1-431b5636485mr6602565e9.16.1730183810532;
+        Mon, 28 Oct 2024 23:36:50 -0700 (PDT)
 Received: from [192.168.0.227] (ip-89-103-134-229.bb.vodafone.cz. [89.103.134.229])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38058b70e0fsm11559853f8f.73.2024.10.28.23.34.01
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38058b9279esm11555615f8f.104.2024.10.28.23.36.50
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Oct 2024 23:34:01 -0700 (PDT)
-Message-ID: <084ba0c0-4e79-46c1-806f-1bb4fce2ad7d@redhat.com>
-Date: Tue, 29 Oct 2024 07:34:00 +0100
+        Mon, 28 Oct 2024 23:36:50 -0700 (PDT)
+Message-ID: <122ae37e-1c92-4b9e-9ec7-1c7eedaca1fa@redhat.com>
+Date: Tue, 29 Oct 2024 07:36:49 +0100
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
@@ -66,70 +67,57 @@ List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 29/38] trace-cmd record: prevent memory leak in
- setup_network()
+Subject: Re: [PATCH 32/38] trace-cmd lib: prevent memory leak in
+ tracecmd_create_event_hook()
 To: Steven Rostedt <rostedt@goodmis.org>
 Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
 References: <20240605134054.2626953-1-jmarchan@redhat.com>
- <20240605134054.2626953-30-jmarchan@redhat.com>
- <20240717202504.492440b4@gandalf.local.home>
+ <20240605134054.2626953-33-jmarchan@redhat.com>
+ <20240717211647.2de08075@gandalf.local.home>
 From: Jerome Marchand <jmarchan@redhat.com>
 Content-Language: en-US
-In-Reply-To: <20240717202504.492440b4@gandalf.local.home>
+In-Reply-To: <20240717211647.2de08075@gandalf.local.home>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 18/07/2024 02:25, Steven Rostedt wrote:
-> On Wed,  5 Jun 2024 15:40:44 +0200
+On 18/07/2024 03:16, Steven Rostedt wrote:
+> On Wed,  5 Jun 2024 15:40:47 +0200
 > "Jerome Marchand" <jmarchan@redhat.com> wrote:
 > 
->> Because of the again label, msg_handle can be already allocated if we
->> exit after we got a negative socket file descriptor. Free it there.
+>> Free hook in the error path.
 >>
 >> Fixes a RESOURCE_LEAK error (CWE-772)
 >>
 >> Signed-off-by: Jerome Marchand <jmarchan@redhat.com>
 >> ---
->>   tracecmd/trace-record.c | 1 +
+>>   lib/trace-cmd/trace-hooks.c | 1 +
 >>   1 file changed, 1 insertion(+)
 >>
->> diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
->> index b4cbd438..770e775b 100644
->> --- a/tracecmd/trace-record.c
->> +++ b/tracecmd/trace-record.c
->> @@ -3903,6 +3903,7 @@ static struct tracecmd_msg_handle *setup_network(struct buffer_instance *instanc
+>> diff --git a/lib/trace-cmd/trace-hooks.c b/lib/trace-cmd/trace-hooks.c
+>> index a58b5356..47f25fb3 100644
+>> --- a/lib/trace-cmd/trace-hooks.c
+>> +++ b/lib/trace-cmd/trace-hooks.c
+>> @@ -151,6 +151,7 @@ struct hook_list *tracecmd_create_event_hook(const char *arg)
 >>   
->>   	if (sfd < 0) {
->>   		free(thost);
->> +		free(msg_handle);
+>>   invalid_tok:
+>>   	tracecmd_warning("Invalid hook format '%s'", arg);
 > 
-> As msg_handle is created with:
+> Should we also have:
 > 
-> 	msg_handle = tracecmd_msg_handle_alloc(sfd, 0);
+> 	free(hook->str);
 > 
-> This should be:
-> 
-> 	trace_msg_handle_close(msg_handle);
-> 
-> But may require:
-> 
-> 			close(sfd);
-> +			msg_handle->fd = -1;
-> 			free(host);
-> 			host = NULL;
-> 			goto again;
-> 
-> I'll skip this patch.
+> here too?
 
-I'll send a fixed version.
+Yes indeed. This wasn't detected by the static analyzer. I'll send an 
+updated patch.
 
 Jerome
 
 > 
 > -- Steve
 > 
-> 
->>   		return NULL;
->>   	}
+>> +	free(hook);
+>>   	return NULL;
+>>   }
 >>   
 
