@@ -1,111 +1,60 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 226A1198E8C
-	for <linux-trace-devel@vger.kernel.org>; Thu, 31 Oct 2024 09:48:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45E2613342F
+	for <linux-trace-devel@vger.kernel.org>; Thu, 31 Oct 2024 15:39:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730368122; cv=none; b=Vo8hkK0rPxqe8Gs9v01fne9BZ7ulnwY4QrPx1hE7LQ5ZHzBOTGcEGdYJdVYTZ9xl57m98dhrCvKFw4g1yP5R2bjJJ9hsPODYVc42t0kKUoe5YQ/Wq/zIGgtFfXZXjJmpoHBPKwXP9Tk44kClJm6PcwLcNef2faqTO0aEW6mU4W8=
+	t=1730389187; cv=none; b=qNFtF03wtz34aFZ3oXdYi198ZwnRzS1MZL8adECVZc74kF5do3TueqzkKh5oW8uVY8yEVDFyx8ZtF0M0yWzemwaw43iMLzih9EOxn4craxnIA/U22ZNSz30tbT0A8hvWnX54wnhWraqVvJqDLDgE79BWnrJPZaXVefhyRJ2UYEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730368122; c=relaxed/simple;
-	bh=id5rfJn/1gqZg8BQeU9G6tba6kHlGAM+uIWvXgSVLp0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ibWX+zYWsghtrSh4ntkPtbzMlflfKmwv0mmmE+c0FlBI3AGrSqgqXocYnRi/aUfSOlc3ptxZgyhUN717yJjVc1h4OuMsKWMEtXaCfSpuhxbyhN6foIi8oUw/OnaEfvIiJJ375853KwDcNZF9wyMMi9Q9bmpNG+blnhVzKqoO008=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2F0EC1063;
-	Thu, 31 Oct 2024 02:49:05 -0700 (PDT)
-Received: from [10.57.24.116] (unknown [10.57.24.116])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AF5A63F66E;
-	Thu, 31 Oct 2024 02:48:34 -0700 (PDT)
-Message-ID: <d95d6af4-75bb-44da-a479-045556141559@arm.com>
-Date: Thu, 31 Oct 2024 09:48:32 +0000
+	s=arc-20240116; t=1730389187; c=relaxed/simple;
+	bh=CzzGaN3ig4nZV0vdnMNoSCG6KfO6Uiq6l4eHeRnLOxI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=h/x2cotTlLfRFxwRpTHk6MGfsVrDFAEh0X9/EjJJKtZygZLQj3uvik3BnOKKsK9PPCJCwLIpFXcTZ7m3eb1qL+6EyWpG1Y8ZEQC4z9GCfZwZ31QqoClYFrofSFBrrjJJVQ4LSuGWlTowL3uTMR4VRrDi2KjjNnnxGrpa3l6Xh2Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D303C4DE13;
+	Thu, 31 Oct 2024 15:39:46 +0000 (UTC)
+Date: Thu, 31 Oct 2024 11:40:42 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Metin Kaya <metin.kaya@arm.com>
+Cc: linux-trace-devel@vger.kernel.org, Douglas Raillard
+ <douglas.raillard@arm.com>
+Subject: Re: [PATCH] trace-cmd: libtracecmd: Rename private functions to fix
+ static building
+Message-ID: <20241031114042.7b43ec0e@gandalf.local.home>
+In-Reply-To: <d95d6af4-75bb-44da-a479-045556141559@arm.com>
+References: <20241028122247.1594967-1-metin.kaya@arm.com>
+	<20241030204731.69d656d8@rorschach.local.home>
+	<d95d6af4-75bb-44da-a479-045556141559@arm.com>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] trace-cmd: libtracecmd: Rename private functions to fix
- static building
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-trace-devel@vger.kernel.org,
- Douglas Raillard <douglas.raillard@arm.com>
-References: <20241028122247.1594967-1-metin.kaya@arm.com>
- <20241030204731.69d656d8@rorschach.local.home>
-Content-Language: en-US
-From: Metin Kaya <metin.kaya@arm.com>
-In-Reply-To: <20241030204731.69d656d8@rorschach.local.home>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On 31/10/2024 12:47 am, Steven Rostedt wrote:
-> On Mon, 28 Oct 2024 12:22:47 +0000
-> Metin Kaya <metin.kaya@arm.com> wrote:
+On Thu, 31 Oct 2024 09:48:32 +0000
+Metin Kaya <metin.kaya@arm.com> wrote:
+
+> > As for libtraceevent, it doesn't need a separate prefix for local
+> > variables compared to exported ones, but that prefix is "tep_" and not
+> > "traceevent_".  
 > 
->> Building trace-cmd statically fails because of duplicated symbols for
->> strstrip() function which is also implemented in libtracefs. The
->> __hidden attribute does not resolve these conflicts for static builds
->> due to the lack of namespacing support in C. Refer to the associated
->> Bugzilla page [1] for further details.
->>
->> Although only strstrip() breaks the static build as of now, we should
->> fix the underlying issue comprehensively across the libtraceevent,
->> libtracefs, and trace-cmd packages. The recommendation on [1] is
->> prepending package name (e.g., "tracecmd_") to private functions (tagged
->> with __hidden attribute).
->>
->> Thus:
->> 1. Retain private functions which already start with "tracecmd_".
->> 2. If a private function starts with "trace_", then just change its
->>     prefix to "tracecmd_".
->> 3. If prepending "tracecmd_" prefix to a private function's name clashes
->>     with an existing one, rename one of the functions per its context
->>     (e.g., rename trace_load_plugins() to
->>     tracecmd_load_plugins_from_handle() and trace_append_options() to
->>     tracecmd_append_options_to_file()).
->> 4. Prepend "tracecmd_" prefix to all remaining "__hidden" functions.
->>
->> Future __hidden functions should follow this prefixing schemed to avoid
->> new naming conflicts.
+> I believe I did not rename any variables in the libtraceevent patch [1].
+> However, I made the following changes in the libtracefs patch [2]:
 > 
-> I'm not against the change to make the hidden functions with a unique
-> name, but I rather come up with something other than "tracecmd_". That
-> prefix was to be used for functions that will eventually become public.
+> -extern const struct tep_format_field common_stacktrace;
+> +extern const struct tep_format_field tracefs_common_stacktrace;
 > 
-> Would "tcmd_" work?
+> -extern pthread_mutex_t toplevel_lock;
+> +extern pthread_mutex_t tracefs_toplevel_lock;
 > 
-> Same goes for the other libraries. The "tracefs_" is for functions that
-> should be exported. Perhaps rename it to "tfs_"?
+> Do you recommend keeping them as is or using "tfs_" prefix?
 
-Hi Steve,
+Might as well make the change. At least that tells us it's exposed across
+files in the library.
 
-Ah, you are right. Those prefixes conflict with public ones. Perhaps I 
-misread the discussion on Bugzilla page. I've no objection to using 
-"tcmd_", "tfs_" and "tep_" prefixes. Will update all three patches 
-accordingly.
-
-> 
-> As for libtraceevent, it doesn't need a separate prefix for local
-> variables compared to exported ones, but that prefix is "tep_" and not
-> "traceevent_".
-
-I believe I did not rename any variables in the libtraceevent patch [1].
-However, I made the following changes in the libtracefs patch [2]:
-
--extern const struct tep_format_field common_stacktrace;
-+extern const struct tep_format_field tracefs_common_stacktrace;
-
--extern pthread_mutex_t toplevel_lock;
-+extern pthread_mutex_t tracefs_toplevel_lock;
-
-Do you recommend keeping them as is or using "tfs_" prefix?
-
-[1] 
-https://lore.kernel.org/linux-trace-devel/20241028122105.1594296-1-metin.kaya@arm.com
-[2] 
-https://lore.kernel.org/linux-trace-devel/20241028122143.1594614-1-metin.kaya@arm.com
-
-Thanks,
-
+-- Steve
