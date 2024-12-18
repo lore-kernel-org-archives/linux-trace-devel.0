@@ -1,30 +1,28 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4E8D35948
-	for <linux-trace-devel@vger.kernel.org>; Wed, 18 Dec 2024 22:42:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CA261BDC3
+	for <linux-trace-devel@vger.kernel.org>; Wed, 18 Dec 2024 22:53:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734561765; cv=none; b=e8I/aIB9gwKC0vXdlivNhwpl7gTyj6fQJDNVxqC5FVwS9pGs9Z6dsB9r7qr7GsU2wvKYsAy0rYxc3S39jC/7wTNQmWi70l84aEYFepVdA4Nb4PNxEPp9eu4JsuNkag7eFNgF7Z1KWrrTq98bYc5buRKg3l+UmR98X9XdYB/CSUg=
+	t=1734562386; cv=none; b=PaBawgrjeVHhYOO/wQJODUHwjWvr3aZJ+wW/t6qS5ukIYyUKh6VwK85uPFf1UD9EiLTV1BwGfUz61bkRhfVjgmNCbwWbnKEaX3/iYnRkrb/FxWur03KugtFxJFmWytUI6dJay71WDFToYRwODG5rdQiFkhJY7ZTcQUd6nZDWs2o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734561765; c=relaxed/simple;
-	bh=+Y1gGp20H6Vgn0sqZ9XG9songe/Nkx+nSuYqzZEkt7I=;
+	s=arc-20240116; t=1734562386; c=relaxed/simple;
+	bh=PI44BSs+GSo4pCZ8qMIWbB3fIX4dcxCy3GgoMtjAFaA=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=h2wvWp/p4Tu/tfrOOFN19GA/+2hispbM9TBt7uqw6NmrhyLCpHxLV7US/NZQfmBaXdNC4NlMwiK2S8XCFk/F0PcNJHZGyYpA/obIFW4bO8CJGPYYCRCmT6AKCUFh5EjSf3aHMy+T+qWG7x20AM1lxRuGEVVuT5DYVVunn1WQlsM=
+	 MIME-Version:Content-Type; b=MMN33YaGAXpVHIrj3FqNmEOQM1gq75Q8j7qpBzLVueNUWC9hKr38AgBMoSJvo8qHmS3k6Hi8dIJUtPgC/njGatBY8g21NhqUlNFyYv0nE//qO2CdaThm0A8ACqq3zIXMv7HAGrHoD5Ndxavp29wQDHvXXu5P9VLV25si4Os7eA0=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC70FC4CECD;
-	Wed, 18 Dec 2024 22:42:44 +0000 (UTC)
-Date: Wed, 18 Dec 2024 17:43:23 -0500
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 546DCC4CECD;
+	Wed, 18 Dec 2024 22:53:05 +0000 (UTC)
+Date: Wed, 18 Dec 2024 17:53:43 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: "Jerome Marchand" <jmarchan@redhat.com>
 Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: [PATCH 1/7] trace-cmd lib: Close FDs in
- create_buffer_recorder_fd2 it allocation fails
-Message-ID: <20241218174323.6e043e05@gandalf.local.home>
-In-Reply-To: <20241218173731.67e8e865@gandalf.local.home>
+Subject: Re: [PATCH 0/7] trace-cmd: Fix misc issues uncoverd by static
+ analysis
+Message-ID: <20241218175343.6207107f@gandalf.local.home>
+In-Reply-To: <20241205144439.127564-1-jmarchan@redhat.com>
 References: <20241205144439.127564-1-jmarchan@redhat.com>
-	<20241205144439.127564-2-jmarchan@redhat.com>
-	<20241218173731.67e8e865@gandalf.local.home>
 X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -35,18 +33,43 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Wed, 18 Dec 2024 17:37:31 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Thu,  5 Dec 2024 15:44:32 +0100
+"Jerome Marchand" <jmarchan@redhat.com> wrote:
 
-> No. If a function does not open a file descriptor, it should not close it.
-> It's bad programming style if a called function closes a file descriptor on
-> error that was passed to it. That can easily introduce new bugs.
+> More issues were found by running static analysers on the code
+> of trace-cmd with openscanhub[1].
 > 
-> The fix is to not have it close a file descriptor at all!
+> [1] https://fedoraproject.org/wiki/OpenScanHub
+> 
+> Jerome Marchand (7):
+>   trace-cmd lib: Close FDs in create_buffer_recorder_fd2 it allocation
+>     fails
+>   trace-cmd lib: Prevent a memory leak in tracecmd_tsync_with_guest()
+>   trace-cmd lib: Prevent a leaked FD in
+>     __tracecmd_create_buffer_recorder()
+>   trace-cmd lib: Prevent memory leak in tracecmd_msg_wait_for_cmd()
+>   trace-cmd sqlhist: Initialize name in trace_sqlhist()
+>   trace-cmd: Fix memory leak in stop_mapping_vcpus()
+>   trace-cmd record: Fix stdin redirection to /dev/null
+> 
 
-And this means all the callers should close their fd if the recorder fails.
-It should have never done that in the first place. :-/
+I'm going to apply all your patches except the two that deal with file
+descriptors. The functions should not be closing file descriptors that they
+did not open. The real fix there is to remove where it does close the file
+descriptors and move the closing in the error paths of the callers.
 
-Oh well, that was written over 10 years ago ;-)
+I must have gotten lazy and just let the functions do the closing when they
+failed, but that is just prone to bugs.
 
 -- Steve
+
+
+>  lib/trace-cmd/trace-msg.c      |  4 +++-
+>  lib/trace-cmd/trace-recorder.c | 19 ++++++++++---------
+>  lib/trace-cmd/trace-timesync.c |  1 +
+>  tracecmd/trace-record.c        |  2 +-
+>  tracecmd/trace-sqlhist.c       |  2 +-
+>  tracecmd/trace-tsync.c         |  1 +
+>  6 files changed, 17 insertions(+), 12 deletions(-)
+> 
+
