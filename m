@@ -1,93 +1,88 @@
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from server-598995.kolorio.com (server-598995.kolorio.com [162.241.152.247])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 084CC232423
-	for <linux-trace-devel@vger.kernel.org>; Wed, 15 Jan 2025 05:14:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70DAA137E
+	for <linux-trace-devel@vger.kernel.org>; Sat,  8 Feb 2025 04:51:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.241.152.247
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736918076; cv=none; b=hgMQ8b7nzKl9+rcz4NzppXkEi6Ad9pSq0cKNVtNvW/gmmKUPQriIi9ECMex48Eaz8aYzUtHHOLl5zeGX9spquxXcSoLWtt3+qJGfP74pW0PlqkwGz/7JDTCvL3CPJjKBaOOejZfQgl0/aeDW5M8M3qvZgEUsJnhSKSkCpGb2Fqs=
+	t=1738990271; cv=none; b=NvO3waxJAZ4tk+igY0pcuZdqHgaW2xDZHCcBAJZRQQd1ZOLMVTWjeNUxP4edViPKq1GWzwnmDh+CAaKdUwaIym/wCy8+KJanon6KtQqOUUl4zcxVDAl0mVcbv5HhITF/r2iQ6Ks5EYsZfi6a7gBYeL6LkKxX8qZM65AdUbaI87E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736918076; c=relaxed/simple;
-	bh=xgNuj93MskH+Ds/B2D9WhmZLiT2RF1z+UfI+AJzs0d0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FditMxg5JuvsI2bkYxALRFZq0rGTSJjiZ26Y3hHYdz0Bfr8nt2PhnaEa61c5EQcRMR9wf7fyP+mKpLAxQs9d4/OReqWsyQJLi+/Ziy+mlya6awIpLKvx5Uao+4dechtnZqqhX6BjsEh4PlrqhKah+EsOud+Z8oXmAAA7xXad8AI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Zzg9XOH7; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+	s=arc-20240116; t=1738990271; c=relaxed/simple;
+	bh=gl4+7vNxgV9+JzZtw7EthQ6aGDgi0WVn3wQV/lnKiyo=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=gDmTuTGNSjlMPerWhcB+91sfMsKPHTwGZqIsn/ZP0zwCtiIXY30FusQJwILXpcAEQyfJUfraK+VS1nIu8GzYm0fY1bApG5VjpGN+j98mmMmozSOTTI8RWWGHuc91UUf7cid7IqeiTiTIEGnfxczreK6D7fmLhPr3Iycf55hcoMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=truemaisha.co.tz; spf=pass smtp.mailfrom=truemaisha.co.tz; dkim=pass (2048-bit key) header.d=truemaisha.co.tz header.i=@truemaisha.co.tz header.b=ogQ7pdua; arc=none smtp.client-ip=162.241.152.247
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=truemaisha.co.tz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=truemaisha.co.tz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Zzg9XOH7"
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2166022c5caso98426535ad.2
-        for <linux-trace-devel@vger.kernel.org>; Tue, 14 Jan 2025 21:14:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1736918074; x=1737522874; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3q6DAuNf2yYgkEPW3w1N2K/8/8FZRn2t8cA5HbTBdWw=;
-        b=Zzg9XOH756TsHurj2UGs8H8mpP3LLwTGn1CnieMqt3hWdROaVFhJsy1ZN/7ZeMX/Wv
-         ZHq99BUe5EHomYzfknxZaPC9cnicmNlabHY38Rc4VqW6E4jSksCVcDj60SawDE28Q8Uq
-         PDTBaKYkKZY8wW0/J+KztTzvlz2UWr/H2KuSw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736918074; x=1737522874;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3q6DAuNf2yYgkEPW3w1N2K/8/8FZRn2t8cA5HbTBdWw=;
-        b=j9JMKPczWGvDQIdA4fbevanx4zngpAJNleOpDrO3DCsxf+EUlkarafX9hBqgVNBEbb
-         gNFNOWHv9HnyA7qcB0gaDU2axHlEM5Q5GKntUfgSL1cUKFz4w5YZY77GI9WfAZ4zXX42
-         ibHCkkvx+JGPRROtJ5QjwFTeJUsp39r0tG13D7X3U4VWGx5XOX8a0a5joNWdLVdlqysB
-         oxnr/4gISeox1Asylx45dRFfr52XoXEEQPVXcR5H9n+j60t0C7/QTyJkN6SL9UECYmHJ
-         UtQX39Bv5OGTnUd//wSplHmZxmM9aeo0SGFj7/tHujo7AOji+vr8g5IiIk6gYHH2YCM4
-         qaiA==
-X-Gm-Message-State: AOJu0YwnNRo+8GDIV4uOvFFBmmUw1vNvCuK3tuu6pJF2um15GWL4XCcC
-	XEusdDshoKC+GR/3bThw06T/3rGBfqgNz01DOqP5zdcVtRZMjtdXOOjF3t/zcRDU2UPpZS4M2QG
-	yN8gE
-X-Gm-Gg: ASbGncudDN0+IifLdTxc8gVyCmLVFvln5SkGUX2PvxGdjVtJpbgxCM9G869Tgjc9Kg+
-	UfeUuU8kemtKAGiJr7polNaD4glpm/+wdff2L4of3j4C6+R5OjYsIHSV1OXratvHR2TeO5usga4
-	z77UpTqgsbfgD46Z4ANl2on2PFNR8HaeByKCJIm4AY0BEbZ/r19c3YIh+EK7MOnVSnIlemC5vJ0
-	wIQAjeuFczqgJgkp+qZrhQSS4mcVGplNsaC+GNRmCsKQqDsPLxv6wKZOnveYf3tvbUeJLwm5uWE
-	uRUnDvJzLfNHeN+2DRtebzIszY08i8toTjCBXepY80LI1g==
-X-Google-Smtp-Source: AGHT+IG4SMomtOQ6WJQxWVEDB/lNxloM10su5/aKZszVDhVqVH+qNNZQjW3cUKudePuqPql8ZTv/Nw==
-X-Received: by 2002:a17:902:d2d2:b0:216:393b:23e0 with SMTP id d9443c01a7336-21a83fde4dbmr433467485ad.36.1736918074170;
-        Tue, 14 Jan 2025 21:14:34 -0800 (PST)
-Received: from keiichiw1.c.googlers.com.com (175.213.198.35.bc.googleusercontent.com. [35.198.213.175])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21a9f25a583sm75789785ad.244.2025.01.14.21.14.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jan 2025 21:14:33 -0800 (PST)
-From: Keiichi Watanabe <keiichiw@chromium.org>
-X-Google-Original-From: Keiichi Watanabe <keiichiw@google.com>
+	dkim=pass (2048-bit key) header.d=truemaisha.co.tz header.i=@truemaisha.co.tz header.b="ogQ7pdua"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=truemaisha.co.tz; s=default; h=Content-Transfer-Encoding:Content-Type:
+	MIME-Version:Message-ID:Date:Subject:To:From:Reply-To:Sender:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=gl4+7vNxgV9+JzZtw7EthQ6aGDgi0WVn3wQV/lnKiyo=; b=ogQ7pduavE9wcP1pQ7mqv81+P0
+	EXJvjdupSZgTeGEw6hYRbLelzvV/+p+QWSLiJkTeeZ37T2wW2jS+Msz7MmDnPVIZqk40ccNyhOHYG
+	jiyUbXBmWNEkgM5A/q87BDvIE03ipsICAkxtMXGtIGsrvao2bpGkP7ZzyOpJkdtiAer7QUlf2wPcj
+	U1TgBJRY+7XlVEMDkLd22PeGLDXUtW7gb9RRWvwKJzRcojG5g5Kf1zDQoDT2UCFqHke+jJdbJMSy4
+	hy35ooO/eMCEtWNzi2bCKIZbhhdWOWF2OuCC3OCLFKyOe7TE7vzOpLuuz5LLKWuyMzFYpJ1PA5ZSq
+	M6/ZDbUA==;
+Received: from [74.208.124.33] (port=51541 helo=truemaisha.co.tz)
+	by server-598995.kolorio.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <chrispinerick@truemaisha.co.tz>)
+	id 1tgco6-0000o3-16
+	for linux-trace-devel@vger.kernel.org;
+	Fri, 07 Feb 2025 22:51:07 -0600
+Reply-To: dsong@aa4financialservice.com
+From: David Song <chrispinerick@truemaisha.co.tz>
 To: linux-trace-devel@vger.kernel.org
-Cc: Keiichi Watanabe <keiichiw@google.com>
-Subject: [PATCH] trace-cmd documentation: Fix typo in man of trace-cmd attach
-Date: Wed, 15 Jan 2025 14:14:29 +0900
-Message-ID: <20250115051429.3461122-1-keiichiw@google.com>
-X-Mailer: git-send-email 2.48.0.rc2.279.g1de40edade-goog
+Subject: Re: The business loan- 
+Date: 08 Feb 2025 04:51:08 +0000
+Message-ID: <20250208015433.BBC0EC8DB956DA07@truemaisha.co.tz>
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - server-598995.kolorio.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - truemaisha.co.tz
+X-Get-Message-Sender-Via: server-598995.kolorio.com: authenticated_id: chrispinerick@truemaisha.co.tz
+X-Authenticated-Sender: server-598995.kolorio.com: chrispinerick@truemaisha.co.tz
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 
-Fix typo 'nesc' to 'nsec'.
+Hello,
 
-Signed-off-by: Keiichi Watanabe <keiichiw@google.com>
----
- Documentation/trace-cmd/trace-cmd-attach.1.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+My name is David Song, at AA4 FS, we are a consultancy and
+brokerage Firm specializing in Growth Financial Loan and joint
+partnership venture. We specialize in investments in all Private
+and public sectors in a broad range of areas within our Financial
+Investment Services.
 
-diff --git a/Documentation/trace-cmd/trace-cmd-attach.1.txt b/Documentation/trace-cmd/trace-cmd-attach.1.txt
-index 1edef4a1..17c75252 100644
---- a/Documentation/trace-cmd/trace-cmd-attach.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd-attach.1.txt
-@@ -82,7 +82,7 @@ Enable all events for tracing:
-   # cat /sys/kernel/debug/kvm/63170-15/vcpu0/tsc-offset
-  -27950965013436847
- 
--  # trace-cmd record -C tsc2nesc -e kvm -e sched -e irq -e timer
-+  # trace-cmd record -C tsc2nsec -e kvm -e sched -e irq -e timer
- 
- # on guest:
- 
--- 
-2.48.0.rc2.279.g1de40edade-goog
+ We are experts in financial and operational management, due
+diligence and capital planning in all markets and industries. Our
+Investors wish to invest in any viable Project presented by your
+Management after reviews on your Business Project Presentation
+Plan.
+
+ We look forward to your Swift response. We also offer commission
+to consultants and brokers for any partnership referrals.
+
+ Regards,
+David Song
+Senior Broker
+
+AA4 Financial Services
+13 Wonersh Way, Cheam,
+Sutton, Surrey, SM2 7LX
+Email: dsong@aa4financialservice.com
 
