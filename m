@@ -1,88 +1,69 @@
-Received: from server-598995.kolorio.com (server-598995.kolorio.com [162.241.152.247])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09A00221D8B
-	for <linux-trace-devel@vger.kernel.org>; Sat,  8 Feb 2025 21:58:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.241.152.247
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.5])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C2932153FA
+	for <linux-trace-devel@vger.kernel.org>; Fri, 14 Feb 2025 12:36:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739051938; cv=none; b=c60WqCb/QsY5r93JDq1ydGXNpm8HsRD+ZQAwWcp4qZYXVQ/O3Xhny1Kfn2A75tOg/wUVJxUDo9HbICZM3Us8PAWZXLeAXnhIlj1M4VEE3g7FIc6jmpwiDdciNHxUea0a0RV8jS8T17HL2uOFeGIpH0BN3kRUSAC8MzCUlxhv/EA=
+	t=1739536568; cv=none; b=cBl6xFdgMZxGT+Gdo0iKMYrWPas5nKnBtWThQED5cYX/gs9/gGRXzcr9jUq9zJsblKyMQ3ORCyYLWB8geteum/rI+5a4l9y/6JusErM0ASd/O9QRrCyTtGHqmcOOel7cfSMZgeSCh6u+NnDhrSZgBBP4WiU2zX4sZjayCUzbxTY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739051938; c=relaxed/simple;
-	bh=gl4+7vNxgV9+JzZtw7EthQ6aGDgi0WVn3wQV/lnKiyo=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=AhkmvZvScGLI40vwBVbjlIQHNoywTlDmaA3Sf4yw1TcjADP47ro0FOxOoCIOo3zfuSgicHcU1nDuto5j1+UJUMIYELhec9fHLmPzpkU9y1N88l/3LlJcl3SULWVNyLFt+4PPjrrPKALMNJuHMpX8owsqS0OtYcizDsIahY6ODMI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=truemaisha.co.tz; spf=pass smtp.mailfrom=truemaisha.co.tz; dkim=pass (2048-bit key) header.d=truemaisha.co.tz header.i=@truemaisha.co.tz header.b=EkLuDh92; arc=none smtp.client-ip=162.241.152.247
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=truemaisha.co.tz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=truemaisha.co.tz
+	s=arc-20240116; t=1739536568; c=relaxed/simple;
+	bh=ArOqPz4AR/2UtgU6ZzY4CVVROiBfrjQnm7ncXgfmqas=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mpVqQymTn0OKosfjX90/t4L06KgThoJx9GBS7vCQUyJNUR2s33klYh8O5fV9GsJivMDwZQjxJ3kD725SMN/VMKZ/fsqX1638pA7CO9QZ2RVVvBrxmerjHrJv2PDviG8E5ENiAupGg6HaUwFYM8KdlhNhPpRVdCy807eESX7tmtU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=nWsR3OXa; arc=none smtp.client-ip=117.135.210.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=truemaisha.co.tz header.i=@truemaisha.co.tz header.b="EkLuDh92"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=truemaisha.co.tz; s=default; h=Content-Transfer-Encoding:Content-Type:
-	MIME-Version:Message-ID:Date:Subject:To:From:Reply-To:Sender:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=gl4+7vNxgV9+JzZtw7EthQ6aGDgi0WVn3wQV/lnKiyo=; b=EkLuDh92wa1qFV2pY6rGCyH8+k
-	PtnQ2U7bKA6QvP26UjSiqqQ2p+x+YTHyncPK00MVW8uF0UVttYEsF/Xgkm14t2xn0+gcGeosHp48g
-	d9II/1k1P65TDt5hR0LT6XiAOXHrofbXteZgF4TK6Mx4v4jfugTgPV2i95Qqw9UJec4LXxQccxvAq
-	1QxdnDMVRZN7rYdsyNGykEChztkTaU4VYln94INmrPw5TQqNRWOrIo4eEdLHtdvTv9CvWyDSeCq79
-	b1wRe+UrcJkOCPKB2YRqRVjffiBl/NY/HMFQC/pbeUaAXdQn5GFtDygUc+AeG8kd2sSi7DSqTIZ+4
-	M8kKGi/g==;
-Received: from [74.208.124.33] (port=59342 helo=truemaisha.co.tz)
-	by server-598995.kolorio.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <chrispinerick@truemaisha.co.tz>)
-	id 1tgsqi-0005eg-2Q
-	for linux-trace-devel@vger.kernel.org;
-	Sat, 08 Feb 2025 15:58:54 -0600
-Reply-To: dsong@aa4financialservice.com
-From: David Song <chrispinerick@truemaisha.co.tz>
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="nWsR3OXa"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-ID:MIME-Version; bh=fr9U8
+	6RPV3rVwEGXid+PwZF3uW93bKVqTNcbQjT6A/Q=; b=nWsR3OXa/V/0pUKEDbcJ8
+	Mq4fGzGRR2M4pekX7gudQsXhFhySeolG+bf4wpW4V6L/an67hDziJzaw8Cggp2dT
+	12mlnM3/5k4QUQ5EdnQhKSKIlQJyQxJ0KRK7cRLLyN7z0FpU6r2GGe/v2LHa/OSu
+	0+4zm1zXjd+kem3S0y+OMY=
+Received: from localhost.localdomain (unknown [])
+	by gzga-smtp-mtada-g0-2 (Coremail) with SMTP id _____wBnj2KvOK9nbwJ3MA--.45981S2;
+	Fri, 14 Feb 2025 20:36:00 +0800 (CST)
+From: Haiyue Wang <haiyuewa@163.com>
 To: linux-trace-devel@vger.kernel.org
-Subject: Re: The business loan- 
-Date: 08 Feb 2025 21:58:55 +0000
-Message-ID: <20250208210541.F7E7330149A27571@truemaisha.co.tz>
+Cc: Haiyue Wang <haiyuewa@163.com>
+Subject: [PATCH v1] libtracefs: Fix the read file failure code checking
+Date: Fri, 14 Feb 2025 20:35:17 +0800
+Message-ID: <20250214123531.13883-1-haiyuewa@163.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - server-598995.kolorio.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - truemaisha.co.tz
-X-Get-Message-Sender-Via: server-598995.kolorio.com: authenticated_id: chrispinerick@truemaisha.co.tz
-X-Authenticated-Sender: server-598995.kolorio.com: chrispinerick@truemaisha.co.tz
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wBnj2KvOK9nbwJ3MA--.45981S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7JF1xXr4UGr15Cw17JF1DZFb_yoW3XFg_ua
+	4kJF1kK3s5JanFkw13Zw1jvr1fX3sYqFs5GFs7XFZFkF4UAa4rXF9xurZ8GFy8Gr9FvFyf
+	Ca1xJ3y0ywnxCjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7sRi2Nt3UUUUU==
+X-CM-SenderInfo: 5kdl53xhzdqiywtou0bp/1tbiSg-ya2et7k-5-gABsx
 
-Hello,
+The failure error code '-1' will be treated as 'true'. Only nonzero
+number has buffer data returned successfully.
 
-My name is David Song, at AA4 FS, we are a consultancy and
-brokerage Firm specializing in Growth Financial Loan and joint
-partnership venture. We specialize in investments in all Private
-and public sectors in a broad range of areas within our Financial
-Investment Services.
+Signed-off-by: Haiyue Wang <haiyuewa@163.com>
+---
+ src/tracefs-record.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- We are experts in financial and operational management, due
-diligence and capital planning in all markets and industries. Our
-Investors wish to invest in any viable Project presented by your
-Management after reviews on your Business Project Presentation
-Plan.
-
- We look forward to your Swift response. We also offer commission
-to consultants and brokers for any partnership referrals.
-
- Regards,
-David Song
-Senior Broker
-
-AA4 Financial Services
-13 Wonersh Way, Cheam,
-Sutton, Surrey, SM2 7LX
-Email: dsong@aa4financialservice.com
+diff --git a/src/tracefs-record.c b/src/tracefs-record.c
+index a2dcfc2..6abc3aa 100644
+--- a/src/tracefs-record.c
++++ b/src/tracefs-record.c
+@@ -550,7 +550,7 @@ static int init_splice(struct tracefs_cpu *tcpu)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	if (tfs_str_read_file("/proc/sys/fs/pipe-max-size", &buf, false)) {
++	if (tfs_str_read_file("/proc/sys/fs/pipe-max-size", &buf, false) > 0) {
+ 		int size = atoi(buf);
+ 		fcntl(tcpu->splice_pipe[0], F_SETPIPE_SZ, &size);
+ 		free(buf);
+-- 
+2.48.1
 
