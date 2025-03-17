@@ -1,155 +1,190 @@
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from DU2PR03CU002.outbound.protection.outlook.com (mail-northeuropeazon11012053.outbound.protection.outlook.com [52.101.66.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4478B154BE2
-	for <linux-trace-devel@vger.kernel.org>; Fri, 14 Mar 2025 22:07:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741990045; cv=none; b=V+LVYrTCPM+KZL5rHEVCffK4foBnmyC1Bt6YlF3l6BjSE5KdYC/JXeWEsDqgT2SI1R5U0uheN/z/6aFuTkg3C35PnqD+LOF7lKqXCvieAhPuYGCXtit+9PAcj7G3FRydvmj3ANlk4Q/Y6rNrHdFS6tqzcqHukc3jv62mBoURb9c=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741990045; c=relaxed/simple;
-	bh=rXoIWxnq/p2e969S2A9jRuVVgxwxdDOjR0qav543KaM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=r8+ScX+6hkp2qzePaYwGj+LcQ1HdQRguJs/KYIB0I5hBJkof1+jQYnVu5sYQcqLiT82OAdRwIDycg5ywVCKkrZsi1R2+gszk1fP4QIesK+HsPMECf+HZDAZHpe3xTry7M5rdUwSxkvAkzTtzSVf5/orTBALTA9eEf0axTWowDkM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=eCcIhHnh; arc=none smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CB181474DA
+	for <linux-trace-devel@vger.kernel.org>; Mon, 17 Mar 2025 11:24:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.66.53
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1742210681; cv=fail; b=FQqjJaoG+V15Y+Ro+sglODeiexxrAJImdiaWwt/nPG4DE7MpRSt1gbiuMGdY+AKTZlDBvxHrz4vlTSWTwqGAH/OLSTcy5F8aTQzEl/DvkDkIinfPnVG/YCSVmc/ZDT6jn6oNHBrSKyAjS106JXg8Xsa6O3qc6/2zV8e+nIS0p8k=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1742210681; c=relaxed/simple;
+	bh=6E5zv1VrdMhN5TfHzlZKCQjUU0YRC/xEG7+iIXQoNcI=;
+	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version; b=PrOLz+zPGzMZT7+NswWWFVNhOqe96inlIOmOe1ctWTcC2uq1+W90vC4UdcmeFZNDaqSslTmrulukVkjo9HXzAxveiwGOCWfEVdv4sn+8bzlwqTSQ0vTcQqObalj66n3cH4BITFDcfwfiqpc/YW4F4tkBknpuWPVm/2HuWVzOHdQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens-healthineers.com; spf=pass smtp.mailfrom=siemens-healthineers.com; dkim=pass (2048-bit key) header.d=siemens-healthineers.com header.i=@siemens-healthineers.com header.b=VkASqdJ3; arc=fail smtp.client-ip=52.101.66.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens-healthineers.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=siemens-healthineers.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="eCcIhHnh"
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 52EKtS04009759;
-	Fri, 14 Mar 2025 22:07:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:date:from:message-id:mime-version
-	:subject:to; s=corp-2023-11-20; bh=eFF/EV8ChTj0GI+e9Jh9JZoBEMFub
-	Ba25DGGuFC6BOM=; b=eCcIhHnhmQ9GU3wTijNb8P/SrEqwx+W+/D1sH0kTccEfM
-	FvBiLQ+FVsxIiobL0kVpQMLymJaHhGMRgSWt/TDvpucdJj+qH4+DSjR9OxKcEo7D
-	eQMcVcM4QWqN4AveQOKpAILQ5X99pwVl++TeE/Bty3RuHdn70eehy/u41hLK4nZZ
-	tbhQZ1cbFOBeo5pcPI1+kvErnRWJArpQP3oi8YmKYY25k45a8y+sElXcFE10MozK
-	A09Hnu3quVwoohh96ZOAqkC/9i3BdXd/qWdHjUTFasI4mgzzARjoM24wEfyarMfR
-	XRGGup8m4wEXn5Hm7hUM5ehf8XDAZJZIyRDkcHcCQ==
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 45au4dya4y-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 14 Mar 2025 22:07:21 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 52ELgTRa003824;
-	Fri, 14 Mar 2025 22:07:20 GMT
-Received: from clb-2-bm-ad2.osdevelopmeniad.oraclevcn.com (clb-2-bm-ad2.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.254.172])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 45atn4160t-1;
-	Fri, 14 Mar 2025 22:07:20 +0000
-From: Libo Chen <libo.chen@oracle.com>
-To: y.karadz@gmail.com
-Cc: linux-trace-devel@vger.kernel.org
-Subject: [PATCH RESEND v2] kernel-shark: Multi-thread the computaion of stream/combo plots
-Date: Fri, 14 Mar 2025 15:07:19 -0700
-Message-ID: <20250314220719.1065523-1-libo.chen@oracle.com>
-X-Mailer: git-send-email 2.43.5
+	dkim=pass (2048-bit key) header.d=siemens-healthineers.com header.i=@siemens-healthineers.com header.b="VkASqdJ3"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=LNf2AtN41L7e3cP6UB1lTEEl57STyRpVS9EoRglUEwYc8R16tRqJWw5SwdhCFl6UtXKLTfH6esqvtYaXpL+VMgQOWBSVxw9Z7BC99Zu1ELFu4MbP3BU1/ZBifPzQ8XeoPbeulz7hQoMmNlXgwsJtEt+4yM6z4vxi62Dn4iZnmA4cdmQI0rW0XTIGpx9GqrN+icVbHqrgRbIgivFGNMHE2cDdEoBBCHIuPiz2d0jW7p3jpsknVYJconLcnbL7MYnT/4cOA7MEbUAcng0QwMQP2iC6ieutA2vZnTvkuR5PGdMZHD9g8+G+wQeE3l2feaWhXzrS0wMYEs1Kll4urDrGSw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jGZKRjga5Mln91jg3WAhdFsTmy7SBAuEWk1zjuRE1SU=;
+ b=hjZEos75KGyiIjBUip6xVbrqmMmNgvfqEuSE5QPqRTZ0HmDzHeonXN7kIPfoSTzlbPWCKDya42YFCqZFR+Drvbwl15ziYtn+D0fOu9AlDCCLYXsmdFZkJD2MDwTs9XT6CVfNxifDV0m5+rFAuPBaMp+IdhKBJXGXCzo4/iH0uHUz1dCiuVbAXhP2eEDYJfIzX41MjMCMxArKT6P9S7rERw61W1DP8s8jCE3MePJ4rzR3o0UkEMmtxn0nnNCNw8RVZwHJBQ4BimIoTkJ6UYFtre8bHoLOwHwcQlnNngVwXqEaWXlINyY1n8wthGmmEKfFvG9wculBaSOAgni1Ibs+Gw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=siemens-healthineers.com; dmarc=pass action=none
+ header.from=siemens-healthineers.com; dkim=pass
+ header.d=siemens-healthineers.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=siemens-healthineers.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jGZKRjga5Mln91jg3WAhdFsTmy7SBAuEWk1zjuRE1SU=;
+ b=VkASqdJ3jsJMp3EC9kKFO4k/1sCSsyGXL64l/nF93MlbpW8cPo245PwqHwd90WzGGIiKn6OCLffMnsugZX8zu6FVhkKxcPQW6l4HdgC+8eZ6VPO9l8HLjqtun4EpSp88vuRPmMkimIiSDvH8gWm+slUq9/iWnUmKxzdBoevKGABRu7eEKz0KkntjboYUFHia2L+6cm/D2VHsv9pnapLm2s3He2pvhytjwkEWY1GL0C45C3iRK7iTvjGdhCcLcnSVfy9wXfmLJhnXpx2qUN7t9v4SotKOvbOFtlsAGdpQbX71sQncSiYg8yP0ixkA3uH0ik6reiTFW7Oc4C7sTQiSuA==
+Received: from AM9PR05MB7777.eurprd05.prod.outlook.com (2603:10a6:20b:2c5::23)
+ by AM9PR05MB8594.eurprd05.prod.outlook.com (2603:10a6:20b:3a4::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8534.33; Mon, 17 Mar
+ 2025 11:24:36 +0000
+Received: from AM9PR05MB7777.eurprd05.prod.outlook.com
+ ([fe80::948a:5048:e01:8da5]) by AM9PR05MB7777.eurprd05.prod.outlook.com
+ ([fe80::948a:5048:e01:8da5%6]) with mapi id 15.20.8534.031; Mon, 17 Mar 2025
+ 11:24:36 +0000
+From: "Kutzer, Philipp" <philipp.kutzer@siemens-healthineers.com>
+To: "linux-trace-devel@vger.kernel.org" <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] libtrace: Fix memory leak in tracefs_cpu
+Thread-Topic: [PATCH] libtrace: Fix memory leak in tracefs_cpu
+Thread-Index: AduXK5tfnYbr3hwoRoGtV7EYmeYPdA==
+Date: Mon, 17 Mar 2025 11:24:36 +0000
+Message-ID:
+ <AM9PR05MB77778BE58632548B4D3EEBECB5DF2@AM9PR05MB7777.eurprd05.prod.outlook.com>
+Accept-Language: en-US, de-DE
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_ff6dbec8-95a8-4638-9f5f-bd076536645c_ActionId=99ae0b53-0501-4130-9a6c-1a6962e7fa24;MSIP_Label_ff6dbec8-95a8-4638-9f5f-bd076536645c_ContentBits=0;MSIP_Label_ff6dbec8-95a8-4638-9f5f-bd076536645c_Enabled=true;MSIP_Label_ff6dbec8-95a8-4638-9f5f-bd076536645c_Method=Standard;MSIP_Label_ff6dbec8-95a8-4638-9f5f-bd076536645c_Name=Restricted
+ -
+ Default;MSIP_Label_ff6dbec8-95a8-4638-9f5f-bd076536645c_SetDate=2025-03-17T10:05:22Z;MSIP_Label_ff6dbec8-95a8-4638-9f5f-bd076536645c_SiteId=5dbf1add-202a-4b8d-815b-bf0fb024e033;MSIP_Label_ff6dbec8-95a8-4638-9f5f-bd076536645c_Tag=10,
+ 3, 0, 1;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=siemens-healthineers.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: AM9PR05MB7777:EE_|AM9PR05MB8594:EE_
+x-ms-office365-filtering-correlation-id: b8fee6c4-ca54-4917-844a-08dd65464c72
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|376014|1800799024|366016|38070700018;
+x-microsoft-antispam-message-info:
+ =?us-ascii?Q?z/S3GB3o3xfxi1UTc5cm0d8QjTx1vyQ+3zTfApwkeNrIFGvgQdt5C3sNC59w?=
+ =?us-ascii?Q?VhGgNLtS1UlIWF8ix84qnzwnuk8qcvNzew1TTgiZ0B7kE2D1YnQsqShA4QCA?=
+ =?us-ascii?Q?r0oeTunk0Eq7CXSrVK/TTaMOg9nlF46SOSb4Ic7X4IDtH3tpMpxRgcZRPHmX?=
+ =?us-ascii?Q?8NW2Eiwgh/42kfOo+yhBXOLNApLJPaj1bqJTul7GyKItyUPWhJWuOnD5eHXZ?=
+ =?us-ascii?Q?L5FXjSoHO/YvnsCl4VgWCbCuSg3P8LXAjMeIwxTwjl7c0W4d4aW40rJVbTf+?=
+ =?us-ascii?Q?njnTwPm5y3YRZJxKiDsNuLEut7gedW1y4Cy5CVvsAV4BwlXCyAFYkXYgF6gU?=
+ =?us-ascii?Q?O/2RMEicQSts3W2rK9qgzFh/Aua3t1GTMgQW6oGcFZRLLVxzs8jW89i9QfRR?=
+ =?us-ascii?Q?XY1pKEv9CEHmWTGGwcyBNdKZm+/jp+Ai8FBmXjpFUTBRkpI6GeYout+Kuvi1?=
+ =?us-ascii?Q?Tjq9K8x3FLyylWEFhpKvI44Vfk34aZni1x9aQFnOWCRKXdzVMUp8GAx4b1DA?=
+ =?us-ascii?Q?Ny0DqkE/iwyEzv18I0Wb1IhH3UqGGJnTfVqceYlwJ+5A9OpI1SqzhjXvqHFL?=
+ =?us-ascii?Q?BXxtmEpaMi5d2qncIrVrQ8DLZn2sY4Ej9Dq8pqTfvbcNUZI2Q3uLyBfuPDZp?=
+ =?us-ascii?Q?7mMLjlVWMI1T/8AWK0F5aWi6ufVq0u/ugPCj/NeMrLpMf6+weGCBRazN6xel?=
+ =?us-ascii?Q?9Z4Or3mAd3i+AWQFQVcmM5Z1bVfbZqCSIEj2lBiDRzjjlWejcBm3ggEGcyA2?=
+ =?us-ascii?Q?IgFVcmxpa/Ma+UhFOzRsEG72Inj0X03Sqf3axDfTbJJY2446jXZ5lAv/MaeA?=
+ =?us-ascii?Q?HpguAfsNRVgqhHb+ZnlFu3HvDst1l5dYvmDAmJmQR6PjZP3tn/DUPPnxUSxp?=
+ =?us-ascii?Q?stQHkqjUChh4VjzMWOcqa5iKDV9A4Kvot9+TKVmetmkOxtKM41SnIs1thuB2?=
+ =?us-ascii?Q?wsPHQDpbeGBBf7M5rTgv4i+krdBBGICV6E2ItkBUucypSZFNL+5PLydaudt4?=
+ =?us-ascii?Q?9ZoEIRX7eIjpGbdZSSTwqBx5+cGgpMMMgwkyKgy4VyGDigr986+YuCZ+JLHd?=
+ =?us-ascii?Q?eaZ+7e1Z660B5SE+xHGjEGQN+4oW0BjqADoepS2NOlj66u/b1USFOnhebSv7?=
+ =?us-ascii?Q?PYL+fGJDHECbqE4RCt59SChISje/oWvdqlxXsk8+5Xzj/ReJN3e2aURhZdPG?=
+ =?us-ascii?Q?pyuKkIyaerTY6lm9H2gSB++fn3xS6BT5gguJo6UAk1ab1N4O3iF2eHpCSA0m?=
+ =?us-ascii?Q?D5makUZbNXN9sErN2zEUxw2bAUus0423bQ6kHwj06BDlGPJfxmUvgZZ6Snlt?=
+ =?us-ascii?Q?TLh37svfPHWo8QD5P+mL97cPSWjbr9HgrNjJ1CVzzsF1Ow25dfiEE9MsZKxE?=
+ =?us-ascii?Q?xyo1UsLnZI9aKmtYX+LqH1I1wmTsc1PR6WMA3QmTtrW4CpHlgHMVwJk17XI4?=
+ =?us-ascii?Q?0GAX4lDZvrMb+xCoRMn+aWhc3eGmAITM?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR05MB7777.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?FqjBW5eD9NrZT9RSRSWws4Pf+xHq2+J+aWpDV9sjdalgAHC0/Pi/TjbkRk0q?=
+ =?us-ascii?Q?HkHf8TDJwor+CIQNMyyv2vbopi+3/VureYoMAJff2sQTaf65avxKwHhyu384?=
+ =?us-ascii?Q?T6f+ARpBW9b5h5Q4BaGXf8WmMKfIVwv5TGDrQLHzKAEJ7RsNV+dhSnCGnAGr?=
+ =?us-ascii?Q?6hqHas0o6RrUft32+w5gYTkFlwCPJY+prs1IQcdTpvh9YJPmBzDQW1I3o3Tq?=
+ =?us-ascii?Q?Ap8nRm5dOXf9EPDMPicqkqKFFit8TFLsUszYzbCyjFmou+9ylhXeON0OFmj1?=
+ =?us-ascii?Q?UwzEFksQM7QWgLxJ7uLf6hGWj5wsYxB11Gzlse4XBAO3kds9l3ldIEcKAlsf?=
+ =?us-ascii?Q?asvlGEIXIc2cZAq6UkRO9n3uAhccr/KBQJjJ9ewu1wutu9dnmVLeM2j4ZNT6?=
+ =?us-ascii?Q?LA3Uoc+ls0CQzcJC78XLZIFwHax3ghKrhYXIIPo5H7MD1F3WIWcxikYTok5Z?=
+ =?us-ascii?Q?Wnr/CNSLa+I9Vy95Sdt684hij4ghs7/WS8CLRt/N/pIcQgPoYAnWnpe6n8wI?=
+ =?us-ascii?Q?h5G5PTTZ8QZtbREid+ENIaYG3HciUkEnvvsGS5vZaDHFJf02fuqlAWB2FoKU?=
+ =?us-ascii?Q?/x+dYfqOgtmGp9TzxFQ9W+BneZCma0DDpVExmNmwrT9EMTFgtQ1L6+KKbHiA?=
+ =?us-ascii?Q?eSx9SSgb21K7idRNbKM9wvZ2bgPd06koc1xQVJxo692wyuwnzstq7WBvLFTf?=
+ =?us-ascii?Q?XgbEuHJv5yI2Xg+Ou7cgeEeQOXNPMLzdmP/wkGj68VepxH4/FN2cYdr5cjC+?=
+ =?us-ascii?Q?+Az8rLjPylujqjW9g2lYR9AucRpGxftoiv8EmPV35zCi9Oodu/gpQ8VvVMeR?=
+ =?us-ascii?Q?xwWc1o/Yf2KIIXJ4QIhRpKr7HOg1yGby1Re6oScxQDjHNKDoLYMGO000Sf1i?=
+ =?us-ascii?Q?DlVkJbEs5WLEm5kF+Pcm0HQgrt9Ye+QArSCPQuPis0on2inzW4VbfAbIU6+S?=
+ =?us-ascii?Q?91ZhAgvA9r/l2oh1YonptwBKF5JLHA70f56KP8Kztr2uO+Cka8HL1Yeu3175?=
+ =?us-ascii?Q?gxrqKBNvJY7bOL2mWS7eEO5085l+lCEba3GxkKKSQySprft74zZ+zV2xCbFT?=
+ =?us-ascii?Q?g++Va2bzDoXZgQ9AwjbxKUKBpL29c2afjb5BuzGDRBK+fapDyYEXXXR7Q9QK?=
+ =?us-ascii?Q?/+BdlF+PJStRCy7NztZpX02hvyKzaoYFKiTAaETrW0iLnDjoRmYvVmJiA1Fo?=
+ =?us-ascii?Q?+s0dsyGfXOBd8Ws/N51tFkCHzUZVkYvZWxzcBhD1HrfBdsgjBgCkJmLNP7Dg?=
+ =?us-ascii?Q?7MyA0GB/B+QkcMipXH1gU9xmF9mtSu9hhtK/iCFdQEB1kSjpS273sCpWP+51?=
+ =?us-ascii?Q?70Qtne5+1YcuMYbIFslu171D+bSS8+hx1jLI8fDxN36FKGxAtv64q0nfdM24?=
+ =?us-ascii?Q?0NMRa1/v0Ue4stu0MIgFxXWXkTPUW3PzOFjxGdtvhVlPhVJWj2fK2cBPVuTs?=
+ =?us-ascii?Q?QFWEe3JLj4ZyyyhvnY/1aaxyawjyvQMkXlLtFEhyvWFxQ+4pRnMIqHcyYwxs?=
+ =?us-ascii?Q?ZXI6UbryjjTsoMJIOXenryOO8FmqYDuIx9iK3F9VxkX052LxptGng6gloKtB?=
+ =?us-ascii?Q?nl28VdD5C0/DTqKBs92H6IghGwW4ubEtSBMkIEddEB0wKvc+l+KBXh9/Wnum?=
+ =?us-ascii?Q?L7uX15bj8RxLiO3Bl6mzg3A=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1093,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-03-14_09,2025-03-14_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0
- mlxlogscore=937 bulkscore=0 malwarescore=0 adultscore=0 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2502280000 definitions=main-2503140170
-X-Proofpoint-GUID: n38vk0XQqnjioEnL-OtuCA6Ww6BF-1GU
-X-Proofpoint-ORIG-GUID: n38vk0XQqnjioEnL-OtuCA6Ww6BF-1GU
+X-OriginatorOrg: siemens-healthineers.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM9PR05MB7777.eurprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b8fee6c4-ca54-4917-844a-08dd65464c72
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Mar 2025 11:24:36.0538
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 5dbf1add-202a-4b8d-815b-bf0fb024e033
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: AfeVprK858K8ivO3DoTkgiW/F3fAsWvl+cq/V3HRuQ/pbq+gv9gnZu6JB47CQ9TQ/8V7m+LIYcwoBXgpMjT3vWBgAudICErOZc6vogDuq2BkeBLsvuoxIyZvU1E2UcHU
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR05MB8594
 
-Parallelize _newCPUGraph() and _newTaskGraph() calls to dramatically
-speed up graph rendering particularly for traces from very large systems.
+From: Philipp Kutzer <philipp.kutzer@siemens-healthineers.com>
 
-OpenMP technically is a new dependency here, but it's part of GCC, so long
-as your GCC >= v4.9, the libgomp library will make the code compiled.
+Hi,
 
-Signed-off-by: Libo Chen <libo.chen@oracle.com>
+with the introduction of the interface to allow the tracefs_cpu to handle b=
+uffer allocation on their
+ own a memory leak was built in.=20
+(Commit 1e1cc549d7e7fa408081e03e4effd3591a131ae5 - libtracefs: Add API to r=
+ead tracefs_cpu=20
+and return a kbuffer)
+
+We cyclically call the tracefs_iterate_raw_events function from one of our =
+applications and=20
+noticed that our application was increasingly allocating memory.=20
+
+With the help of Address Sanitizer the root cause, allocating but not freei=
+ng memory=20
+for "tcpu->buffer" was found. The fix will free memory during close and cle=
+anup function=20
+and has been successfully tested in our environment. The original problem (=
+memory leak)=20
+has been resolved.
+
+Signed-off-by: Philipp Kutzer mailto:philipp.kutzer@siemens-healthineers.co=
+m
 ---
- CMakeLists.txt     |  6 ++++++
- src/KsGLWidget.cpp | 25 +++++++++++++++++++++++--
- 2 files changed, 29 insertions(+), 2 deletions(-)
 
-diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 988bfd6..7847177 100644
---- a/CMakeLists.txt
-+++ b/CMakeLists.txt
-@@ -84,6 +84,12 @@ set(EXECUTABLE_OUTPUT_PATH "${KS_DIR}/bin")
- set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} -Wall -Wextra -pthread -fPIC -fno-common")
- set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pthread -fPIC -fno-common")
- 
-+find_package(OpenMP 3.2.5)
-+if (OPENMP_FOUND)
-+    set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   ${OpenMP_C_FLAGS}")
-+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-+endif(OPENMP_FOUND)
-+
- set(CMAKE_CXX_STANDARD 17)
- set(CMAKE_CXX_STANDARD_REQUIRED ON)
- set(CMAKE_CXX_EXTENSIONS OFF)
-diff --git a/src/KsGLWidget.cpp b/src/KsGLWidget.cpp
-index 9311d98..004d64b 100644
---- a/src/KsGLWidget.cpp
-+++ b/src/KsGLWidget.cpp
-@@ -13,6 +13,9 @@
- #include <GL/glut.h>
- #include <GL/gl.h>
- 
-+// OpenMP
-+#include <omp.h>
-+
- // KernelShark
- #include "libkshark-plugin.h"
- #include "KsGLWidget.hpp"
-@@ -688,25 +691,43 @@ void KsGLWidget::_makeGraphs()
- 		return graph;
- 	};
- 
-+	omp_set_num_threads(omp_get_num_procs());
- 	for (auto it = _streamPlots.begin(); it != _streamPlots.end(); ++it) {
- 		sd = it.key();
-+		QVector<KsPlot::Graph *> cpuGraphs(it.value()._cpuList.count());
-+		QVector<KsPlot::Graph *> taskGraphs(it.value()._taskList.count());
-+
- 		/* Create CPU graphs according to the cpuList. */
- 		it.value()._cpuGraphs = {};
-+		#pragma omp parallel for
- 		for (auto const &cpu: it.value()._cpuList) {
--			g = lamAddGraph(sd, _newCPUGraph(sd, cpu), _vSpacing);
-+			int idx = it.value()._cpuList.indexOf(cpu);
-+			cpuGraphs[idx] = _newCPUGraph(sd, cpu);
-+		}
-+		QVectorIterator<KsPlot::Graph *> itCpuGraphs(cpuGraphs);
-+		while (itCpuGraphs.hasNext()) {
-+			g = lamAddGraph(sd, itCpuGraphs.next(), _vSpacing);
- 			it.value()._cpuGraphs.append(g);
- 		}
- 
- 		/* Create Task graphs according to the taskList. */
- 		it.value()._taskGraphs = {};
-+		#pragma omp parallel for
- 		for (auto const &pid: it.value()._taskList) {
--			g = lamAddGraph(sd, _newTaskGraph(sd, pid), _vSpacing);
-+			int idx = it.value()._taskList.indexOf(pid);
-+			taskGraphs[idx] = _newTaskGraph(sd, pid);
-+		}
-+		QVectorIterator<KsPlot::Graph *> itTaskGraphs(taskGraphs);
-+		while (itTaskGraphs.hasNext()) {
-+			g = lamAddGraph(sd, itTaskGraphs.next(), _vSpacing);
- 			it.value()._taskGraphs.append(g);
- 		}
-+
- 	}
- 
- 	for (auto &c: _comboPlots) {
- 		int n = c.count();
-+		#pragma omp parallel for
- 		for (int i = 0; i < n; ++i) {
- 			sd = c[i]._streamId;
- 			if (c[i]._type & KSHARK_TASK_DRAW) {
--- 
-2.43.5
+diff --git a/src/tracefs-record.c b/src/tracefs-record.c
+index a2dcfc2..4cd0917 100644
+--- a/src/tracefs-record.c
++++ b/src/tracefs-record.c
+@@ -293,6 +293,8 @@ void tracefs_cpu_close(struct tracefs_cpu *tcpu)
+        if (!tcpu)
+                return;
+
++       free(tcpu->buffer);
++       tcpu->buffer =3D NULL;
+        close(tcpu->fd);
+        tracefs_cpu_free_fd(tcpu);
+}
+
+
+
+
 
