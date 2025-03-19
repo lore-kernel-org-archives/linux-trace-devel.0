@@ -1,66 +1,34 @@
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 515FF2566CC;
-	Wed, 19 Mar 2025 09:47:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3BEE20899C;
+	Wed, 19 Mar 2025 22:13:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742377666; cv=none; b=b8ZxWM4dgHgNUnoTvpT6b2u9iNJiuitpUCLNsBbuIp2Lj7QvTv2i5qPCHfZbbsdxH6OpHldZAyMc+Nn3SPkfYoXS4CM1t3mhi/nZdTOnmSHuR0L1zqCOn62HJvxVQIvT6KbB42aiDTn9MPDY02jSyziNwuWPYtP6+MzGWzLQSIE=
+	t=1742422431; cv=none; b=r1IbMokzk1gSruwE7a4ufD0V3vxBC4EsT5NfynZ1lYMg1yMpNry5mAOg8kXH9MVBreyXGWLH8wB9zn6CDyVWuhak6tE7a6bA4+NV+vDun06Zspt31Bwo8jF5/UwM43pvLwHwMg67/gC6UxPybs9X23d6Caui9g45bzA0KAKtnyY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742377666; c=relaxed/simple;
-	bh=GEjYP46691TzJJ8gbfyakXZjQK5z9OmyqU3rVbxsGmw=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Vu16uhX5ft8qEgk7h6rx2MhPu6zcBCvxwD+jX/TqLUk9/XSUZ7GE3llwjgoz4PlBTs4YHVnfVcOv0Zi0zQQEdjcQVxMaT64MAWXEQq4VLJBLzWuO7wwTph1evL8GOK9w7NMpeL7jFJyIlm3kbsPXH5t2UPKrXG4XLkRDOBGndIk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QOkLejXc; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1742422431; c=relaxed/simple;
+	bh=qrPQan7aw5N3MeZWa6aIxkoax/iYMIYBSO2gVX6y+FE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qHu4H1BgLPLU7C14CfbHw2aEIY5bmX7iDRIBI+drQgMcNiR8IG4k69iOwJojlWSyX2aYmeIxi6g/k7g4ZQKDJ6KuOYCiYsVCJAt5sEL6d555aOlSnNpZGevfhws3JBxqijk5eDppzDj1lVY7yV5fsui+rT/n9Rzd30DHvvz/bfA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OQHr/Zgr; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QOkLejXc"
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-43948f77f1aso31105465e9.0;
-        Wed, 19 Mar 2025 02:47:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742377662; x=1742982462; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=2NZ23mVd1n9qSytnKBZpLN6PwJEeGdSdjRzESloq8e8=;
-        b=QOkLejXcWe01/J0I8RRG/trYJlGKf8FBe86lNHGxfOpKau/CdkSGWZtVgs8BPN25/Y
-         6C1KaIw2GtIrDzOx8KQfQ5vpJfLNkgVxeCaPJlXwE7enRem2pbUxQHXWHHL+h+395QRE
-         djK+8BeHfgz+C8w3QozzdBaey9CvIyDl7SlMeP4InCsPFmNEG+6fiaJSpkBFq4B5YGmG
-         Amx6+r7lzi2hL+B4lBmI0Iukkm+/pb168UVzqq+thV3ExyC4uNXFX6+gA3vyad/sPRoP
-         86mjEJc88sK/y7O0rsaZJHXA4KoWwF08BB43CAmDIV1n3TuoHKJKVpaSQu5Adqt6aGVg
-         ioGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742377662; x=1742982462;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2NZ23mVd1n9qSytnKBZpLN6PwJEeGdSdjRzESloq8e8=;
-        b=AdrueQLVJH+0V1BefNeEhHO7W/yq21KvkS+XzPg8ntG+JMePb+yWWWtAAo216IsXMe
-         ign4i6z7qAGG9eq7TpnWScfxycv81lvP3tial0A8yTaAHirU6XlHCy3ZL1t3/oaPU8o9
-         eS3ghjCLBRQELvaSEZq55MRbCTiH2mjIDrkiSm/cFlrpNp836v/DxOWrnDBHYOmiDbUJ
-         MnxqK6U5w/p46t2OKO5dGlkAEoZm3bcHDtfJsLTCQFRcuIe0+0JKfedmy+N9qEoLJ7St
-         dgjicMBctsUojGG7fZGg/MIrQNSmNKEfOjgf+sfKoJQPfhVMT4/1RT+nRboATHljP7+n
-         1pWw==
-X-Forwarded-Encrypted: i=1; AJvYcCUoWCJZsTzYRHLW+ByOiqGnvZa2yuWH0ZCl/lZiLGo83nwWqENKyJlKiR0HOaq5hgwW1Fk=@vger.kernel.org, AJvYcCVEcEcvoPx0wiZHej4qC1tE27+RiIw9+4BQ6K+RbAMYfZHlWlvmvhuVTy4yKXeBjcFZCPE07XtCmzcL47hYh4nhDsM=@vger.kernel.org, AJvYcCVPEqLj7kSVhziFP1phmpa93p9lgs9HklOjKph1sHZEnWEScLUj9CeuGn4imZWj5S4C3phVu03l3PA3QvUH@vger.kernel.org, AJvYcCVg7JwYX78eaOO1zVDS8gc2nc8t6j8VcL0ZaVBEt7bHDRhw+GtcAxTo7dXSFa8ehYnfj2FL+WJ1fP4MsuS0fXLEGA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzotYN2Niwm0UDdwih3D8yqaWkyTqwId+BKR6uSNs2QKp0z8gPz
-	7iQozPuYVporF9bL7WDan2P8fA4hMYTTTwlnYEyM/cIk3kjEfrNu
-X-Gm-Gg: ASbGncsJghSC+Gpbo5PbdOnvXjPKms1Zo1DG3NTNao7ZzYXwe2uWH4ufRn9cvxOeAV6
-	iGEl9+zl+cceS2pbU6g+T08nzWbc9p5YNVBABsuUBSMeqgu3GcewqceDWmzUY8ZzySsshFWRh/i
-	N62Tp43KTIrqdhtM2mae1eQHif65/vm0n21nBHs+ZYFmMid6n3MkSP8uMYAnJcoqnwNNyxR5g01
-	uxCuj/U4BY1IPUmVv6FvpbpulzruaM9CV2+HeXNhS2EN4o/5aHQYn+0HDyf0yh5ETV+O7bEYBHG
-	9krxSHFvE/3GwESPyJJDK1I8OKDsLus=
-X-Google-Smtp-Source: AGHT+IF4OvZGanUh1jWZlL5uEktGdGZ5zMVRYf9shgP8va0gBvYxVKRQVQGxiDCBfvtWURNFZmoTug==
-X-Received: by 2002:a05:6000:2c7:b0:391:4674:b10f with SMTP id ffacd0b85a97d-39973af9236mr1303964f8f.36.1742377662183;
-        Wed, 19 Mar 2025 02:47:42 -0700 (PDT)
-Received: from krava ([173.38.220.35])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-395c8975b09sm20832843f8f.57.2025.03.19.02.47.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Mar 2025 02:47:41 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 19 Mar 2025 10:47:40 +0100
-To: Namhyung Kim <namhyung@kernel.org>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OQHr/Zgr"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E915DC4CEE4;
+	Wed, 19 Mar 2025 22:13:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1742422430;
+	bh=qrPQan7aw5N3MeZWa6aIxkoax/iYMIYBSO2gVX6y+FE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OQHr/ZgrTZyl8SSHK2iM2RLCn70VdrqlXrGV2fuE1r5nPo3TKKSYv6Bf9ZTb0KBk4
+	 bcgalLfR6bvPJMtJOj4vUYj72nBtHFwO5TUnjhgNfPERWWJuXzWdxSXEsvQ/uxDHul
+	 jWHccVtaDoV4iv5UBAkwuMGJNcmF5FxdzABAL/L2FKGh7xm15ZWF0CFsLSbTnMZoYb
+	 N2igCn/nybMU1OlSeb3I2Wvhbn1JOubU3qD5gZxHlQKy4zJw+9rEEhMRN+h7JsolHC
+	 kZ3Sk0RqvE61v4+Wd7ROzn7NyD47EmxVnZY8j5igLyOBaU+foQpl6ipIrv7cEw22s1
+	 YaTwCXc2KqR8w==
+Date: Wed, 19 Mar 2025 15:13:48 -0700
+From: Namhyung Kim <namhyung@kernel.org>
+To: Jiri Olsa <olsajiri@gmail.com>
 Cc: Quentin Monnet <qmo@kernel.org>, Ian Rogers <irogers@google.com>,
 	Arnaldo Carvalho de Melo <acme@kernel.org>,
 	Adrian Hunter <adrian.hunter@intel.com>,
@@ -72,13 +40,14 @@ Cc: Quentin Monnet <qmo@kernel.org>, Ian Rogers <irogers@google.com>,
 	Steven Rostedt <rostedt@goodmis.org>
 Subject: Re: [PATCH 1/1 next] tools build: Remove the libunwind feature tests
  from the ones detected when test-all.o builds
-Message-ID: <Z9qSvGTlMCzktlZJ@krava>
+Message-ID: <Z9tBnDYy0slX2xh7@google.com>
 References: <Z1mzpfAUi8zeiFOp@x1>
  <CAP-5=fWqpcwc021enM8uMChSgCRB+UW_6z7+=pdsQG9msLJsbw@mail.gmail.com>
  <Z9hWqwvNQO0GqH09@google.com>
  <CAP-5=fWCWD5Rq5RR7NSMxrxmc1SUkK=8gg+D-JxGOgaHA7_WBA@mail.gmail.com>
  <c4f4a1d0-aed8-4b09-a3d2-067fdd04bed3@kernel.org>
  <Z9oHGfAffX2Bfl7a@google.com>
+ <Z9qSvGTlMCzktlZJ@krava>
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
@@ -88,87 +57,97 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <Z9oHGfAffX2Bfl7a@google.com>
+In-Reply-To: <Z9qSvGTlMCzktlZJ@krava>
 
-On Tue, Mar 18, 2025 at 04:51:53PM -0700, Namhyung Kim wrote:
-> Hello,
-> 
-> On Mon, Mar 17, 2025 at 09:19:22PM +0000, Quentin Monnet wrote:
-> > 2025-03-17 10:16 UTC-0700 ~ Ian Rogers <irogers@google.com>
-> > > On Mon, Mar 17, 2025 at 10:06 AM Namhyung Kim <namhyung@kernel.org> wrote:
-> > >>
-> > >> Hello,
-> > >>
-> > >> On Mon, Mar 17, 2025 at 09:10:29AM -0700, Ian Rogers wrote:
-> > >>> On Wed, Dec 11, 2024 at 7:45 AM Arnaldo Carvalho de Melo
-> > >>> <acme@kernel.org> wrote:
-> > >>>>
-> > >>>> We have a tools/build/feature/test-all.c that has the most common set of
-> > >>>> features that perf uses and are expected to have its development files
-> > >>>> available when building perf.
-> > >>>>
-> > >>>> When we made libwunwind opt-in we forgot to remove them from the list of
-> > >>>> features that are assumed to be available when test-all.c builds, remove
-> > >>>> them.
-> > >>>>
-> > >>>> Before this patch:
-> > >>>>
-> > >>>>   $ rm -rf /tmp/b ; mkdir /tmp/b ; make -C tools/perf O=/tmp/b feature-dump ; grep feature-libunwind-aarch64= /tmp/b/FEATURE-DUMP
-> > >>>>   feature-libunwind-aarch64=1
-> > >>>>   $
-> > >>>>
-> > >>>> Even tho this not being test built and those header files being
-> > >>>> available:
-> > >>>>
-> > >>>>   $ head -5 tools/build/feature/test-libunwind-aarch64.c
-> > >>>>   // SPDX-License-Identifier: GPL-2.0
-> > >>>>   #include <libunwind-aarch64.h>
-> > >>>>   #include <stdlib.h>
-> > >>>>
-> > >>>>   extern int UNW_OBJ(dwarf_search_unwind_table) (unw_addr_space_t as,
-> > >>>>   $
-> > >>>>
-> > >>>> After this patch:
-> > >>>>
-> > >>>>   $ grep feature-libunwind- /tmp/b/FEATURE-DUMP
-> > >>>>   $
-> > >>>>
-> > >>>> Now an audit on what is being enabled when test-all.c builds will be
-> > >>>> performed.
-> > >>>>
-> > >>>> Fixes: 176c9d1e6a06f2fa ("tools features: Don't check for libunwind devel files by default")
-> > >>>> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> > >>>> Cc: Ian Rogers <irogers@google.com>
-> > >>>> Cc: James Clark <james.clark@linaro.org>
-> > >>>> Cc: Jiri Olsa <jolsa@kernel.org>
-> > >>>> Cc: Kan Liang <kan.liang@linux.intel.com>
-> > >>>> Cc: Namhyung Kim <namhyung@kernel.org>
-> > >>>> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> > >>>
-> > >>> Sorry for the delay on this.
-> > >>>
-> > >>> Reviewed-by: Ian Rogers <irogers@google.com>
-> > >>
-> > >> Thanks for the review, but I think this part is used by other tools like
-> > >> BPF and tracing.  It'd be nice to get reviews from them.
-> > > 
-> > > Sgtm. The patch hasn't had attention for 3 months. A quick grep for
-> > > "unwind" and "UNW_" shows only use in perf and the feature tests.
-> > > 
-> > > Thanks,
-> > > Ian
+Hi Jiri,
+
+On Wed, Mar 19, 2025 at 10:47:40AM +0100, Jiri Olsa wrote:
+> On Tue, Mar 18, 2025 at 04:51:53PM -0700, Namhyung Kim wrote:
+> > Hello,
 > > 
+> > On Mon, Mar 17, 2025 at 09:19:22PM +0000, Quentin Monnet wrote:
+> > > 2025-03-17 10:16 UTC-0700 ~ Ian Rogers <irogers@google.com>
+> > > > On Mon, Mar 17, 2025 at 10:06 AM Namhyung Kim <namhyung@kernel.org> wrote:
+> > > >>
+> > > >> Hello,
+> > > >>
+> > > >> On Mon, Mar 17, 2025 at 09:10:29AM -0700, Ian Rogers wrote:
+> > > >>> On Wed, Dec 11, 2024 at 7:45 AM Arnaldo Carvalho de Melo
+> > > >>> <acme@kernel.org> wrote:
+> > > >>>>
+> > > >>>> We have a tools/build/feature/test-all.c that has the most common set of
+> > > >>>> features that perf uses and are expected to have its development files
+> > > >>>> available when building perf.
+> > > >>>>
+> > > >>>> When we made libwunwind opt-in we forgot to remove them from the list of
+> > > >>>> features that are assumed to be available when test-all.c builds, remove
+> > > >>>> them.
+> > > >>>>
+> > > >>>> Before this patch:
+> > > >>>>
+> > > >>>>   $ rm -rf /tmp/b ; mkdir /tmp/b ; make -C tools/perf O=/tmp/b feature-dump ; grep feature-libunwind-aarch64= /tmp/b/FEATURE-DUMP
+> > > >>>>   feature-libunwind-aarch64=1
+> > > >>>>   $
+> > > >>>>
+> > > >>>> Even tho this not being test built and those header files being
+> > > >>>> available:
+> > > >>>>
+> > > >>>>   $ head -5 tools/build/feature/test-libunwind-aarch64.c
+> > > >>>>   // SPDX-License-Identifier: GPL-2.0
+> > > >>>>   #include <libunwind-aarch64.h>
+> > > >>>>   #include <stdlib.h>
+> > > >>>>
+> > > >>>>   extern int UNW_OBJ(dwarf_search_unwind_table) (unw_addr_space_t as,
+> > > >>>>   $
+> > > >>>>
+> > > >>>> After this patch:
+> > > >>>>
+> > > >>>>   $ grep feature-libunwind- /tmp/b/FEATURE-DUMP
+> > > >>>>   $
+> > > >>>>
+> > > >>>> Now an audit on what is being enabled when test-all.c builds will be
+> > > >>>> performed.
+> > > >>>>
+> > > >>>> Fixes: 176c9d1e6a06f2fa ("tools features: Don't check for libunwind devel files by default")
+> > > >>>> Cc: Adrian Hunter <adrian.hunter@intel.com>
+> > > >>>> Cc: Ian Rogers <irogers@google.com>
+> > > >>>> Cc: James Clark <james.clark@linaro.org>
+> > > >>>> Cc: Jiri Olsa <jolsa@kernel.org>
+> > > >>>> Cc: Kan Liang <kan.liang@linux.intel.com>
+> > > >>>> Cc: Namhyung Kim <namhyung@kernel.org>
+> > > >>>> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> > > >>>
+> > > >>> Sorry for the delay on this.
+> > > >>>
+> > > >>> Reviewed-by: Ian Rogers <irogers@google.com>
+> > > >>
+> > > >> Thanks for the review, but I think this part is used by other tools like
+> > > >> BPF and tracing.  It'd be nice to get reviews from them.
+> > > > 
+> > > > Sgtm. The patch hasn't had attention for 3 months. A quick grep for
+> > > > "unwind" and "UNW_" shows only use in perf and the feature tests.
+> > > > 
+> > > > Thanks,
+> > > > Ian
+> > > 
+> > > 
+> > > Indeed, bpftool does not rely on libunwind, and I don't remember other
+> > > BPF components doing so, either.
 > > 
-> > Indeed, bpftool does not rely on libunwind, and I don't remember other
-> > BPF components doing so, either.
+> > Right, but my concern was about the feature test itself and the related
+> > changes in the build files.
+> > 
+> > Can I get your Acked-by then?
 > 
-> Right, but my concern was about the feature test itself and the related
-> changes in the build files.
-> 
-> Can I get your Acked-by then?
+> hi,
+> I might be missing something, but I see following commit in git already:
+>   b40fbeb0b1cd tools build: Remove the libunwind feature tests from the ones detected when test-all.o builds
 
-hi,
-I might be missing something, but I see following commit in git already:
-  b40fbeb0b1cd tools build: Remove the libunwind feature tests from the ones detected when test-all.o builds
+Oops, thanks for checking this.
 
-jirka
+I was confused by Ian's late reply and thought it belongs to this
+cycle. :)  Yep, it's already merged in the previous cycle.
+
+Sorry for the noise.
+Namhyung
+
