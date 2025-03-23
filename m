@@ -1,153 +1,195 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3BEE20899C;
-	Wed, 19 Mar 2025 22:13:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B44602E3384
+	for <linux-trace-devel@vger.kernel.org>; Sun, 23 Mar 2025 16:01:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742422431; cv=none; b=r1IbMokzk1gSruwE7a4ufD0V3vxBC4EsT5NfynZ1lYMg1yMpNry5mAOg8kXH9MVBreyXGWLH8wB9zn6CDyVWuhak6tE7a6bA4+NV+vDun06Zspt31Bwo8jF5/UwM43pvLwHwMg67/gC6UxPybs9X23d6Caui9g45bzA0KAKtnyY=
+	t=1742745690; cv=none; b=oLn3qi5TajJZ5DPsczEcp8UVgkof0Dlm8l6BaGRwIlc6w/4X9zPH6otUhfz6DoDX6+LkGLYjJojwARwFQSPRml7myUAd648ao9LXBuz0Noyw52fXXiC8A6DFfjUqy8/bHa9z3/LFoMQKeN74Cb37aY/bKRRrig4TGCYzBxKV75g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742422431; c=relaxed/simple;
-	bh=qrPQan7aw5N3MeZWa6aIxkoax/iYMIYBSO2gVX6y+FE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qHu4H1BgLPLU7C14CfbHw2aEIY5bmX7iDRIBI+drQgMcNiR8IG4k69iOwJojlWSyX2aYmeIxi6g/k7g4ZQKDJ6KuOYCiYsVCJAt5sEL6d555aOlSnNpZGevfhws3JBxqijk5eDppzDj1lVY7yV5fsui+rT/n9Rzd30DHvvz/bfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OQHr/Zgr; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1742745690; c=relaxed/simple;
+	bh=9MrdSArga7BWC37z+humpW5KWNcOR8+gtA5waWyzNUI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=sd8ZOK8gCbDfTf7mQdGAuKqVfFqW7+3zrthGmtE7eQsTVYiGbegoLFtAvd3Cu4UvLhyVxjct63Shk47GJRnBREq4/U8jW94NgH6hKu7PZboq02+8mbPxR8RxhF1K48h/aowXy/gtz/J/HJMrPbgzvTAsJaCg90MyxTowYRiCfis=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=klOuV0k+; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OQHr/Zgr"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E915DC4CEE4;
-	Wed, 19 Mar 2025 22:13:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742422430;
-	bh=qrPQan7aw5N3MeZWa6aIxkoax/iYMIYBSO2gVX6y+FE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OQHr/ZgrTZyl8SSHK2iM2RLCn70VdrqlXrGV2fuE1r5nPo3TKKSYv6Bf9ZTb0KBk4
-	 bcgalLfR6bvPJMtJOj4vUYj72nBtHFwO5TUnjhgNfPERWWJuXzWdxSXEsvQ/uxDHul
-	 jWHccVtaDoV4iv5UBAkwuMGJNcmF5FxdzABAL/L2FKGh7xm15ZWF0CFsLSbTnMZoYb
-	 N2igCn/nybMU1OlSeb3I2Wvhbn1JOubU3qD5gZxHlQKy4zJw+9rEEhMRN+h7JsolHC
-	 kZ3Sk0RqvE61v4+Wd7ROzn7NyD47EmxVnZY8j5igLyOBaU+foQpl6ipIrv7cEw22s1
-	 YaTwCXc2KqR8w==
-Date: Wed, 19 Mar 2025 15:13:48 -0700
-From: Namhyung Kim <namhyung@kernel.org>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Quentin Monnet <qmo@kernel.org>, Ian Rogers <irogers@google.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	James Clark <james.clark@linaro.org>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
-	linux-trace-devel@vger.kernel.org,
-	Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH 1/1 next] tools build: Remove the libunwind feature tests
- from the ones detected when test-all.o builds
-Message-ID: <Z9tBnDYy0slX2xh7@google.com>
-References: <Z1mzpfAUi8zeiFOp@x1>
- <CAP-5=fWqpcwc021enM8uMChSgCRB+UW_6z7+=pdsQG9msLJsbw@mail.gmail.com>
- <Z9hWqwvNQO0GqH09@google.com>
- <CAP-5=fWCWD5Rq5RR7NSMxrxmc1SUkK=8gg+D-JxGOgaHA7_WBA@mail.gmail.com>
- <c4f4a1d0-aed8-4b09-a3d2-067fdd04bed3@kernel.org>
- <Z9oHGfAffX2Bfl7a@google.com>
- <Z9qSvGTlMCzktlZJ@krava>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="klOuV0k+"
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-43ce71582e9so23477885e9.1
+        for <linux-trace-devel@vger.kernel.org>; Sun, 23 Mar 2025 09:01:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1742745687; x=1743350487; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lnpH2raHjJ9RpIc1O9qzj3jFfJDcJFfwJH+Nf/qHLAo=;
+        b=klOuV0k+7aHslXo76Qk5UMGh48gnlro8ZsyICeBcixE7xEWwtRMZ0AyBTCRx2qVxLo
+         cHv+EjJgUGGQZ8MoB4gfOgtO7du5F7WgN+wu1ltfNo9kJadW06yWMqx3FqCziwIMwMEB
+         CimXdR4vBM1/Gqjme8ZjJHtLIDKxStbmN0anxP7iyNuE+2/Amcs/m/fwxKJUU11weWKD
+         qnactnqZKLaJfPTKBaygrHjZ15/8XP0C+ry6m7QPh3cO3YN9XbWWiigLaJlZboZOuTX1
+         xQ3mR5ej6YeM7E1g1clP44vJkKQeiDHLQF+RtfdoLjtEIjteYEqezrVNnQxAXSSEZCL4
+         T31A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742745687; x=1743350487;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lnpH2raHjJ9RpIc1O9qzj3jFfJDcJFfwJH+Nf/qHLAo=;
+        b=U55TdPIQQAb+RBsTEy2HV6d3GB2o+6M7QkYK8uSB6nchmsBubPRXjEMfRmwF/BYylt
+         3vQMiJuxES1LODo+ChwS3oZE33gAtC3EN6ULJu2bfzGSHDjsQtE1yt37/fSSY6uwASfz
+         wwSJEroL+Ze5dEswFQXOEfavlFP/HTjtUYZ9PJUQHWWctnTdlE1F1xMbs/krbCUg64Jn
+         soAm/FUI5qtLYKNCyF7tok7y7XZgt6lynihiEkKhTKkFzxU2sp8ymeUQzgJW74gqltlC
+         32Tn4IZt30t60d1jgp6ADINdIyvGdB8jb2gbV27qcyVJPUSIRwcgLPMcSC8ylajPZsEM
+         hhzA==
+X-Gm-Message-State: AOJu0Yxa+J6HhIGL30or2O+ny4R3VU4wVFo5TShpiFS0ELfCPGGT9bo/
+	sQ3DjBysKsFCBoTPjOdtybVWWbb3/jiVOUKcaSgvpen/dSTvIGLW
+X-Gm-Gg: ASbGncsBQqehdZdDvnAImtWjVrworZ1Zab9ySyj0PneHHlAq79Gipzt+Kt/y2ZDHPjI
+	ffIVIkuwVHkT5K/3I2TXfyP8eGQ1aZw6JhBi+Tc2qayTlhAhZ0vLANqo337TTuU4KGy/iSdAWwy
+	4ocYOwJZTFXRYpygNjgC/Z+mFDjOiF14uv/fC1eauswWXUtsweRjC41Ernk9L8oqToDrYBpydCJ
+	GOq1M9MQJHk4dZ89nFIbuc5I23DECtgk4oF3xJ3LjjoQ3g+5z8N/yfNcvIMyZd8CFQOqSNNLoxT
+	NLZh6p8JxJlhiocskQBYhyEFscb/bUVcXzhCDZ57XG0aHA16k4j9zTcNIKHWre2CHzVTqjQLiF0
+	=
+X-Google-Smtp-Source: AGHT+IHWHBTZg0ySv/QX3myd0xD6sX+eE9H1i7cDpfU6Dyt9OGb5rTgSUWH+IbUn+OnBsnv7wBN6tQ==
+X-Received: by 2002:a5d:59ae:0:b0:38f:503a:d93f with SMTP id ffacd0b85a97d-3997f9336f0mr9617167f8f.40.1742745686535;
+        Sun, 23 Mar 2025 09:01:26 -0700 (PDT)
+Received: from [192.168.0.107] (83-228-63-123.ip.btc-net.bg. [83.228.63.123])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43d4fdbcfaasm89363425e9.35.2025.03.23.09.01.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 23 Mar 2025 09:01:26 -0700 (PDT)
+Message-ID: <435352f3-ee9b-f592-a474-f55fe09a78cf@gmail.com>
+Date: Sun, 23 Mar 2025 18:01:24 +0200
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Z9qSvGTlMCzktlZJ@krava>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH RESEND v2] kernel-shark: Multi-thread the computaion of
+ stream/combo plots
+To: Libo Chen <libo.chen@oracle.com>
+Cc: linux-trace-devel@vger.kernel.org
+References: <20250314220719.1065523-1-libo.chen@oracle.com>
+Content-Language: en-US
+From: Yordan Karadzhov <y.karadz@gmail.com>
+In-Reply-To: <20250314220719.1065523-1-libo.chen@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Jiri,
+Hi Libo,
+Please see my comments below.
 
-On Wed, Mar 19, 2025 at 10:47:40AM +0100, Jiri Olsa wrote:
-> On Tue, Mar 18, 2025 at 04:51:53PM -0700, Namhyung Kim wrote:
-> > Hello,
-> > 
-> > On Mon, Mar 17, 2025 at 09:19:22PM +0000, Quentin Monnet wrote:
-> > > 2025-03-17 10:16 UTC-0700 ~ Ian Rogers <irogers@google.com>
-> > > > On Mon, Mar 17, 2025 at 10:06 AM Namhyung Kim <namhyung@kernel.org> wrote:
-> > > >>
-> > > >> Hello,
-> > > >>
-> > > >> On Mon, Mar 17, 2025 at 09:10:29AM -0700, Ian Rogers wrote:
-> > > >>> On Wed, Dec 11, 2024 at 7:45 AM Arnaldo Carvalho de Melo
-> > > >>> <acme@kernel.org> wrote:
-> > > >>>>
-> > > >>>> We have a tools/build/feature/test-all.c that has the most common set of
-> > > >>>> features that perf uses and are expected to have its development files
-> > > >>>> available when building perf.
-> > > >>>>
-> > > >>>> When we made libwunwind opt-in we forgot to remove them from the list of
-> > > >>>> features that are assumed to be available when test-all.c builds, remove
-> > > >>>> them.
-> > > >>>>
-> > > >>>> Before this patch:
-> > > >>>>
-> > > >>>>   $ rm -rf /tmp/b ; mkdir /tmp/b ; make -C tools/perf O=/tmp/b feature-dump ; grep feature-libunwind-aarch64= /tmp/b/FEATURE-DUMP
-> > > >>>>   feature-libunwind-aarch64=1
-> > > >>>>   $
-> > > >>>>
-> > > >>>> Even tho this not being test built and those header files being
-> > > >>>> available:
-> > > >>>>
-> > > >>>>   $ head -5 tools/build/feature/test-libunwind-aarch64.c
-> > > >>>>   // SPDX-License-Identifier: GPL-2.0
-> > > >>>>   #include <libunwind-aarch64.h>
-> > > >>>>   #include <stdlib.h>
-> > > >>>>
-> > > >>>>   extern int UNW_OBJ(dwarf_search_unwind_table) (unw_addr_space_t as,
-> > > >>>>   $
-> > > >>>>
-> > > >>>> After this patch:
-> > > >>>>
-> > > >>>>   $ grep feature-libunwind- /tmp/b/FEATURE-DUMP
-> > > >>>>   $
-> > > >>>>
-> > > >>>> Now an audit on what is being enabled when test-all.c builds will be
-> > > >>>> performed.
-> > > >>>>
-> > > >>>> Fixes: 176c9d1e6a06f2fa ("tools features: Don't check for libunwind devel files by default")
-> > > >>>> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> > > >>>> Cc: Ian Rogers <irogers@google.com>
-> > > >>>> Cc: James Clark <james.clark@linaro.org>
-> > > >>>> Cc: Jiri Olsa <jolsa@kernel.org>
-> > > >>>> Cc: Kan Liang <kan.liang@linux.intel.com>
-> > > >>>> Cc: Namhyung Kim <namhyung@kernel.org>
-> > > >>>> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> > > >>>
-> > > >>> Sorry for the delay on this.
-> > > >>>
-> > > >>> Reviewed-by: Ian Rogers <irogers@google.com>
-> > > >>
-> > > >> Thanks for the review, but I think this part is used by other tools like
-> > > >> BPF and tracing.  It'd be nice to get reviews from them.
-> > > > 
-> > > > Sgtm. The patch hasn't had attention for 3 months. A quick grep for
-> > > > "unwind" and "UNW_" shows only use in perf and the feature tests.
-> > > > 
-> > > > Thanks,
-> > > > Ian
-> > > 
-> > > 
-> > > Indeed, bpftool does not rely on libunwind, and I don't remember other
-> > > BPF components doing so, either.
-> > 
-> > Right, but my concern was about the feature test itself and the related
-> > changes in the build files.
-> > 
-> > Can I get your Acked-by then?
+On 3/15/25 00:07, Libo Chen wrote:
+> Parallelize _newCPUGraph() and _newTaskGraph() calls to dramatically
+> speed up graph rendering particularly for traces from very large systems.
 > 
-> hi,
-> I might be missing something, but I see following commit in git already:
->   b40fbeb0b1cd tools build: Remove the libunwind feature tests from the ones detected when test-all.o builds
+> OpenMP technically is a new dependency here, but it's part of GCC, so long
+> as your GCC >= v4.9, the libgomp library will make the code compiled.
+> 
+> Signed-off-by: Libo Chen <libo.chen@oracle.com>
+> ---
+>   CMakeLists.txt     |  6 ++++++
+>   src/KsGLWidget.cpp | 25 +++++++++++++++++++++++--
+>   2 files changed, 29 insertions(+), 2 deletions(-)
+> 
+> diff --git a/CMakeLists.txt b/CMakeLists.txt
+> index 988bfd6..7847177 100644
+> --- a/CMakeLists.txt
+> +++ b/CMakeLists.txt
+> @@ -84,6 +84,12 @@ set(EXECUTABLE_OUTPUT_PATH "${KS_DIR}/bin")
+>   set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} -Wall -Wextra -pthread -fPIC -fno-common")
+>   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pthread -fPIC -fno-common")
+>   
+> +find_package(OpenMP 3.2.5)
+> +if (OPENMP_FOUND)
+> +    set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   ${OpenMP_C_FLAGS}")
+> +    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+> +endif(OPENMP_FOUND)
+> +
+>   set(CMAKE_CXX_STANDARD 17)
+>   set(CMAKE_CXX_STANDARD_REQUIRED ON)
+>   set(CMAKE_CXX_EXTENSIONS OFF)
+> diff --git a/src/KsGLWidget.cpp b/src/KsGLWidget.cpp
+> index 9311d98..004d64b 100644
+> --- a/src/KsGLWidget.cpp
+> +++ b/src/KsGLWidget.cpp
+> @@ -13,6 +13,9 @@
+>   #include <GL/glut.h>
+>   #include <GL/gl.h>
+>   
+> +// OpenMP
+> +#include <omp.h>
+> +
+>   // KernelShark
+>   #include "libkshark-plugin.h"
+>   #include "KsGLWidget.hpp"
+> @@ -688,25 +691,43 @@ void KsGLWidget::_makeGraphs()
+>   		return graph;
+>   	};
+>   
+> +	omp_set_num_threads(omp_get_num_procs());
+I think I already asked you to check if it is possible to move this to 
+the constructor of the widget so that it is called just once. If there 
+is some reason why this is not possible, at least provide some explanation.
 
-Oops, thanks for checking this.
+>   	for (auto it = _streamPlots.begin(); it != _streamPlots.end(); ++it) {
+>   		sd = it.key();
+> +		QVector<KsPlot::Graph *> cpuGraphs(it.value()._cpuList.count());
+> +		QVector<KsPlot::Graph *> taskGraphs(it.value()._taskList.count());
+> +
+>   		/* Create CPU graphs according to the cpuList. */
+>   		it.value()._cpuGraphs = {};
+> +		#pragma omp parallel for
+>   		for (auto const &cpu: it.value()._cpuList) {
+> -			g = lamAddGraph(sd, _newCPUGraph(sd, cpu), _vSpacing);
+> +			int idx = it.value()._cpuList.indexOf(cpu);
 
-I was confused by Ian's late reply and thought it belongs to this
-cycle. :)  Yep, it's already merged in the previous cycle.
+Maybe I do not understand what you want to do here, but this looks 
+over-complicated to me. Isn't it equivalent to having simply
 
-Sorry for the noise.
-Namhyung
+		for (size_t idx = 0; idx < nCpus; ++idx) {
+	 		int cpu = it.value()._cpuList[idx];
 
+The same comment applies for the other loop below.
+
+> +			cpuGraphs[idx] = _newCPUGraph(sd, cpu);
+> +		}
+> +		QVectorIterator<KsPlot::Graph *> itCpuGraphs(cpuGraphs);
+> +		while (itCpuGraphs.hasNext()) {
+> +			g = lamAddGraph(sd, itCpuGraphs.next(), _vSpacing);
+>   			it.value()._cpuGraphs.append(g);
+>   		}
+>   
+>   		/* Create Task graphs according to the taskList. */
+>   		it.value()._taskGraphs = {};
+> +		#pragma omp parallel for
+>   		for (auto const &pid: it.value()._taskList) {
+> -			g = lamAddGraph(sd, _newTaskGraph(sd, pid), _vSpacing);
+> +			int idx = it.value()._taskList.indexOf(pid);
+> +			taskGraphs[idx] = _newTaskGraph(sd, pid);
+> +		}
+> +		QVectorIterator<KsPlot::Graph *> itTaskGraphs(taskGraphs);
+> +		while (itTaskGraphs.hasNext()) {
+> +			g = lamAddGraph(sd, itTaskGraphs.next(), _vSpacing);
+>   			it.value()._taskGraphs.append(g);
+>   		}
+> +
+Please remove this empty line.
+
+Beside those minor things, the patch looks good to me. Please address 
+the comments and I will be happy to apply your patch.
+
+Thanks for helping us improve KerrnelShark!
+
+Cheers,
+Yordan
+>   	}
+>   
+>   	for (auto &c: _comboPlots) {
+>   		int n = c.count();
+> +		#pragma omp parallel for
+>   		for (int i = 0; i < n; ++i) {
+>   			sd = c[i]._streamId;
+>   			if (c[i]._type & KSHARK_TASK_DRAW) {
