@@ -1,23 +1,24 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D51E20ADC9
-	for <linux-trace-devel@vger.kernel.org>; Fri,  4 Apr 2025 19:48:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D13D1CB337
+	for <linux-trace-devel@vger.kernel.org>; Mon,  7 Apr 2025 21:18:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743796124; cv=none; b=KwQJJrF0GMf6CbnWGk0LTWAxQn46YqsJGEgXsOqiJttEibAgdR30cHHp/i7k1YRd4FWl5uwshbNzYFebM5ZKVA+oIUTsVkj80gkzE0jNvJGvHeL5jyMx97Jv5eWhbnetaLnTNV/xsXRKptZDHyPLaHGgKJYBZ+d2BZzchF+fots=
+	t=1744060739; cv=none; b=dQuwSDCItDBlsJJYHQsK75wzFR5ChqslVyeO0tlW/s0mdOLYvqXK3J21lhjis5vq4ID10/xAUiEo34etrl4gzXXj8Ro95+GXYcRpNfIjWPRf9ZOFHiq9nmt/Sno/4yngCUxnq78rOpfUr1plERNp4uQ85qUfd4hPH3EK80Gptpw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743796124; c=relaxed/simple;
-	bh=P8P4dT0ALHmT3b8bIQCNY/92qpN315DyP4yT3tnJXIc=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=lQyVA0OUZxG9qdNLi7MA/f0/UfcWB4cQ2z5RWDW0AYSmcnLg6TEqye2t9WLYD1kFt1r2U5GUufXHLU3UNNB5bdWFWq32GC0h0EdI/Y4zcebZgpTD87OsH7kPOPpbBkgUE6IANnRkNJnUx5DgCXgiqh+J1xa4CmxLrTpfxAupUDA=
+	s=arc-20240116; t=1744060739; c=relaxed/simple;
+	bh=g4m+fpkcBpASOBdNGOXeXmVNRSiC6fnVY1BgGcWn6TU=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=AfqejaJGeC4VNtq/C4WseSXZyi0SF/O+lulJpkoYSXiFWAVmCxrWxO8UQmbhtoVOvxy3jtJjIc9mTFSWShAVhHKA9vs6k6dWkoWrBH5Xf1RlxUAc/BbUpvosLC9zN1PMGTWLZF1zQNC8nieZN0COdOFhrAqaisrhQZRPF5g2ps4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46F87C4CEDD
-	for <linux-trace-devel@vger.kernel.org>; Fri,  4 Apr 2025 19:48:43 +0000 (UTC)
-Date: Fri, 4 Apr 2025 15:49:49 -0400
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E9D8C4CEDD;
+	Mon,  7 Apr 2025 21:18:58 +0000 (UTC)
+Date: Mon, 7 Apr 2025 17:20:13 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] trace-cmd list: Check if any functions were found
-Message-ID: <20250404154949.6422bc8a@gandalf.local.home>
+Cc: Metin Kaya <metin.kaya@arm.com>
+Subject: [PATCH] libtracefs: Fix mistaken update to TRACEFS_STACKTRACE macro
+Message-ID: <20250407172013.6aa58191@gandalf.local.home>
 X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -30,34 +31,45 @@ Content-Transfer-Encoding: 7bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-The trace-cmd list operation on functions will crash if no functions were
-found:
+The change that converted generic names to variables to start with "tfs_"
+was a bit too aggressive and ended up changing the string name of
+"common_stacktrace" which broke trace_sql():
 
-  $ trace-cmd list -f aueaeu
-  Segmentation fault
+When running sqlhist, it would get the following error:
 
-The list returned is NULL but the code still loops over the list of found
-functions. Do not loop if no function is found.
+  # ./bin/sqlhist -n wake_lat 'select start.pid, start.common_stacktrace, TIMESTAMP_DELTA_USECS as delta from sched_waking as start join sched_switch as end on start.pid = end.next_pid'
+  Failed creating synthetic event!: Success
+  select start.pid, start.common_stacktrace, TIMESTAMP_DELTA_USECS as delta from sched_waking as start join sched_switch as end on start.pid = end.next_pid
+                    ^
+  ERROR: 'start.common_stacktrace'
+  Field 'common_stacktrace' not part of event sched_waking
 
-Fixes: 39acb4cc1 ("trace-cmd list: Use tracefs_filter_functions()")
+When it should have produced:
+
+  # ./bin/sqlhist -n wake_lat 'select start.pid, start.common_stacktrace, TIMESTAMP_DELTA_USECS as delta from sched_waking as start join sched_switch as end on start.pid = end.next_pid'
+  echo 's:wake_lat pid_t pid; unsigned long common_stacktrace[]; u64 delta;' >> /sys/kernel/tracing/dynamic_events
+  echo 'hist:keys=pid:__arg_15169_2=pid,__arg_15169_4=common_stacktrace,__arg_15169_5=common_timestamp.usecs' >> /sys/kernel/tracing/events/sched/sched_waking/trigger
+  echo 'hist:keys=next_pid:__pid_15169_1=$__arg_15169_2,__common_stacktrace_15169_3=$__arg_15169_4,__delta_15169_6=common_timestamp.usecs-$__arg_15169_5:onmatch(sched.sched_waking).trace(wake_lat,$__pid_15169_1,$__common_stacktrace_15169_3,$__delta_15169_6)' >> /sys/kernel/tracing/events/sched/sched_switch/trigger
+
+Fixes: a2bfb49f ("libtracefs: utest: Rename private functions to fix static building")
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- tracecmd/trace-list.c | 2 +-
+ include/tracefs.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tracecmd/trace-list.c b/tracecmd/trace-list.c
-index 8badd1f2..a441d136 100644
---- a/tracecmd/trace-list.c
-+++ b/tracecmd/trace-list.c
-@@ -476,7 +476,7 @@ static void show_functions(const char *funcre)
+diff --git a/include/tracefs.h b/include/tracefs.h
+index b4e2e30..b6e0f6b 100644
+--- a/include/tracefs.h
++++ b/include/tracefs.h
+@@ -593,7 +593,7 @@ int tracefs_event_verify_filter(struct tep_event *event, const char *filter,
+ #define TRACEFS_TIMESTAMP "common_timestamp"
+ #define TRACEFS_TIMESTAMP_USECS "common_timestamp.usecs"
  
- 	if (tracefs_filter_functions(funcre, NULL, &list) < 0)
- 		die("Failed to read filte functions");
--	for (i = 0; list[i]; i++)
-+	for (i = 0; list && list[i]; i++)
- 		printf("%s\n", list[i]);
- 	tracefs_list_free(list);
- }
+-#define TRACEFS_STACKTRACE "tfs_common_stacktrace"
++#define TRACEFS_STACKTRACE "common_stacktrace"
+ 
+ enum tracefs_synth_handler {
+ 	TRACEFS_SYNTH_HANDLE_NONE	= 0,
 -- 
 2.47.2
 
