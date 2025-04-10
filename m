@@ -1,24 +1,24 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FF842836AA
-	for <linux-trace-devel@vger.kernel.org>; Thu, 10 Apr 2025 17:58:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 818911C3BEB
+	for <linux-trace-devel@vger.kernel.org>; Thu, 10 Apr 2025 19:58:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744307930; cv=none; b=a0lKaZwr7TrtAsWgFyx5gChrHKvzuvBH1AIYDUqOiW1NA7uu9/x4oo26FitfvU4GDhhKcpF/14m8ioQvUMN59ZO9sVHdrByCfNbNcAWIACdoSQvPpy0JvDritfbCYfXXPOHA8o7Rr2M0p5Yk1HKZ4pm3FWn8ecIsZbbh+gwsgio=
+	t=1744315139; cv=none; b=b3Lmwjv4E4S5/Li1eOFdnC02O3mqQ/nV8J6nHdn2uM6mNswc2wFVwe3ijSfQYZwjY9XeR1z17IoI1zDKzmCucgfwbG6SWPuQuDx8MMVUrl8s7mI2Zpb5UTaSbGlwYvVB8jmry6FJg2cEqXYfhGETTKcf/wc+a7whp04MZsSbtNo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744307930; c=relaxed/simple;
-	bh=TiZVTpdJFude2jRqZZuXR6kzFwxR32BmVdYl3B1X75U=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=URiIUI4cllWaJuCIBoZZLvft0UGJB1WM0HztBbtAzLpLsEs7oZDrZQw4PUjChBAbXFPIeMpIhaSluZg+7VKAOnyDrZEp7XHiIbjTiivazHIv4/Sn7KdZO4RBFXLjZJqEnLcGXJ/OH0PH/A+/nmc/fSpXU2JWCRt/JcpwXcaY/Y4=
+	s=arc-20240116; t=1744315139; c=relaxed/simple;
+	bh=7EcxfvIYZeP+PTXQm7jINtbYAHn2cp6RbEV3ZSxOfeY=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=k9wU+XnlTak2FBq07FqED6pRmu5Nmi9H9SprjxgO4H1uqhFPWPgaA1xkIldQ0f0LimebvaCWWYWdpDsaCi2CjK3C70yzZdSoD5912IBgM/T2dSAOya3EFyf91LAd9TVpIj9PBrwSRcI4R+TOWTIqk4S86JYaXJeSRjG/97an4qs=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63CF6C4CEDD
-	for <linux-trace-devel@vger.kernel.org>; Thu, 10 Apr 2025 17:58:49 +0000 (UTC)
-Date: Thu, 10 Apr 2025 14:00:11 -0400
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7CA7C4CEE9
+	for <linux-trace-devel@vger.kernel.org>; Thu, 10 Apr 2025 19:58:58 +0000 (UTC)
+Date: Thu, 10 Apr 2025 16:00:20 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v3] libtracefs: Add trace_sql.bash for tracefs_sql() bash
+Subject: [PATCH v4] libtracefs: Add trace_sql.bash for tracefs_sql() bash
  completions
-Message-ID: <20250410140011.150d0036@gandalf.local.home>
+Message-ID: <20250410160020.47ad614d@gandalf.local.home>
 X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -44,39 +44,65 @@ function.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
-Changes since v2: https://lore.kernel.org/all/20250410121506.749744e9@gandalf.local.home/
+Changes since v3: https://lore.kernel.org/20250410140011.150d0036@gandalf.local.home
 
-- Added __list_events() helper macro as the it was using the list_events() that
-  is in the trace_cmd.bash completion script.
+- Have "make install" place the completion in /usr/share/bash-completion/completions/
+  Just like it does for "make meson_install"
 
-- Replaced `cmd` with $(cmd) to be consistent throughout
-
- Makefile             |   5 +-
+ Makefile             |  12 +-
  meson.build          |   1 +
  scripts/utils.mk     |   8 +
  src/meson.build      |   4 +
  src/tracefs_sql.bash | 366 +++++++++++++++++++++++++++++++++++++++++++
- 5 files changed, 383 insertions(+), 1 deletion(-)
+ 5 files changed, 385 insertions(+), 6 deletions(-)
  create mode 100644 src/tracefs_sql.bash
 
 diff --git a/Makefile b/Makefile
-index 6e80226..49a5477 100644
+index 6e8022609ee7..6b829f778661 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -300,7 +300,10 @@ install_libs: libs install_pkgconfig
+@@ -55,6 +55,8 @@ libdir_relative ?= $(libdir_relative_temp)
+ prefix ?= /usr/local
+ man_dir ?= $(prefix)/share/man
+ man_dir_SQ = '$(subst ','\'',$(man_dir))'
++completion_dir ?= $(prefix)/share/bash-completion/completions
++completion_dir_SQ = '$(subst ','\'',$(completion_dir))'
+ libdir ?= $(prefix)/$(libdir_relative)
+ libdir_SQ = '$(subst ','\'',$(libdir))'
+ includedir_relative ?= include/tracefs
+@@ -86,9 +88,6 @@ else
+ PREF_DEFINED := 0
+ endif
+ 
+-etcdir ?= /etc
+-etcdir_SQ = '$(subst ','\'',$(etcdir))'
+-
+ export man_dir man_dir_SQ html_install html_install_SQ INSTALL
+ export img_install img_install_SQ
+ export DESTDIR DESTDIR_SQ
+@@ -100,8 +99,6 @@ HELP_DIR = -DHELP_DIR=$(html_install)
+ HELP_DIR_SQ = '$(subst ','\'',$(HELP_DIR))'
+ #' emacs highlighting gets confused by the above escaped quote.
+ 
+-BASH_COMPLETE_DIR ?= $(etcdir)/bash_completion.d
+-
+ # copy a bit from Linux kbuild
+ 
+ ifeq ("$(origin V)", "command line")
+@@ -300,7 +297,10 @@ install_libs: libs install_pkgconfig
  	$(Q)$(call do_install,$(src)/include/tracefs.h,$(includedir_SQ),644)
  	$(Q)$(call install_ld_config)
  
 -install: install_libs
 +install_bash_completion: force
-+	$(Q)$(call do_install_data,$(src)/src/tracefs_sql.bash,$(BASH_COMPLETE_DIR))
++	$(Q)$(call do_install_data,$(src)/src/tracefs_sql.bash,$(completion_dir))
 +
 +install: install_libs install_bash_completion
  
  install_pkgconfig: $(PKG_CONFIG_FILE)
  	$(Q)$(call , $(PKG_CONFIG_FILE)) \
 diff --git a/meson.build b/meson.build
-index 2258ca0..04cedb1 100644
+index 2258ca03fcc0..04cedb15d82e 100644
 --- a/meson.build
 +++ b/meson.build
 @@ -21,6 +21,7 @@ threads_dep = dependency('threads', required: true)
@@ -88,7 +114,7 @@ index 2258ca0..04cedb1 100644
  mandir = join_paths(prefixdir, get_option('mandir'))
  htmldir = join_paths(prefixdir, get_option('htmldir'))
 diff --git a/scripts/utils.mk b/scripts/utils.mk
-index 4d0f8bc..379d47f 100644
+index 4d0f8bc14faa..379d47f0d7fd 100644
 --- a/scripts/utils.mk
 +++ b/scripts/utils.mk
 @@ -187,6 +187,14 @@ define do_install
@@ -107,7 +133,7 @@ index 4d0f8bc..379d47f 100644
  	if [ -n "${pkgconfig_dir}" ]; then 					\
  		$(call do_install,$(PKG_CONFIG_FILE),$(pkgconfig_dir),644); 	\
 diff --git a/src/meson.build b/src/meson.build
-index 31fd9ed..202df9d 100644
+index 31fd9edae6ad..202df9dadbf2 100644
 --- a/src/meson.build
 +++ b/src/meson.build
 @@ -63,3 +63,7 @@ pkg.generate(
@@ -120,7 +146,7 @@ index 31fd9ed..202df9d 100644
 +    install_dir: datadir + '/bash-completion/completions')
 diff --git a/src/tracefs_sql.bash b/src/tracefs_sql.bash
 new file mode 100644
-index 0000000..c335cdc
+index 000000000000..c335cdc50f98
 --- /dev/null
 +++ b/src/tracefs_sql.bash
 @@ -0,0 +1,366 @@
