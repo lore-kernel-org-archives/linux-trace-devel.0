@@ -1,24 +1,24 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F153D1EA7D6
-	for <linux-trace-devel@vger.kernel.org>; Thu, 10 Apr 2025 16:13:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FF842836AA
+	for <linux-trace-devel@vger.kernel.org>; Thu, 10 Apr 2025 17:58:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744301626; cv=none; b=Jy9eFbjdopoaN7zPzuI5moJukr/QrpZ82DdtWbHTv0ntSQKqPE/+wcHv78O+l0Eo5WeFyAIzO8W8+tej2OYTm8JKXi/YiYDXeIW+tqQiCpp2JKFXpxfpipxEq1VbCrJcbgHjuRP54QAh2VM7tl3cq00H+YKcjMuouBBMinKnfi0=
+	t=1744307930; cv=none; b=a0lKaZwr7TrtAsWgFyx5gChrHKvzuvBH1AIYDUqOiW1NA7uu9/x4oo26FitfvU4GDhhKcpF/14m8ioQvUMN59ZO9sVHdrByCfNbNcAWIACdoSQvPpy0JvDritfbCYfXXPOHA8o7Rr2M0p5Yk1HKZ4pm3FWn8ecIsZbbh+gwsgio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744301626; c=relaxed/simple;
-	bh=FzgIlGk+sBh4un6g7GR3P/TvDm66pH+h/11J+Pkr//I=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=tun76vJBsrdhFRsjzsLe5ZwDEnuVC0LmVkncXERulHcZF8cq+bD3e43O9LowHbFAtI8aQsEzV4l26EhtGJfknblGQnJ4in09Qc1QDwxRnHnI9pHzt1mTiUHB6794+zzib+jMS15duM7S2pi1E0B+9OWZBWFam4EY5PHAHVJtMjU=
+	s=arc-20240116; t=1744307930; c=relaxed/simple;
+	bh=TiZVTpdJFude2jRqZZuXR6kzFwxR32BmVdYl3B1X75U=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=URiIUI4cllWaJuCIBoZZLvft0UGJB1WM0HztBbtAzLpLsEs7oZDrZQw4PUjChBAbXFPIeMpIhaSluZg+7VKAOnyDrZEp7XHiIbjTiivazHIv4/Sn7KdZO4RBFXLjZJqEnLcGXJ/OH0PH/A+/nmc/fSpXU2JWCRt/JcpwXcaY/Y4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D8F5C4CEE8
-	for <linux-trace-devel@vger.kernel.org>; Thu, 10 Apr 2025 16:13:45 +0000 (UTC)
-Date: Thu, 10 Apr 2025 12:15:06 -0400
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63CF6C4CEDD
+	for <linux-trace-devel@vger.kernel.org>; Thu, 10 Apr 2025 17:58:49 +0000 (UTC)
+Date: Thu, 10 Apr 2025 14:00:11 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v2] libtracefs: Add trace_sql.bash for tracefs_sql() bash
+Subject: [PATCH v3] libtracefs: Add trace_sql.bash for tracefs_sql() bash
  completions
-Message-ID: <20250410121506.749744e9@gandalf.local.home>
+Message-ID: <20250410140011.150d0036@gandalf.local.home>
 X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -44,20 +44,19 @@ function.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
-Changes since v1: https://lore.kernel.org/all/20250410114740.31b51642@gandalf.local.home/
+Changes since v2: https://lore.kernel.org/all/20250410121506.749744e9@gandalf.local.home/
 
-- Rename the global function to tracefs_sql_completion() for better
-  namespace handling.
+- Added __list_events() helper macro as the it was using the list_events() that
+  is in the trace_cmd.bash completion script.
 
-- Have tracefs_sql_completion() return 0 if it handled the completion
-  or 1 if it did not.
+- Replaced `cmd` with $(cmd) to be consistent throughout
 
  Makefile             |   5 +-
  meson.build          |   1 +
  scripts/utils.mk     |   8 +
  src/meson.build      |   4 +
- src/tracefs_sql.bash | 351 +++++++++++++++++++++++++++++++++++++++++++
- 5 files changed, 368 insertions(+), 1 deletion(-)
+ src/tracefs_sql.bash | 366 +++++++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 383 insertions(+), 1 deletion(-)
  create mode 100644 src/tracefs_sql.bash
 
 diff --git a/Makefile b/Makefile
@@ -121,10 +120,10 @@ index 31fd9ed..202df9d 100644
 +    install_dir: datadir + '/bash-completion/completions')
 diff --git a/src/tracefs_sql.bash b/src/tracefs_sql.bash
 new file mode 100644
-index 0000000..57a782a
+index 0000000..c335cdc
 --- /dev/null
 +++ b/src/tracefs_sql.bash
-@@ -0,0 +1,351 @@
+@@ -0,0 +1,366 @@
 +make_small() {
 +    local w=$1
 +
@@ -138,7 +137,7 @@ index 0000000..57a782a
 +
 +    while [ $i -gt 0 ]; do
 +	let i=$i-1
-+	local w=`make_small ${words[$i]}`
++	local w=$(make_small ${words[$i]})
 +
 +	case $w in
 +	    select)
@@ -191,7 +190,7 @@ index 0000000..57a782a
 +
 +    while [ $i -gt 0 ]; do
 +	let i=$i-1
-+	local w=`make_small ${words[$i]}`
++	local w=$(make_small ${words[$i]})
 +
 +	case $w in
 +	    select)
@@ -231,7 +230,7 @@ index 0000000..57a782a
 +
 +    while [ $i -gt 0 ]; do
 +	let i=$i-1
-+	local w=`make_small ${words[$i]}`
++	local w=$(make_small ${words[$i]})
 +
 +	case $w in
 +	    "from")
@@ -246,7 +245,7 @@ index 0000000..57a782a
 +		;;
 +	    *)
 +		if [ $found_from -eq 1 ]; then
-+		    start=`echo $w | sed -e 's/\.[^\.]*$//'`
++		    start=$(echo $w | sed -e 's/\.[^\.]*$//')
 +		    if [ "$start" != "$w" -a "$start" == "${start%%\.*}" -a \
 +		         "$start" != "$event" ]; then
 +			echo -n "$start "
@@ -269,7 +268,7 @@ index 0000000..57a782a
 +    local var=$2
 +    local extra=$3
 +
-+    local list=`trace-cmd list -e "^${event/\./:}\$" -F |  cut -d';' -f1 | sed -ne 's/\t.*:.* \(.*\)/\1/p' |sed -e 's/\[.*\]//'`
++    local list=$(trace-cmd list -e "^${event/\./:}\$" -F |  cut -d';' -f1 | sed -ne 's/\t.*:.* \(.*\)/\1/p' |sed -e 's/\[.*\]//')
 +
 +    for field in $list $extra; do
 +	if [ -z "$var" ]; then
@@ -280,10 +279,25 @@ index 0000000..57a782a
 +    done
 +}
 +
++__list_events() {
++    local cur=$1
++
++    local list=$(trace-cmd list -e "$cur")
++    local prefix=${cur%%:*}
++    if [ -z "$cur" -o  "$cur" != "$prefix" ]; then
++	echo "${list}"
++    else
++	local events=$(for e in $list; do echo ${e/*:/}; done | sort -u)
++	local systems=$(for s in $list; do echo ${s/:*/:}; done | sort -u)
++
++	echo "${events} ${systems}"
++    fi
++}
++
 +select_options() {
 +    local cur=$1
 +    local extra=$2
-+    local list=`list_events "${cur/\./:}" | sed -e 's/:/./g'`
++    local list=$(__list_events "${cur/\./:}" | sed -e 's/:/./g')
 +    local select_list=" TIMESTAMP_DELTA TIMESTAMP_DELTA_USECS $extra"
 +    local select_fields=" TIMESTAMP TIMESTAMP_USECS STACKTRACE COMM"
 +    add_options "$cur" "$list $select_list"
@@ -296,8 +310,8 @@ index 0000000..57a782a
 +	    compopt -o nospace
 +	fi
 +    elif [ $cnt -eq 0 ]; then
-+	local w=`echo $cur | sed -e 's/\.[^\.]*$//'`
-+	list=`print_fields $w "" "$select_fields"`
++	local w=$(echo $cur | sed -e 's/\.[^\.]*$//')
++	list=$(print_fields $w "" "$select_fields")
 +	COMPREPLY=( $(compgen -W "${list}" -- "${cur}") )
 +    fi
 +}
@@ -305,7 +319,7 @@ index 0000000..57a782a
 +check_as() {
 +    local words=("$@")
 +
-+    last_key=`prev_keyword $COMP_CWORD ${words[@]}`
++    last_key=$(prev_keyword $COMP_CWORD ${words[@]})
 +    if [ "$last_key" != "as" ]; then
 +	echo -n "AS"
 +    fi
@@ -322,7 +336,7 @@ index 0000000..57a782a
 +
 +    while [ $i -gt 0 ]; do
 +	let i=$i-1
-+	local w=`make_small ${words[$i]}`
++	local w=$(make_small ${words[$i]})
 +	case $w in
 +	    "from"|"join")
 +		if [ $w == $type ]; then
@@ -368,10 +382,10 @@ index 0000000..57a782a
 +	return 0
 +    fi
 +
-+    local p=`make_small $prev`
++    local p=$(make_small $prev)
 +
 +    if [ "$p" != "${p%%,}" ]; then
-+	p=`prev_command $COMP_CWORD ${words[@]}`
++	p=$(prev_command $COMP_CWORD ${words[@]})
 +    fi
 +
 +    case "$p" in
@@ -379,16 +393,16 @@ index 0000000..57a782a
 +	    select_options "$cur"
 +	    ;;
 +	"on")
-+	    list=`on_list "from" ${words[@]}`
++	    list=$(on_list "from" ${words[@]})
 +	    add_options "$cur" "$list"
 +	    ;;
 +	"where")
-+	    flist=`on_list "from" ${words[@]}`
-+	    jlist=`on_list "join" ${words[@]}`
++	    flist=$(on_list "from" ${words[@]})
++	    jlist=$(on_list "join" ${words[@]})
 +	    add_options "$cur" "$flist $jlist"
 +	    ;;
 +	"as")
-+	    local last_cmd=`prev_command $COMP_CWORD ${words[@]}`
++	    local last_cmd=$(prev_command $COMP_CWORD ${words[@]})
 +	    case $last_cmd in
 +		"select")
 +		    if [ ! -z "$cur" ]; then
@@ -396,7 +410,7 @@ index 0000000..57a782a
 +		    fi
 +		    ;;
 +		"from"|"join")
-+		    list=`add_vars ${words[@]}`
++		    list=$(add_vars ${words[@]})
 +		    if [ ! -z "$list" ]; then
 +			add_options "$cur" "$list"
 +		    fi
@@ -421,8 +435,8 @@ index 0000000..57a782a
 +	    update_completion "$cur" "as"
 +	    ;;
 +	*)
-+	    local last_cmd=`prev_command $COMP_CWORD ${words[@]}`
-+	    local list=`check_as ${words[@]}`
++	    local last_cmd=$(prev_command $COMP_CWORD ${words[@]})
++	    local list=$(check_as ${words[@]})
 +	    local alist=""
 +	    if [ ! -z "$list" ]; then
 +		alist="as"
@@ -448,10 +462,10 @@ index 0000000..57a782a
 +		    if [ "$cur" != "${cur%%=}" ]; then
 +			COMPREPLY=("")
 +		    else
-+			last_key=`prev_keyword $COMP_CWORD ${words[@]}`
++			last_key=$(prev_keyword $COMP_CWORD ${words[@]})
 +			if [ "$last_key" == "=" ]; then
 +			    if [ $prev == "=" ]; then
-+				list=`on_list "join" ${words[@]}`
++				list=$(on_list "join" ${words[@]})
 +				add_options "$cur" "$list"
 +			    else
 +				add_options "$cur" "WHERE"
