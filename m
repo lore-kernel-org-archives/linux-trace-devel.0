@@ -1,28 +1,23 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF39B1E9B3C
-	for <linux-trace-devel@vger.kernel.org>; Thu, 10 Apr 2025 02:54:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C491154BE2
+	for <linux-trace-devel@vger.kernel.org>; Thu, 10 Apr 2025 13:36:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744253689; cv=none; b=YI0YI0smUB/1y1avxLwcVmwPC3yF7jH33ggMH5SRZRW7HFgVcx4f/7W6wCoGtp1tSswbUXF+CrenrTzDbFE9CtO/+Hnt2E5LK8Pq7F4uPX7VOixbaoHoRhGvnSnYm2ftHIfJyjpxE+IX5A0lLBWHogJyRZOGBByKTel8e3/cCKI=
+	t=1744292210; cv=none; b=Wx6Sza0nPejj7qNjgpJOFNI9GnP8f4lFkrRe9T5s7zkuGsb67+ZbOx6pkahtuPnlntAEc+8vnVIuEwBI4vQ3GO7v9Aykx42sq/a1tewGh4y9BuI6r1BEgnfSvMBHn37+Ab00OIIJefYjJUvBEuFrbivzuc3+t23tgCtRteZ1AhU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744253689; c=relaxed/simple;
-	bh=TIVQ2jepmO2ar58WTnujttjxkPBj7wOrwTCFbQqwpuA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MdosoctjZiphP8levJ9skuRSuhCs5zg48BsIVy1yXxizfQTa7XQ361fYnMxNJsX8nIhdhv6iLDUuZfOtTNYkBAvV6O5aqk8ZDDkhRARe+2+GuCAw1IbEOU5nmsArbXL9XOI6Vxk5IkDsQjcPTMOZR6B1cMgLAaGyPebCMSyWkuU=
+	s=arc-20240116; t=1744292210; c=relaxed/simple;
+	bh=SC2HUnm26zksRHmBn0b4ISR/+iqjobZ9pBlLXD3FB1Q=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=dpIHK9iwLS3SfwSfTg10vj8ZjWNRxGyfa3OP2gwQPZV6j1fAcGT3gOPJgGv5q0gF3egL7UA5hpczdQ9F3XVzAHwi44ws1Z9mrIoscrh6hFEAYW1agw3XM2e9biGWMfijDaishsii1916fIb4z3AW+63m1ppQQVhv1y2AguAPbJ4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11E01C4CEE9;
-	Thu, 10 Apr 2025 02:54:47 +0000 (UTC)
-Date: Wed, 9 Apr 2025 22:56:08 -0400
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D6A2C4CEE8
+	for <linux-trace-devel@vger.kernel.org>; Thu, 10 Apr 2025 13:36:49 +0000 (UTC)
+Date: Thu, 10 Apr 2025 09:38:10 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
-To: Petr Malat <oss@malat.biz>
-Cc: linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH] libtraceevent plugins: Add plugin_net to handle bswap
- during print
-Message-ID: <20250409225608.12df6ed8@gandalf.local.home>
-In-Reply-To: <20250409110705.437321-1-oss@malat.biz>
-References: <20250409110705.437321-1-oss@malat.biz>
+To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] trace-cmd sqlhist: Initialize err value to tracefs_sql()
+Message-ID: <20250410093810.14642ddc@gandalf.local.home>
 X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -33,48 +28,31 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Wed,  9 Apr 2025 13:07:05 +0200
-Petr Malat <oss@malat.biz> wrote:
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-> +static unsigned long long
-> +process_builtin_bswap16(struct trace_seq *s, unsigned long long *args)
-> +{
-> +	return __builtin_bswap16((uint16_t)args[0]);
-> +}
-> +
-> +static unsigned long long
-> +process_builtin_bswap32(struct trace_seq *s, unsigned long long *args)
-> +{
-> +	return __builtin_bswap32((uint32_t)args[0]);
-> +}
-> +
-> +static unsigned long long
-> +process_builtin_bswap64(struct trace_seq *s, unsigned long long *args)
-> +{
-> +	return __builtin_bswap64(args[0]);
-> +}
-> +
+If tracefs_sql() fails, it doesn't always initialize the passed in "err"
+pointer. That should be set to NULL before passing it in otherwise it can't
+be known if the function set it on error.
 
-These actually look useful to be built into the main parser itself and not
-necessarily in a plugin.
+Fixes: 1d5ac88ee ("trace-cmd sqlhist: Add 'sqlhist' command")
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ tracecmd/trace-sqlhist.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-But I'm not sure we can just translate it directly here.
+diff --git a/tracecmd/trace-sqlhist.c b/tracecmd/trace-sqlhist.c
+index 9f2b94e6..ee7eed82 100644
+--- a/tracecmd/trace-sqlhist.c
++++ b/tracecmd/trace-sqlhist.c
+@@ -28,7 +28,7 @@ static int do_sql(const char *instance_name,
+ 	struct tep_handle *tep;
+ 	struct trace_seq seq;
+ 	enum tracefs_synth_handler handler;
+-	char *err;
++	char *err = NULL;
+ 	int ret;
+ 
+ 	if ((action & ACTIONS) && !var)
+-- 
+2.47.2
 
-What if the trace.dat is created on a big endian machine, but read on a
-little endian machine? I don't think we want to do the byte swapping, do we?
-
-I think this needs to check the file vs host endianess. If they don't match,
-I think we don't want to do the swap!
-
-  if (tep->file_bigendian == tep->host_bigendian)
-	return __builtin_bswap*(args[0]);
-  else
-	return args[0];
-
-?
-
-As the else block will have args[0] already swapped wrt to host that's
-reading the information. libtraceevent does a byte swap on values read when
-the host and file do not match endianess.
-
--- Steve
