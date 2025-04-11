@@ -1,24 +1,24 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 444DFFC08
-	for <linux-trace-devel@vger.kernel.org>; Fri, 11 Apr 2025 13:12:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8D331DB346
+	for <linux-trace-devel@vger.kernel.org>; Fri, 11 Apr 2025 13:35:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744377150; cv=none; b=aGpaQa5bi8vkEqibpXtjKIB53ORXROaYeE/dU9/XY6imFVab9lgKVirvDSCtwojBcowKOyWDZKmptkm24MhQnjUdYD0Vm1B7CLPJ+SicGdSR5MOqp2nJ2IBu1ORvalpYaQ0p37K8oFAgNFPes6bmL6tdfogrQvXlNJjiQ3gNN30=
+	t=1744378505; cv=none; b=dY1WGAeIeeOdM4Pya2JCnQqmEl43PgVodPzFL7afldGp+dCLGoky7TJdYUFlJ8kMgoJWc5VaySjcVMrHsi166OyA0fyKnzoq//U8vzUZYnOjP8mzGO+tKXVVTop96QYr32aUeIrLwKvAVsD3kPEhzthE+D44XmMR0+DAq9+ZDLI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744377150; c=relaxed/simple;
-	bh=PjZmxbngztiv4a7fYgN5585lXKjiPdnsaQsXIIUIFEc=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=Cupey9OFmaiNcx1fJY5sC6Jbhf9tBtlXzdoAkBmGA+nlciZno4/LvJMMaZMNZx81ZvArEY62p2E7AcmPm/dETiNEvC2hxIAnXAZnAvAMnwmoJE/Gg4LVLDxNRGCNX7qYC7d6PlhgmrKA99WDqjmWKmE3hDQxMvICj3e+bOJc824=
+	s=arc-20240116; t=1744378505; c=relaxed/simple;
+	bh=eIkJnVr+2aFtTVVK0ndkmwOgh9JeQOhpOSJ/qrNszCQ=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=TAXrkJT0DtU9eCJQCO4eSN6XIrJefwGU9i4FduynUXdLtquZOC3guAFITP3pbCnrV/fIzTnQUev4n75QTuoGtetVAdbG9IjZckwDmfVPia4Xm6OlK69cLnQ7Wajp4/sQFVwZMuajoat75AyPR06q+aA/4BnhgmBvyj49+1f2Xy4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8119CC4CEE2
-	for <linux-trace-devel@vger.kernel.org>; Fri, 11 Apr 2025 13:12:29 +0000 (UTC)
-Date: Fri, 11 Apr 2025 09:13:53 -0400
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0C0DC4CEE5
+	for <linux-trace-devel@vger.kernel.org>; Fri, 11 Apr 2025 13:35:04 +0000 (UTC)
+Date: Fri, 11 Apr 2025 09:36:28 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] trace-cmd show: Update help message for --hist and
- --trigger options
-Message-ID: <20250411091353.13f2a48a@gandalf.local.home>
+Subject: [PATCH] trace-cmd list: Show all functions that match string by
+ default
+Message-ID: <20250411093628.3f68fb02@gandalf.local.home>
 X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -31,47 +31,68 @@ Content-Transfer-Encoding: 7bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-The trace-cmd show help message was missing the --hist and --trigger
-options. These are quite useful options and should be visible to the user
-and not hidden as Easter eggs!
+Before tracefs_filter_functions() was used to find the list of functions,
+the trace-cmd list -f would list all functions that match the given string
+by default. After the switching over to tracefs_filter_functions(), by
+default it does a exact match.
 
-Also update the bash completion script to help out with the event list.
+This is quite annoying, as in most cases the user wants to see what
+available functions have the given string. If the user knows the function
+they are looking for, they do not need to use trace-cmd list -f !
 
-Fixes: 3e930655b ("trace-cmd show: Add --hist and --trigger options")
+Fixes: 39acb4cc1 ("trace-cmd list: Use tracefs_filter_functions()")
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- tracecmd/trace-cmd.bash | 4 ++++
- tracecmd/trace-usage.c  | 2 ++
- 2 files changed, 6 insertions(+)
+ tracecmd/trace-list.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-diff --git a/tracecmd/trace-cmd.bash b/tracecmd/trace-cmd.bash
-index 1bf4bc1b..c500ef0d 100644
---- a/tracecmd/trace-cmd.bash
-+++ b/tracecmd/trace-cmd.bash
-@@ -139,6 +139,10 @@ __trace_cmd_show_complete()
- 	-B)
- 	    show_instances "$cur"
- 	    ;;
-+	--hist|--trigger)
-+	    local list=`list_events $cur`
-+	    COMPREPLY=( $(compgen -W "all ${list}" -- "${cur}") )
-+	    ;;
- 	*)
- 	    cmd_options show "$cur"
- 	    ;;
-diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
-index 9884631d..3fd975c0 100644
---- a/tracecmd/trace-usage.c
-+++ b/tracecmd/trace-usage.c
-@@ -177,6 +177,8 @@ static struct usage_help usage_help[] = {
- 		"          -f display the file path that is being dumped\n"
- 		"          The following options shows the corresponding file name\n"
- 		"           and then exits.\n"
-+		"          --hist event (show the hist file of an event)\n"
-+		"          --trigger event (show the trigger file of an event)\n"
- 		"          --tracing_on\n"
- 		"          --current_tracer\n"
- 		"          --buffer_size (for buffer_size_kb)\n"
+diff --git a/tracecmd/trace-list.c b/tracecmd/trace-list.c
+index 4e2cf041..073b37fb 100644
+--- a/tracecmd/trace-list.c
++++ b/tracecmd/trace-list.c
+@@ -466,6 +466,8 @@ static void show_clocks(void)
+ 
+ static void show_functions(const char *funcre)
+ {
++	bool found = false;
++	char *new_re = NULL;
+ 	char **list;
+ 	int i;
+ 
+@@ -474,11 +476,33 @@ static void show_functions(const char *funcre)
+ 		return;
+ 	}
+ 
++	/* if the re doesn't have any regular expressions, then add them */
++	for (i = 0; !found && funcre[i]; i++) {
++		if (funcre[i] == '\\')
++			continue;
++		switch (funcre[i]) {
++		case '*':
++		case '[':
++		case '(':
++		case '.':
++		case '?':
++			found = true;
++		}
++	}
++
++	if (!found) {
++		/* Add glob around expression */
++		if (asprintf(&new_re, "*%s*", funcre) < 0)
++			die("Failed to allocate memory");
++		funcre = new_re;
++	}
++
+ 	if (tracefs_filter_functions(funcre, NULL, &list) < 0)
+ 		die("Failed to read filte functions");
+ 	for (i = 0; list && list[i]; i++)
+ 		printf("%s\n", list[i]);
+ 	tracefs_list_free(list);
++	free(new_re);
+ }
+ 
+ 
 -- 
 2.47.2
 
