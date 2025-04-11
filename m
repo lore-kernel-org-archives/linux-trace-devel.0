@@ -1,150 +1,114 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 482BE23A99D
-	for <linux-trace-devel@vger.kernel.org>; Fri, 11 Apr 2025 17:42:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86FB5278E4D
+	for <linux-trace-devel@vger.kernel.org>; Fri, 11 Apr 2025 22:56:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744393358; cv=none; b=eAQZu8DP4C9M+RUQX2aEU2jVZfTOcxQipas6fBs6xIotK4k0XJekYo2KNYYatPYB1dLyxyEg8Z2VwVoxW4rHYe8LDTqjUpZLcZIz8yAH+FXYl2XtGmv/HIvejOhTKBBv8HPUjxyvMTpBDzmAXHgWiQqVDFsruy4jrsTiP5kFhgc=
+	t=1744412221; cv=none; b=iIZ6o+yB1mgsktRwNlTR2xxxiq3DTgs9aph32qTiGAELG/SE5+4xWZsQEi8InGxucMko+Nwww7kyE6uFKb+SbjKes7GnRzpGw+6clh3yyNXCptSDtvhJqE69+WvdQzDWO9zmi1x0NtT9xkUYHa2tVrCHaPeS+Rep+DGgakkfHIU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744393358; c=relaxed/simple;
-	bh=3FAYY+68weHOBNiFC4r3K25Iw+D2JwKCJEZjwkcwpb8=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gOFOREMZ1aEFsNP5zbSyxIn+0S9MjnNX8xbCaJPRMIlTd8+q55XEyzUVNh2Zegwwo5RA30OBxYyfIHlqzLfBoEgInUnFJrrrAhFZIDKJZchDRneG2WH+PFojfoENZACLpcf5qKL+65lb0kVI88GKqgNHwjStG5Qe3XHzQdfftm4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F60EC4CEE2;
-	Fri, 11 Apr 2025 17:42:36 +0000 (UTC)
-Date: Fri, 11 Apr 2025 13:44:01 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Ilya Leoshkevich <iii@linux.ibm.com>
+	s=arc-20240116; t=1744412221; c=relaxed/simple;
+	bh=RPWFSrFyeqmJJMPzaOEFhTip5+Kcy8Az1Bf8ZA2vtho=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Qmbn8wRmmL9mRbWpOCPJ+ERrkCjamC5a2fo1oR2dy9CdE3yYZLc72GTUL5Frsszgy4FKCq3rKqXrCt135aazPQWTHcZKUWUaM2toZK0MiG4wPCS+Uog9GbwEth+tzHR7Abn++TKhxStIq6aWes6NErXNLTSBQzQson9tgrmA0tw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=bLt50aMN; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="bLt50aMN"
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 53BII3fB022213;
+	Fri, 11 Apr 2025 22:56:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=pp1; bh=YmYiUmOi+KegmcZTV8z08FoHC6Ao9mHw7y2s0MdxE
+	S4=; b=bLt50aMNi+qi5bXeF9SJv+lZc7Id9FlsGlwERhFcjHrXm7Trvfu3rGwya
+	69cVUCTaTOI/pK7OKKM7H3xn7vIJVQh4qBMpdam0+fK2kslyFUFnKBAj66txGGzP
+	JRpJpsAFGSddAGbpqjL90JpqVh7XoecpGqi6SrDp2UDX0W0D24azzvNVoa77LB1J
+	hH3ukpQAzqP5nq/HJ9XshNHf+WR85V6PPDTNY0+nGu5ihnb8gIQ17ZAtyauttLco
+	bhj+kJyjVNVjbuVPN0n+PIMLicphIyasmWEtCYjibGGzT1uGSaT4u8Q67EF0qDfF
+	qmy6F3VlKuH9YvRIhORLev5ABKPCw==
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45y343tus8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 11 Apr 2025 22:56:57 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 53BIvdID018567;
+	Fri, 11 Apr 2025 22:56:56 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 45uh2m50u2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 11 Apr 2025 22:56:56 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 53BMuqRL50987290
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 11 Apr 2025 22:56:52 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D0D5020043;
+	Fri, 11 Apr 2025 22:56:52 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 699E420040;
+	Fri, 11 Apr 2025 22:56:52 +0000 (GMT)
+Received: from heavy.ibm.com (unknown [9.171.63.247])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 11 Apr 2025 22:56:52 +0000 (GMT)
+From: Ilya Leoshkevich <iii@linux.ibm.com>
+To: Steven Rostedt <rostedt@goodmis.org>
 Cc: linux-trace-devel@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
- Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev
- <agordeev@linux.ibm.com>
-Subject: Re: [PATCH] trace-cmd record: Fix compression on big-endian systems
-Message-ID: <20250411134401.3d3e62d7@gandalf.local.home>
-In-Reply-To: <20250411172815.61477-1-iii@linux.ibm.com>
-References: <20250411172815.61477-1-iii@linux.ibm.com>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH v2 0/2] trace-cmd record: Fix compression on big-endian systems
+Date: Sat, 12 Apr 2025 00:49:24 +0200
+Message-ID: <20250411225648.6498-1-iii@linux.ibm.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: kKXw9xPWBgjTBeTXSljzDTFLSwxP-ntT
+X-Proofpoint-ORIG-GUID: kKXw9xPWBgjTBeTXSljzDTFLSwxP-ntT
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1095,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-04-11_09,2025-04-10_01,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ priorityscore=1501 adultscore=0 malwarescore=0 impostorscore=0
+ lowpriorityscore=0 spamscore=0 mlxscore=0 suspectscore=0 mlxlogscore=967
+ clxscore=1015 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2502280000 definitions=main-2504110146
 
-On Fri, 11 Apr 2025 19:27:56 +0200
-Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+v1: https://lore.kernel.org/linux-trace-devel/20250411172815.61477-1-iii@linux.ibm.com/
+v1 -> v2: Factor out read_size_val(), split out the error handling
+          change (Steven).
 
-> trace-cmd report prints nothing on s390x when compression is used.
-> 
-> The reason is that the code treats size_t pointers as int pointers when
-> serializing size_t values into 32-bit on-disk fields, which works only
-> on little-endian systems.
-> 
-> Fix serialization by copying size_t values into int values first.
-> While at it, add overflow checks.
-> 
-> Fixes: 176bc1f14419 ("trace-cmd record: Fix compression when files are greater than 2GB")
+Hi,
 
-Thanks for the fix, but I have some comments below.
+While running trace-cmd on s390x, I ran into a few issues.
+This is the fix for the first one: trace-cmd report prints nothing.
 
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> ---
->  lib/trace-cmd/trace-compress.c | 26 +++++++++++++++++++++-----
->  1 file changed, 21 insertions(+), 5 deletions(-)
-> 
-> diff --git a/lib/trace-cmd/trace-compress.c b/lib/trace-cmd/trace-compress.c
-> index 03215ad1..1b599043 100644
-> --- a/lib/trace-cmd/trace-compress.c
-> +++ b/lib/trace-cmd/trace-compress.c
-> @@ -7,6 +7,7 @@
->  #include <sys/time.h>
->  #include <fcntl.h>
->  #include <errno.h>
-> +#include <limits.h>
->  #include <unistd.h>
->  
->  #include "trace-cmd-private.h"
-> @@ -331,7 +332,12 @@ int tracecmd_compress_block(struct tracecmd_compression *handle)
->  		goto out;
->  
->  	/* Write uncompressed data size */
-> -	endian4 = tep_read_number(handle->tep, &handle->pointer, 4);
-> +	if (handle->pointer > UINT_MAX) {
-> +		ret = -1;
-> +		goto out;
-> +	}
-> +	endian4 = handle->pointer;
-> +	endian4 = tep_read_number(handle->tep, &endian4, 4);
->  	ret = do_write(handle, &endian4, 4);
->  	if (ret != 4) {
->  		ret = -1;
-> @@ -735,13 +741,19 @@ int tracecmd_compress_copy_from(struct tracecmd_compression *handle, int fd, int
->  			}
->  			size = ret;
->  			/* Write compressed data size */
-> -			endian4 = tep_read_number(handle->tep, &size, 4);
-> +			if (size > UINT_MAX)
-> +				break;
-> +			endian4 = size;
-> +			endian4 = tep_read_number(handle->tep, &endian4, 4);
->  			ret = write_fd(handle->fd, &endian4, 4);
->  			if (ret != 4)
->  				break;
->  
->  			/* Write uncompressed data size */
-> -			endian4 = tep_read_number(handle->tep, &all, 4);
-> +			if (all > UINT_MAX)
-> +				break;
-> +			endian4 = all;
-> +			endian4 = tep_read_number(handle->tep, &endian4, 4);
->  			ret = write_fd(handle->fd, &endian4, 4);
->  			if (ret != 4)
->  				break;
-> @@ -763,9 +775,13 @@ int tracecmd_compress_copy_from(struct tracecmd_compression *handle, int fd, int
->  	if (lseek(handle->fd, offset, SEEK_SET) == (off_t)-1)
->  		return -1;
->  
-> -	endian4 = tep_read_number(handle->tep, &chunks, 4);
-> +	if (chunks > UINT_MAX)
-> +		return -1;
-> +	endian4 = chunks;
-> +	endian4 = tep_read_number(handle->tep, &endian4, 4);
+The second one is a kernel issue [1], which causes trace-cmd to print
+a lot of bogus space characters.
 
-You do the same conversion 4 times. Could you make a helper function
-instead?
+The final one is "error in size of file '/proc/kallsyms'" caused by
+delayed removal of a BPF program from /proc/kallsyms. I plan to fix it
+by reading the contents of /proc/kallsyms into a temporary file before
+writing it into the trace file.
 
-static int read_size_val(struct tep_handle *tep, size_t size, int *endian4)
-{
-	if (size > UINT_MAX)
-		return -1;
+[1] https://lore.kernel.org/lkml/20250411172207.61332-1-iii@linux.ibm.com/
 
-	*endian4 = size;
-	*endian4 = tep_read_number(tep, endian4, 4);
-	return 0;
-}
+Best regards,
+Ilya
 
-Then you can change the above to:
+Ilya Leoshkevich (2):
+  trace-cmd record: Fix compression on big-endian systems
+  libtracecmd: Add missing error handling to trace-compress.c
 
-	if (read_size_val(handle->tep, chunks, &endian4) < 0)
-		return -1;
+ lib/trace-cmd/trace-compress.c | 32 +++++++++++++++++++++++++-------
+ 1 file changed, 25 insertions(+), 7 deletions(-)
 
-Same with the rest.
+-- 
+2.49.0
 
-
->  	/* write chunks count*/
-> -	write_fd(handle->fd, &chunks, 4);
-> +	if (write_fd(handle->fd, &endian4, 4) != 4)
-> +		return -1;
-
-This is a separate issue and should be a separate patch.
-
->  	end_offset = lseek(handle->fd, 0, SEEK_END);
->  	if (end_offset == (off_t)-1)
->  		return -1;
-
-Thanks,
-
--- Steve
