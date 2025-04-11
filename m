@@ -1,24 +1,24 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5D9E20B810
-	for <linux-trace-devel@vger.kernel.org>; Fri, 11 Apr 2025 02:03:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6E981624E8
+	for <linux-trace-devel@vger.kernel.org>; Fri, 11 Apr 2025 13:02:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744336997; cv=none; b=o+5xwqD1VG3wvCAE/SU5CpsHneT8zJjCv3ECX8wnw2v5enmmqWl1wojDeSw4X8E+rKjFQbw4o4dUVI7RXhtHwz7TZ0RZa4upo3Sis+hFqd1f3NHFDgRUHEeTe6WgmHto+JTk0oI3QAA33XTEzyYwB3lc9SY/8L5pHJKbru3CBrM=
+	t=1744376545; cv=none; b=c+6XsedJUfCdQVFt5Wzy7GZQ/LofQb5BBo8NHNqWE2liX9nr3qJWMD9afY8QYup6WEYW/jzO82QsPJ/1yCktRW54IsP/Myvz8/jRGklmi2M4WZ/FV+DCR+zBHPH+yT4XS6Zr8lDGlUuKpQVzC3B4mn4wIPFwMrB/1338LkQ22Rc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744336997; c=relaxed/simple;
-	bh=54WUhHQKfSetxY9qbhcJDFrc/dPAwoHG/ltJEDc8Y3E=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=J5T/GMKT66BBQ7yId2p0SaMP8el5DelL/sa2kbQUpPcb3KzEegf7e7KIDGRTUJZdsUVCjzV95VtEJjWl98E9EBeVOqW3FlEkJoSPe0ZqzBjhSQFhlD+8/4RM7FUCCCpWZTgKNCDufHno5N8KpgFq0R3JQIgNAuei4KrjubAu90I=
+	s=arc-20240116; t=1744376545; c=relaxed/simple;
+	bh=XQxtJY8jwwZtenVItXalH6lI7QBaG5cwhBlUzX4iMr4=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=Q18VrM9nljYyp/SxOtBODXgpw8NLDEakbyAKBf0vl7f7TJ+fYyeWmDPqVPHK6I5W+HSqiD2VtSvBNFtepyFu1p1iYYfRVGIQRp+ODidORLAOnN7QT4lJuU2+zd5ujaVsWWnL8lRPtRBDLJ+4/TrVapnn8eCwYQHpVOvKxIzZ2xE=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC589C4CEE3
-	for <linux-trace-devel@vger.kernel.org>; Fri, 11 Apr 2025 02:03:16 +0000 (UTC)
-Date: Thu, 10 Apr 2025 22:04:39 -0400
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19B07C4CEE7
+	for <linux-trace-devel@vger.kernel.org>; Fri, 11 Apr 2025 13:02:25 +0000 (UTC)
+Date: Fri, 11 Apr 2025 09:03:49 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] tracefs: Handle synthetic events with dynamic strings as
- fields
-Message-ID: <20250410220439.14b81af3@gandalf.local.home>
+Subject: [PATCH] trace-cmd: Install completion script in
+ /usr/share/bash-completion/completions
+Message-ID: <20250411090349.09984c9b@gandalf.local.home>
 X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -31,57 +31,60 @@ Content-Transfer-Encoding: 7bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Dynamic strings may contain "__data_loc" in their types within the format
-files, but "__data_loc" is not an acceptable type for the dynamic_events
-file.
+The meson install installs the bash completion in
+/usr/share/bash-completion/completions where as the normal "make install"
+places the script into /etc/bash_completions.d/. The former is actually
+where it should be installed.
 
-For example tracing the latency of interrupts and having the name of the
-interrupt be reported:
-
-  # sqlhist -e -n irq_lat select irq_handler_entry.name, TIMESTAMP_DELTA_USECS as delta from irq_handler_entry as start join irq_handler_exit as end ON start.irq = end.irq
-  echo 's:irq_lat __data_loc char name[]; u64 delta;' >> /sys/kernel/tracing/dynamic_events
-  echo 'hist:keys=irq:__arg_1193_2=name,__arg_1193_3=common_timestamp.usecs' >> /sys/kernel/tracing/events/irq/irq_handler_entry/trigger
-  echo 'hist:keys=irq:__name_1193_1=$__arg_1193_2,__delta_1193_4=common_timestamp.usecs-$__arg_1193_3:onmatch(irq.irq_handler_entry).trace(irq_lat,$__name_1193_1,$__delta_1193_4)' >> /sys/kernel/tracing/events/irq/irq_handler_exit/trigger
-
-The above writes echo 's:irq_lat __data_loc char name[]; u64 delta;' into
-dynamic_events, and the "__data_loc" will cause it to fail. To show this,
-adding the '-e' option will execute the command first:
-
-  # sqlhist -e -n irq_lat select irq_handler_entry.name, TIMESTAMP_DELTA_USECS as delta from irq_handler_entry as start join irq_handler_exit as end ON start.irq = end.irq
-  [23109.878734] synthetic_events: error: Invalid type
-  Command: s:synthetic/irq_lat  __data_loc char name[]; u64 delta;
-                                ^
-
-The __data_loc caused the write to fail.
-
-Strip the __data_loc off of fields so that it will produce:
-
-  # sqlhist -e -n irq_lat select irq_handler_entry.name, TIMESTAMP_DELTA_USECS as delta from irq_handler_entry as start join irq_handler_exit as end ON start.irq = end.irq
-  echo 's:irq_lat char name[]; u64 delta;' >> /sys/kernel/tracing/dynamic_events
-  echo 'hist:keys=irq:__arg_1193_2=name,__arg_1193_3=common_timestamp.usecs' >> /sys/kernel/tracing/events/irq/irq_handler_entry/trigger
-  echo 'hist:keys=irq:__name_1193_1=$__arg_1193_2,__delta_1193_4=common_timestamp.usecs-$__arg_1193_3:onmatch(irq.irq_handler_entry).trace(irq_lat,$__name_1193_1,$__delta_1193_4)' >> /sys/kernel/tracing/events/irq/irq_handler_exit/trigger
-
-And not fail to execute.
+Change the make install to place the bash completion script into
+/usr/share/bash-completion/completions like the meson install does.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- src/tracefs-hist.c | 3 +++
- 1 file changed, 3 insertions(+)
+ Makefile | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/src/tracefs-hist.c b/src/tracefs-hist.c
-index bfbcd65..d67f8eb 100644
---- a/src/tracefs-hist.c
-+++ b/src/tracefs-hist.c
-@@ -1068,6 +1068,9 @@ static int alloc_synthetic_event(struct tracefs_synth *synth)
+diff --git a/Makefile b/Makefile
+index e044a0f0..5c0f1a33 100644
+--- a/Makefile
++++ b/Makefile
+@@ -70,6 +70,8 @@ bindir_relative = bin
+ bindir = $(prefix)/$(bindir_relative)
+ man_dir = $(prefix)/share/man
+ man_dir_SQ = '$(subst ','\'',$(man_dir))'
++completion_dir = $(prefix)/share/bash-completion/completions
++completion_dir_SQ = '$(subst ','\'',$(completion_dir))'
+ html_install_SQ = '$(subst ','\'',$(html_install))'
+ img_install_SQ = '$(subst ','\'',$(img_install))'
+ libdir = $(prefix)/$(libdir_relative)
+@@ -79,9 +81,6 @@ includedir_SQ = '$(subst ','\'',$(includedir))'
+ pkgconfig_dir ?= $(word 1,$(shell $(PKG_CONFIG) 		\
+ 			--variable pc_path pkg-config | tr ":" " "))
  
- 	for (i = 0; synth->synthetic_fields && synth->synthetic_fields[i]; i++) {
- 		field = synth->synthetic_fields[i];
-+		/* Strip off __data_loc */
-+		if (!strncmp(field, "__data_loc ", sizeof("__data_loc ") - 1))
-+			field += sizeof("__data_loc ") - 1;
- 		format = tfs_append_string(format, i ? " " : NULL, field);
- 	}
+-etcdir ?= /etc
+-etcdir_SQ = '$(subst ','\'',$(etcdir))'
+-
+ export man_dir man_dir_SQ html_install html_install_SQ INSTALL
+ export img_install img_install_SQ libdir libdir_SQ includedir_SQ
+ export DESTDIR DESTDIR_SQ
+@@ -115,8 +114,6 @@ HELP_DIR = -DHELP_DIR=$(html_install)
+ HELP_DIR_SQ = '$(subst ','\'',$(HELP_DIR))'
+ #' emacs highlighting gets confused by the above escaped quote.
  
+-BASH_COMPLETE_DIR ?= $(etcdir)/bash_completion.d
+-
+ export PLUGIN_DIR_TRACECMD
+ export PYTHON_DIR
+ export PYTHON_DIR_SQ
+@@ -500,7 +497,7 @@ install_python: force
+ 	$(Q)$(MAKE) -C $(src)/python $@
+ 
+ install_bash_completion: force
+-	$(Q)$(call do_install_data,$(src)/tracecmd/trace-cmd.bash,$(BASH_COMPLETE_DIR))
++	$(Q)$(call do_install_data,$(src)/tracecmd/trace-cmd.bash,$(completion_dir))
+ 
+ install_cmd: all_cmd install_plugins install_python install_bash_completion
+ 	$(Q)$(call do_install,$(obj)/tracecmd/trace-cmd,$(bindir_SQ))
 -- 
 2.47.2
 
