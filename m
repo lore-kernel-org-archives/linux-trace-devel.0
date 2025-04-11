@@ -1,24 +1,24 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6E981624E8
-	for <linux-trace-devel@vger.kernel.org>; Fri, 11 Apr 2025 13:02:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 444DFFC08
+	for <linux-trace-devel@vger.kernel.org>; Fri, 11 Apr 2025 13:12:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744376545; cv=none; b=c+6XsedJUfCdQVFt5Wzy7GZQ/LofQb5BBo8NHNqWE2liX9nr3qJWMD9afY8QYup6WEYW/jzO82QsPJ/1yCktRW54IsP/Myvz8/jRGklmi2M4WZ/FV+DCR+zBHPH+yT4XS6Zr8lDGlUuKpQVzC3B4mn4wIPFwMrB/1338LkQ22Rc=
+	t=1744377150; cv=none; b=aGpaQa5bi8vkEqibpXtjKIB53ORXROaYeE/dU9/XY6imFVab9lgKVirvDSCtwojBcowKOyWDZKmptkm24MhQnjUdYD0Vm1B7CLPJ+SicGdSR5MOqp2nJ2IBu1ORvalpYaQ0p37K8oFAgNFPes6bmL6tdfogrQvXlNJjiQ3gNN30=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744376545; c=relaxed/simple;
-	bh=XQxtJY8jwwZtenVItXalH6lI7QBaG5cwhBlUzX4iMr4=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=Q18VrM9nljYyp/SxOtBODXgpw8NLDEakbyAKBf0vl7f7TJ+fYyeWmDPqVPHK6I5W+HSqiD2VtSvBNFtepyFu1p1iYYfRVGIQRp+ODidORLAOnN7QT4lJuU2+zd5ujaVsWWnL8lRPtRBDLJ+4/TrVapnn8eCwYQHpVOvKxIzZ2xE=
+	s=arc-20240116; t=1744377150; c=relaxed/simple;
+	bh=PjZmxbngztiv4a7fYgN5585lXKjiPdnsaQsXIIUIFEc=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=Cupey9OFmaiNcx1fJY5sC6Jbhf9tBtlXzdoAkBmGA+nlciZno4/LvJMMaZMNZx81ZvArEY62p2E7AcmPm/dETiNEvC2hxIAnXAZnAvAMnwmoJE/Gg4LVLDxNRGCNX7qYC7d6PlhgmrKA99WDqjmWKmE3hDQxMvICj3e+bOJc824=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19B07C4CEE7
-	for <linux-trace-devel@vger.kernel.org>; Fri, 11 Apr 2025 13:02:25 +0000 (UTC)
-Date: Fri, 11 Apr 2025 09:03:49 -0400
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8119CC4CEE2
+	for <linux-trace-devel@vger.kernel.org>; Fri, 11 Apr 2025 13:12:29 +0000 (UTC)
+Date: Fri, 11 Apr 2025 09:13:53 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] trace-cmd: Install completion script in
- /usr/share/bash-completion/completions
-Message-ID: <20250411090349.09984c9b@gandalf.local.home>
+Subject: [PATCH] trace-cmd show: Update help message for --hist and
+ --trigger options
+Message-ID: <20250411091353.13f2a48a@gandalf.local.home>
 X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -31,60 +31,47 @@ Content-Transfer-Encoding: 7bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-The meson install installs the bash completion in
-/usr/share/bash-completion/completions where as the normal "make install"
-places the script into /etc/bash_completions.d/. The former is actually
-where it should be installed.
+The trace-cmd show help message was missing the --hist and --trigger
+options. These are quite useful options and should be visible to the user
+and not hidden as Easter eggs!
 
-Change the make install to place the bash completion script into
-/usr/share/bash-completion/completions like the meson install does.
+Also update the bash completion script to help out with the event list.
 
+Fixes: 3e930655b ("trace-cmd show: Add --hist and --trigger options")
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- Makefile | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ tracecmd/trace-cmd.bash | 4 ++++
+ tracecmd/trace-usage.c  | 2 ++
+ 2 files changed, 6 insertions(+)
 
-diff --git a/Makefile b/Makefile
-index e044a0f0..5c0f1a33 100644
---- a/Makefile
-+++ b/Makefile
-@@ -70,6 +70,8 @@ bindir_relative = bin
- bindir = $(prefix)/$(bindir_relative)
- man_dir = $(prefix)/share/man
- man_dir_SQ = '$(subst ','\'',$(man_dir))'
-+completion_dir = $(prefix)/share/bash-completion/completions
-+completion_dir_SQ = '$(subst ','\'',$(completion_dir))'
- html_install_SQ = '$(subst ','\'',$(html_install))'
- img_install_SQ = '$(subst ','\'',$(img_install))'
- libdir = $(prefix)/$(libdir_relative)
-@@ -79,9 +81,6 @@ includedir_SQ = '$(subst ','\'',$(includedir))'
- pkgconfig_dir ?= $(word 1,$(shell $(PKG_CONFIG) 		\
- 			--variable pc_path pkg-config | tr ":" " "))
- 
--etcdir ?= /etc
--etcdir_SQ = '$(subst ','\'',$(etcdir))'
--
- export man_dir man_dir_SQ html_install html_install_SQ INSTALL
- export img_install img_install_SQ libdir libdir_SQ includedir_SQ
- export DESTDIR DESTDIR_SQ
-@@ -115,8 +114,6 @@ HELP_DIR = -DHELP_DIR=$(html_install)
- HELP_DIR_SQ = '$(subst ','\'',$(HELP_DIR))'
- #' emacs highlighting gets confused by the above escaped quote.
- 
--BASH_COMPLETE_DIR ?= $(etcdir)/bash_completion.d
--
- export PLUGIN_DIR_TRACECMD
- export PYTHON_DIR
- export PYTHON_DIR_SQ
-@@ -500,7 +497,7 @@ install_python: force
- 	$(Q)$(MAKE) -C $(src)/python $@
- 
- install_bash_completion: force
--	$(Q)$(call do_install_data,$(src)/tracecmd/trace-cmd.bash,$(BASH_COMPLETE_DIR))
-+	$(Q)$(call do_install_data,$(src)/tracecmd/trace-cmd.bash,$(completion_dir))
- 
- install_cmd: all_cmd install_plugins install_python install_bash_completion
- 	$(Q)$(call do_install,$(obj)/tracecmd/trace-cmd,$(bindir_SQ))
+diff --git a/tracecmd/trace-cmd.bash b/tracecmd/trace-cmd.bash
+index 1bf4bc1b..c500ef0d 100644
+--- a/tracecmd/trace-cmd.bash
++++ b/tracecmd/trace-cmd.bash
+@@ -139,6 +139,10 @@ __trace_cmd_show_complete()
+ 	-B)
+ 	    show_instances "$cur"
+ 	    ;;
++	--hist|--trigger)
++	    local list=`list_events $cur`
++	    COMPREPLY=( $(compgen -W "all ${list}" -- "${cur}") )
++	    ;;
+ 	*)
+ 	    cmd_options show "$cur"
+ 	    ;;
+diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
+index 9884631d..3fd975c0 100644
+--- a/tracecmd/trace-usage.c
++++ b/tracecmd/trace-usage.c
+@@ -177,6 +177,8 @@ static struct usage_help usage_help[] = {
+ 		"          -f display the file path that is being dumped\n"
+ 		"          The following options shows the corresponding file name\n"
+ 		"           and then exits.\n"
++		"          --hist event (show the hist file of an event)\n"
++		"          --trigger event (show the trigger file of an event)\n"
+ 		"          --tracing_on\n"
+ 		"          --current_tracer\n"
+ 		"          --buffer_size (for buffer_size_kb)\n"
 -- 
 2.47.2
 
