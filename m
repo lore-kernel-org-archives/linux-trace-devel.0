@@ -1,129 +1,195 @@
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6E93278E4D
-	for <linux-trace-devel@vger.kernel.org>; Fri, 11 Apr 2025 22:57:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 875D1247299
+	for <linux-trace-devel@vger.kernel.org>; Mon, 14 Apr 2025 15:39:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744412223; cv=none; b=SWL6MUcx8y5S/CmAyBFvz5i4/RxdBxbwAKGExYIcdlRf+rKXfTSuC2rqqiNqeIxd0DXlI0VnS9CUPS4IFD3iDCLpjzTpm8Z2Z9wMTH0DfZSi1kqDiwFD5QlyJDYusLdAv5MIXoBmFUeQTCHtjd5MMEbf2OgwxCVyDAbwcbWFHAM=
+	t=1744645187; cv=none; b=h6KUnyfHnPORPfI4HsMEi5OM6Grap5CTeCXtZHnYSd48MPRYJSl4hKF6wAp6Fx35MzhQvaWLYz36g4bLLoV+ukFdDE7dOkYNbR1qmj2K3Cm4cpHBxL0aRAVig/v+XyHGyXzDuyas/3SzobdWu5wzKronba8Rf8CwyRddnqEjYKc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744412223; c=relaxed/simple;
-	bh=DVM/p0p5Y6psyMPXx2/MnNxXHG/ojjSn9/7iFZCtvK0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QsPpRvioee+gqNa4w2t92U764crkSeDxjf7riiiKcSjYiNZBuEZ4lgH2JWHoUOv4NTRm56ijD4r+bVbVHPxBT5JeGBLhIFNuP/jmubBaImwY8BGOy/HSB/R0tp13S3Djd0xFU0G3GNIM3oca6w19+e+PfdAUiFqdc8x4gszpdpE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=re6+cweu; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="re6+cweu"
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 53BII3fC022213;
-	Fri, 11 Apr 2025 22:57:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=pp1; bh=2XuGa16XUl1vnvih7
-	JjlzWeX4vVBivNtcGjfh8D4/Jk=; b=re6+cweumdFnGjtiXRHQ+Kmks6EzwzD94
-	8HE5ttS4QdKFgakPsZDr7HmIRb1x9ZkCZHiIhmbeXp/KELTwDVOYfjfF93lDNEqr
-	oMeKD7PecnagkAFFR3awdeo91h/G17lZu+EFPWAGJwm5zKjrTb5D2ix6Wzroijne
-	1RCTJrtSk5U1dTJ3s93CXjRhvkkvWhgCNxXWRrbBEo+77GkDMAzAUK13me7Js2Z1
-	7ZpFcKdumxPDiA2aJvIFR7IsIeIKmNzQ+OZSRA7vXBbBrhSYBMLv5vC5AqUbFfmf
-	zNSfbP/fWvyvQ8PKLzaijbkqGBvyxzxJCzmX1y3QI7QpOSpUkIM6Q==
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45y343tusb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 11 Apr 2025 22:56:59 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 53BL0JK6024600;
-	Fri, 11 Apr 2025 22:56:58 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 45ueutwdeg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 11 Apr 2025 22:56:58 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 53BMutGL54198606
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 11 Apr 2025 22:56:55 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 48D2620040;
-	Fri, 11 Apr 2025 22:56:55 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id DFCC920043;
-	Fri, 11 Apr 2025 22:56:54 +0000 (GMT)
-Received: from heavy.ibm.com (unknown [9.171.63.247])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 11 Apr 2025 22:56:54 +0000 (GMT)
-From: Ilya Leoshkevich <iii@linux.ibm.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-trace-devel@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH v2 2/2] libtracecmd: Add missing error handling to trace-compress.c
-Date: Sat, 12 Apr 2025 00:49:26 +0200
-Message-ID: <20250411225648.6498-3-iii@linux.ibm.com>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250411225648.6498-1-iii@linux.ibm.com>
-References: <20250411225648.6498-1-iii@linux.ibm.com>
+	s=arc-20240116; t=1744645187; c=relaxed/simple;
+	bh=kXpmoeXfy/4UaFSaLoPWvlmODv5FbfFbQdx+MnyNTXs=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=B7xF+lYd+Q0dwbzN1Ji9Rith7ddeup4BYkTrO4E5LAcY392S6cL12FVpImzWgH+LSOiCol9vpfk74b07HivulIXdX2N7yE5XeHu8Vy5S3LG8dP1cc7hsbiKdmwIS3FkkV58vR3z0wj3rEhp0fBNsKfw/cYHXi6GjdnzX3MBARiw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4759C4CEE2;
+	Mon, 14 Apr 2025 15:39:46 +0000 (UTC)
+Date: Mon, 14 Apr 2025 11:41:17 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Petr Malat <oss@malat.biz>
+Cc: linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH] libtraceevent plugins: Add plugin_net to handle bswap
+ during print
+Message-ID: <20250414114117.6346acc3@gandalf.local.home>
+In-Reply-To: <20250409225608.12df6ed8@gandalf.local.home>
+References: <20250409110705.437321-1-oss@malat.biz>
+	<20250409225608.12df6ed8@gandalf.local.home>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 69N75dMjSRHaupQqBxwqYlt7OUm2hCtw
-X-Proofpoint-ORIG-GUID: 69N75dMjSRHaupQqBxwqYlt7OUm2hCtw
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1095,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-04-11_09,2025-04-10_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- priorityscore=1501 adultscore=0 malwarescore=0 impostorscore=0
- lowpriorityscore=0 spamscore=0 mlxscore=0 suspectscore=0 mlxlogscore=999
- clxscore=1015 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2502280000 definitions=main-2504110146
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Add missing error handling to a few writes.
+On Wed, 9 Apr 2025 22:56:08 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
----
- lib/trace-cmd/trace-compress.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+> As the else block will have args[0] already swapped wrt to host that's
+> reading the information. libtraceevent does a byte swap on values read when
+> the host and file do not match endianess.
 
-diff --git a/lib/trace-cmd/trace-compress.c b/lib/trace-cmd/trace-compress.c
-index e18af3dd..2a7a3e24 100644
---- a/lib/trace-cmd/trace-compress.c
-+++ b/lib/trace-cmd/trace-compress.c
-@@ -715,7 +715,8 @@ int tracecmd_compress_copy_from(struct tracecmd_compression *handle, int fd, int
+Does this patch work for you?
+
+I only compiled it, I haven't tested it against real functions.
+
+-- Steve
+
+diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
+index d3ce0a4..99a7214 100644
+--- a/include/traceevent/event-parse.h
++++ b/include/traceevent/event-parse.h
+@@ -181,7 +181,9 @@ struct tep_print_arg_dynarray {
+ 	struct tep_print_arg	*index;
+ };
  
- 	/* save the initial offset and write 0 as initial chunk count */
- 	offset = lseek(handle->fd, 0, SEEK_CUR);
--	write_fd(handle->fd, &chunks, 4);
-+	if (write_fd(handle->fd, &chunks, 4) != 4)
-+		return -1;
+-struct tep_print_arg;
++struct tep_print_arg_bswap {
++	struct tep_print_arg	*field;
++};
  
- 	do {
- 		all = 0;
-@@ -780,7 +781,8 @@ int tracecmd_compress_copy_from(struct tracecmd_compression *handle, int fd, int
- 	if (read_size_val(handle->tep, chunks, &endian4) < 0)
- 		return -1;
- 	/* write chunks count*/
--	write_fd(handle->fd, &endian4, 4);
-+	if (write_fd(handle->fd, &endian4, 4) != 4)
-+		return -1;
- 	end_offset = lseek(handle->fd, 0, SEEK_END);
- 	if (end_offset == (off_t)-1)
- 		return -1;
-@@ -989,7 +991,8 @@ int tracecmd_uncompress_copy_to(struct tracecmd_compression *handle, int fd,
- 		if (ret < 0)
- 			break;
+ struct tep_print_arg_op {
+ 	char			*op;
+@@ -215,6 +217,9 @@ enum tep_print_arg_type {
+ 	TEP_PRINT_DYNAMIC_ARRAY_LEN,
+ 	TEP_PRINT_HEX_STR,
+ 	TEP_PRINT_CPUMASK,
++	TEP_PRINT_BSWAP16,
++	TEP_PRINT_BSWAP32,
++	TEP_PRINT_BSWAP64,
+ };
  
--		write_fd(fd, bytes_out, ret);
-+		if (write_fd(fd, bytes_out, ret) != ret)
+ struct tep_print_arg {
+@@ -233,6 +238,7 @@ struct tep_print_arg {
+ 		struct tep_print_arg_bitmask	bitmask;
+ 		struct tep_print_arg_op		op;
+ 		struct tep_print_arg_dynarray	dynarray;
++		struct tep_print_arg_bswap	bswap;
+ 	};
+ };
+ 
+diff --git a/src/event-parse.c b/src/event-parse.c
+index 6317ff6..ae19dee 100644
+--- a/src/event-parse.c
++++ b/src/event-parse.c
+@@ -1129,6 +1129,11 @@ static void free_arg(struct tep_print_arg *arg)
+ 		free_arg(arg->op.left);
+ 		free_arg(arg->op.right);
+ 		break;
++	case TEP_PRINT_BSWAP16:
++	case TEP_PRINT_BSWAP32:
++	case TEP_PRINT_BSWAP64:
++		free_arg(arg->bswap.field);
++		break;
+ 	case TEP_PRINT_FUNC:
+ 		while (arg->func.args) {
+ 			farg = arg->func.args;
+@@ -2879,6 +2884,25 @@ static int arg_num_eval(struct tep_print_arg *arg, long long *val)
+ 		}
+ 		break;
+ 
++	case TEP_PRINT_BSWAP16:
++		ret = arg_num_eval(arg->bswap.field, val);
++		if (!ret)
 +			break;
- 		wsize += ret;
- 		chunks--;
++		*val = __builtin_bswap16((uint16_t)(*val));
++		return ret;
++	case TEP_PRINT_BSWAP32:
++		ret = arg_num_eval(arg->bswap.field, val);
++		if (!ret)
++			break;
++		*val = __builtin_bswap32((uint32_t)(*val));
++		return ret;
++	case TEP_PRINT_BSWAP64:
++		ret = arg_num_eval(arg->bswap.field, val);
++		if (!ret)
++			break;
++		*val = __builtin_bswap16(*val);
++		return ret;
++
+ 	case TEP_PRINT_NULL:
+ 	case TEP_PRINT_FIELD ... TEP_PRINT_SYMBOL:
+ 	case TEP_PRINT_STRING:
+@@ -3525,6 +3549,55 @@ out_free:
+ 	return TEP_EVENT_ERROR;
+ }
+ 
++static enum tep_event_type
++process_builtin_bswap(struct tep_event *event, char *num, struct tep_print_arg *arg, char **tok)
++{
++	struct tep_handle *tep = event->tep;
++	struct tep_print_arg *field;
++	enum tep_event_type type;
++	char *token = NULL;
++	int n;
++
++	field = alloc_arg();
++	if (!field) {
++		do_warning_event(event, "%s(%d): not enough memory!",
++				 __func__, __LINE__);
++		return TEP_EVENT_ERROR;
++	}
++
++	type = process_arg(event, field, &token);
++	if (test_type_token(type, token,  TEP_EVENT_DELIM, ")"))
++		goto out_free;
++
++	tep_free_token(token);
++	token = NULL;
++
++	/* Do not need to swap if host and file do not match */
++	if (tep->host_bigendian != tep->file_bigendian) {
++		*arg = *field;
++		free_arg(field);
++		return read_token_item(event->tep, tok);
++	}
++
++	n = atoi(num);
++
++	switch (n) {
++	case 16: arg->type = TEP_PRINT_BSWAP16; break;
++	case 32: arg->type = TEP_PRINT_BSWAP32; break;
++	case 64: arg->type = TEP_PRINT_BSWAP64; break;
++	default: goto out_free;
++	}
++
++	arg->bswap.field = field;
++	return read_token_item(event->tep, tok);
++
++out_free:
++	free_arg(field);
++	tep_free_token(token);
++	*tok = NULL;
++	return TEP_EVENT_ERROR;
++}
++
+ static enum tep_event_type
+ process_sizeof(struct tep_event *event, struct tep_print_arg *arg, char **tok)
+ {
+@@ -3696,6 +3769,13 @@ process_function(struct tep_event *event, struct tep_print_arg *arg,
+ 		tep_free_token(token);
+ 		return process_sizeof(event, arg, tok);
  	}
--- 
-2.49.0
++	if (strncmp(token, "__builtin_bswap", 15) == 0) {
++		enum tep_event_type type;
++
++		type = process_builtin_bswap(event, token + 15, arg, tok);
++		tep_free_token(token);
++		return type;
++	}
+ 
+ 	func = find_func_handler(event->tep, token);
+ 	if (func) {
 
