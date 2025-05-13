@@ -1,33 +1,33 @@
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.4])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DDBC74059
-	for <linux-trace-devel@vger.kernel.org>; Tue, 13 May 2025 07:26:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.4
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.3])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD87B26C3B3
+	for <linux-trace-devel@vger.kernel.org>; Tue, 13 May 2025 10:24:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747121208; cv=none; b=p3KvDdVcTFAMgIgkP0M2Uo6e7L1II3KFI8fkj6XHIy+tq7ELWPOtdvA/SRKbEtl8E56AKp/sIY/Um36iWwzmbCAnuLWvS1SyoCsyp0fXHmaJSf3U15MnoyqLYtc92NIa5PxjHrMCx0TxlC0uxFb9gl73qyoEdTBwBlTHo0sN6Sg=
+	t=1747131898; cv=none; b=KyOORlnHtcdAnQzxhGizoAIWA4hfHaPBN9e8NIpaEfJa37p3HDH6IWtokRubsHiWV9B6qeuz3IC+bKgqfbbuQSill5yqwRNauvFTQW+YtvOdq8P7I2dbIkDLPMwoE+uWh0+VggIOQaIqGzdBawwsbQ9rDslnCoN5GVXNWcMs2xM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747121208; c=relaxed/simple;
-	bh=jYW8xe6uuAo7G6MZvgkBty6OLwi9MFFXn+i2OfEWjIU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tB+ycV7b4sn//Q6i6VKuznLPiEd9KLxIXZHmmFzFFWi6bs5LnY8nSOjOxUV1uQRaYupYDnj8cymixnFo+JbR8Ce3nVybSLgWRn4QE6h7m1dQDtH7yR3O1qTnSlYM0sAEcpNQQUR3NGwh48iQdcQGTzO2MS+VaX0IrVx5Z4JnIV4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=LvSxqDPm; arc=none smtp.client-ip=220.197.31.4
+	s=arc-20240116; t=1747131898; c=relaxed/simple;
+	bh=zADfGL7DSVSMn7fBTQ2PIsb70DHjg0RQgiBVGAF9GFk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=D8kBM9UBFSeQZJFyFdsBOSL1oBBAuYNxr3kPdEeAhHPcI2vTprdqJI4PPRpYlI7M2fJM1PuNfGOv3dLAu4eOg+DtZChX8MnTaoBelWz+jEEZ6MVTbDXbsPsqAZOt88dOuSM9Z14zN65C3YFfUFvLgs5aEcPBbFVY8X3CKqYxiOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=InyBR0s+; arc=none smtp.client-ip=220.197.31.3
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="LvSxqDPm"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="InyBR0s+"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=3/
-	L51P/Vh/vwQetcIBlTQ5DdDG/d1Kkb5vf4SucZJb8=; b=LvSxqDPm+2mrdT3DBY
-	s3lzAYbg+X/62Wa+tzZBVSSAd3cuq+gr/VYN7UW0FWqyKXCn3F+QdDCEfl9ldSic
-	zqMwFAjubLF+SEGPpxTBtuvn3dcrdzwxaAzOB9xmjEsZcOR0OkDbgh8va+7Semfa
-	l6/q6RmBo4sobN6YiQVrKlrk0=
+	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=TT
+	2VXBvRuAS2yGosi6NJvX6RPHNtr9n4ptKf+8d4C8E=; b=InyBR0s+Y6OvRZihKn
+	QKHWUoITeaiXEE1Lh99lTmnKW36W2iwTQ6/v1m8lw1fLXNHWytn7nlBZIVi67SVD
+	gLpoOJ32Tu0mvRGXR5t29oLlIoKKmo2erBxdTss/NaIlXWGjvH6FE6gGiyvRuJ4I
+	8jpPUI/y8B0XrZh7DVUZMQq74=
 Received: from localhost.localdomain (unknown [])
-	by gzga-smtp-mtada-g1-1 (Coremail) with SMTP id _____wC3H7Uw9CJov9VSBA--.33876S2;
-	Tue, 13 May 2025 15:26:41 +0800 (CST)
+	by gzga-smtp-mtada-g1-1 (Coremail) with SMTP id _____wBXlOzxHSNoIutyBA--.524S2;
+	Tue, 13 May 2025 18:24:50 +0800 (CST)
 From: Haiyue Wang <haiyuewa@163.com>
 To: linux-trace-devel@vger.kernel.org
 Cc: Haiyue Wang <haiyuewa@163.com>
-Subject: [PATCH v1] libtraceevent: Add the built binary test to .gitignore
-Date: Tue, 13 May 2025 15:26:03 +0800
-Message-ID: <20250513072617.20706-1-haiyuewa@163.com>
+Subject: [PATCH v2] libtraceevent: Fix the /dev/null redirection compatibility in Makefile
+Date: Tue, 13 May 2025 18:23:08 +0800
+Message-ID: <20250513102427.36330-1-haiyuewa@163.com>
 X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -36,28 +36,48 @@ List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wC3H7Uw9CJov9VSBA--.33876S2
-X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-	VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjTRROJeDUUUU
-X-CM-SenderInfo: 5kdl53xhzdqiywtou0bp/1tbiEQRMa2gi8EeJ4wAAsl
+X-CM-TRANSID:_____wBXlOzxHSNoIutyBA--.524S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7CrWkAr1kCFWfZFWfuFyUJrb_yoW8GrW5pw
+	1xKFs0kw1DJ3yFq3y8ur48Gr1UJa1vqrW2vrnFq390yF1DX3WxXrZF9rW2kF43GrW5tFWS
+	v3y0qayUGFW8Za7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0JUga9xUUUUU=
+X-CM-SenderInfo: 5kdl53xhzdqiywtou0bp/1tbiEQ5Ma2gi8EeJ5AABsp
 
 The commit c2ea03541453 ("libtraceevent: Add trace.conf for ld.so if needed")
-will generate file 'test', add it to .gitignore to make git status clean.
+runs with below output message, and the built 'test' will not be removed as
+expected.
+
+  INSTALL     /root/linux/libtraceevent/lib/libtraceevent.so.1.8.4      to      /usr/local/lib64
+  INSTALL      trace.conf       to       /etc/ld.so.conf.d/
+/bin/sh: 1: /root/linux/libtraceevent/test: not found
+  DESCEND            plugins
+
+Use more compatible syntax to handle shell null redirection.
 
 Signed-off-by: Haiyue Wang <haiyuewa@163.com>
 ---
- .gitignore | 1 +
- 1 file changed, 1 insertion(+)
+v2:
+  - Find the root cause why test is not removed as expected.
+v1: https://lore.kernel.org/linux-trace-devel/20250513072617.20706-1-haiyuewa@163.com/
+---
+ Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/.gitignore b/.gitignore
-index 39a013b..a5ad234 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -16,3 +16,4 @@ build_uninstall
- ep_version.h
- libtraceevent.pc
- lib/
-+test
+diff --git a/Makefile b/Makefile
+index 0afaef0..b559b6d 100644
+--- a/Makefile
++++ b/Makefile
+@@ -317,8 +317,8 @@ define install_ld_config
+ 	if $(LDCONFIG); then \
+ 		if ! grep -q "^$(libdir)$$" $(LD_SO_CONF_PATH)/* ; then \
+ 			$(CC) -o $(objtree)/test $(srctree)/test.c -I $(includedir_SQ) \
+-				-L $(libdir_SQ) -ltraceevent &> /dev/null; \
+-			if ! $(objtree)/test &> /dev/null; then \
++				-L $(libdir_SQ) -ltraceevent > /dev/null 2>&1; \
++			if ! $(objtree)/test > /dev/null 2>&1; then \
+ 				$(call print_install, trace.conf, $(LD_SO_CONF_PATH)) \
+ 				echo $(libdir_SQ) >> $(LD_SO_CONF_PATH)/trace.conf; \
+ 				$(LDCONFIG); \
 -- 
 2.49.0
 
