@@ -1,62 +1,81 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F62918BC0C
-	for <linux-trace-devel@vger.kernel.org>; Wed, 14 May 2025 13:46:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.4])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C302F294A0B
+	for <linux-trace-devel@vger.kernel.org>; Fri, 23 May 2025 17:49:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747230362; cv=none; b=pD0Ac6cSaMGIpNJsHG8FAQ3CTguRTq6dAlQL0o/vjAQYYNvVlck2DdH8IppzluS+rdiiJrB7u3gMMZzJQI1btQ78SIAK4assOE1rYc0aSMXXisExil0NfM75Q1qbPnP5+cv5fWMG+od9DtKHhEMZQn57guZlc8GjSKv9HJF2Gbo=
+	t=1748022564; cv=none; b=HCNQYTt25pLknHF1cUgr8nmEaK8k0UWSuoIDZQwZuxcbP9B2pEkB9hHYVYF9s2lxqH8uPYjz/vYJkzb+kdmOEnx2i4sZAmy0I3/xi1J6N6Gp7TJ2CfrgAsUCFnwams9+qAXzYNZNgDCdHNIYU31QYQPDnsKIPPs5BIAnMdBdDeI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747230362; c=relaxed/simple;
-	bh=2/zKeieP0M+/p04tDO1SBWrm593h+qUORelozOsAWjM=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=j89tMZspup/+kQEK3kDXOAFlFFjPIEFJ6Gi3ZEJ8xJLMJBZTXq3LJrefS6t/+rpX8hjdXAkyALb7b5t9dT4T2hPpeHIBAvY96M5MhmNNviRg08x788ycKhJrBRE80uY09I1CdVOmn26fbNoErwl/DMcI3BzpMjPcwpHntd23enQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B886C4CEED;
-	Wed, 14 May 2025 13:46:01 +0000 (UTC)
-Date: Wed, 14 May 2025 09:45:59 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Ilya Leoshkevich <iii@linux.ibm.com>
-Cc: linux-trace-devel@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
- Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev
- <agordeev@linux.ibm.com>
-Subject: Re: [PATCH] libtracecmd: Support changing /proc/kallsyms
-Message-ID: <20250514094559.34927422@batman.local.home>
-In-Reply-To: <bab0be078205af4c8d38e8211accc402ac6b6a4a.camel@linux.ibm.com>
-References: <20250416231325.14113-1-iii@linux.ibm.com>
-	<bab0be078205af4c8d38e8211accc402ac6b6a4a.camel@linux.ibm.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1748022564; c=relaxed/simple;
+	bh=at2la3Qzac9X3+nKwe17v+DTirMSfUP96I+4dm/irAQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Pyyg3fubCcS4ggeiB7Ax5YsU5jGnIHHGjZTPVmAfG+X55AO3M6fkS9pL5xcDdyhCE7zBujjV+0TwFWdm5TcsoKsg3BaGaHyZxFIFsK/J9UxVMqUD9G7RyY4ghbnS3Urd5/d7IHzGhszMjldmkZfjCXg+rUmRpcwTL17H4XzPwHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=QJvY/y8l; arc=none smtp.client-ip=117.135.210.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="QJvY/y8l"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=WG
+	1yCRhkIYHNGCPC10xFbIj1ts+SCdzNGeVLcttB2p0=; b=QJvY/y8lMOVrFRvQoi
+	c/RxjEZu90PGGqMmjQyeGOUwlb5O5sVZMMMjKZ1FNhNbw4i6t1VjW9rcrPUmmXDX
+	IByS2gKeQYPmT8Q+72XKy6yNF4RLlD1xtbo4ucb25dIN98f7GlxDfdymVALUx7/T
+	5Fk6GNIixoOnKP8gSF/rMbk1w=
+Received: from localhost.localdomain (unknown [])
+	by gzga-smtp-mtada-g0-2 (Coremail) with SMTP id _____wCXeWUctTBox4kcDg--.15923S2;
+	Sat, 24 May 2025 01:49:16 +0800 (CST)
+From: Haiyue Wang <haiyuewa@163.com>
+To: linux-trace-devel@vger.kernel.org
+Cc: Haiyue Wang <haiyuewa@163.com>
+Subject: [PATCH v1] libtracefs: Fix the /dev/null redirection compatibility in Makefile
+Date: Sat, 24 May 2025 01:47:24 +0800
+Message-ID: <20250523174850.471638-1-haiyuewa@163.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wCXeWUctTBox4kcDg--.15923S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7Cr4rJFW7tr1DAF1fCF18uFg_yoW8JFy3pw
+	18KF4qkas0qay0qFZ7ur1DXr18Aa1kt34jvr9Fq342vFWqqay7WrsF9ry2kF1fKrWYyFWS
+	93y8WFWUJryUXwUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0JUga9xUUUUU=
+X-CM-SenderInfo: 5kdl53xhzdqiywtou0bp/1tbiShtTa2gstYOYXgABsc
 
-On Wed, 14 May 2025 09:51:16 +0200
-Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+"&> /dev/null" is bash shell syntax, use more compatible syntax to handle
+shell null redirection.
 
-> > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> > ---
-> > =C2=A0lib/trace-cmd/trace-output.c | 66 ++++++++++++++++++++++++++++---=
+/bin/sh: 1: /root/linux/libtracefs/test: not found
+In file included from /root/linux/libtracefs/test.c:1:
+/usr/local/include/tracefs/tracefs.h:11:10: fatal error: event-parse.h: No such file or directory
+   11 | #include <event-parse.h>
+      |          ^~~~~~~~~~~~~~~
+compilation terminated.
+
+Signed-off-by: Haiyue Wang <haiyuewa@163.com>
 ---
-> > --
-> > =C2=A01 file changed, 52 insertions(+), 14 deletions(-) =20
->=20
-> Gentle ping.
+The same fix as for libtraceevent:
+https://lore.kernel.org/linux-trace-devel/20250513102427.36330-1-haiyuewa@163.com/
+---
+ Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks for the reminder. This came in just as I finished working on the
-libraries, which I try to spend a little time on every month.
+diff --git a/Makefile b/Makefile
+index c407589..95bf219 100644
+--- a/Makefile
++++ b/Makefile
+@@ -274,8 +274,8 @@ define install_ld_config
+ 	if $(LDCONFIG); then \
+ 		if ! grep -q "^$(libdir)$$" $(LD_SO_CONF_PATH)/* ; then \
+ 			$(CC) -o $(objtree)/test $(srctree)/test.c -I $(includedir_SQ) \
+-				-L $(libdir_SQ) -ltracefs &> /dev/null; \
+-			if ! $(objtree)/test &> /dev/null; then \
++				-L $(libdir_SQ) -ltracefs > /dev/null 2>&1; \
++			if ! $(objtree)/test > /dev/null 2>&1; then \
+ 				$(call print_install, trace.conf, $(LD_SO_CONF_PATH)) \
+ 				echo $(libdir_SQ) >> $(LD_SO_CONF_PATH)/trace.conf; \
+ 				$(LDCONFIG); \
+-- 
+2.49.0
 
-I'm about to leave for a short vacation, but hopefully I'll be able to
-get to this next week.
-
-If you don't see anything by the end of next week, please send me
-another gentle ping ;-)
-
-If I can catch up on everything I need to get done today, maybe I'll be
-able to look at it today. But I don't want to get your hopes up.
-
--- Steve
