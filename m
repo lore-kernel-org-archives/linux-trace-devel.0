@@ -1,29 +1,23 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75CD12116F2
-	for <linux-trace-devel@vger.kernel.org>; Fri, 30 May 2025 20:43:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04832382
+	for <linux-trace-devel@vger.kernel.org>; Fri, 30 May 2025 21:21:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748637839; cv=none; b=SXv2Q8EsYbubpaqaXzPqYNd+666IxRAzUsbtErwaoTCx42vzoudkCC3PNvdm2tOapDbEc9AvBu8nXTuXY9T2vf5cN3yPvbYAFsFl1wx/AJi3IHVnQtKlBFk1Y4D0ON62wBFNcynoZQgt+KyaEWrdM4pe3nMc7kLc7bOBDHQ17q4=
+	t=1748640093; cv=none; b=jx9n9OhXgIkcKS2JG5AthaHBHRE4XH/MZBX3lx0kSQmiUZtoebdZD4j1AMhDSvf0t2n69SNf6pA5+DLZZlwe859XQI0HZvBUiPnKmKBrWvt0boNMcRI23Ig3iRVxNIJOpkBbjNG7S1HSDwzPXjTrl61S78ot11w1L5PQ9SLFUo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748637839; c=relaxed/simple;
-	bh=d7oMJn8ueiPih02A40p5P79f3AvDCo7q6m5/eKbxMHQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NaSf+1n1LZh14gNmB+QfNPu8N3qXTMP5p53jrzhO3WOgl0OEGjxnpIHIrFuuzV9+B2zx5X5yYf42xluRyZrnpr9pqrKj1Ik+iIL4OORBV2JK9gPcVDpxGpRJy9APGVNM1HJ/NkSr25TiqviTd0XA2Gh3GMleSQZ+InxAV7Kt+A8=
+	s=arc-20240116; t=1748640093; c=relaxed/simple;
+	bh=ku6PbsVuIh3oO/ruRbHiFg25SachU3tUBJCjPCCpWEU=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=aBy+q2wWhcRBXVIrGYwJ/RmEajIsnx5rvMu0+xSXDul2IFS5sXfGdFDlmTUTg3alfreD1Kh56Eutebf9zDxc5wpPLsUBhaZCEo0JPPr3i90YO6jMxUDvIUyOU1dcLS4vy4Juccp5WpCLq89L40iLAmuQQjtnqxV+XIitZ23Rpz8=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34C0FC4CEE9;
-	Fri, 30 May 2025 20:43:58 +0000 (UTC)
-Date: Fri, 30 May 2025 16:45:02 -0400
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C3B8C4CEE9
+	for <linux-trace-devel@vger.kernel.org>; Fri, 30 May 2025 21:21:32 +0000 (UTC)
+Date: Fri, 30 May 2025 17:22:37 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
-To: Ilya Leoshkevich <iii@linux.ibm.com>
-Cc: linux-trace-devel@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
- Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev
- <agordeev@linux.ibm.com>
-Subject: Re: [PATCH] libtracecmd: Support changing /proc/kallsyms
-Message-ID: <20250530164502.4adf0c06@gandalf.local.home>
-In-Reply-To: <20250416231325.14113-1-iii@linux.ibm.com>
-References: <20250416231325.14113-1-iii@linux.ibm.com>
+To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] libtraceevent: Save missed events in kbuffer_read_buffer()
+Message-ID: <20250530172237.022d21d0@gandalf.local.home>
 X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -34,55 +28,62 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Thu, 17 Apr 2025 01:13:00 +0200
-Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-I finally got some time to look at this. Sorry for the delay.
+When reading events from a kbuffer, if the kbuf has missed events make sure
+to pass that information to the buffer passed to it.
 
-> Running BPF selftests under trace-cmd intermittently fails with:
-> 
->     error in size of file '/proc/kallsyms'
-> 
-> This is because these selftests load and unload BPF programs.
-> bpf_prog_put() uses workqueues and RCU, so these programs disappear
-> from /proc/kallsyms after a delay.
-> 
-> trace-cmd reads /proc/kallsyms twice: the first time to compute its
-> size, and the second time to copy it into the trace file. If the
-> resulting sizes don't match, which is what happens in this case,
-> recording fails.
-> 
-> Fix by first copying /proc/kallsyms into a temporary file, and then
-> into the trace file. An alternative would be to read it into a
-> malloc()-ed buffer, but this would increase trace-cmd memory usage,
-> since /proc/kallsyms can be a few dozen megabytes large. In case
-> /tmp is tmpfs, both solutions are almost equivalent.
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ src/kbuffer-parse.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-Actually, when compression is set, the file is already read into memory,
-and then it is compressed. In fact, it's allocated twice!
+diff --git a/src/kbuffer-parse.c b/src/kbuffer-parse.c
+index 9b72780..71291ad 100644
+--- a/src/kbuffer-parse.c
++++ b/src/kbuffer-parse.c
+@@ -958,6 +958,7 @@ int kbuffer_read_buffer(struct kbuffer *kbuf, void *buffer, int len)
+ 	unsigned long long ts;
+ 	unsigned int type_len_ts;
+ 	bool do_swap = false;
++	int buf_len = len;
+ 	int last_next;
+ 	int save_curr;
+ 
+@@ -1009,6 +1010,33 @@ int kbuffer_read_buffer(struct kbuffer *kbuf, void *buffer, int len)
+ 
+ 	write_4(do_swap, buffer + kbuf->start, type_len_ts);
+ 
++	/*
++	 * If reading the first event and there are lost events, add it
++	 * to the buffer.
++	 */
++	if (!save_curr && kbuf->lost_events) {
++		unsigned long long cnt_8;
++		unsigned int cnt_4;
++		int word_size;
++
++		if (kbuf->flags & KBUFFER_FL_LONG_8)
++			word_size = sizeof(cnt_8);
++		else
++			word_size = sizeof(cnt_4);
++
++		if (len + kbuf->start <= word_size + buf_len) {
++			if (word_size == sizeof(cnt_8)) {
++				cnt_8 = kbuf->lost_events;
++				write_8(do_swap, buffer + len + kbuf->start, cnt_8);
++			} else {
++				cnt_4 = kbuf->lost_events;
++				write_4(do_swap, buffer + len + kbuf->start, cnt_4);
++			}
++			len |= MISSING_STORED;
++		}
++		len |= MISSING_EVENTS;
++	}
++
+ 	/* Update the size */
+ 	if (kbuf->read_long == __read_long_8)
+ 		write_8(do_swap, buffer + 8, len);
+-- 
+2.47.2
 
-The size is copied into this temp buffer. I wonder if we could just update
-the size if it is different?
-
-__hidden long long
-tcmd_do_write_check(struct tracecmd_output *handle, const void *data, long long size)
-{
-	if (handle->do_compress)
-		return tracecmd_compress_buffer_write(handle->compress, data, size);
-
-	if (handle->msg_handle)
-		return tracecmd_msg_data_send(handle->msg_handle, data, size);
-
-	return __do_write_check(handle->fd, data, size);
-}
-
-Now for the "do_compress" we can just update the handle->buffer[] as the
-size is the first thing written into it.
-
-For the __do_write_check() we can save the file descriptor location and go
-back and update what was written.
-
-For the "->msg_handle", for now just error out. Unless you are running bpf
-programs while using trace-cmd on guests or sending off the network?
-
--- Steve
