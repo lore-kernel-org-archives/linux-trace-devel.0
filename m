@@ -1,23 +1,29 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59FF326F461
-	for <linux-trace-devel@vger.kernel.org>; Fri, 30 May 2025 19:44:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75CD12116F2
+	for <linux-trace-devel@vger.kernel.org>; Fri, 30 May 2025 20:43:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748634289; cv=none; b=l4VAbKax6maz1HwXlai/x/MoQoTd5PsiwXdUj1GCmoNAFcnLheGEm+Y+BnaogKaYzesMdt8KbKCij6UmCPPk6GaBEJYnNpCIfQU93kH5DJfPPKxToBdDIpwaFZKrgT3aPipgfWtS3vq+6fvYn1Qg/mi0twg+KeSUZwuepLJzCis=
+	t=1748637839; cv=none; b=SXv2Q8EsYbubpaqaXzPqYNd+666IxRAzUsbtErwaoTCx42vzoudkCC3PNvdm2tOapDbEc9AvBu8nXTuXY9T2vf5cN3yPvbYAFsFl1wx/AJi3IHVnQtKlBFk1Y4D0ON62wBFNcynoZQgt+KyaEWrdM4pe3nMc7kLc7bOBDHQ17q4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748634289; c=relaxed/simple;
-	bh=JLI0Z1UYXfsO93nA6fsgCyuIeg3er4TCvYgJuYfWChM=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=dALDdgpR3Vljk0ds1RSDy4fyM/1+QNwOM1sKVEZfTasVXURrLIDTAS0oJiJU7avVNgRujOrG+nTb6geC3kqLdw5EiQOgkPTB/x85Xj9XLChvWPd76sQKj9dGBOXPNFUBaicLf+Ad7gx7sh2xJ5cpuDcGA5Vq/PoOqE++QTGWmbQ=
+	s=arc-20240116; t=1748637839; c=relaxed/simple;
+	bh=d7oMJn8ueiPih02A40p5P79f3AvDCo7q6m5/eKbxMHQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=NaSf+1n1LZh14gNmB+QfNPu8N3qXTMP5p53jrzhO3WOgl0OEGjxnpIHIrFuuzV9+B2zx5X5yYf42xluRyZrnpr9pqrKj1Ik+iIL4OORBV2JK9gPcVDpxGpRJy9APGVNM1HJ/NkSr25TiqviTd0XA2Gh3GMleSQZ+InxAV7Kt+A8=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 951D9C4CEE9
-	for <linux-trace-devel@vger.kernel.org>; Fri, 30 May 2025 19:44:48 +0000 (UTC)
-Date: Fri, 30 May 2025 15:45:53 -0400
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34C0FC4CEE9;
+	Fri, 30 May 2025 20:43:58 +0000 (UTC)
+Date: Fri, 30 May 2025 16:45:02 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
-To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] trace-cmd completion: Fix trace-cmd report to show files
-Message-ID: <20250530154553.62ed9c1f@gandalf.local.home>
+To: Ilya Leoshkevich <iii@linux.ibm.com>
+Cc: linux-trace-devel@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+ Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev
+ <agordeev@linux.ibm.com>
+Subject: Re: [PATCH] libtracecmd: Support changing /proc/kallsyms
+Message-ID: <20250530164502.4adf0c06@gandalf.local.home>
+In-Reply-To: <20250416231325.14113-1-iii@linux.ibm.com>
+References: <20250416231325.14113-1-iii@linux.ibm.com>
 X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -28,38 +34,55 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Thu, 17 Apr 2025 01:13:00 +0200
+Ilya Leoshkevich <iii@linux.ibm.com> wrote:
 
-The addition of the trace-cmd sqlhist had to separate out where commands
-are printed and where files are printed, and it split cmd_options into one
-that showed the commands and cmd_options_files that also will show the
-files if no command was found to be completed.
+I finally got some time to look at this. Sorry for the delay.
 
-Some trace-cmd commands should show files and some should not.
+> Running BPF selftests under trace-cmd intermittently fails with:
+> 
+>     error in size of file '/proc/kallsyms'
+> 
+> This is because these selftests load and unload BPF programs.
+> bpf_prog_put() uses workqueues and RCU, so these programs disappear
+> from /proc/kallsyms after a delay.
+> 
+> trace-cmd reads /proc/kallsyms twice: the first time to compute its
+> size, and the second time to copy it into the trace file. If the
+> resulting sizes don't match, which is what happens in this case,
+> recording fails.
+> 
+> Fix by first copying /proc/kallsyms into a temporary file, and then
+> into the trace file. An alternative would be to read it into a
+> malloc()-ed buffer, but this would increase trace-cmd memory usage,
+> since /proc/kallsyms can be a few dozen megabytes large. In case
+> /tmp is tmpfs, both solutions are almost equivalent.
 
-trace-cmd report is one that should show files if nothing else is
-completed, but it was given cmd_options when it should have used
-cmd_options_files.
+Actually, when compression is set, the file is already read into memory,
+and then it is compressed. In fact, it's allocated twice!
 
-Fixes: 2149da9cdc48b ("trace-cmd: Add sqlhist to bash completion")
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- tracecmd/trace-cmd.bash | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The size is copied into this temp buffer. I wonder if we could just update
+the size if it is different?
 
-diff --git a/tracecmd/trace-cmd.bash b/tracecmd/trace-cmd.bash
-index 82a3b91dfd02..a7e81e0ded4a 100644
---- a/tracecmd/trace-cmd.bash
-+++ b/tracecmd/trace-cmd.bash
-@@ -237,7 +237,7 @@ __trace_cmd_report_complete()
- 	    plugin_options "$cur"
- 	    ;;
-         *)
--	    cmd_options report "$cur"
-+	    cmd_options_files report "$cur"
- 	    ;;
-     esac
- }
--- 
-2.47.2
+__hidden long long
+tcmd_do_write_check(struct tracecmd_output *handle, const void *data, long long size)
+{
+	if (handle->do_compress)
+		return tracecmd_compress_buffer_write(handle->compress, data, size);
 
+	if (handle->msg_handle)
+		return tracecmd_msg_data_send(handle->msg_handle, data, size);
+
+	return __do_write_check(handle->fd, data, size);
+}
+
+Now for the "do_compress" we can just update the handle->buffer[] as the
+size is the first thing written into it.
+
+For the __do_write_check() we can save the file descriptor location and go
+back and update what was written.
+
+For the "->msg_handle", for now just error out. Unless you are running bpf
+programs while using trace-cmd on guests or sending off the network?
+
+-- Steve
