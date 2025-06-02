@@ -1,91 +1,159 @@
-Received: from mail-oa1-f73.google.com (mail-oa1-f73.google.com [209.85.160.73])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C237230D1E
-	for <linux-trace-devel@vger.kernel.org>; Fri, 30 May 2025 22:54:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B88A3230BC9
+	for <linux-trace-devel@vger.kernel.org>; Mon,  2 Jun 2025 15:05:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748645677; cv=none; b=EB5NepchAIPUpQhGILkgmt3fI8Z6fpdY9AHBdbq83kG5zo6C/rMSK6PUHzdlfOkXUV/jnT5wSd2cmhjSspILnbT4B+CHc49rTU6NuyofH9l903WbT06Vr7I6GWKlWV+2b52WbzD/EJWUbFP1vK4JQiVN7TdDhdv46S9dZO8elGg=
+	t=1748876721; cv=none; b=TLtwKKnQsZ105vyo0ZEwW32ahLtW8SQFmSH4xir/mcBbghD5YPzLa4QCzxJ5CTIs03quQ/OY2Ja8I0B0LQBOlxlgoMpjXXyO4W2nQbQikmnNhQIueskzvxd+1ORk/vg+R6lg4iu9k2geJ9ep7I5LOS6E7h/5WqPPcCnRO5KRDRs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748645677; c=relaxed/simple;
-	bh=rsS8detZPblqr140gMhtAEHA/mxggBuIJE3s4rhRH7c=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=BMYpNw4X/RADRGv2mbl2EJjf7RYZVfinYVxlALg7nPCxJZTLW/0e6TxQStDUph3s02EACfo6aYRqwSS63ERJ0kjbhi23pPhFK4nfOFGCKgEYPO8JEqs7ZNtIeB34Jur4nesnF0svMAm5hseuAM1E5xBf6/Uu4esWTu0M5wdmYp8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=v1aBmWqr; arc=none smtp.client-ip=209.85.160.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+	s=arc-20240116; t=1748876721; c=relaxed/simple;
+	bh=VpK2w/5TZYW+rAjoT7Kjg2eAPewvoCLx58loZyLuP5U=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=nAepu/2mjq3D1aI0KZiqn8xmeJbW8NH0IvhjFDkVgLJRHk82aZHPlJGFZLdqVwD/HCux8ZgSr+Va3nzM+8IGlZ5IPDNeuCEGzvXlbYPaEM7NgLiFksyk12pAcrGBAAopTRzBjUVVaXbS+qTcmCIITOnrLd+6NZoPfdS6iJekt68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=dpcM+0Ks; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="v1aBmWqr"
-Received: by mail-oa1-f73.google.com with SMTP id 586e51a60fabf-2d4e42a2b2bso2227639fac.0
-        for <linux-trace-devel@vger.kernel.org>; Fri, 30 May 2025 15:54:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1748645675; x=1749250475; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=TLlfxmmVvtAPwBZ3xAUxS+Xan7Re2iByUzlvOcuYmL0=;
-        b=v1aBmWqrvBpSPXxqN1uEhyTdGq4qAhoGZr2nVHBug26tz5DH8MAHH4kobxf/LlikVf
-         c64+LCabLJ0uLPc0x+PqIf4iDhijKxMu/ctQoLXbEUBG1WsR3TnzjHKSJnlDkE2P1zid
-         xP/3SbIxjzLt+enuOmK0abGCJZiD/mwWANfcGf7C3wR9mc3n2VkCiIIAzuCL91dPKl1r
-         gRG3lk8hrgjpEW4JQbE28rvCYqeQFAkXChhs+XLD0ei6q6iERMWoU6X0CU/1CzFSYaiO
-         Xtd2aUARxvZEcKJrhIG7Fcn1yGGOC+ksFHcVqwL39+Iw4bmlFLL2iQMjzGtgkmlnoK1I
-         0yDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748645675; x=1749250475;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TLlfxmmVvtAPwBZ3xAUxS+Xan7Re2iByUzlvOcuYmL0=;
-        b=qoLPV+T233/T/VJ65cawnXTBmOwYYKBVtIVCfLPik+YoloIYFx8HH9AtjmOT9cz1NV
-         VazHqUuHR9hTFI2HlPdl/l9ODCp2YA0SDjepB8VTe7R8BM+YVbQDfsXiorpMGfdoZ9B5
-         zymuCO1gNdna1FfmJQK6AQF0RckysNhBtetDgQ1DpOh9raP+Yl+yzA3kV7phFka2a1cg
-         rZSoXLprdBNTBoatGV9dTYmAgGV614gmZsSkcvGzxJ9Mu0kGYEV4cwhXag4cEjO7dn1R
-         WQUahFzDnlZdP2tTEGjPm6yR/pZ+0VaSMo4XEe4CmBJ3a8GrDSh9pMp/Zyun1RpPHBwb
-         gw2g==
-X-Gm-Message-State: AOJu0Yz5DhNVqxZsl+K1bhqxgn4PGlQHVZKxv5fxQM2iN7IosjkYmZ36
-	AxLjSWL0WYug1UKmgMH/rQAvqEWnYU6BNRN5uu3ifYzEXNymPaQA2I7gswWAUu2OGVvDDkSGGC1
-	5z0Rzde/+/e1HzWyS9PWGLz8l3DnFJqr4ba+snobOEoCXrgEgmN/FjlBVzfq/8wbgi5TdjCchgB
-	j6FQZYJT2v8diXq5e+/7hxyOBUUQMcnR9ouZVbHovrHyVi73REF3qTg/V7
-X-Google-Smtp-Source: AGHT+IFq5YLoETx32kDwPcKrvxpvGGpXr0fZnBx0/gIT/+mVKnokOZ6TPPQ8/I+sUYvB4wTlPYjH3+BigOp+
-X-Received: from oablk4.prod.google.com ([2002:a05:6870:3e04:b0:289:2c09:4e10])
- (user=irogers job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6870:9707:b0:2c1:6663:f603
- with SMTP id 586e51a60fabf-2e92a3adfb4mr2167124fac.19.1748645675208; Fri, 30
- May 2025 15:54:35 -0700 (PDT)
-Date: Fri, 30 May 2025 15:54:26 -0700
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="dpcM+0Ks"
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 552Ab8iX032423;
+	Mon, 2 Jun 2025 15:05:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=8SsuvO
+	XwHZi42zBo4dhFNTVxpIKqZXAS+kGir+4nSvE=; b=dpcM+0KscHFeu6hteqWg6n
+	0hvMxgj35+WwBx6YwxkHRElE5IKmjQsZEwa3DbWEDGdjfY9/yhdn+CiOrVuqqGyx
+	e6sE/4DWGKVe1VQsdalktoF3vYBxoxpf5HFNFtCVC3EtF0JsfOXX+f4ZVvJa2Xqm
+	UbmPefowvYn8Gv6VL4vuOhjfdOC0ymgIlxIpcFcvN8M+Laol+HwQdoAZ7eC7DAcN
+	WKHrmWmqKu5HDMDMRcpp/g/Oe51ygT9a+oo5vnVN79LOYn1FTY2Fnl5F7dCLSEDM
+	N5U1Ws94SZQWhaJEfe6R2+e8zE0inPJsA+VWYRJ3nMRlzQ8Q9FsjDLCsa2rEDTtw
+	==
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 470mr6ndqd-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 02 Jun 2025 15:05:16 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 552EvHMu024754;
+	Mon, 2 Jun 2025 15:05:16 GMT
+Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 470dkm6ksm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 02 Jun 2025 15:05:16 +0000
+Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
+	by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 552F5EZA29295194
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 2 Jun 2025 15:05:14 GMT
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 88E0E58065;
+	Mon,  2 Jun 2025 15:05:14 +0000 (GMT)
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 3670458064;
+	Mon,  2 Jun 2025 15:05:14 +0000 (GMT)
+Received: from ltc.linux.ibm.com (unknown [9.5.196.140])
+	by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Mon,  2 Jun 2025 15:05:14 +0000 (GMT)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.49.0.1204.g71687c7c1d-goog
-Message-ID: <20250530225426.721741-1-irogers@google.com>
-Subject: [PATCH v1] libtracefs: Fix enum type in read_event_state
-From: Ian Rogers <irogers@google.com>
-To: linux-trace-devel@vger.kernel.org
-Cc: Ian Rogers <irogers@google.com>, Asmaa AbdelGhany <asmok@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Date: Mon, 02 Jun 2025 17:05:13 +0200
+From: Ilya Leoshkevich <iii@linux.ibm.com>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-trace-devel@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev
+ <agordeev@linux.ibm.com>
+Subject: Re: [PATCH] libtracecmd: Support changing /proc/kallsyms
+In-Reply-To: <20250530164502.4adf0c06@gandalf.local.home>
+References: <20250416231325.14113-1-iii@linux.ibm.com>
+ <20250530164502.4adf0c06@gandalf.local.home>
+Message-ID: <a6def6ddb25d2fcb1b01abcb83c62b8c@linux.ibm.com>
+X-Sender: iii@linux.ibm.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Authority-Analysis: v=2.4 cv=I99lRMgg c=1 sm=1 tr=0 ts=683dbdac cx=c_pps a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17 a=kj9zAlcOel0A:10 a=6IFa9wvqVegA:10 a=VnNF1IyMAAAA:8 a=RbmJXl-PEg4nEvXwzQ4A:9 a=CjuIK1q_8ugA:10
+X-Proofpoint-ORIG-GUID: KbWxScEyf8f8165sSJ-nAsyg1UOJ45gp
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjAyMDEyMyBTYWx0ZWRfXxOz8t8XRI39E keM0/mpgB+tCBNPfQJYgoTKCmsw6Sw9ROvMiThXxCOMzKugDMIPyvAcKyyYH56qCOaDFHeAqCYt jbwsn1IDQTiaxg9nQG34ziLwl0VPRwHm7q+3dvJLtla7dgVkkK3eP5KonWzO2uByfxQFRyapn2H
+ OmRTsI6liEAayOJZgFDeO9RgljNBjXrTh3ThDuahy8YSC4g9a2Gcbw7FcJJAD4MUn5wzJF3jUvk rhdp0MDeSMoCAN8X+VcQfVoZf5Xj11XvB0yIEfDvif1jMyz6V7iG+tz6SJA2WC1HBJq1F/UwzJk 6FjTs55f6vyEOoW22SCDysRBK5i9+gAbbhlW4v4C4uuK//2TTeq/6LwYYfUfWdul1G7tvDgBW1k
+ NK8XXzo2N1lOLok5yW9VWn6KAHrF8+XKQC/DPSkoj+Yi/ru4LgNuhzEXcLgW7WusMScVfZo0
+X-Proofpoint-GUID: KbWxScEyf8f8165sSJ-nAsyg1UOJ45gp
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-06-02_06,2025-06-02_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
+ lowpriorityscore=0 bulkscore=0 priorityscore=1501 impostorscore=0
+ mlxlogscore=999 mlxscore=0 adultscore=0 phishscore=0 clxscore=1015
+ malwarescore=0 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505160000
+ definitions=main-2506020123
 
-The state variable is of type event_state but is assigned
-TRACEFS_ERROR(-1) of type tracefs_enable_state which has no
-corresponding event_state name. Fix this by assigning STATE_ERROR(4).
+On 2025-05-30 22:45, Steven Rostedt wrote:
+> On Thu, 17 Apr 2025 01:13:00 +0200
+> Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+> 
+> I finally got some time to look at this. Sorry for the delay.
+> 
+>> Running BPF selftests under trace-cmd intermittently fails with:
+>> 
+>>     error in size of file '/proc/kallsyms'
+>> 
+>> This is because these selftests load and unload BPF programs.
+>> bpf_prog_put() uses workqueues and RCU, so these programs disappear
+>> from /proc/kallsyms after a delay.
+>> 
+>> trace-cmd reads /proc/kallsyms twice: the first time to compute its
+>> size, and the second time to copy it into the trace file. If the
+>> resulting sizes don't match, which is what happens in this case,
+>> recording fails.
+>> 
+>> Fix by first copying /proc/kallsyms into a temporary file, and then
+>> into the trace file. An alternative would be to read it into a
+>> malloc()-ed buffer, but this would increase trace-cmd memory usage,
+>> since /proc/kallsyms can be a few dozen megabytes large. In case
+>> /tmp is tmpfs, both solutions are almost equivalent.
+> 
+> Actually, when compression is set, the file is already read into 
+> memory,
+> and then it is compressed. In fact, it's allocated twice!
+> 
+> The size is copied into this temp buffer. I wonder if we could just 
+> update
+> the size if it is different?
+> 
+> __hidden long long
+> tcmd_do_write_check(struct tracecmd_output *handle, const void *data,
+> long long size)
+> {
+> 	if (handle->do_compress)
+> 		return tracecmd_compress_buffer_write(handle->compress, data, size);
+> 
+> 	if (handle->msg_handle)
+> 		return tracecmd_msg_data_send(handle->msg_handle, data, size);
+> 
+> 	return __do_write_check(handle->fd, data, size);
+> }
+> 
+> Now for the "do_compress" we can just update the handle->buffer[] as 
+> the
+> size is the first thing written into it.
+> 
+> For the __do_write_check() we can save the file descriptor location and 
+> go
+> back and update what was written.
+> 
+> For the "->msg_handle", for now just error out. Unless you are running 
+> bpf
+> programs while using trace-cmd on guests or sending off the network?
+> 
+> -- Steve
 
-Reported-by: Asmaa AbdelGhany <asmok@google.com>
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- src/tracefs-events.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/src/tracefs-events.c b/src/tracefs-events.c
-index 5515d15..1576153 100644
---- a/src/tracefs-events.c
-+++ b/src/tracefs-events.c
-@@ -1459,7 +1459,7 @@ static int read_event_state(struct tracefs_instance *instance, const char *file,
- 		*state = STATE_MIXED;
- 		break;
- 	default:
--		*state = TRACEFS_ERROR;
-+		*state = STATE_ERROR;
- 		ret = -1;
- 		break;
- 	}
--- 
-2.49.0.1204.g71687c7c1d-goog
-
+Thanks for taking a look.
+What you propose should work for me.
+Would you mind if I make do_lseek() non-static for this?
+And maybe rename it to tcmd_do_lseek().
+Touching do_compress/msg_handle/pointer/fd directly feels hackish.
