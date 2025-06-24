@@ -1,103 +1,155 @@
-Received: from mail-vs1-f54.google.com (mail-vs1-f54.google.com [209.85.217.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from amountary.cfd (ip44.ip-51-81-76.us [51.81.76.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E008849659
-	for <linux-trace-devel@vger.kernel.org>; Tue,  3 Jun 2025 08:51:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E22C53D3B8
+	for <linux-trace-devel@vger.kernel.org>; Tue, 24 Jun 2025 22:16:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=51.81.76.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748940688; cv=none; b=LMKXbILky+cX5tN8s82K/iZc1Ow9l7+l0YSd6fb3xFT7YuerX+4euE0t6yGsw9NCedXB8oaHA1TvIAxzl/HOqVboPHfl4nv9zwt2VCXUl4EOXOqaAEJopgUHs/CxMFAa0BHSnwGItAHmU5gH5aO6hRCP3FnAUIqc4oWH6oUm+f0=
+	t=1750803389; cv=none; b=d2f2CsbfCcDsg/XS0kF21z5NG31RKeexpGOS9Rj8N1G1HDIEr1cnMErKq5o7AztM5j5Yrt4rzOXUWD0jbNExnN1J7vHxxdO5MLXTncKzwzNPFpxx5Rat2cnaAoS2m0Ubas5uPoqTkY8/lbZ88uOd0OiDyLhoGoo1+aQCp8MIyag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748940688; c=relaxed/simple;
-	bh=kuoUjdRVz1JR+Dru/c3A0VJ4i3ZpzbpFaq4/HogX0Ig=;
-	h=From:References:MIME-Version:In-Reply-To:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sWBV481kz1KP3ySq3dCB105xqCiEn6jDvY0ySPUd85/jSm3APmdQb/I/yH85bT42b1LmrUrnyrSrWAoaH4AuuPPd1ENrDzWaoVSIB6wpHnmOD33MwAdqDV+BYK7XeRllNx+lu2dRuTqUZmohI0cKnOMd1ynecoTFaXSelQ0Gt0E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=malat.biz; spf=none smtp.mailfrom=malat.biz; dkim=pass (2048-bit key) header.d=malat-biz.20230601.gappssmtp.com header.i=@malat-biz.20230601.gappssmtp.com header.b=p7rs+CAG; arc=none smtp.client-ip=209.85.217.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=malat.biz
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=malat.biz
+	s=arc-20240116; t=1750803389; c=relaxed/simple;
+	bh=obGNXWf44oXLYnASYRdowmMvwCIVBYpJ6rOCp3DpTpQ=;
+	h=To:Subject:Date:From:Message-ID:MIME-Version:Content-Type; b=OxsV2fqlYqraoZ4XvvcLd06IV34EyGp4/xUNzl/zlmmIoVVCa+aoc8anW/gVtW2YZRruqZtI/IHy2eu1xh/SDMA8TGtKWwzUMVSLR0MVRfWuRF3YthgQPhswVNZQksf4koe6KUpVuIAD1E1lh6fXyfmBC2tfAFyj3V5yrbE8eiI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amountary.cfd; spf=pass smtp.mailfrom=amountary.cfd; dkim=pass (1024-bit key) header.d=amountary.cfd header.i=@amountary.cfd header.b=irI3bZWn; arc=none smtp.client-ip=51.81.76.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amountary.cfd
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amountary.cfd
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=malat-biz.20230601.gappssmtp.com header.i=@malat-biz.20230601.gappssmtp.com header.b="p7rs+CAG"
-Received: by mail-vs1-f54.google.com with SMTP id ada2fe7eead31-4e5a0ec639dso3531482137.3
-        for <linux-trace-devel@vger.kernel.org>; Tue, 03 Jun 2025 01:51:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=malat-biz.20230601.gappssmtp.com; s=20230601; t=1748940683; x=1749545483; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:in-reply-to:mime-version:references
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FLHf20jBE5/CbDjCR0GqsLqbtZdlv92FFEJaNtFn6X8=;
-        b=p7rs+CAGEmOCR01FG3GNG+5Bvm3VErZwXZxyl6y27tH1vqJljQpFMiGPT6UhFHWu6+
-         3MphFBIogYz5aaCOnBP4XxypYQqz3iJUbdsfYmMPeqUC39liTgY2ZO7lruZwkO/jDaJ2
-         DUTpmB3H2RBIJS+D+mcxRcxrLKfOptjdrnEgW+T+gqBHDsD5bETq6QRdyjJasGiVuB80
-         09nfE8gG0OLt65mD/YMWKal+IY+O5etft878SyrZFgKUNy0fgJQ03O8exbMBiJhWMegL
-         X5uUv6rDTFNcWOfX04coS2vbE0oUKrCacawctX3FdfsXmTHonadHmmb2zPRNcdjGoPyB
-         VidQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748940683; x=1749545483;
-        h=cc:to:subject:message-id:date:in-reply-to:mime-version:references
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FLHf20jBE5/CbDjCR0GqsLqbtZdlv92FFEJaNtFn6X8=;
-        b=f8ODOC+Vp/xI9l2eur4l/qJn8rJmxqU0pxa8oNlG0QNa9wEEwuZwakk6REI1KWpni4
-         58+prtmV+zJJ/aiXEXgKUzLuaVRsElWSFXWDRuE2Y83SWUGcBsoFcsGgEWvMvAjrCXUA
-         wt+RFI/+TpIM3YuX1vz+Wdg8M1fVrmSJ4dQUkWsOaN76KU/8QL5v4IuDSXCL7Cvdvy/s
-         Q1XYGVxdGye4fRR+Gt94VMP+NEEIkxeIlzgiyBIttLIe0luYZk9HvrAE00QqCntAHj/1
-         pOh0Bzc6Ql1VavNDbeDJ78qKOJQo0hnjBSOZALmtTsFhQlMrGoJgtH8mEz1ewsOx2OEi
-         UcUg==
-X-Gm-Message-State: AOJu0Yz4sGtApD6CivX7Mi7h0uZWisjLshBM0xRH4AfPjYMPddHA/z8t
-	aDNXwrpsTS255l8dfX9cMjfX3xN8aRSCj56BhVoQakDlAN3fX3nv/kzSQt2bO/dnl26XK1Mn9v7
-	31Z5brp9ucl6AyRvShZT6OCNvSKwdqXOdk/QjjyyMV22BtlM9VH260Q==
-X-Gm-Gg: ASbGncsbcsMQAdSxaHWuPUXWQ13rc3WF4hkfD2anQtur96DxI+hfp7EFCyT2xfKQjUa
-	s2C6FK2u5sbMusMHqRg+0hbexbPiwwb/rakQgn7ldd65pnKW97eHN1Wk2p17I+jxbMbF9TCTESI
-	2TRkFxExkqaQsuLkNKX5G57UTszqF2M0kBJD/Y5mOT2w==
-X-Google-Smtp-Source: AGHT+IHf42nTLD7ItahX7Q6PTcHgnwclhtxmvIeJijH9fAYUzOqzp+AwQheCgCXv2gEOQe598+ARx6xxvEOYHKqXvBA=
-X-Received: by 2002:a05:6102:3046:b0:4c5:4591:ffda with SMTP id
- ada2fe7eead31-4e6e41d4efcmr13999989137.21.1748940683564; Tue, 03 Jun 2025
- 01:51:23 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 3 Jun 2025 04:51:23 -0400
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 3 Jun 2025 04:51:23 -0400
-From: Petr Malat <oss@malat.biz>
-References: <CANMuvJnWm0RpUCw+hMeqzGCig8hydUGYBZWKaNM44zGOM8jFqg@mail.gmail.com>
- <20250530101033.1dcf6f95@gandalf.local.home>
+	dkim=pass (1024-bit key) header.d=amountary.cfd header.i=@amountary.cfd header.b="irI3bZWn"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=amountary.cfd; s=mail; h=Content-Transfer-Encoding:Content-Type:
+	MIME-Version:Message-ID:Reply-To:From:Date:Subject:To:Sender:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=61nQyG14VHXx6Zo1vprLNcd395mcViGyzKp3Sxl4oMc=; b=irI3bZWnjL3jlLxJMM5e+ZHOlK
+	oV0uSe9IcEQb2HFeZi4P9iw1IQaKG71poHUNOjOQfcrcQJErMIQJW/rz94HjH780f9h2xF5eD7Oq1
+	QTnImgrpaD2DPdEEcLzkw/bn4l7K6EO8rivPvchv/e+snPI8xcOrvTE4g2DWAe5ngfk8=;
+Received: from admin by amountary.cfd with local (Exim 4.90_1)
+	(envelope-from <support@amountary.cfd>)
+	id 1uUAru-000DEp-5j
+	for linux-trace-devel@vger.kernel.org; Wed, 25 Jun 2025 04:07:50 +0700
+To: linux-trace-devel@vger.kernel.org
+Subject: For sale
+Date: Tue, 24 Jun 2025 21:07:50 +0000
+From: Exceptional One PC <support@amountary.cfd>
+Reply-To: info@exceptionalonepc.com
+Message-ID: <1ff9bcbb22aff1ce8b67fa91b813f2b5@amountary.cfd>
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20250530101033.1dcf6f95@gandalf.local.home>
-Date: Tue, 3 Jun 2025 04:51:23 -0400
-X-Gm-Features: AX0GCFtV0HOdq1QCOU_E1lo59gjcTse8z2uUXkOq0h0zqzjp6XhxFPCp1cdf4Lo
-Message-ID: <CANMuvJk3JPs0BJBHk5CPJ_i2HXnT6VZkaEbfVpsv8rVdDSJTEw@mail.gmail.com>
-Subject: Re: libtracecmd: tracecmd_filter_add filters unrelated events
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-trace-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi!
-On Fri, May 30, 2025 at 10:10:33AM -0400, Steven Rostedt wrote:
-> On Tue, 27 May 2025 09:22:01 -0500
-> Petr Malat <oss@malat.biz> wrote:
->
-> > Hi,
-> > when I attach a filter "subsys/event:field==val" using
-> > tracecmd_filter_add(), it filters out all other events as well and
-> > not just the event, for which the filter is relevant. I want to ask if
-> > this is intentional or a bug. I expected the function to mirror filter
-> > feature of ftrace, where setting a filter in events/subsys/event/filter
-> > has no effect on other events than subsys/event.
-> >
-> > Per event filtering is done using tracecmd_follow_event(), so the
-> > current behavior of tracecmd_filter_add() is redundant to it and
-> > prevents creating per event filters without using custom callbacks.
-> >
-> > If this behavior is not intentional, I can prepare a patch to not filter
-> > out events where none of the fillers is applicable to.
->
-> Hmm, I think it was intentional because it's used to do filtering for
-> trace-cmd report. Changing it will break behavior.
->
-> It is supposed to follow what's in the man page: trace-cmd report
-> under the -F option. If it doesn't follow that, then it is a bug.
+Hello,
 
-Thanks for the clarification, I will use custom callbacks instead.
-BR,
-  Petr
+ These are available for sale. If you’re interested in purchasing these, please email me
+
+005052112 _ 7.68TB HDD -$200 PER w/ caddies refurbished
+Quantity 76, price $100
+
+ 960GB SSD SATA 600 pcs/18 USD
+
+S/N MTFDDAK960TDS-1AW1ZABDB
+
+Brand New C9200L-48T-4X-E  $1,200 EAC
+
+Brand New ST8000NM017B  $70 EA
+
+Brand New ST20000NM007D
+QTY 86  $100 EACH
+
+Brand New ST4000NM000A   $30 EA
+
+Brand New WD80EFPX   $60 EA
+
+ Brand New WD101PURZ    $70 EA
+
+Intel Xeon Gold 5418Y Processors
+
+QTY $70 each
+
+CPU  4416    200pcs/$500
+
+CPU  5418Y    222pcs/$700
+
+8TB 7.2K RPM SATA
+6Gbps 512   2500pcs/$70
+
+
+960GB SSD SATA   600pcs/$30
+serial number MTFDDAK960TDS-1AW1ZABDB
+
+
+SK Hynix 48GB 2RX8 PC5 56008 REO_1010-XT
+PH HMCGY8MG8RB227N AA
+QTY 239 $50 EACH
+
+
+SAMSUNG 64GB 4DRX4 PC4-2666V-LD2-12-MAO
+M386A8K40BM2-CTD60 S
+QTY 320 $42 each
+
+
+Ipad pro 129 2021 MI 5th Gen 256 WiFi   Cellular
+quantity 24 $200 EACH
+
+
+Ipad pro 12.9 2022 m2 6th Gen 128 WiFi   Cellular
+quantity - 44 $250 EAC
+
+ 
+
+Brand New NVIDIA GeForce RTX 4090 Founders
+Edition 24GB - QTY: 56 - $700 each
+
+ 
+
+ Brand New ASUS TUF Gaming GeForce RTX 4090 OC
+ 24GB GDDR6X Graphics Card
+ QTY87 $1000 each
+ 
+brand new and original
+Brand New ST8000NM017B  $70 EA
+Brand New ST20000NM007D   $100 EACH
+Brand New ST4000NM000A   $30 EA
+Brand New WD80EFPX   $60 EA
+ Brand New WD101PURZ    $70 EA
+
+
+ 
+
+Refurbished Apple iPhone 14 Pro Max - 256 GB
+quantity-10 $35O EACH
+
+Refurbished Apple iPhone 13 Pro Max has
+quantity-22 $300 EACH
+
+
+Apple MacBook Pro 14-inch with M3 Pro chip, 512GB SSD (Space Black)[2023
+QTY50
+USD 280
+
+
+Apple MacBook Air 15" (2023) MQKR3LL/A M2 8GB 256GB
+QTY25
+USD 300 EACH
+
+
+HP EliteBook 840 G7 i7-10610U 16GB RAM 512GB
+SSD Windows 11 Pro TOUCH Screen
+QTY 237 USD 100 each
+
+
+
+
+Charles Lawson
+Exceptional One PC
+3645 Central Ave, Riverside
+CA 92506, United States
+www.exceptionalonepc.com
+info@exceptionalonepc.com
+Office: (951)-556-3104
+
