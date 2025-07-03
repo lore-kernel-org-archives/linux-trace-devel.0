@@ -1,43 +1,45 @@
 Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B3B4242D87
-	for <linux-trace-devel@vger.kernel.org>; Thu,  3 Jul 2025 11:55:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A9982D9493
+	for <linux-trace-devel@vger.kernel.org>; Thu,  3 Jul 2025 11:55:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751543702; cv=none; b=MFH44b73mBXCP9Ri1yUukegGWLw7z+80v3m6D8XSiWTAt2uAPaHYJZnvWpc5cllRyPeaA/B1n3oXhT6NXNIL8GYmYMTXeSvQKEwTqRehBion6J/8ElB6EU8q5u8LyM4K+K0++T91pOo9kf0+q+33XE7MoUu3IvcW0zFOh0atTzk=
+	t=1751543703; cv=none; b=b5hKqDAWWENnm+4oM4FNU3ILU7yZVxf9BrYNFzQXojMdPzOw9mSVhuCWM3x7aluGSFVGbVVwlTb7d7EBLP9RrDewJOIUtfXWUK5X0KVyzzVtU60W0M4GhsKasFRR8in/nk/kseHfJ9f23Wqv4ZEyU2R43KnWjmpTkqiIqlFg1SQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751543702; c=relaxed/simple;
-	bh=7+LJBa8Nk3yviewz2mnTEvdy79Y70e1Ykk8k6tMDQDs=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=qb0yd6tPWT2tBPLEjqHhNxHygE4N/eCCj8vNoC/t9SVvDTF8BR5+GLX3+h/JMarc67MEYEB/I9ACVYVEab02kuXOB4VNvPvw/YddNPDpqHitZ3xnv2P6QAUZNxU2GNgWZctoMxSgVK2+r1rKmOWVxXoyVAs1TCQTkLm9f+CKT8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=s6tUJCHK; arc=none smtp.client-ip=168.119.38.16
+	s=arc-20240116; t=1751543703; c=relaxed/simple;
+	bh=iYQPOVpoCqeit7enyGZSEs8QSR2k241bvv7kmx1jv2w=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=dXhzx5F7rHiLQzZ5I9aXM02RN3C+SgHSMl3VGmv6JCT3eg999ssh3puTFfOmXrMnz7M98bIyaC7+VUIhDzCZ/5OTPENkW1rva4hIMTHMvRHsI6dWcAem0TfL89FYKhBlqapnzkpFEiqTkqs2NZ6iYkhcrf9V84Qf80W7UZmGAII=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=MJKvISNH; arc=none smtp.client-ip=168.119.38.16
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="s6tUJCHK"
+	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="MJKvISNH"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-	Message-ID:Date:Subject:To:From:Content-Type:Sender:Reply-To:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
-	Resent-Message-ID:In-Reply-To:References;
-	bh=PZigSTViVPrkgvBTkIx+BkbypDFS6o0NSd/bT9HplQ4=; t=1751543700; x=1752753300; 
-	b=s6tUJCHKxbWB2+CYGZt7iCpGSB8J7IRzMfDzBIVFnRX8B76JeIIfJjLBQ8H8ZzqZzhlZGSNwBrQ
-	We+an2lva+v09HpryJWIud6m9It4oOnQEGsIfTvDfrwiha1Sewg2HBNgu8DbVVHal6nkxlQEEP/ZJ
-	K9Ezl9Nc4yvtDM36vN5uqbpJtbwuwCXtyuGai7lofzZMW+/sxrGTY2zSmGmjiA1mBn1Layq7sBCeI
-	5purtl4n7GVppY348+ngCzgLuG+oTpk9RbqKv9PJoCMuU60es53KZc6JLIt1vwoW4B2KKlcZq1ROF
-	BszwdX7tabRVFGromnUnsd5441x+qIinyNJQ==;
+	References:In-Reply-To:Message-ID:Date:Subject:To:From:Content-Type:Sender:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=89ex0WlZEbRwB3obKMWwapE7fxrG4KGPUTbWiaEZFT0=;
+	t=1751543702; x=1752753302; b=MJKvISNHygwcFA/g8aHX+JEhNJpGjQHyDqaGPCnNAX3sGoI
+	yfoHrtO8kZ05bJW78vKDvmJ2OGPz0uYNknEyKuXYeLPNe8Lk2Ig2RCBNvh166OfCRkZavhia5/Vo2
+	02rPcvHwJPCWVlBHBQrfdoANAo67DEEFz3Dh4ObWSk6ABa+Fe7a4ljvw0Ql/g+CIXeK7GiPINBiBz
+	zLmca0Nfi9x3PjoIr78tuyaeOYXjKXV9ZNP1EyDxtENndcgHZCwznjiLDURK4zNbLHCz3lF3gF6K8
+	Znsn3NoOIwQ5NFL9SmfGwYR9R2WrYokCMc3fVuC31/imbJ8YY2N+T2j44HY04qwg==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.98.2)
 	(envelope-from <johannes@sipsolutions.net>)
-	id 1uXIWi-00000005JaD-32vI
+	id 1uXIWj-00000005JaD-1hgE
 	for linux-trace-devel@vger.kernel.org;
-	Thu, 03 Jul 2025 13:54:52 +0200
+	Thu, 03 Jul 2025 13:54:53 +0200
 From: Johannes Berg <johannes@sipsolutions.net>
 To: linux-trace-devel@vger.kernel.org
-Subject: [PATCH 0/2] trace-cmd: glob() fixes
-Date: Thu,  3 Jul 2025 13:53:33 +0200
-Message-ID: <20250703115450.14313-1-johannes@sipsolutions.net>
+Subject: [PATCH 1/2] trace-cmd: libtrace-cmd: fix glob() return value checks
+Date: Thu,  3 Jul 2025 13:53:34 +0200
+Message-ID: <20250703115450.14313-2-johannes@sipsolutions.net>
 X-Mailer: git-send-email 2.50.0
+In-Reply-To: <20250703115450.14313-1-johannes@sipsolutions.net>
+References: <20250703115450.14313-1-johannes@sipsolutions.net>
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
@@ -46,21 +48,36 @@ List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-So we were trying to use trace-cmd on Android and something
-like "trace-cmd record -e foo_system" doesn't work, while
-"trace-cmd record -e foo_system:*" works. Turns out this is
-due to API differences in glob(), so here are some fixes.
+glob() is defined to return zero on success or various GLOB_*
+error constants, but those are not defined to be negative. In
+fact, glibc makes them positive, and as a result the checks
+don't do anything at all on glibc, but erroneously abort on
+other libc implementations (such as bionic) that use negative
+values for GLOB_* errors.
 
-johannes
+Fix this to compare against 0 only, adding documentation as
+to which error result codes are possible.
 
-Johannes Berg (2):
-  trace-cmd: libtrace-cmd: fix glob() return value checks
-  trace-cmd: record: fix glob() return value checks
-
+Fixes: 3de68e3ec662 ("trace-cmd: Only record the formats of the events being recorded")
+Signed-off-by: Johannes Berg <johannes@sipsolutions.net>
+---
  lib/trace-cmd/trace-output.c | 3 ++-
- tracecmd/trace-record.c      | 8 +++++---
- 2 files changed, 7 insertions(+), 4 deletions(-)
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
+index 00b87a196c16..c333553ebf67 100644
+--- a/lib/trace-cmd/trace-output.c
++++ b/lib/trace-cmd/trace-output.c
+@@ -882,7 +882,8 @@ static void glob_events(struct tracecmd_output *handle,
+ 	globbuf.gl_offs = 0;
+ 	ret = glob(path, 0, NULL, &globbuf);
+ 	free(path);
+-	if (ret < 0)
++	/* no request flags, so only GLOB_NOSPACE and GLOB_NOMATCH */
++	if (ret != 0)
+ 		return;
+ 
+ 	for (i = 0; i < globbuf.gl_pathc; i++) {
 -- 
 2.50.0
 
