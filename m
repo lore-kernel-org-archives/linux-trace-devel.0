@@ -1,101 +1,126 @@
-Received: from relay.hostedemail.com (smtprelay0010.hostedemail.com [216.40.44.10])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E8365383
-	for <linux-trace-devel@vger.kernel.org>; Tue,  8 Jul 2025 18:46:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E7112D373F
+	for <linux-trace-devel@vger.kernel.org>; Fri, 11 Jul 2025 13:28:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752000415; cv=none; b=HjtmkQ0vsC7SZBXVvPE/M3xF63B6fTWuTd8W7YJcMBKJSx/t1q5upng8QgprrZxVIBb5Vw+vPVgZWTp6XLifImvXihBBDnVVSeotgEgsix3C7OoI5dLqMeMgSnJP+pvucjjNkv/dA9etXR1mSR6woDQp3nBhvQweOgVW5gB9q+M=
+	t=1752240492; cv=none; b=DJOhT8ahOX6xksDdNahLtcaOS1QsnXK4RIDc5PRseaELJg2owFcdZzzzVGjoU5jO3Nx0h0TVDTIBmzNDa4YAcknDi8IH7+s0P/oO+gqVpFi/e5fzuu5v5R12jwssBY6mQgi1rs+R+LzhxmMWOn/RlPUdK1TQd4O2cNM0lUGKG3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752000415; c=relaxed/simple;
-	bh=LW/PGa6n7mpeqW4WnIqrH5O5XGvVTDBQddHMK8ZzHrg=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=TRq4xC3WP2JZ3LyYFhnQJLz/nJwebSaYo0/2araZuAGMOxeUih5TSgjlQc0UqSi/GPZL+20VXXz0bMkguUhbhQwu76aWsl59gC2AhrKvfiMmFotFFPzzibPC+cfbe6RrEioYk0S55sdzZ2qpaLct5SoCIBPYV4Grcblp7aJMo1A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf20.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay05.hostedemail.com (Postfix) with ESMTP id DAC8556772;
-	Tue,  8 Jul 2025 18:38:19 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf20.hostedemail.com (Postfix) with ESMTPA id 72B362002A;
-	Tue,  8 Jul 2025 18:38:18 +0000 (UTC)
-Date: Tue, 8 Jul 2025 14:38:19 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Cc: Julia Lawall <Julia.Lawall@inria.fr>
-Subject: [PATCH] trace-cmd split: Only open one file descriptor per CPU
-Message-ID: <20250708143819.09124bd7@gandalf.local.home>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1752240492; c=relaxed/simple;
+	bh=FkTLYy5VT7XUyzoRXHe8nVPZZDKMEKubdV930dJEkJ8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=GVb9SLJYocC4dz+X+jz7VKR42LogKprx33JODnbJwS0iqBJvxcJolpz/bUbTUQCb7hDCDo6J9srNQUDLx6IEFr4d4E6ACPUojHmQi20fYRYJykKT3N3gMxR5auM6vFYl7EtaOyCq5bHY18UJX6UQcYDZIECeu9cbR2AZwMORTGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=eYekh6Ll; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="eYekh6Ll"
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 56B7Go42029137;
+	Fri, 11 Jul 2025 13:28:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=pp1; bh=qB+jOVBTjKCoJeDR7NH7qIUdfnVScnFxv4NTL8m7o
+	LI=; b=eYekh6LlQctODBQN9eJCj02t5omgL/+ne+ItNG/waakPaqWaoq3773B33
+	dSPuGENyuiDj7Rzny0/dKKdzoYIS3xKDoE2FiSjz7hILyQJyx13FwJEXF/5lwhd5
+	v2Y1coUWHv6ean3ijX7RrgJP6lY+SSxZL5vbIauJNgfJdBTxuptnTr8hdERQrSLu
+	+uXta1k5l/wrGac+OkINv52LE9nZKar09KVgDd0ORD3AHGbfncXaZGR2Lrhh8aW1
+	aw2rwiX35dRpA6UFMkvNRmL9wsepYNWk0XlrtKq1k3SqHQfzOrw7LOVXyMw7gegf
+	XvphcEkzV2q/ciMsbyBpCVbFb/BJg==
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47puk4k2uq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 11 Jul 2025 13:28:09 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 56BC0rmZ002860;
+	Fri, 11 Jul 2025 13:28:08 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 47qfvmtsmv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 11 Jul 2025 13:28:08 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 56BDS4qd50594154
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 11 Jul 2025 13:28:04 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 4650020043;
+	Fri, 11 Jul 2025 13:28:04 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D8FF520040;
+	Fri, 11 Jul 2025 13:28:03 +0000 (GMT)
+Received: from heavy.ibm.com (unknown [9.111.24.42])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 11 Jul 2025 13:28:03 +0000 (GMT)
+From: Ilya Leoshkevich <iii@linux.ibm.com>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-trace-devel@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH v3 0/2] libtracecmd: Support changing /proc/kallsyms
+Date: Fri, 11 Jul 2025 15:25:34 +0200
+Message-ID: <20250711132802.1781-1-iii@linux.ibm.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 72B362002A
-X-Stat-Signature: jnnsuugobaxxtos9deycft48optcrg8h
-X-Rspamd-Server: rspamout06
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1+uhZs6wll3a+gWvy73h66dTfRiJqnLSjg=
-X-HE-Tag: 1751999898-2479
-X-HE-Meta: U2FsdGVkX1+I9RrmDyxjvOdAYovvb2E85n8Dd8vR8fg/hd2mpdNQuxW8Q4GS9CO84YDEwpflH2r+u4Sf48Z3u4CU0J7RZyaUNXll9RC/+1nZCUvOb75ArOGZDmATD6bWOIC69h2QLc3fyDpHiUE0qTI7HIHvNgajUeh9U5WJRRQASpT7BTV4I23LQlv/WO+o4sE4qyapWqEaX4WtF9l26F6ZJE54qKPrAwIwQEjQm0OqA6dsny5McAHKI9cfi2aV214qkcrlSfzytqLUTwtR9ODyvnbv4xS5STa2GmmcP7zSOnkjNkFXPi1AvG+dKuQeyluly6Q8Nr6kwy2Qx5YV+4pLyWi3IfdK6XA8E2rAMP9kf/UZ611JUfCq632jhx55
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzExMDA5NCBTYWx0ZWRfX1khtxSzyhOh2 GMacN3iY27E6eXiuaHz/XKjw5dxXXfovMHz0X09VAn8y9mYPWAmZzts8u7yGzf8ak5ZSFU8avJ2 FWGnKuU3PREQBY0qy+z97c86uAm9To8JhGcsUx7GwwDcpvkCeI3p9J5ZCr6g7Uv7SyfZZ8KVe5B
+ v7ZjIoFZKAYxyNcpUYu8Qg8LGa+5ivQs1uC2IK302WNIuy1hAD6Ydd8ibxm0eeG9WZIJtXi3fIy +9Y23lnrnLomM44Lr9cuZQEGDArzC8KxkT9Rvw+Oujoi9XWPANsrh8IGRc6PxRZAbkMVziFeLS3 ox+sIB/AXLC0+Q25CharTvbLsahTnC38WmP31Zd0oq5OlR1d7nXzdmxB1MOCaDL0MsIsHtdY3z4
+ OnGinNROlFsu11Z3Rq/UswVPl4aCLX5cEAwZwOCVI0SHcfjwD9zFHFkkf6MhSKteZ9vYN91K
+X-Authority-Analysis: v=2.4 cv=XYeJzJ55 c=1 sm=1 tr=0 ts=68711169 cx=c_pps a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17 a=Wb1JkmetP80A:10 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=9bfxzjHHuqZCDq64mLQA:9
+X-Proofpoint-ORIG-GUID: ZQIL2ZQA-k1grL_LFmkNLxAXCOnYoggr
+X-Proofpoint-GUID: ZQIL2ZQA-k1grL_LFmkNLxAXCOnYoggr
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.7,FMLib:17.12.80.40
+ definitions=2025-07-11_03,2025-07-09_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ lowpriorityscore=0 adultscore=0 priorityscore=1501 suspectscore=0
+ mlxscore=0 impostorscore=0 phishscore=0 bulkscore=0 clxscore=1015
+ spamscore=0 mlxlogscore=829 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
+ definitions=main-2507110094
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+v2: https://lore.kernel.org/linux-trace-devel/20250602214154.446881-1-iii@linux.ibm.com/
+v2 -> v3: Add a comment and some newlines (Steven).
 
-When splitting a trace.dat file, trace-cmd split will create a temp file
-per CPU as it parse the trace.dat to store what to save in the new
-trace.dat file into per CPU files.
+v1: https://lore.kernel.org/linux-trace-devel/20250416231325.14113-1-iii@linux.ibm.com/
+v1 -> v2: Rewrite the size instead of reading the file twice (Steven).
+          Turns out exposing do_lseek() is not necessary, since
+          everything is in the same C file.
 
-After it finishes the creation of the CPU data files, it then calls
-tracecmd_append_cpu_data() which will open each of these CPU files and
-append them to the new trace.dat file.
+Hi,
 
-The issue is when you have a trace.dat file that was created by a machine
-with 512 CPUs. Because it doesn't close the file descriptors after
-creating the files and before calling tracecmd_append_cpu_data() it has
-1024 file descriptors open. With some distributions having a file
-descriptor limit of 1024, this exceeds the limit because there's other
-file descriptors open (for the trace.dat files themselves), and the
-program fails.
+this series fixes tracing in presence of frequent BPF or kernel module
+loads/unloads. Patch 1 is a small required improvement; patch 2 is the
+actual implementation.
 
-There's no reason to keep the file descriptors open for the files that
-were created before calling tracecmd_append_cpu_data(). Just close them
-before calling that function. This keeps the number of file descriptors
-open to that of the number of CPU buffers in the trace.dat file instead of
-doubling them. There is a couple more file descriptors open as mentioned
-before, but those are not an issue.
+The problem can be reproduced like this:
 
-Reported-by: Julia Lawall <julia.lawall@inria.fr>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- tracecmd/trace-split.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+    # while true; do rmmod loop; modprobe loop; done &
 
-diff --git a/tracecmd/trace-split.c b/tracecmd/trace-split.c
-index 13a10c89590d..e037ab491ba0 100644
---- a/tracecmd/trace-split.c
-+++ b/tracecmd/trace-split.c
-@@ -571,6 +571,11 @@ static unsigned long long parse_file(struct tracecmd_input *handle,
- 				  end, count, percpu, -1, type, &curr_end_reached);
- 		}
- 
-+		for (cpu = 0; cpu < cpus; cpu++) {
-+			close(cpu_data[cpu].fd);
-+			cpu_data[cpu].fd = -1;
-+		}
-+
- 		/* End is reached when all instances finished. */
- 		all_end_reached &= curr_end_reached;
- 
-@@ -599,7 +604,6 @@ static unsigned long long parse_file(struct tracecmd_input *handle,
- 		}
- 
- 		for (cpu = 0; cpu < cpus; cpu++) {
--			close(cpu_data[cpu].fd);
- 			delete_temp_file(cpu_data[cpu].file);
- 			put_temp_file(cpu_data[cpu].file);
- 		}
+    # while trace-cmd record -p function_graph /bin/true; do :; done
+      plugin 'function_graph'
+    libtracecmd: Invalid argument
+      error in size of file '/proc/kallsyms'
+    trace-cmd: Invalid argument
+      Error creating output file
+
+Best regards,
+Ilya
+
+Ilya Leoshkevich (2):
+  libtracecmd: Support querying position within a new compressed block
+  libtracecmd: Support changing /proc/kallsyms
+
+ lib/trace-cmd/trace-compress.c |  5 ++++-
+ lib/trace-cmd/trace-output.c   | 38 +++++++++++++++++++++++++++++++++-
+ 2 files changed, 41 insertions(+), 2 deletions(-)
+
 -- 
-2.47.2
+2.50.1
 
