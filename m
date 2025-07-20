@@ -1,183 +1,204 @@
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from DUZPR83CU001.outbound.protection.outlook.com (mail-northeuropeazon11022130.outbound.protection.outlook.com [52.101.66.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CC852C17A8
-	for <linux-trace-devel@vger.kernel.org>; Fri, 11 Jul 2025 13:28:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752240493; cv=none; b=mp0XPeMMdwZf9wyi3mAeDCykA1GH/XZVYs3YomhTA4InKNcAp4do8mpENy6djXhTcJsntomPBYYRak4C4Uzgp/i7Q6ujdRsDL8QMRPHWs53etuDHvA1mYZjvJiGOdZUTYGx9XjOMCdmpoHm0g19zMkoXJ1bp11lHsXNaos5yQo8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752240493; c=relaxed/simple;
-	bh=BCWnOFgT/Nz4dpsCBA8E+T2YSHGtJB/jlPuiM+h6ti8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DXQjP8sGNg+2muWfgGg6v0TtxES/QB50YlrREVZrg053aWuK36vMdg4BxQ+VUpA3T4WosimsfQpmP4Xi+iPOWORK6EgTfix0mAB+fh/1zgXtWLrhn9C4XGrKCyG+Lzj734VYjMXaaBZsDhT1g8y8bP/d62YTXgWLdL/HyFTlGmg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=IxErw/tz; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AFA92E36E0
+	for <linux-trace-devel@vger.kernel.org>; Sun, 20 Jul 2025 22:16:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.66.130
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1753049795; cv=fail; b=f2ZYuYlPR7fuZIylCn0cmJ0gMYPmLYyM1H6LgP1jJB6+nsdTVozZwhe7NTEqU1h8VZyYpCnqGNivWtnqpL21XYAXH7u0A+3N0g6O1WBG7E9W8upclVjyPdjiu6zZDTXqrZ5/IVVmvoVh3LJASEe8xSdhpZ3k+JFcnr7pYWmo+L0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1753049795; c=relaxed/simple;
+	bh=7aDF90IIxsySXfSZWFqC9oZ49FN52tA8aNq5lZSXHHU=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=nu09QwGyst2qdZ3wDL+KTcFE3rEZ/PWz73Cj4ahMCsyNJq1NVcDz6dueghIMOftZrjhCgTG+NqkC3Db6AC/AFKRF6h1RGkYJPigxwswFe5JYFcw3R6SX1FXjGJyIQDEcVga42PHb7BUwpeOmdVxnePHymXpgPSYU/nVMajYqzh8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cvut.cz; spf=pass smtp.mailfrom=cvut.cz; dkim=pass (2048-bit key) header.d=cvut.cz header.i=@cvut.cz header.b=zB/Yzfz/; arc=fail smtp.client-ip=52.101.66.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cvut.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cvut.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="IxErw/tz"
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 56BCKJa5000348;
-	Fri, 11 Jul 2025 13:28:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=pp1; bh=Sfce3ZCBgNbrfac6g
-	4h0BHkbJChZ4K5hQMrNhbFkSao=; b=IxErw/tzP9dR4KVsMTLGU6yVw1xABvnLS
-	zA5KpR+nyg7qy1MbyCD88q4PZi2x09UUJQRLbIUNf7uCJu7shCPlltrYLQ9yTBd9
-	v0LUKshUo97H4DqXUYe7cIhujKLv6Uz9ANDYR2CYH52zQUIyr5fRhL3cCgbmAhaX
-	iSRZTBgMqwc0xOPB0epNI5fuznb0vIjz4zdtlKVUvq30ud/8QrP7Nks7lEv+Aj5P
-	3/Ee2YYNH8Ja1tjrJ1F3GZyKo4Rv67PE9qaFO0uhET3w/Px6Xj1/C4sHnMQUmIEO
-	imeFXWhMSi12Bbn/8nok3Nlu0qvVY20e37faTme+vhhqQ157v2sDg==
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47puk4k2ur-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 11 Jul 2025 13:28:09 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 56BC2nqC024684;
-	Fri, 11 Jul 2025 13:28:09 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 47qh32tmax-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 11 Jul 2025 13:28:08 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 56BDS55e52953520
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 11 Jul 2025 13:28:05 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 345BA20043;
-	Fri, 11 Jul 2025 13:28:05 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id CF3AE20040;
-	Fri, 11 Jul 2025 13:28:04 +0000 (GMT)
-Received: from heavy.ibm.com (unknown [9.111.24.42])
-	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 11 Jul 2025 13:28:04 +0000 (GMT)
-From: Ilya Leoshkevich <iii@linux.ibm.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-trace-devel@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH v3 2/2] libtracecmd: Support changing /proc/kallsyms
-Date: Fri, 11 Jul 2025 15:25:36 +0200
-Message-ID: <20250711132802.1781-3-iii@linux.ibm.com>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <20250711132802.1781-1-iii@linux.ibm.com>
-References: <20250711132802.1781-1-iii@linux.ibm.com>
+	dkim=pass (2048-bit key) header.d=cvut.cz header.i=@cvut.cz header.b="zB/Yzfz/"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=cDzrNwAYs0K7APGHFZ1M/MdGhbAQpy/vf2yJHLv1o03WSQDtnLCyhB/hmzfvF3ZBwRJoYSRSGBj69OIf8zveST3IyxigIkWtiRQnpehWsiRtR/0CkI6k9Rpxpbnm0jAApWkJ8jEnsZsQlMXyCxPGVTU/sVM0xOkpzzkHgNkuqi2ZwhUfnOxCzKOVGhNYNCBU0MIvrqfs3hEKMftxQxxKze8P2vEU/GoFFqLAshizCSXt5RML40X3NoyOvphEDZqBCbFjq4jjvMEyNw6ln5D5FCX5YtrqamLKzVaELNJWI2k+AvTM6sK2Zhrpcj016WVe0jYgMwvsNdRDWIXlZJA34g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=LvhotfHxv9BfZEYfduTOzgxRHavEIUDg3GHSoM5I2f4=;
+ b=TGiY4rY+BZDC6wEyXAkLtzGG0XUa2Ojs5RwnubCUIzME55ec5kRy0VNou5jhF94PTbKvW0DAMmBM4HUO3kz8yjIYpt5oWXYGXQX0v6LL/SRGu2mHak65zqnz5iZkx0n7ff3oQZnaaIXtVcT2QQVDbybNNc9eovXG5NlFXI5myClz7YqRAWBBJFbGWEoqkJMwrBacCwjIy3L9Vh830a/Q3uTec7rRZIaNAh3NRbyES4gekKuqKDqDnUqDiO00S9qT4dXpl15OhzpupK5U7PZO6EyZ+Et7gSSdWwN6lPjmfEGDuVMa2n978DL0o96KshxChh94WnfJR6xUCL1twa+/BQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cvut.cz; dmarc=pass action=none header.from=cvut.cz; dkim=pass
+ header.d=cvut.cz; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cvut.cz; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LvhotfHxv9BfZEYfduTOzgxRHavEIUDg3GHSoM5I2f4=;
+ b=zB/Yzfz//ptSAYvcOwuhfCdIbhDrMyi/jOiX6hAyJt2ZiMt9zpUO5zB1LH66nE+oL7nUWpli34Vf5xC/k74vNzoHCE8WCOPCLDH7SkR4odrTTtHtEne6CfI7kh03Z3sWQxjBqWpA1AUuVcMbarbA0v0f11ZKiuxW1ojcoz5fK4nSxcgmEhooadr1uhR3W70z+fqg8AWa3TBrsBG55Kn9O7o5a6DulxB5yIakGcVO0IMjGi2QwM/LrRA46X2T00qPEXu/S5bucQQD7qcyWw8l+7DgraLlSgNaheAGfKtBwYHaYPL2/R5BQBiPNzHG6/s4l+DA9tuYwu2JwLWt5RC5RQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=cvut.cz;
+Received: from PA3PR06MB9863.eurprd06.prod.outlook.com (2603:10a6:102:4b0::9)
+ by DB9PR06MB7322.eurprd06.prod.outlook.com (2603:10a6:10:21a::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8943.30; Sun, 20 Jul
+ 2025 22:16:29 +0000
+Received: from PA3PR06MB9863.eurprd06.prod.outlook.com
+ ([fe80::cd97:3323:477a:3ed3]) by PA3PR06MB9863.eurprd06.prod.outlook.com
+ ([fe80::cd97:3323:477a:3ed3%6]) with mapi id 15.20.8943.028; Sun, 20 Jul 2025
+ 22:16:28 +0000
+From: Michal Sojka <michal.sojka@cvut.cz>
+To: linux-trace-devel@vger.kernel.org
+Cc: Michal Sojka <michal.sojka@cvut.cz>
+Subject: [PATCH 1/2] libtracefs: utest: Return non-zero exit code when something fails
+Date: Mon, 21 Jul 2025 00:16:16 +0200
+Message-ID: <20250720221617.695311-1-michal.sojka@cvut.cz>
+X-Mailer: git-send-email 2.50.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: VI1PR0102CA0072.eurprd01.prod.exchangelabs.com
+ (2603:10a6:803::49) To PA3PR06MB9863.eurprd06.prod.outlook.com
+ (2603:10a6:102:4b0::9)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzExMDA5NCBTYWx0ZWRfX6R+5vG4luLM1 QVUsvEEePaRSMfikzsuhYImMfqr4tj8Q9MeCWCLkDcokM5kigjv0WGpsvYpSQrnn0+dI1BBy9dn 9MmuZLYaqISIBcvyOm61MlV46+OoqsO9wTG6Pf9VuWw03otaGuNCfUUoxx2s9Hkit7W3TR5A5sQ
- rNEEuGYLp9IkiUNZ5EMYwy0GM7LDU+nZW0zxk/vsk7ZLfyp+FR+oxlCd+vWp3k3N+hp/eJzNH1r +kre4H7ASyIhC2m5p0G5RTpjuDaJmYzaFpYsGb4tPsVz8pBa2sn6Buqmi4cQbFqyb3kvk3HiT+k ewgmqHCC/6mg50HKidtv7k/luQJnyOKrwfDrG5KYuUNoaL8sdbxcY2rrxdRn7T6fZTyIOHobiGx
- wAk2lKsBdJotYDY/uZ2fUOvzY5Ppi+T7jZh/tug9s3155K7bK8x9C7Sc7FzMgZ0AxhQJtWRm
-X-Authority-Analysis: v=2.4 cv=XYeJzJ55 c=1 sm=1 tr=0 ts=6871116a cx=c_pps a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17 a=Wb1JkmetP80A:10 a=VnNF1IyMAAAA:8 a=HioQ91JM4KdVr2j8WGQA:9
-X-Proofpoint-ORIG-GUID: AoVUoKTYtIdvCILP8rAzdnx1LWvoGBAK
-X-Proofpoint-GUID: AoVUoKTYtIdvCILP8rAzdnx1LWvoGBAK
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.7,FMLib:17.12.80.40
- definitions=2025-07-11_03,2025-07-09_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- lowpriorityscore=0 adultscore=0 priorityscore=1501 suspectscore=0
- mlxscore=0 impostorscore=0 phishscore=0 bulkscore=0 clxscore=1015
- spamscore=0 mlxlogscore=999 classifier=spam authscore=0 authtc=n/a authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
- definitions=main-2507110094
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PA3PR06MB9863:EE_|DB9PR06MB7322:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8d6c6f18-f0f7-4c58-58e6-08ddc7db1264
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|19092799006|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?yvaQH7ZE38OXGn3O7vqnOmpiQallNVrYieL7Gon094zhq9f+XSMi8d2llyy6?=
+ =?us-ascii?Q?y91G9eQYfG8zveshecn7UVShGuKXGdrpV7/+gaJ5I5+Gy3c0Izhu8fEcpNGB?=
+ =?us-ascii?Q?ugBAD+QX1+Cc9al8CJBaOCc0q+6jZkcWeF4fds7oqs2A4TuRdSpbYX3uVUFY?=
+ =?us-ascii?Q?c2Zowt38RNfGSp6k8AIKB18ZmnHOgHDEkaWIw2OE+0UCuHFmgCstIGyGI4Cy?=
+ =?us-ascii?Q?xtGDD2bJ7XjEJl5u83xLER3v8Qw1Er3di5nxdy4sEJ2yGOR4/e6wTAGjCoa9?=
+ =?us-ascii?Q?VxqXz1JpL0M6cmZtUtJcOl2V0RArGT2kKjPnfT48jicIRch+xsKoIjfPENhl?=
+ =?us-ascii?Q?2/n5dPqm+jNDTZ2v61vefM5RMMbmjm8GpVdzMxdbJ7nLQJ58XAYhIH5tGO38?=
+ =?us-ascii?Q?v+SR2LUv0eBs+8XMCtry4+/9FpSDXevM7jy8VimmLcL6MeIki2ZejFAm0DfA?=
+ =?us-ascii?Q?1b5IK/mG5ycDpuqmJDsafJ1HYKjtfJg/MN9yaVhZanP33gzpY4yEDuQTQHWa?=
+ =?us-ascii?Q?CfSB5wKZ/6pqwgBAO9DRT8RwHi/Gvo9ggVtnFGdGtYRNq1sDbU2wcJMTuchN?=
+ =?us-ascii?Q?dhOoU7+OUZcSMEMLkEk/8goJ5Mv2MxARKKVchLQoR2M7EDYc6ynWHS2GYWzd?=
+ =?us-ascii?Q?1ufEKrb5+JdPKGuAbHov8EMghFXt1ReMHsEumdKFQzq7J2nMfpA4xOsH+qpp?=
+ =?us-ascii?Q?mf9Il/c1Wqq97TBXF+YjxJw1p5iC/D2ADul1hpdi/0OAqQ3O//zsvUz9+keC?=
+ =?us-ascii?Q?d1V4rMLtDHhGKwQZhALldXh/UFrWSvILIthgqlGMSjxjgE3z5TRNazXmMYll?=
+ =?us-ascii?Q?F9Z3y9orwdAavcUV14xnKPgN3VNYTnhBHPu/NEGQk2SMBcr2JubB2RxDUmzC?=
+ =?us-ascii?Q?R+6F/kypkmkCIHzsruGHQnJ+117rrO9wj0y97QOv8VHm07sQ6rHtxq1n8+sb?=
+ =?us-ascii?Q?wmtlsOHB66W029KXOtvlGrSTEiBh4RaTJT/QWXxbD2fc+rZHtMs5mfcoXiOP?=
+ =?us-ascii?Q?VGKYuWQsJpkmzTtmx+f9448KUg02mJ9wDzVN8O/gHW8y0gKV7HOhEClWKjar?=
+ =?us-ascii?Q?46Gta14LXl2ooKUcLnld4g7Nap0VvvlssNl1BUPrnoONuj3u5mr/sKeZBn3D?=
+ =?us-ascii?Q?qwTIPlqJbq8Gao9tJmELqQ4h3iPBOrPVcRteZP1CiIVlYPiB8wNgE5kTbxlX?=
+ =?us-ascii?Q?UWzt9UX7ZSEFdt8hm4l8ehASkwdp1Phd3Wv83M+4En2C6rkTm3fWmjUCQtNp?=
+ =?us-ascii?Q?qBEhAq3Msk9JFclFPGbFcr+g6SRhUabAQWgNekH/2+OlsIMl2A0/1kaPmiWf?=
+ =?us-ascii?Q?UAKdloU5LlTc7+6ddZPNTmMyB7a3/MxkAGJj1UNsyRscdcHYUaRIDKkkb4A4?=
+ =?us-ascii?Q?TCqi6PGfXCxx2a+GguyDtfrHqxYAup+eNXogMzexiy57JF+WLled5slTFus1?=
+ =?us-ascii?Q?wA4AAzaByN0=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA3PR06MB9863.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(19092799006)(376014);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?2f0nZvOmUoNo9HJPmsGwQXRbEXgBWasAV0qH1Um4YOktWbmxdlvUgFC2PeUi?=
+ =?us-ascii?Q?6UPE2iE6e6o58AGyJ6zAR0Bf9GQXrPWcpUxLQC8yzFyfvJfmO+4do7cNEUSV?=
+ =?us-ascii?Q?OXgoFFex8zFPeHcZUdQ2l8+3fD0VKwRNtyetOxgdNyPXJYM+QHdvgvb09Luc?=
+ =?us-ascii?Q?/p68GtnheIvdYS5NFuaRgfwYzqdie0g84nOVnBC+5wewvMUepy2CTlxsxiua?=
+ =?us-ascii?Q?+wDC16Ek83ynoutnWWEkEAJe/NoTjxYqcHtd5NI49e95CFyBLleB6jSQuLBY?=
+ =?us-ascii?Q?v3F//BVd1aFxE23/WeBzFh5bZCUutBSBkqHVIDKoPgDVG6ObjbIM/KXLIDq8?=
+ =?us-ascii?Q?ADcnt+rcR+z76jRMRiHWv56g0f69NR4Rv9sGbKttmCbFPWcNaPQAyl/3Wsop?=
+ =?us-ascii?Q?D+ZIV86CyyXDw3U3bZn7gFA1sKNfvvKG5SrFRDSTZZdWN9Bv4esYkDR+34GW?=
+ =?us-ascii?Q?NxtB2EbrsmxNLxLMeuwmkm4IAqug06ixUm01zbyBYiiqog0P/f94ylMekXN4?=
+ =?us-ascii?Q?LlSQjIqdBsYRdFvEZuPEUCRX/tEvAE8COOLAhBTYacRMEuktxDnn9+K9APPM?=
+ =?us-ascii?Q?+h7GvNORNyK/X9qggZqg2feZcp0KUHBrhyCcXe254RIf6cVBqxO37HLObtMA?=
+ =?us-ascii?Q?CNYDyrraHDZIE9eOMoR43AEdfmSFKCURTGScXjoRrvNz8BTK2VVT1cG7RU2n?=
+ =?us-ascii?Q?Pf7vcSbOZb8ksSKaJKNEdw4Rd5muOAGL71Z7Y8Nh+ugJzjCG/4N1OR6qgw9N?=
+ =?us-ascii?Q?6zwisCZBNyXAoB0wqAKQSNQzynOvm9D0I09zJNJ8G6s4gNr7w+WKtrTWbGn3?=
+ =?us-ascii?Q?o6/eTGCSgKhv6PAl3onId6PYOUQ/4aOHdawR6wmDo2S5pXMtydzZIblzvuWx?=
+ =?us-ascii?Q?G9cBFGS4otPUcYAiaK6JPmjhAGl987oaFLSku1CMSI9kvEcX83sPKbzHLT/b?=
+ =?us-ascii?Q?ECZRFmEfC0WXg3w1gJQqLpDjAVge+SijvC7AxlTPf9//PlTvs0HETOyAFmme?=
+ =?us-ascii?Q?8kdhYdzvSgPu7aZZuPDPtdmaKNBB39pfjpQxkkHjlF6TkX847dtSrtHOHcu0?=
+ =?us-ascii?Q?OPXMsf0oSydVmNbrRObSFJuKkP9RLHpsPGv5hym5Xnz0tHONJs2XDIF3Flov?=
+ =?us-ascii?Q?xBaDRS+5qbFsdAYiZhFyyKZbXYMqJwVNne5ENz+PDBl2iS4lOz2mbMTX8ISd?=
+ =?us-ascii?Q?N1qNBrbd2agfsRhWRsWbYsgzEgjwCcoX51XQNiMZirBxywt7qepUQUee8BBo?=
+ =?us-ascii?Q?tsT6Y6DRVHIbczOnnVvc7EP9AGo1R/00DgQFUsdRv6IOT+R6s6Al0Z87m/nm?=
+ =?us-ascii?Q?JwHnASSxZMrttIUCJax/2j4/BKSVAl5GYRF6IAQOg8dEqSSGkahCRD1YJINU?=
+ =?us-ascii?Q?fQbY49aFZFakTePyUDfE3lNxvySWI9cDizy2jtUROXeZtcl5KSyp51Q4/5sE?=
+ =?us-ascii?Q?8kgK3Yc5rubirTuK1IQhHV5oAD26JbW85LID9ng9Nv8as5OfcxmSN/RMyVpV?=
+ =?us-ascii?Q?nsVxKsPBAsoMnMszjJ9QtS8g9PU5cVPP1jhkKicfhOLD907qWu0rdrhdDH8O?=
+ =?us-ascii?Q?ai6KesNZq4NyX/3X7UGhniwN4ojM+ZvjWTPzMbF8?=
+X-OriginatorOrg: cvut.cz
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8d6c6f18-f0f7-4c58-58e6-08ddc7db1264
+X-MS-Exchange-CrossTenant-AuthSource: PA3PR06MB9863.eurprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2025 22:16:27.8871
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f345c406-5268-43b0-b19f-5862fa6833f8
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aZA4X+19tCHvL/RGB9OkNiSP158WyvCJbAg1OajhEMJ9P2GcKdS0Wdg7AWA6Uwkg
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR06MB7322
 
-Running BPF selftests under trace-cmd intermittently fails with:
+Previously, the test suite returned zero exit status even if something
+failed. One could lern about the failure from the output, such as:
 
-    error in size of file '/proc/kallsyms'
+    WARNING - Suite initialization failed for 'tracefs library'.
+    Run Summary:    Type  Total    Ran Passed Failed Inactive
+                  suites      1      0    n/a      1        0
+                   tests     37      0      0      0        0
 
-This is because these selftests load and unload BPF programs.
-bpf_prog_put() uses workqueues and RCU, so these programs disappear
-from /proc/kallsyms after a delay.
+However, when the test suite is run via meson, i.e. with:
 
-trace-cmd reads /proc/kallsyms twice: the first time to compute its
-size, and the second time to copy it into the trace file. If the
-resulting sizes don't match, which is what happens in this case,
-recording fails.
+    meson setup build && meson test -C build
 
-Fix by updating the size. This will work even for sending trace data
-over the network thanks to trace_msg_cache.
+Meson always reports success, because it primarily looks at process
+exit code.
 
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+To not make meson mask failures, this commit sets the exit code to one
+if some suite (we have just one) or test fails. Additionally, it
+prints error messages is suite initialization function, to make the
+failure more understandable.
+
+Signed-off-by: Michal Sojka <michal.sojka@cvut.cz>
 ---
- lib/trace-cmd/trace-output.c | 38 +++++++++++++++++++++++++++++++++++-
- 1 file changed, 37 insertions(+), 1 deletion(-)
+ utest/trace-utest.c   | 8 +++++++-
+ utest/tracefs-utest.c | 8 ++++++--
+ 2 files changed, 13 insertions(+), 3 deletions(-)
 
-diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-index c333553e..b981baf3 100644
---- a/lib/trace-cmd/trace-output.c
-+++ b/lib/trace-cmd/trace-output.c
-@@ -577,6 +577,39 @@ __hidden int tcmd_out_update_section_header(struct tracecmd_output *handle, tsiz
- 	return 0;
+diff --git a/utest/trace-utest.c b/utest/trace-utest.c
+index 39485a1..b40a217 100644
+--- a/utest/trace-utest.c
++++ b/utest/trace-utest.c
+@@ -79,6 +79,12 @@ int main(int argc, char **argv)
+ 
+ 	CU_basic_set_mode(verbose);
+ 	CU_basic_run_tests();
++
++	int err = CU_get_error() != CUE_SUCCESS ||
++		CU_get_number_of_suites_failed() > 0 ||
++		CU_get_number_of_failures() > 0;
++
+ 	CU_cleanup_registry();
+-	return 0;
++
++	return err ? 1 : 0;
  }
- 
-+/*
-+ * For files that can change while reading them (like /proc/kallsyms) the
-+ * normal "size != check_size" can fail. That's because from the time the file
-+ * size is determined and written into the output to the time the actual data
-+ * is copied into the output, the size can change. In this case, the size that
-+ * was stored in the output needs to be updated.
-+ */
-+static int update_endian_4(struct tracecmd_output *handle,
-+			   off_t offset, int val)
-+{
-+	tsize_t current;
-+	int endian4;
-+
-+	if (offset == (off_t)-1)
-+		return -1;
-+
-+	current = do_lseek(handle, 0, SEEK_CUR);
-+	if (current == (off_t)-1)
-+		return -1;
-+
-+	if (do_lseek(handle, offset, SEEK_SET) == (off_t)-1)
-+		return -1;
-+
-+	endian4 = convert_endian_4(handle, val);
-+	if (tcmd_do_write_check(handle, &endian4, 4))
-+		return -1;
-+
-+	if (do_lseek(handle, current, SEEK_SET) == (off_t)-1)
-+		return -1;
-+
-+	return 0;
-+}
-+
- static int save_string_section(struct tracecmd_output *handle, bool compress)
+diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
+index cc7e689..ac76bf6 100644
+--- a/utest/tracefs-utest.c
++++ b/utest/tracefs-utest.c
+@@ -3849,11 +3849,15 @@ static int test_suite_destroy(void)
+ static int test_suite_init(void)
  {
- 	enum tracecmd_section_flags flags = 0;
-@@ -1135,6 +1168,7 @@ static int read_proc_kallsyms(struct tracecmd_output *handle, bool compress)
- 	enum tracecmd_section_flags flags = 0;
- 	unsigned int size, check_size, endian4;
- 	const char *path = "/proc/kallsyms";
-+	off_t size_offset;
- 	tsize_t offset;
- 	struct stat st;
- 	int ret;
-@@ -1166,13 +1200,15 @@ static int read_proc_kallsyms(struct tracecmd_output *handle, bool compress)
- 	}
- 	size = get_size(path);
- 	endian4 = convert_endian_4(handle, size);
-+	size_offset = do_lseek(handle, 0, SEEK_CUR);
- 	ret = tcmd_do_write_check(handle, &endian4, 4);
- 	if (ret)
- 		goto out;
+ 	test_tep = tracefs_local_events(NULL);
+-	if (test_tep == NULL)
++        if (test_tep == NULL) {
++		perror("tracefs_local_events");
+ 		return 1;
++	}
+ 	test_instance = tracefs_instance_create(TEST_INSTANCE_NAME);
+-	if (!test_instance)
++        if (!test_instance) {
++		perror("tracefs_instance_create");
+ 		return 1;
++	}
  
- 	set_proc_kptr_restrict(0);
- 	check_size = copy_file(handle, path);
--	if (size != check_size) {
-+	if (size != check_size &&
-+	    update_endian_4(handle, size_offset, check_size)) {
- 		errno = EINVAL;
- 		tracecmd_warning("error in size of file '%s'", path);
- 		set_proc_kptr_restrict(1);
+ 	mapping_is_supported = tracefs_mapped_is_supported();
+ 	if (mapping_is_supported)
 -- 
-2.50.1
+2.50.0
 
