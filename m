@@ -1,334 +1,197 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 272F5256C76
-	for <linux-trace-devel@vger.kernel.org>; Mon,  4 Aug 2025 12:37:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from relay.hostedemail.com (smtprelay0015.hostedemail.com [216.40.44.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE47125B2E1
+	for <linux-trace-devel@vger.kernel.org>; Mon,  4 Aug 2025 12:43:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754311025; cv=none; b=FU7UBbnTOGrPvzwUMuMYA24s3XK9oeRvS6Za57mWOIHLGvEntiLpq0Xsd8So0qogr8pxCS3vJKS4U1602zBNt7s95ilu2ehEXbRPtJ0fuQO9kxZ0+EStVrPQ5pIxGdJiFmvIjPg4PQYYv3sye03RMi/RkQqSBKwJWXIJ1BvzilI=
+	t=1754311387; cv=none; b=kx5wRfP01S8Lj8oaQyZEN9YbbDmWp5vKX/S1DkhtB+2FpB2rPD9NXBdK+bZXyrVwFHQw/M1+yauBxZkayI3DM+o+9Zgrpd8nszXKT4YDzNO3CQDSff3rlZH6G+aprM2GTWfVgL7LI17MFA9zemgcjgtN0G2ur+vHqUigc9piKy4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754311025; c=relaxed/simple;
-	bh=KWsFw2SA/xsXBYhLL+VEWIEbSW2lS5RDr3OUzCy8TwY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Lh6UxI/SQ/6q3wUUK6vQ5f8T2tl1RozCNUdiHr7iwPxxfsvec4LW79sneP8heZ2+AH4OVZyiGqvwco2YNp17d1ZFmqGKqH39s+3sZJDOuATBfXFmqCtgFdGsDmmi4F9kEZ3VAH22P5pdVhXB8QrD3YL92Xqj8/APgMbZ190+HKQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 84ED2150C;
-	Mon,  4 Aug 2025 05:36:55 -0700 (PDT)
-Received: from [192.168.1.127] (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3462A3F738;
-	Mon,  4 Aug 2025 05:37:02 -0700 (PDT)
-Message-ID: <10187dcc-c054-4aa1-b8e1-758aba13a3df@arm.com>
-Date: Mon, 4 Aug 2025 13:37:06 +0100
+	s=arc-20240116; t=1754311387; c=relaxed/simple;
+	bh=e52ko/vmhSww0iPj315PEHWKxDe8pciOrK+W90VQfjg=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=O9d8JrAc+3fz8P6htWZj1x0ZNgeA4bGV+HE9RChOxGK9ykuw4AwFWdnRpG+Wkh6d5RbXOofhOwSVr5osoKN9gRPoWs6Zz9gcI4qgoLwlxvi+pRtDsUeF8QfSF58AJKhTBzUpqEHzJWbImiVk6Gmw1DkLD8vNMr0+AljIRekjUZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf05.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay07.hostedemail.com (Postfix) with ESMTP id 81F271602B2;
+	Mon,  4 Aug 2025 12:42:57 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf05.hostedemail.com (Postfix) with ESMTPA id 8DA0620018;
+	Mon,  4 Aug 2025 12:42:55 +0000 (UTC)
+Date: Mon, 4 Aug 2025 08:43:22 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Douglas Raillard <douglas.raillard@arm.com>
+Cc: linux-trace-devel@vger.kernel.org, Masami Hiramatsu
+ <mhiramat@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Takaya Saeki
+ <takayas@google.com>, Ian Rogers <irogers@google.com>, aahringo@redhat.com
+Subject: Re: [PATCH 1/2] libtraceevent: Add loading of BTF to the tep handle
+Message-ID: <20250804084322.15b8c321@gandalf.local.home>
+In-Reply-To: <e74be108-7ca5-466e-a89a-512a80a11beb@arm.com>
+References: <20250731185559.1644753-1-rostedt@goodmis.org>
+	<20250731185559.1644753-2-rostedt@goodmis.org>
+	<e74be108-7ca5-466e-a89a-512a80a11beb@arm.com>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/5] trace-cmd record / report: Record BTF file if
- function arguments are recorded
-To: Steven Rostedt <rostedt@goodmis.org>, linux-trace-devel@vger.kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Namhyung Kim
- <namhyung@kernel.org>, Takaya Saeki <takayas@google.com>,
- Ian Rogers <irogers@google.com>, aahringo@redhat.com
-References: <20250731202238.1654368-1-rostedt@goodmis.org>
- <20250731202238.1654368-5-rostedt@goodmis.org>
-Content-Language: en-US
-From: Douglas Raillard <douglas.raillard@arm.com>
-In-Reply-To: <20250731202238.1654368-5-rostedt@goodmis.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 8DA0620018
+X-Stat-Signature: 8na7ywg1oiu78mkssppj7a4oo1dm7is5
+X-Rspamd-Server: rspamout02
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX1/suz1uEiF+CZ2a2OahpkW+d9Vu3Nr+v7M=
+X-HE-Tag: 1754311375-596234
+X-HE-Meta: U2FsdGVkX19CyXORQHPkDO3ONAz30e9LNj0JG8Lq+AuBdSzsVXRtyhqSNUDupJQ4PSWwIYz+rsBfElSaEo04gr7nhYtwRjwMhABWi5s78rbYw6CElE4e9PXFfuoZfEbgE22eFjZKIDFb3KluT+EhguQAkkLTxejWM2AYVGekgA8/mvL2cy8HmZ4SI6w+EAIiUfPFuwm47zyG71ze6ob23SZVepjFpL481BUHuaTdyoREf/AiUmpG0IUm29xkGo2wwnmzSmqooilQNvv1BdTEATQHHZEpSaaYqOc+myfK/zB1PFOFLhp7OtzVkyfYApbypVKPkkp/kOoENDgg+W0yNVlSKaHpsD53dBb6kcanXvfoM3LQyGEz0+syM1zodqiV
+
+On Mon, 4 Aug 2025 12:47:31 +0100
+Douglas Raillard <douglas.raillard@arm.com> wrote:
+
+> > +int tep_btf_print_args(struct tep_handle *tep, struct trace_seq *s, void *args,
+> > +		       int nmem, int size, const char *func)
+> > +{
+> > +	struct tep_btf *btf = tep->btf;
+> > +	struct btf_type *type = tep_btf_find_func(btf, func);
+> > +	struct btf_param *param;
+> > +	unsigned long long arg;
+> > +	unsigned int encode;
+> > +	const char *param_name;
+> > +	int a, p, x, nr;
+> > +
+> > +	if (size != 4 && size != 8)
+> > +		return -1;
+> > +
+> > +	if (!type) {
+> > +		for (int i = 0; i < nmem; i++) {
+> > +			assign_arg(&arg, args, size, i);
+> > +			trace_seq_printf(s, "%llx", arg);
+> > +			if (i + 1 < nmem)
+> > +				trace_seq_puts(s, ", ");
+> > +		}
+> > +		return 0;
+> > +	}
+> > +
+> > +	if (BTF_INFO_KIND(type->info) != BTF_KIND_FUNC) {
+> > +		printf("Invalid func type %d %s\n", BTF_INFO_KIND(type->info),
+> > +		       btf_type_str(type));
+> > +		return -1;
+> > +	}
+> > +
+> > +	/* Get the function proto */
+> > +	type = btf_get_type(btf, type->type);
+> > +
+> > +	/* No proto means "()" ? */
+> > +	if (!type)
+> > +		return 0;
+> > +
+> > +	if (BTF_INFO_KIND(type->info) != BTF_KIND_FUNC_PROTO) {
+> > +		printf("Invalid func proto type %d %s\n", BTF_INFO_KIND(type->info),
+> > +		       btf_type_str(type));
+> > +		return -1;
+> > +	}
+> > +
+> > +	/* Get the number of parameters */
+> > +	nr = BTF_INFO_VLEN(type->info);
+> > +
+> > +	/* The parameters are right after the FUNC_PROTO type */
+> > +	param = ((void *)type) + sizeof(*type);
+> > +
+> > +	for (a = 0, p = 0; p < nr; a++, p++) {
+> > +		struct btf_type *t;
+> > +
+> > +		if (p)
+> > +			trace_seq_puts(s, ", ");
+> > +
+> > +		if (a == nmem) {
+> > +			trace_seq_puts(s, "...");
+> > +			break;
+> > +		}
+> > +
+> > +		assign_arg(&arg, args, size, a);
+> > +
+> > +		param_name = btf_name(btf, param[p].name_off);
+> > +		if (param_name)
+> > +			trace_seq_printf(s, "%s=", param_name);
+> > +
+> > +		t = btf_skip_modifiers(btf, param[p].type);
+> > +
+> > +		switch (t ? BTF_INFO_KIND(t->info) : BTF_KIND_UNKN) {
+> > +		case BTF_KIND_UNKN:
+> > +			trace_seq_putc(s, '?');
+> > +			/* Still print unknown type values */
+> > +			/* fallthough */
+> > +		case BTF_KIND_PTR:
+> > +			trace_seq_printf(s, "0x%llx", arg);
+> > +			break;
+> > +		case BTF_KIND_INT:
+> > +			encode = *(int *)((void *)t + sizeof(*t));
+> > +			/* Print unsigned ints as hex */
+> > +			if (BTF_INT_ENCODING(encode) & BTF_INT_SIGNED)  
+> 
+> BTF_INT_OFFSET() and BTF_INT_VAL() values should also be used to shift and mask
+> appropriately.
+
+You meant to the "arg" passed in?
+
+> 
+> I assume that regardless of BTF_INT_CHAR and BTF_INT_BOOL value, BTF_INT_SIGNED is
+> set appropriately.
+> 
+> > +				trace_seq_printf(s, "%lld", arg);
+> > +			else
+> > +				trace_seq_printf(s, "0x%llx", arg);
+> > +			break;
+> > +		case BTF_KIND_ENUM:  
+> 
+> Could add as well: case BTF_KIND_ENUM64:
+
+Of course then we would need to check if this is a 32 bit infrastructure.
+I'm assuming it would be treated differently. More like a struct?
+
+> 
+> > +			trace_seq_printf(s, "%lld", arg);  
+> 
+> This could probably be improved to display the enum variant name, with the caveats that:
+
+If btf has it, sure! But that can come later.
+
+Thanks,
+
+-- Steve
 
 
-Don't forget to update the doc as well :)
-Documentation/trace-cmd/trace-cmd.dat.v7.5.txt
-
-On 31-07-2025 21:20, Steven Rostedt wrote:
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 > 
-> If function tracer is recorded with func-args option set, or the
-> function_graph tracer is recorded with the funcgraph-args option set, then
-> record the BTF file in a new BTF_FILE section in the trace.dat file.
+> 1. C allows values that are not that of any enumerator AFAIR, so you'd need the
+>     raw int display fallback.
+> 2. GNU C allows enum forward declaration. This is not ISO C and BTF has no specific
+>     representation for that. As a result, last time I checked you end up with
+>     BTF_KIND_ENUM and info.vlen == 0. Another entry with info.vlen != 0 should
+>     also exist and give the actual enumerators list. Those forward decl provide an
+>     incomplete type though, so you should not encounter it directly in function
+>     parameters.
 > 
-> This is compressed on disk, and when the trace.dat file is read, it is
-> loaded into memory and sent to the libtraceevent tep_load_btf() function.
+> > +			break;  
 > 
-> This will be used to show arguments of the function tracer:
-> 
->               cat-33501 [005] ..... 136155.767937: function:             mutex_unlock(lock=0xffffffff831dbbe0)
->               cat-33501 [005] ..... 136155.767939: function:             __mutex_unlock_slowpath(lock=0xffffffff831dbbe0, ip=0xffffffff814a7154)
->               cat-33501 [005] ..... 136155.767940: function:             __f_unlock_pos(f=0xffff8881538de000)
->               cat-33501 [005] ..... 136155.767940: function:             mutex_unlock(lock=0xffff8881538de090)
->               cat-33501 [005] ..... 136155.767940: function:             __mutex_unlock_slowpath(lock=0xffff8881538de090, ip=0xffffffff816e8ed1)
->               cat-33501 [005] ..... 136155.767941: function:             mem_cgroup_handle_over_high(gfp_mask=0xcc0)
->               cat-33501 [005] ..... 136155.767941: function:             blkcg_maybe_throttle_current()
->               cat-33501 [005] ..... 136155.767942: function:             __rseq_handle_notify_resume(ksig=0x0, regs=0xffffc9000e3eff58)
->               cat-33501 [005] d.... 136155.767943: function:             fpregs_assert_state_consistent()
->               cat-33501 [005] d.... 136155.767943: function:             switch_fpu_return()
->               cat-33501 [005] ..... 136155.767950: function:             __x64_sys_execve(regs=0xffffc9000e3eff58)
->               cat-33501 [005] ..... 136155.767951: function:                getname_flags(filename=0x7ffe7d33f3d0, flags=0)
->               cat-33501 [005] ..... 136155.767951: function:                getname_flags.part.0(7ffe7d33f3d0, 0, 0, 0, 0, 0)
->               cat-33501 [005] ..... 136155.767951: function:                   kmem_cache_alloc_noprof(s=0xffff8881001d3800, gfpflags=0xcc0)
-> 
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> ---
->   .../include/private/trace-cmd-private.h       |  3 +
->   lib/trace-cmd/trace-compress.c                | 26 ++++++++
->   lib/trace-cmd/trace-input.c                   | 15 +++++
->   lib/trace-cmd/trace-output.c                  | 64 +++++++++++++++++++
->   tracecmd/trace-record.c                       | 42 +++++++++++-
->   5 files changed, 149 insertions(+), 1 deletion(-)
-> 
-> diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-> index 809e244b2d1c..4743bbc62048 100644
-> --- a/lib/trace-cmd/include/private/trace-cmd-private.h
-> +++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-> @@ -159,6 +159,7 @@ enum {
->   	TRACECMD_OPTION_PRINTK,
->   	TRACECMD_OPTION_CMDLINES,
->   	TRACECMD_OPTION_BUFFER_TEXT,
-> +	TRACECMD_OPTION_BTF_FILE,
->   	TRACECMD_OPTION_MAX,
->   };
->   
-> @@ -340,6 +341,7 @@ int tracecmd_append_buffer_cpu_data(struct tracecmd_output *handle,
->   struct tracecmd_output *tracecmd_get_output_handle_fd(int fd);
->   unsigned long tracecmd_get_out_file_version(struct tracecmd_output *handle);
->   size_t tracecmd_get_out_file_offset(struct tracecmd_output *handle);
-> +int tracecmd_append_btf_file(struct tracecmd_output *handle);
->   
->   /* --- Reading the Fly Recorder Trace --- */
->   
-> @@ -568,6 +570,7 @@ int tracecmd_uncompress_chunk(struct tracecmd_compression *handle,
->   			      struct tracecmd_compress_chunk *chunk, char *data);
->   int tracecmd_load_chunks_info(struct tracecmd_compression *handle,
->   			      struct tracecmd_compress_chunk **chunks_info);
-> +void *tracecmd_uncompress_buffer(struct tracecmd_compression *handle, size_t *size);
->   /* --- Plugin handling --- */
->   extern struct tep_plugin_option trace_ftrace_options[];
->   
-> diff --git a/lib/trace-cmd/trace-compress.c b/lib/trace-cmd/trace-compress.c
-> index 2a7a3e24a7ad..19457a1e0f41 100644
-> --- a/lib/trace-cmd/trace-compress.c
-> +++ b/lib/trace-cmd/trace-compress.c
-> @@ -363,6 +363,32 @@ out:
->   	free(buf);
->   	return ret;
->   }
-> +/**
-> + * tracecmd_uncompress_buffer - Returned the current uncompressed buffer
-> + * @handle: compression handle
-> + * @size: A pointer to place the size of the uncompressed buffer in
-> + *
-> + * Returns the current uncompressed buffer and resets the compression
-> + * @handle.
-> + *
-> + * Returns the buffer (must be freed with free()) or NULL.
-> + *  @size (if not NULL) will contain the size of the uncompressed buffer.
-> + */
-> +void *tracecmd_uncompress_buffer(struct tracecmd_compression *handle, size_t *size)
-> +{
-> +	void *buffer;
-> +
-> +	if (!handle)
-> +		return NULL;
-> +
-> +	if (size)
-> +		*size = handle->capacity;
-> +
-> +	buffer = handle->buffer;
-> +	handle->buffer = NULL;
-> +	tracecmd_compress_reset(handle);
-> +	return buffer;
-> +}
->   
->   /**
->    * tracecmd_compress_buffer_write - write() to compression buffer
-> diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-> index 6080a6f0cdfd..84afc346a86a 100644
-> --- a/lib/trace-cmd/trace-input.c
-> +++ b/lib/trace-cmd/trace-input.c
-> @@ -1026,6 +1026,17 @@ static int read_ftrace_printk(struct tracecmd_input *handle)
->   	return 0;
->   }
->   
-> +static int read_btf(struct tracecmd_input *handle)
-> +{
-> +	void *raw_data;
-> +	size_t size;
-> +
-> +	raw_data = tracecmd_uncompress_buffer(handle->compress, &size);
-> +
-> +	tep_load_btf(handle->pevent, raw_data, size);
-> +	return 0;
-> +}
-> +
->   static int read_and_parse_cmdlines(struct tracecmd_input *handle);
->   
->   /**
-> @@ -1203,6 +1214,9 @@ static int handle_section(struct tracecmd_input *handle, struct file_section *se
->   	case TRACECMD_OPTION_CMDLINES:
->   		ret = read_and_parse_cmdlines(handle);
->   		break;
-> +	case TRACECMD_OPTION_BTF_FILE:
-> +		ret = read_btf(handle);
-> +		break;
->   	default:
->   		ret = 0;
->   		break;
-> @@ -4174,6 +4188,7 @@ static int handle_options(struct tracecmd_input *handle)
->   		case TRACECMD_OPTION_KALLSYMS:
->   		case TRACECMD_OPTION_PRINTK:
->   		case TRACECMD_OPTION_CMDLINES:
-> +		case TRACECMD_OPTION_BTF_FILE:
->   			if (size < 8)
->   				break;
->   			section_add_or_update(handle, option, -1,
-> diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
-> index e775cdc03bfc..ac8f178b1a91 100644
-> --- a/lib/trace-cmd/trace-output.c
-> +++ b/lib/trace-cmd/trace-output.c
-> @@ -2288,6 +2288,70 @@ int tracecmd_write_cmdlines(struct tracecmd_output *handle)
->   	return 0;
->   }
->   
-> +#define BTF_FILE "/sys/kernel/btf/vmlinux"
-> +
-> +int tracecmd_append_btf_file(struct tracecmd_output *handle)
-> +{
-> +	tsize_t offset, size, check_size;
-> +	struct tracecmd_option *option;
-> +	struct iovec *vect;
-> +	struct stat st;
-> +	int ret;
-> +
-> +	if (!HAS_SECTIONS(handle))
-> +		return -1;
-> +
-> +	offset = write_compress_section_header(handle, TRACECMD_OPTION_BTF_FILE, NULL, true);
-> +	if (offset == (off_t)-1)
-> +		return -1;
-> +
-> +	tcmd_out_compression_start(handle);
-> +
-> +	ret = stat(BTF_FILE, &st);
-> +	if (ret < 0)
-> +		return -1;
-> +
-> +	check_size = copy_file(handle, BTF_FILE);
-> +	if (st.st_size != check_size) {
-> +		errno = EINVAL;
-> +		tracecmd_warning("error in size of file '%s'", BTF_FILE);
-> +		return -1;
-> +	}
-> +
-> +	if (tcmd_out_compression_end(handle))
-> +		return -1;
-> +
-> +	if (tcmd_out_update_section_header(handle, offset))
-> +		return -1;
-> +
-> +	return 0;
-> +
-> +	/*
-> +	 * BTF file
-> +	 *  - data offset in the file
-> +	 *  - data size
-> +	 */
-> +
-> +	vect = calloc(2, sizeof(struct iovec));
-> +	if (!vect)
-> +		return -1;
-> +	vect[0].iov_base = &offset;
-> +	vect[0].iov_len = 8;
-> +	vect[1].iov_base = &size;
-> +	vect[1].iov_len = 8;
-> +
-> +	option = tracecmd_add_option_v(handle, TRACECMD_OPTION_BTF_FILE, vect, 2);
-> +	free(vect);
-> +
-> +	if (!option)
-> +		return -1;
-> +
-> +	if (do_lseek(handle, 0, SEEK_END) == (off_t)-1)
-> +		return -1;
-> +
-> +	return 0;
-> +}
-> +
->   static char *get_clock(struct tracecmd_output *handle)
->   {
->   	struct tracefs_instance *inst;
-> diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-> index 47486e9863df..f36ee6cd6cc6 100644
-> --- a/tracecmd/trace-record.c
-> +++ b/tracecmd/trace-record.c
-> @@ -4632,12 +4632,46 @@ error:
->   	return NULL;
->   }
->   
-> +static void check_need_btf(bool *need_btf, struct tracefs_instance *instance)
-> +{
-> +	bool func_graph_trace;
-> +	bool func_trace;
-> +	char *current;
-> +
-> +	/* Nothing to do if it's already set */
-> +	if (*need_btf)
-> +		return;
-> +
-> +	current = tracefs_instance_file_read(instance, "current_tracer", NULL);
-> +	if (!current)
-> +		return;
-> +
-> +	func_trace = strcmp(current, "function\n") == 0;
-> +	func_graph_trace = strcmp(current, "function_graph\n") == 0;
-> +
-> +	free(current);
-> +	if (!func_trace && !func_graph_trace)
-> +		return;
-> +
-> +	if (func_trace)
-> +		current = tracefs_instance_file_read(instance, "options/func-args", NULL);
-> +	else
-> +		current = tracefs_instance_file_read(instance, "options/funcgraph-args", NULL);
-> +	if (!current)
-> +		return;
-> +
-> +	*need_btf = strncmp(current, "1", 1) == 0;
-> +
-> +	free(current);
-> +}
-> +
->   static void record_data(struct common_record_context *ctx)
->   {
->   	struct tracecmd_output *handle;
->   	struct buffer_instance *instance;
->   	bool have_proxy = false;
->   	bool local = false;
-> +	bool need_btf = false;
->   	int max_cpu_count = local_cpu_count;
->   	char **temp_files;
->   	int i;
-> @@ -4733,11 +4767,17 @@ static void record_data(struct common_record_context *ctx)
->   							tracefs_instance_get_name(instance->tracefs),
->   							cpus);
->   				add_buffer_stat(handle, instance);
-> +				check_need_btf(&need_btf, instance->tracefs);
->   			}
->   		}
->   
-> -		if (!no_top_instance() && !top_instance.msg_handle)
-> +		if (!no_top_instance() && !top_instance.msg_handle) {
->   			print_stat(&top_instance);
-> +			check_need_btf(&need_btf, top_instance.tracefs);
-> +		}
-> +
-> +		if (need_btf)
-> +			tracecmd_append_btf_file(handle);
->   
->   		for_all_instances(instance) {
->   			add_pid_maps(handle, instance);
+> > +		default:
+> > +			/* This does not handle complex arguments */
+> > +			trace_seq_printf(s, "(%s)[0x%llx", btf_type_str(t), arg);
+> > +			for (x = sizeof(long); x < t->size; x += sizeof(long)) {
+> > +				trace_seq_putc(s, ':');
+> > +				if (++a == nmem) {
+> > +					trace_seq_puts(s, "...]");
+> > +					return 0;
+> > +				}
+> > +				assign_arg(&arg, args, size, a);
+> > +				trace_seq_printf(s, "0x%llx", arg);
+> > +			}
+> > +			trace_seq_putc(s, ']');
+> > +			break;
+> > +		}
+> > +	}
+> > +	return 0;
+> > +}  
 
