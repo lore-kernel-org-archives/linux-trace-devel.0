@@ -1,149 +1,97 @@
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from relay.hostedemail.com (smtprelay0014.hostedemail.com [216.40.44.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B9532DC342
-	for <linux-trace-devel@vger.kernel.org>; Mon, 11 Aug 2025 08:22:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A3622DAFA5
+	for <linux-trace-devel@vger.kernel.org>; Mon, 11 Aug 2025 21:56:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754900569; cv=none; b=Qif65HjkitlwftTzA592U+JoGkj/ZfoxEonrV8PtBe0MshvDGbo5YBMzMKmIg3Lwwf3MBQ9OPSZUMkFYuWz6EJZq3RtCdufkEsZKrEHIAwsnrwNGT6BHqZ39ZwCciTT0J5HkrPc5yApAheZ4IcjXSGmMXyoNH6K089jd+wjeAL8=
+	t=1754949364; cv=none; b=dok9fiw82YlkOT/ttSeeZs/G2U87IxMniufsQz+YINZyK9OfaQlRYU4D5dHuVBePnIyGxLJbepgccUpt6qzFVZPyjGwNW2R3bH+xI8IPynvArqBX9hz0HP24pjVbDi7BY4ahInsXLVIWLwPUpKy0IqxMqehVgmDe5z1hrnT3fOI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754900569; c=relaxed/simple;
-	bh=i8A7sKulOXPQD+tI+U8j5j1BVlriazQe4bI783GlT+A=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=OkozrrUNL01f8o0LlKYw9ncs0Nve4vNPnOw5XgppS+HbU8uK3kLtRz31LX/wTEGlT1WSYI087DvZDHxTz2kW9MdAm2g41w+u5PlHus1XfQ/WWk1kvUoghYYWWzmfB+XTgXrSrlXUQtoTPHIJCh1SLLICIqCyQan4qEaoTocfBGw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=kDtiEveg; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="kDtiEveg"
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 57AJrJtY017895;
-	Mon, 11 Aug 2025 08:22:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=i8A7sK
-	ulOXPQD+tI+U8j5j1BVlriazQe4bI783GlT+A=; b=kDtiEvegAlSmd6rrJc94vf
-	yYKeaEOXROVKGKqLt1PAY53Qm81ZixRoSL6okc74cEg0mFN5NOgHBWRHqNiL9BHU
-	aZ9cFbCSioUYijFa8+lErp8OyIR9jscY7HZAOt81ZeN61hABrdLfQ1U+cpJKCJ5W
-	6X9hJ3NzEF9nLdn8mAgh93A3+o2b4MBEbZFhsvnHQ4XHyzdgvgZc+jR561kQHbwH
-	2ViXwjmsGq0uMl7FVVZTFuRSlexxol2hieuDggCOj7N2XodmhTRaFsJtAKQYF0cd
-	Tsg2ChhVivrxTCqgqOXSnkJC4DvrZzT5frM+9WPJf8kiilsna6Y7GoRoFZ4MqISA
-	==
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48dvrnr4vr-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 11 Aug 2025 08:22:44 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 57B4X9mR010832;
-	Mon, 11 Aug 2025 08:22:43 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 48egnud6td-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 11 Aug 2025 08:22:43 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 57B8Mdkb17629520
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 11 Aug 2025 08:22:39 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C055220040;
-	Mon, 11 Aug 2025 08:22:39 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 641952004B;
-	Mon, 11 Aug 2025 08:22:39 +0000 (GMT)
-Received: from [127.0.0.1] (unknown [9.152.108.100])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 11 Aug 2025 08:22:39 +0000 (GMT)
-Message-ID: <f5ad96bcbf5d94a4579b7a3be21e4048bd7f2681.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 0/2] libtracecmd: Support changing /proc/kallsyms
-From: Ilya Leoshkevich <iii@linux.ibm.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-trace-devel@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev
- <agordeev@linux.ibm.com>
-Date: Mon, 11 Aug 2025 10:22:39 +0200
-In-Reply-To: <20250711132802.1781-1-iii@linux.ibm.com>
-References: <20250711132802.1781-1-iii@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+	s=arc-20240116; t=1754949364; c=relaxed/simple;
+	bh=3KpBYjtcgCc1XsiLpNEI21MHvLLvyo1H+gR44XSFqzw=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=XFdH+AsD0riIZpzQzJMpWW5GcU6vexktLxhosv5LAJcNlsRq308Y7qu5TmciRczOdTBsvxItetCdHqkPy3yl8JTjLHnffPTj9tONNhZGQv8/raAH8RCkwCxFlzl4UhI5p3fomlCARHPnC3dXu2yAyFv8ooSH8jR+gzWU5k1TDwE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf18.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay03.hostedemail.com (Postfix) with ESMTP id 462DBA5427
+	for <linux-trace-devel@vger.kernel.org>; Mon, 11 Aug 2025 21:55:55 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf18.hostedemail.com (Postfix) with ESMTPA id 09B7D30
+	for <linux-trace-devel@vger.kernel.org>; Mon, 11 Aug 2025 21:55:53 +0000 (UTC)
+Date: Mon, 11 Aug 2025 17:55:52 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] libtracefs: Fix tracefs_event_is_enabled() for all events
+Message-ID: <20250811175552.662cda17@batman.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODExMDA1NSBTYWx0ZWRfX7dlRBYROz03F
- CZRbccRbRcZgb/1zLu+RCmxMhTTCT9IWpwYF2mPC+nVBcsY9nspzqKfsgsRgrewqlIC24vhJHV3
- kkD2aHGgUrfIskW+y1xyK9Lb00a2obtlcqRqVp2fI9KD+Tq7E8NfZz3Yx4jfMKYlSt+8gNfZzE+
- Lh8T/Ps+pNdYmo8++GnaJIJNEXRtG4+zamWnjiXOXIHI0SPFTxCNZurLK1Y8ReX2E64ETO8iEPj
- 7FTOmVB8nT1djZmeNqoPLRJbgZHHQ0OmRh8b8Z/AyhscOu+p1iuzH3rzlB5KP4XG3gOeNHNr/dh
- mERTvurj5JDsmesyfOSu5J+2DDOEXrxyMbzotVCrjllYQOoKVVcWbGqdhSjAHapzRFV03KxLyVv
- dF2YhMxBgMkEHN5ql93h3tpFqeK8Fc8nTMHZn1OA9Hq3CYcR+R52F06PVv2tLeRdcpdDzdS0
-X-Authority-Analysis: v=2.4 cv=GrpC+l1C c=1 sm=1 tr=0 ts=6899a854 cx=c_pps
- a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
- a=IkcTkHD0fZMA:10 a=2OwXVqhp2XgA:10 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8
- a=MLyIqMX3CaRT8rIYaAoA:9 a=QEXdDO2ut3YA:10
-X-Proofpoint-GUID: ID4xUiFzIPWdwt1xD_asQhZEpnqy4gvS
-X-Proofpoint-ORIG-GUID: ID4xUiFzIPWdwt1xD_asQhZEpnqy4gvS
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-08-11_01,2025-08-06_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- impostorscore=0 suspectscore=0 phishscore=0 bulkscore=0 mlxlogscore=850
- malwarescore=0 clxscore=1011 adultscore=0 mlxscore=0 spamscore=0
- lowpriorityscore=0 priorityscore=1501 classifier=spam authscore=0 authtc=n/a
- authcc= route=outbound adjust=0 reason=mlx scancount=1
- engine=8.19.0-2507300000 definitions=main-2508110055
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Stat-Signature: z815p14zj87xgd831b6ympamfx8wj91u
+X-Rspamd-Server: rspamout07
+X-Rspamd-Queue-Id: 09B7D30
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX18Fkao5SbeN16C8EoSszLyS/WQ4sKQmaDg=
+X-HE-Tag: 1754949353-443064
+X-HE-Meta: U2FsdGVkX1+8ojHBGQ3phTsbKKUrBkZGUqPKhxntaG0fUNidT1Q4yP63MHioTSGBqSrYyqlhLrBMw+KXWE5OuexJzjRPFViQGhgSOibjYCh2fLes4tMwhYjyqhYPZt/SxXO6aZXPIZcgtpHzzWlnZpU1+AkI/wuXg/GEFfKEvzg2PJXBxGsZhn8wJcn7D4hEGaokMQPXaqpJGftpTeAJVY4xmuiWA6AWRvWK9hZGqfY9Jzc4vZOP5z90GRBs+351UKv10Pyyl4fZKN32TevI1aFtGnb3d6QAZIse+aWOJDDpatBX1Db6PU3d+0yMNRKT0sMJQKJQ2NzxSu+D/Pkz8fD0QVEUNjruTYkmDV6YS7qd3lD1tHuL+Kz6Cr2LmgHC
 
-On Fri, 2025-07-11 at 15:25 +0200, Ilya Leoshkevich wrote:
-> v2:
-> https://lore.kernel.org/linux-trace-devel/20250602214154.446881-1-iii@lin=
-ux.ibm.com/
-> v2 -> v3: Add a comment and some newlines (Steven).
->=20
-> v1:
-> https://lore.kernel.org/linux-trace-devel/20250416231325.14113-1-iii@linu=
-x.ibm.com/
-> v1 -> v2: Rewrite the size instead of reading the file twice
-> (Steven).
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Turns out exposing=
- do_lseek() is not necessary, since
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 everything is in t=
-he same C file.
->=20
-> Hi,
->=20
-> this series fixes tracing in presence of frequent BPF or kernel
-> module
-> loads/unloads. Patch 1 is a small required improvement; patch 2 is
-> the
-> actual implementation.
->=20
-> The problem can be reproduced like this:
->=20
-> =C2=A0=C2=A0=C2=A0 # while true; do rmmod loop; modprobe loop; done &
->=20
-> =C2=A0=C2=A0=C2=A0 # while trace-cmd record -p function_graph /bin/true; =
-do :; done
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 plugin 'function_graph'
-> =C2=A0=C2=A0=C2=A0 libtracecmd: Invalid argument
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 error in size of file '/proc/kallsyms'
-> =C2=A0=C2=A0=C2=A0 trace-cmd: Invalid argument
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Error creating output file
->=20
-> Best regards,
-> Ilya
->=20
-> Ilya Leoshkevich (2):
-> =C2=A0 libtracecmd: Support querying position within a new compressed
-> block
-> =C2=A0 libtracecmd: Support changing /proc/kallsyms
->=20
-> =C2=A0lib/trace-cmd/trace-compress.c |=C2=A0 5 ++++-
-> =C2=A0lib/trace-cmd/trace-output.c=C2=A0=C2=A0 | 38
-> +++++++++++++++++++++++++++++++++-
-> =C2=A02 files changed, 41 insertions(+), 2 deletions(-)
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Gentle ping.
+When tracefs_event_is_ensabled() is called with both system and event
+as NULL in order to get the state of all events, it tries to disable all
+events. This is becaues the call to enable_disable_all() doesn't take
+the state as a parameter and just looks at the "enable" flag.
+
+Fixes: fc94d1a8 ("libtracefs: Add tracefs_event_enable/disable() API")
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ src/tracefs-events.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
+
+diff --git a/src/tracefs-events.c b/src/tracefs-events.c
+index 1576153..aabec02 100644
+--- a/src/tracefs-events.c
++++ b/src/tracefs-events.c
+@@ -1511,12 +1511,23 @@ static int enable_disable_system(struct tracefs_instance *instance,
+ }
+ 
+ static int enable_disable_all(struct tracefs_instance *instance,
+-			      bool enable)
++			      bool enable, enum event_state *state)
+ {
+ 	const char *str = enable ? "1" : "0";
++	char *event_file;
+ 	int ret;
+ 
+-	ret = tracefs_instance_file_write(instance, "events/enable", str);
++	ret = asprintf(&event_file, "events/enable");
++	if (ret < 0)
++		return ret;
++
++	if (state)
++		ret = read_event_state(instance, event_file, state);
++	else
++
++		ret = tracefs_instance_file_write(instance, event_file, str);
++	free(event_file);
++
+ 	return ret < 0 ? ret : 0;
+ }
+ 
+@@ -1552,7 +1563,7 @@ static int event_enable_disable(struct tracefs_instance *instance,
+ 
+ 	/* Handle all events first */
+ 	if (!system && !event)
+-		return enable_disable_all(instance, enable);
++		return enable_disable_all(instance, enable, state);
+ 
+ 	systems = tracefs_event_systems(NULL);
+ 	if (!systems)
+-- 
+2.47.2
+
