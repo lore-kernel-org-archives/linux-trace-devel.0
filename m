@@ -1,208 +1,149 @@
-Received: from relay.hostedemail.com (smtprelay0016.hostedemail.com [216.40.44.16])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9C1C86359
-	for <linux-trace-devel@vger.kernel.org>; Mon,  4 Aug 2025 17:34:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B9532DC342
+	for <linux-trace-devel@vger.kernel.org>; Mon, 11 Aug 2025 08:22:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754328862; cv=none; b=B2OuOEBt7S4K5O4CeOnmYz8ZoezPzGytrUvHMGn3zZgMxXZp810GLN9chpTfVLDbKhJs1rZcbp8YMaxAsDxeDvNQEYSJt1CxAa1OjjsgOxo2h72Et7ux4gndbou9CQn3eFFSAwmV353zFy4g+IbRyaNTXWUxj8lcwyOLKtZiK2s=
+	t=1754900569; cv=none; b=Qif65HjkitlwftTzA592U+JoGkj/ZfoxEonrV8PtBe0MshvDGbo5YBMzMKmIg3Lwwf3MBQ9OPSZUMkFYuWz6EJZq3RtCdufkEsZKrEHIAwsnrwNGT6BHqZ39ZwCciTT0J5HkrPc5yApAheZ4IcjXSGmMXyoNH6K089jd+wjeAL8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754328862; c=relaxed/simple;
-	bh=riyiu7WQK0m3LKRa0YOBaMa7xJvlrK5gmAKKXFcoxIU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=fJjauJtRdhEy5UmQuKQuXVOvR1SBQckaH0I3J9GkBpz+LwSvk2GJz9zjVR39G5fa8lGoBxLPAcogeZklD9qKbCc4zf3YYNg5eZdYlMfijpkTycRkf1ldJO7rbe6tHLmRRFkyA58Ll92t1UN++3ptxs06uhfBpBHfsv0qovc+VZs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf14.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay09.hostedemail.com (Postfix) with ESMTP id 66F20814DC;
-	Mon,  4 Aug 2025 17:34:17 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf14.hostedemail.com (Postfix) with ESMTPA id 7FC652D;
-	Mon,  4 Aug 2025 17:34:15 +0000 (UTC)
-Date: Mon, 4 Aug 2025 13:34:43 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Douglas Raillard <douglas.raillard@arm.com>
-Cc: linux-trace-devel@vger.kernel.org, Masami Hiramatsu
- <mhiramat@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Takaya Saeki
- <takayas@google.com>, Ian Rogers <irogers@google.com>, aahringo@redhat.com
-Subject: Re: [PATCH 1/2] libtraceevent: Add loading of BTF to the tep handle
-Message-ID: <20250804133443.501b2187@gandalf.local.home>
-In-Reply-To: <c5205c83-0d71-4b4b-a54e-ee9669a7b115@arm.com>
-References: <20250731185559.1644753-1-rostedt@goodmis.org>
-	<20250731185559.1644753-2-rostedt@goodmis.org>
-	<c5205c83-0d71-4b4b-a54e-ee9669a7b115@arm.com>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1754900569; c=relaxed/simple;
+	bh=i8A7sKulOXPQD+tI+U8j5j1BVlriazQe4bI783GlT+A=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=OkozrrUNL01f8o0LlKYw9ncs0Nve4vNPnOw5XgppS+HbU8uK3kLtRz31LX/wTEGlT1WSYI087DvZDHxTz2kW9MdAm2g41w+u5PlHus1XfQ/WWk1kvUoghYYWWzmfB+XTgXrSrlXUQtoTPHIJCh1SLLICIqCyQan4qEaoTocfBGw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=kDtiEveg; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="kDtiEveg"
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 57AJrJtY017895;
+	Mon, 11 Aug 2025 08:22:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=i8A7sK
+	ulOXPQD+tI+U8j5j1BVlriazQe4bI783GlT+A=; b=kDtiEvegAlSmd6rrJc94vf
+	yYKeaEOXROVKGKqLt1PAY53Qm81ZixRoSL6okc74cEg0mFN5NOgHBWRHqNiL9BHU
+	aZ9cFbCSioUYijFa8+lErp8OyIR9jscY7HZAOt81ZeN61hABrdLfQ1U+cpJKCJ5W
+	6X9hJ3NzEF9nLdn8mAgh93A3+o2b4MBEbZFhsvnHQ4XHyzdgvgZc+jR561kQHbwH
+	2ViXwjmsGq0uMl7FVVZTFuRSlexxol2hieuDggCOj7N2XodmhTRaFsJtAKQYF0cd
+	Tsg2ChhVivrxTCqgqOXSnkJC4DvrZzT5frM+9WPJf8kiilsna6Y7GoRoFZ4MqISA
+	==
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48dvrnr4vr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 11 Aug 2025 08:22:44 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 57B4X9mR010832;
+	Mon, 11 Aug 2025 08:22:43 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 48egnud6td-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 11 Aug 2025 08:22:43 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 57B8Mdkb17629520
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 11 Aug 2025 08:22:39 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id C055220040;
+	Mon, 11 Aug 2025 08:22:39 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 641952004B;
+	Mon, 11 Aug 2025 08:22:39 +0000 (GMT)
+Received: from [127.0.0.1] (unknown [9.152.108.100])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 11 Aug 2025 08:22:39 +0000 (GMT)
+Message-ID: <f5ad96bcbf5d94a4579b7a3be21e4048bd7f2681.camel@linux.ibm.com>
+Subject: Re: [PATCH v3 0/2] libtracecmd: Support changing /proc/kallsyms
+From: Ilya Leoshkevich <iii@linux.ibm.com>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-trace-devel@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev
+ <agordeev@linux.ibm.com>
+Date: Mon, 11 Aug 2025 10:22:39 +0200
+In-Reply-To: <20250711132802.1781-1-iii@linux.ibm.com>
+References: <20250711132802.1781-1-iii@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Stat-Signature: hcd55d7rqmzdzgm38omegon5ypof7hxz
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: 7FC652D
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1/LEYGYQMGNIUJEoAbn77hi/hcPWSwZQTY=
-X-HE-Tag: 1754328855-504894
-X-HE-Meta: U2FsdGVkX1+r7N8chHWdvOscchHDgbvC36pdXy5l4DLpDPTDeivfmZgFTqmMKZiKPc37CWLZfzWo4K93nG0HT0DnZNQm/1LHOMWQeI1sRz7/oQfjAfsc5XE3CrEX6KPBAesVKmRpEJU4g4F3RzpMejuNhJOt++FnWUqTC7swJfzvhYoEqc3VaPYLK/IW+31CbcrtC6M4WE60QL5tKJvdBq05bpMi8qKqpYOdqSYLKI9z9QSGG02+920hWUd9CtNFoDVVhrgHxiRlMUtkJIXOAJTYnC6UygM3bnou22nQahdLYt0LZz/tyiPtmfJyqBg4IKrf5Mos9rDvD5b93n6+UkEQYVCHejTsrMw/+pyxLxK5J3T6TPlc+k/v44ThHbGkiqexqepa3eBFDW6e/PlZUf9kmMEM2oEP5CLH3XPFNCDGLEWGIuAPLu90rZbMF3DgS7QcnLk8viUuuK78ZvIreJ6V+CgBDngB
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODExMDA1NSBTYWx0ZWRfX7dlRBYROz03F
+ CZRbccRbRcZgb/1zLu+RCmxMhTTCT9IWpwYF2mPC+nVBcsY9nspzqKfsgsRgrewqlIC24vhJHV3
+ kkD2aHGgUrfIskW+y1xyK9Lb00a2obtlcqRqVp2fI9KD+Tq7E8NfZz3Yx4jfMKYlSt+8gNfZzE+
+ Lh8T/Ps+pNdYmo8++GnaJIJNEXRtG4+zamWnjiXOXIHI0SPFTxCNZurLK1Y8ReX2E64ETO8iEPj
+ 7FTOmVB8nT1djZmeNqoPLRJbgZHHQ0OmRh8b8Z/AyhscOu+p1iuzH3rzlB5KP4XG3gOeNHNr/dh
+ mERTvurj5JDsmesyfOSu5J+2DDOEXrxyMbzotVCrjllYQOoKVVcWbGqdhSjAHapzRFV03KxLyVv
+ dF2YhMxBgMkEHN5ql93h3tpFqeK8Fc8nTMHZn1OA9Hq3CYcR+R52F06PVv2tLeRdcpdDzdS0
+X-Authority-Analysis: v=2.4 cv=GrpC+l1C c=1 sm=1 tr=0 ts=6899a854 cx=c_pps
+ a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
+ a=IkcTkHD0fZMA:10 a=2OwXVqhp2XgA:10 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8
+ a=MLyIqMX3CaRT8rIYaAoA:9 a=QEXdDO2ut3YA:10
+X-Proofpoint-GUID: ID4xUiFzIPWdwt1xD_asQhZEpnqy4gvS
+X-Proofpoint-ORIG-GUID: ID4xUiFzIPWdwt1xD_asQhZEpnqy4gvS
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-08-11_01,2025-08-06_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ impostorscore=0 suspectscore=0 phishscore=0 bulkscore=0 mlxlogscore=850
+ malwarescore=0 clxscore=1011 adultscore=0 mlxscore=0 spamscore=0
+ lowpriorityscore=0 priorityscore=1501 classifier=spam authscore=0 authtc=n/a
+ authcc= route=outbound adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2507300000 definitions=main-2508110055
 
-On Mon, 4 Aug 2025 17:07:04 +0100
-Douglas Raillard <douglas.raillard@arm.com> wrote:
+On Fri, 2025-07-11 at 15:25 +0200, Ilya Leoshkevich wrote:
+> v2:
+> https://lore.kernel.org/linux-trace-devel/20250602214154.446881-1-iii@lin=
+ux.ibm.com/
+> v2 -> v3: Add a comment and some newlines (Steven).
+>=20
+> v1:
+> https://lore.kernel.org/linux-trace-devel/20250416231325.14113-1-iii@linu=
+x.ibm.com/
+> v1 -> v2: Rewrite the size instead of reading the file twice
+> (Steven).
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Turns out exposing=
+ do_lseek() is not necessary, since
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 everything is in t=
+he same C file.
+>=20
+> Hi,
+>=20
+> this series fixes tracing in presence of frequent BPF or kernel
+> module
+> loads/unloads. Patch 1 is a small required improvement; patch 2 is
+> the
+> actual implementation.
+>=20
+> The problem can be reproduced like this:
+>=20
+> =C2=A0=C2=A0=C2=A0 # while true; do rmmod loop; modprobe loop; done &
+>=20
+> =C2=A0=C2=A0=C2=A0 # while trace-cmd record -p function_graph /bin/true; =
+do :; done
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 plugin 'function_graph'
+> =C2=A0=C2=A0=C2=A0 libtracecmd: Invalid argument
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 error in size of file '/proc/kallsyms'
+> =C2=A0=C2=A0=C2=A0 trace-cmd: Invalid argument
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Error creating output file
+>=20
+> Best regards,
+> Ilya
+>=20
+> Ilya Leoshkevich (2):
+> =C2=A0 libtracecmd: Support querying position within a new compressed
+> block
+> =C2=A0 libtracecmd: Support changing /proc/kallsyms
+>=20
+> =C2=A0lib/trace-cmd/trace-compress.c |=C2=A0 5 ++++-
+> =C2=A0lib/trace-cmd/trace-output.c=C2=A0=C2=A0 | 38
+> +++++++++++++++++++++++++++++++++-
+> =C2=A02 files changed, 41 insertions(+), 2 deletions(-)
 
-> > +struct btf_header;
-> > +struct btf_type;
-> > +
-> > +struct tep_btf {
-> > +	struct btf_header	*hdr;
-> > +	const char		*strings;
-> > +	struct btf_type		**types;
-> > +	unsigned long		nr_types;
-> > +	struct btf_type		**funcs;
-> > +	unsigned long		nr_funcs;
-> > +	void			*data;
-> > +	size_t			raw_size;
-> > +	void			*raw_data;
-> > +};
-> > +
-> > +#define REALLOC_SIZE (1 << 10)
-> > +#define REALLOC_MASK (REALLOC_SIZE - 1)
-> > +
-> > +static const char *btf_name(struct tep_btf *btf, int off)
-> > +{
-> > +	if (off < btf->hdr->str_len)  
-> 
-> That assumes the input is well-behaved and str_len is set to the actual length of
-> the strings data, but it could be anything. tep_btf_init() should check that
-> btf->hdr->strings + btf->hdr->str_len point inside the provided data.
-
-Heh! You know I thought about that and then said to myself "heck, it's user
-space, we can let it crash!" ;-)
-
-But yeah, it is a library an we should make it a bit more robust.
-
-> 
-> > +		return btf->strings + off;> +	return "";
-> > +}
-> > +
-> > +/* List taken from the Linux kernel */
-> > +static const char * const btf_kind_str[NR_BTF_KINDS] = {
-> > +	[BTF_KIND_UNKN]		= "UNKNOWN",
-> > +	[BTF_KIND_INT]		= "INT",
-> > +	[BTF_KIND_PTR]		= "PTR",
-> > +	[BTF_KIND_ARRAY]	= "ARRAY",
-> > +	[BTF_KIND_STRUCT]	= "STRUCT",
-> > +	[BTF_KIND_UNION]	= "UNION",
-> > +	[BTF_KIND_ENUM]		= "ENUM",
-> > +	[BTF_KIND_FWD]		= "FWD",
-> > +	[BTF_KIND_TYPEDEF]	= "TYPEDEF",
-> > +	[BTF_KIND_VOLATILE]	= "VOLATILE",
-> > +	[BTF_KIND_CONST]	= "CONST",
-> > +	[BTF_KIND_RESTRICT]	= "RESTRICT",
-> > +	[BTF_KIND_FUNC]		= "FUNC",
-> > +	[BTF_KIND_FUNC_PROTO]	= "FUNC_PROTO",
-> > +	[BTF_KIND_VAR]		= "VAR",
-> > +	[BTF_KIND_DATASEC]	= "DATASEC",
-> > +	[BTF_KIND_FLOAT]	= "FLOAT",
-> > +	[BTF_KIND_DECL_TAG]	= "DECL_TAG",
-> > +	[BTF_KIND_TYPE_TAG]	= "TYPE_TAG",
-> > +	[BTF_KIND_ENUM64]	= "ENUM64",
-> > +};
-> > +
-
-
-> > +static int load_types(struct tep_btf *btf)
-> > +{
-> > +	struct btf_type *type;
-> > +	void *start, *end;
-> > +	int size;
-> > +
-> > +	start = btf->data + btf->hdr->type_off;
-> > +	end = start + btf->hdr->type_len;  
-> 
-> Those should also be validated.
-
-Yeah, probably.
-
-> 
-> > +
-> > +	if (end > btf->raw_data + btf->raw_size)
-> > +		return -1;
-> > +
-> > +	for (type = start; (void *)type < end;) {
-> > +		if (add_type(btf, type))
-> > +			return -1;
-> > +		if (BTF_INFO_KIND(type->info) == BTF_KIND_FUNC) {
-> > +			if (add_func(btf, type))
-> > +				return -1;
-> > +		}
-> > +		size = btf_type_size(type);
-> > +		if (size < 0) {
-> > +			tep_warning("Invalid type %d\n", BTF_INFO_KIND(type->info));
-> > +			return -1;
-> > +		}
-> > +		type = (void *)type + size;
-> > +	}
-> > +
-
-
-> > +static struct tep_btf *tep_btf_init(void *raw_data, size_t data_size)
-> > +{
-> > +	struct tep_btf *btf;
-> > +
-> > +	btf = calloc(1, sizeof(*btf));
-> > +	if (!btf)
-> > +		return NULL;
-> > +	
-> > +	btf->raw_data = raw_data;
-> > +	btf->raw_size = data_size;
-> > +	btf->hdr = raw_data;
-> > +	if (btf->hdr->hdr_len < sizeof(*btf->hdr)) {
-> > +		tep_warning("Header (%d) smaller than expected header %zd",
-> > +			    btf->hdr->hdr_len, sizeof(*btf->hdr));
-> > +		goto fail;
-> > +	}  
-> 
-> btf->hdr->magic and btf->hdr->version should be checked to catch any garbage input and
-> breaking change to the format:
-> 
->    The magic is 0xeB9F, which has different encoding for big and little endian systems,
->    and can be used to test whether BTF is generated for big- or little-endian target.
-> 
->    https://docs.kernel.org/bpf/btf.html#btf-type-and-string-encoding
-> 
-
-Yep. As I stated above, the thought crossed my mind, and then my laziness
-came across and said "nah".
-
-I was more trying to get this code out to the public more than adding it.
-But you are correct, it should have these validation checks.
-
--- Steve
-
-
-> > +
-> > +	btf->data = btf->raw_data + btf->hdr->hdr_len;
-> > +
-> > +	btf->strings = btf->data + btf->hdr->str_off;  
-> 
-> This pointer crafting without input validation looks like a CVE-in-waiting.
-> Using libbpf would indeed add a dependency, but it seems those checks are taken care of:
-> https://github.com/libbpf/libbpf/blob/58dd1f58b57294b2e59482245b29e46f1812b82d/src/btf.c#L258
-> 
-> This is not to say libbpf is perfect, but there also seem to be some people running fuzzers on it
-> so issues of this kind have a higher chance of getting found, e.g.
-> https://nvd.nist.gov/vuln/detail/CVE-2025-29481
-> 
-> I suppose there is no silver bullet here, as adding dependencies to a C program is a pain
-> as it breaks downstream build recipes ...
-> 
-> Alternatively, the Rust parser has no BTF-related buffer issue, but that's because it does not
-> implement anything BTF-related yet :)
-> 
-> > +	printf("str len = %d\n", btf->hdr->str_len);
-> > +
-> > +	if (load_types(btf) < 0)
-> > +		goto fail;
-> > +
+Gentle ping.
