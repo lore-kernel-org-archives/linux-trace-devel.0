@@ -1,1510 +1,669 @@
-Received: from relay.hostedemail.com (smtprelay0010.hostedemail.com [216.40.44.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A4782036F3
-	for <linux-trace-devel@vger.kernel.org>; Fri, 15 Aug 2025 22:18:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.10
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A22651FC7C5
+	for <linux-trace-devel@vger.kernel.org>; Tue, 19 Aug 2025 14:04:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755296321; cv=none; b=ljdAJXL2A4w1OPJpmRFkbgfGnB4BQtE+MJbAPd/qLd2C/5KINO8Aqanvi9PqMK1pOsuAYSzgkGlcDPRUNzZFDpCtDZq+7ZX1t6/EOeCRzLRvTfYSuBNffM08lcUy82Hmwik1Up/2M3M6KeRFQT1ySK5lIuGVr+FVJvtl6u5+nCs=
+	t=1755612278; cv=none; b=OdvoJu8pHiI6ZBp8rdm5hY2Yu1RDpDdrMUd/1cigHwx89yhUEy9OfGuEN0b85jmBjCKvg6JncA4W/Nkn2rxZvEegGviqOPc1VMRqC1quKalTUFm4hO23EuquPK2nrfScs17kZ2ZTIU8SfS+1ZtW2pPnzfueiAT7cPMmDQIO4/ss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755296321; c=relaxed/simple;
-	bh=JFJYzN4SQ6jf7qCS7Kkadg5x3F/lGBnntyR2o6Nm3Bs=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=nqpdeAo2rkehA14ezByJmJz0TpldSFpSCevEYWK6Ej1pLlLampckZU4QbTh7WxpVyD38auOOB5fJW+rfOqFkvteUnOrNZj4m8JeAyoDWQQ1S/NywBZt1lVN4Phl4iSeZ4PdSeIo+yMrx6PuPJBt9WD4WlDorJHC/bOmjmdOs1+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf15.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay04.hostedemail.com (Postfix) with ESMTP id D88AE1A02D0;
-	Fri, 15 Aug 2025 22:18:28 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf15.hostedemail.com (Postfix) with ESMTPA id D30F917;
-	Fri, 15 Aug 2025 22:18:26 +0000 (UTC)
-Date: Fri, 15 Aug 2025 18:19:19 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Steve Jothen <sjothen@gmail.com>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Ammar Faizi <ammarfaizi2@gnuweeb.org>
-Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] ccli: Relicense the library from LGPL-2.1 to MIT
-Message-ID: <20250815181919.4c938585@gandalf.local.home>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1755612278; c=relaxed/simple;
+	bh=O/zIxb/LtS7f3pFioN3VNhzJ+ETV1lF+yqMMEWbQR2g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=SLxS54w1DDmgBulvpI11v0ecJ5W5gE+1Qf9lLaPT3V7d3TWbEljDznXPEpHE2qtwkZGxy6vIbHR+chKCJQiszbhopfXQlA33pPRKczsrhn8BQprwu8aZoszvnq7UYwYQIUKIBlUT7AYTl9kH49cAFOj2yPl0f4rye2FDJwXXmIs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9B3C816A3;
+	Tue, 19 Aug 2025 07:04:26 -0700 (PDT)
+Received: from [10.1.38.140] (unknown [10.1.38.140])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 185BB3F63F;
+	Tue, 19 Aug 2025 07:04:33 -0700 (PDT)
+Message-ID: <b6a51783-7867-46a7-90ab-7be69c7112a0@arm.com>
+Date: Tue, 19 Aug 2025 15:04:32 +0100
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC][PATCH] libtraceevent: Fix static library to hide hidden
+ functions
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
+ Douglas Raillard <douglas.raillard@arm.com>
+References: <20250814144710.6c3458d4@gandalf.local.home>
+ <c0d09a7e-c3a2-468d-a81d-cdef37f4c575@arm.com>
+ <20250815132603.6b347952@gandalf.local.home>
+Content-Language: en-US
+From: Metin Kaya <metin.kaya@arm.com>
+In-Reply-To: <20250815132603.6b347952@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Stat-Signature: wu4qjuxzrb558udfbfggqee36zuip5sd
-X-Rspamd-Server: rspamout03
-X-Rspamd-Queue-Id: D30F917
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX19luwZd+X5H1luwB0tZ/baGhRI4o2Z3UFs=
-X-HE-Tag: 1755296306-613905
-X-HE-Meta: U2FsdGVkX1+ZgPL3MQOzE7/lRjIt2t5E4l7ktu8RsNOi72WdgGEPUaEHJgstv4G720S1ymjqllP6RiMlqhkonatDQRM9YZMOgPc7qOX2WthlsdaiRy9weLF5RM0CrMPk5bCY/lX2jgf0rFkIdgysdDOwdewqpdtQEL1ekPyvBAMSsbinGeJBD3BiuD4uPwg79PmJwBKbGGF3pjfml2ZJmxJclNKk9hiXLOeFKnblqpbCBwnrGhMV2eaOcwvgFuK53YgmGGNGACZPlEZoD/XC91h5D4eDZkaHnmt32j42QB7q8aH5nPuLywsurLwbRsebgzx7DzdPrkKKZLGtC+DhEfqMrIlWA4BpNlYE1BVMCrxNjlFJXzp7GzZRicSiS6VN3krM+ankew54jQEljUnuiHITSnhgOZP5eiUuIhthizS4qOq6wnPmCO+7Wf5j7LHSutftmSAdgVGQRJLQdw6JPLG9/Xjbh3owswveqU2hnvjhS7KMNqY/nU7lrMpIRJfSRDN6G1z17MATukgcE0DKdL7wugPHKQWG2Bpk2OxNn8ZqF75HQhmXTvTou964r+b6Ie1R6y/VEf4GCnKO4/btJhWzsJ701nVc0myH4Nk5QN+WyxAIUThuRKH+oqjGNssDoO3m4DPXnQ68Rz+gOR41vq8yErHnKf51NvdHqxG7Ss7MD4zjF3eNoZM8Ao5/+NUK8JdaDgmGmCU=
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On 15/08/2025 6:26 PM, Steven Rostedt wrote:
+> On Fri, 15 Aug 2025 10:25:52 +0100
+> Metin Kaya <metin.kaya@arm.com> wrote:
+> 
+>>>     Care to test this?
+>>
+>> Hi Steven,
+>>
+>> I tried cherry-picking this patch on my stash (my HEAD is "b3f5849 -
+>> libtraceevent: Save missed events in kbuffer_read_buffer()"), but it failed:
+>>
+>> error: patch failed: src/event-parse-local.h:111
+>> error: src/event-parse-local.h: patch does not apply
+>> error: patch failed: src/event-parse.c:8724
+>> error: src/event-parse.c: patch does not apply
+> 
+> Doh!
+> 
+> 
+>> BTW, this is how I build trace-cmd statically:
+>>
+>> TRACECMD_INSTALL_PATH="..."
+>> export LDFLAGS="-static" NO_AUDIT=yes NO_PYTHON=yes CFLAGS="-O3"
+>> make prefix=${TRACECMD_INSTALL_PATH}
+>>
+>> Reverting the changes in libtraceevent/src/Makefile resolves this build
+>> failure, but I guess it's the whole point of this patch?
+> 
+> Right. I see the issue. So back to getting to my hack that appears to work.
+> I decided to link all the objects together into a single object:
+> 
+>    ld -r -o libtraceevent-global.o $(OBJS)
+> 
+> And then use objcopy to make any functions that do not start with tep_ into
+> a static function.
+> 
+> Can you test this? I only included the change to the Make file. To make
+> sure it works, you still need to do the revert of your name change patch.
+> 
+> Thanks!
+> 
+> -- Steve
+> 
+> diff --git a/src/Makefile b/src/Makefile
+> index 1ff669ce8deb..f8bea4520f58 100644
+> --- a/src/Makefile
+> +++ b/src/Makefile
+> @@ -19,7 +19,7 @@ DEPS := $(OBJS:$(bdir)/%.o=$(bdir)/.%.d)
+>   $(bdir)/%.o: %.c
+>   	$(Q)$(call do_fpic_compile)
+>   
+> -$(LIBTRACEEVENT_STATIC): $(OBJS)
+> +$(LIBTRACEEVENT_STATIC): $(bdir)/libtraceevent.o
+>   	$(Q)$(call do_build_static_lib)
+>   
+>   $(LIBTRACEEVENT_SHARED): $(OBJS)
+> @@ -31,6 +31,19 @@ $(LIBTRACEEVENT_SHARED_VERSION): $(LIBTRACEEVENT_SHARED)
+>   $(LIBTRACEEVENT_SHARED_SO): $(LIBTRACEEVENT_SHARED_VERSION)
+>   	@ln -sf $(<F) $@
+>   
+> +$(bdir)/libtraceevent-global.o: $(OBJS)
+> +	ld -r -o $@ $^
+> +
+> +# Make all functions that do not start with tep_ to static
+> +find_local = \
+> +	 $(shell for f in a `nm $^ | grep ' T ' | cut -d' ' -f3`;  do \
+> +	  if [ "$${f#tep_}" = "$$f" ]; then echo --localize-symbol $$f; fi; done)
+> +
+> +$(bdir)/libtraceevent.o: $(bdir)/libtraceevent-global.o
+> +	objcopy $(call find_local) $< $@
+> +
+> +
+> +
+>   libtraceevent.so: $(LIBTRACEEVENT_SHARED_SO)
+>   
+>   libtraceevent: $(libtraceevent-y)
 
-Due to many requirements of LGPL code where every release needs to be
-archived in case of someone asking for that version of the code, some
-companies do not allow the code without a lot of rationale to have it.
+Reverted my name change patch and applied the hunk above to 
+src/Makefile, but had to make the modifications below (the same change 
+set I mentioned in my previous email) in libtraceevent to fix 
+"/usr/bin/ld: /out/lib64/libtraceevent.so: undefined reference to 
+`tep_{free,read}_token'" error during libtracefs build:
 
-To simplify the use of libccli, relicense the code from LGPL-2.1 to MIT.
+diff --git a/src/event-parse.c b/src/event-parse.c
+index 9232f11..8daf91d 100644
+--- a/src/event-parse.c
++++ b/src/event-parse.c
+@@ -3184,7 +3184,7 @@ process_int_dynamic_array(struct tep_event *event, 
+struct tep_print_arg *arg, ch
+  	 * The first item within the parenthesis is another field that holds
+  	 * the index into where the array starts.
+  	 */
+-	type = tep_read_token(event->tep, &token);
++	type = read_token(event->tep, &token);
+  	if (type != TEP_EVENT_ITEM)
+  		return TEP_EVENT_ERROR;
 
-All the files have been relicensed with the exception of the read-file.c
-example code. That has a modification from an author that has not yet given
-their permission to change the license.
+@@ -3213,7 +3213,7 @@ process_int_dynamic_array(struct tep_event *event, 
+struct tep_print_arg *arg, ch
 
-There was modifications to the README file, but that file had no license
-attached to it.
+  	return read_token_item(event->tep, tok);
+  out:
+-	tep_free_token(token);
++	free_token(token);
+  	*tok = NULL;
+  	return TEP_EVENT_ERROR;
+  }
+@@ -3720,7 +3720,7 @@ process_function(struct tep_event *event, struct 
+tep_print_arg *arg,
+  		return process_int_array(event, arg, tok);
+  	}
+  	if (strcmp(token, "__print_dynamic_array") == 0) {
+-		tep_free_token(token);
++		free_token(token);
+  		return process_int_dynamic_array(event, arg, tok);
+  	}
+  	if (strcmp(token, "__get_str") == 0 ||
 
-Acked-by: Steve Jothen <sjothen@gmail.com>
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Acked-by: Ammar Faizi <ammarfaizi2@gnuweeb.org>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
-[ See https://github.com/rostedt/libccli ]
 
- Documentation/Makefile             |   2 +-
- Documentation/libccli-commands.txt |   8 -
- Documentation/libccli-complete.txt |   9 -
- Documentation/libccli-history.txt  |   9 -
- Documentation/libccli-io.txt       |   9 -
- Documentation/libccli-mods.txt     |   9 -
- Documentation/libccli-use.txt      |   9 -
- Documentation/libccli.txt          |   9 -
- LICENSE                            | 525 ++---------------------------
- LICENSES/LGPL-2.1                  | 505 +++++++++++++++++++++++++++
- LICENSES/MIT                       |  30 ++
- Makefile                           |   2 +-
- check-manpages.sh                  |   2 +-
- include/ccli.h                     |   2 +-
- samples/Makefile                   |   2 +-
- samples/cli-history.c              |   2 +-
- samples/clish.c                    |   2 +-
- scripts/utils.mk                   |   2 +-
- src/Makefile                       |   2 +-
- src/ccli-local.h                   |   2 +-
- src/ccli.c                         |   2 +-
- src/commands.c                     |   2 +-
- src/complete.c                     |   2 +-
- src/history.c                      |   2 +-
- src/line.c                         |   2 +-
- utest/Makefile                     |   2 +-
- utest/ccli-utest.c                 |   2 +-
- utest/ccli-utest.h                 |   2 +-
- utest/libccli-utest.c              |   2 +-
- 29 files changed, 575 insertions(+), 585 deletions(-)
- create mode 100644 LICENSES/LGPL-2.1
- create mode 100644 LICENSES/MIT
+Now this is what I get when I try to build trace-cmd:
 
-diff --git a/Documentation/Makefile b/Documentation/Makefile
-index b7adb357d4fe..12bdd27e74e4 100644
---- a/Documentation/Makefile
-+++ b/Documentation/Makefile
-@@ -1,4 +1,4 @@
--# SPDX-License-Identifier: LGPL-2.1
-+# SPDX-License-Identifier: MIT
- 
- include $(src)/scripts/utils.mk
- 
-diff --git a/Documentation/libccli-commands.txt b/Documentation/libccli-commands.txt
-index 954986954d7c..faa0ca795c9e 100644
---- a/Documentation/libccli-commands.txt
-+++ b/Documentation/libccli-commands.txt
-@@ -223,15 +223,7 @@ REPORTING BUGS
- --------------
- Report bugs to  <rostedt@goodmis.org>
- 
--LICENSE
---------
--libccli is Free Software licensed under the GNU LGPL 2.1
--
- RESOURCES
- ---------
- https://github.com/rostedt/libccli
- 
--COPYING
---------
--Copyright \(C) 2022 Steven Rostedt. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-diff --git a/Documentation/libccli-complete.txt b/Documentation/libccli-complete.txt
-index febbc58bdf22..43303bbd2bb9 100644
---- a/Documentation/libccli-complete.txt
-+++ b/Documentation/libccli-complete.txt
-@@ -299,15 +299,6 @@ REPORTING BUGS
- --------------
- Report bugs to  <rostedt@goodmis.org>
- 
--LICENSE
---------
--libccli is Free Software licensed under the GNU LGPL 2.1
--
- RESOURCES
- ---------
- https://github.com/rostedt/libccli
--
--COPYING
---------
--Copyright \(C) 2022 Steven Rostedt. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-diff --git a/Documentation/libccli-history.txt b/Documentation/libccli-history.txt
-index 509345afd80e..21818bea345a 100644
---- a/Documentation/libccli-history.txt
-+++ b/Documentation/libccli-history.txt
-@@ -287,15 +287,6 @@ REPORTING BUGS
- --------------
- Report bugs to  <rostedt@goodmis.org>
- 
--LICENSE
---------
--libccli is Free Software licensed under the GNU LGPL 2.1
--
- RESOURCES
- ---------
- https://github.com/rostedt/libccli
--
--COPYING
---------
--Copyright \(C) 2022 Steven Rostedt. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-diff --git a/Documentation/libccli-io.txt b/Documentation/libccli-io.txt
-index ec72e7242ec3..fd82be59d673 100644
---- a/Documentation/libccli-io.txt
-+++ b/Documentation/libccli-io.txt
-@@ -120,15 +120,6 @@ REPORTING BUGS
- --------------
- Report bugs to  <rostedt@goodmis.org>
- 
--LICENSE
---------
--libccli is Free Software licensed under the GNU LGPL 2.1
--
- RESOURCES
- ---------
- https://github.com/rostedt/libccli
--
--COPYING
---------
--Copyright \(C) 2022 Steven Rostedt. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-diff --git a/Documentation/libccli-mods.txt b/Documentation/libccli-mods.txt
-index 1e512016821b..b3fc6de08ec4 100644
---- a/Documentation/libccli-mods.txt
-+++ b/Documentation/libccli-mods.txt
-@@ -138,15 +138,6 @@ REPORTING BUGS
- --------------
- Report bugs to  <rostedt@goodmis.org>
- 
--LICENSE
---------
--libccli is Free Software licensed under the GNU LGPL 2.1
--
- RESOURCES
- ---------
- https://github.com/rostedt/libccli
--
--COPYING
---------
--Copyright \(C) 2022 Steven Rostedt. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-diff --git a/Documentation/libccli-use.txt b/Documentation/libccli-use.txt
-index faa64bae2c69..0474470c2e31 100644
---- a/Documentation/libccli-use.txt
-+++ b/Documentation/libccli-use.txt
-@@ -306,15 +306,6 @@ REPORTING BUGS
- --------------
- Report bugs to  <rostedt@goodmis.org>
- 
--LICENSE
---------
--libccli is Free Software licensed under the GNU LGPL 2.1
--
- RESOURCES
- ---------
- https://github.com/rostedt/libccli
--
--COPYING
---------
--Copyright \(C) 2022 Steven Rostedt. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-diff --git a/Documentation/libccli.txt b/Documentation/libccli.txt
-index 0b07b2ab562d..2ee8979663e7 100644
---- a/Documentation/libccli.txt
-+++ b/Documentation/libccli.txt
-@@ -153,15 +153,6 @@ REPORTING BUGS
- --------------
- Report bugs to  <rostedt@goodmis.org>
- 
--LICENSE
---------
--libccli is Free Software licensed under the GNU LGPL 2.1
--
- RESOURCES
- ---------
- https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
--
--COPYING
---------
--Copyright \(C) 2022 Steven Rostedt. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-diff --git a/LICENSE b/LICENSE
-index 8000a6faacf4..6de5f730cb0c 100644
---- a/LICENSE
-+++ b/LICENSE
-@@ -1,504 +1,21 @@
--                  GNU LESSER GENERAL PUBLIC LICENSE
--                       Version 2.1, February 1999
--
-- Copyright (C) 1991, 1999 Free Software Foundation, Inc.
-- 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-- Everyone is permitted to copy and distribute verbatim copies
-- of this license document, but changing it is not allowed.
--
--[This is the first released version of the Lesser GPL.  It also counts
-- as the successor of the GNU Library Public License, version 2, hence
-- the version number 2.1.]
--
--                            Preamble
--
--  The licenses for most software are designed to take away your
--freedom to share and change it.  By contrast, the GNU General Public
--Licenses are intended to guarantee your freedom to share and change
--free software--to make sure the software is free for all its users.
--
--  This license, the Lesser General Public License, applies to some
--specially designated software packages--typically libraries--of the
--Free Software Foundation and other authors who decide to use it.  You
--can use it too, but we suggest you first think carefully about whether
--this license or the ordinary General Public License is the better
--strategy to use in any particular case, based on the explanations below.
--
--  When we speak of free software, we are referring to freedom of use,
--not price.  Our General Public Licenses are designed to make sure that
--you have the freedom to distribute copies of free software (and charge
--for this service if you wish); that you receive source code or can get
--it if you want it; that you can change the software and use pieces of
--it in new free programs; and that you are informed that you can do
--these things.
--
--  To protect your rights, we need to make restrictions that forbid
--distributors to deny you these rights or to ask you to surrender these
--rights.  These restrictions translate to certain responsibilities for
--you if you distribute copies of the library or if you modify it.
--
--  For example, if you distribute copies of the library, whether gratis
--or for a fee, you must give the recipients all the rights that we gave
--you.  You must make sure that they, too, receive or can get the source
--code.  If you link other code with the library, you must provide
--complete object files to the recipients, so that they can relink them
--with the library after making changes to the library and recompiling
--it.  And you must show them these terms so they know their rights.
--
--  We protect your rights with a two-step method: (1) we copyright the
--library, and (2) we offer you this license, which gives you legal
--permission to copy, distribute and/or modify the library.
--
--  To protect each distributor, we want to make it very clear that
--there is no warranty for the free library.  Also, if the library is
--modified by someone else and passed on, the recipients should know
--that what they have is not the original version, so that the original
--author's reputation will not be affected by problems that might be
--introduced by others.
--
--  Finally, software patents pose a constant threat to the existence of
--any free program.  We wish to make sure that a company cannot
--effectively restrict the users of a free program by obtaining a
--restrictive license from a patent holder.  Therefore, we insist that
--any patent license obtained for a version of the library must be
--consistent with the full freedom of use specified in this license.
--
--  Most GNU software, including some libraries, is covered by the
--ordinary GNU General Public License.  This license, the GNU Lesser
--General Public License, applies to certain designated libraries, and
--is quite different from the ordinary General Public License.  We use
--this license for certain libraries in order to permit linking those
--libraries into non-free programs.
--
--  When a program is linked with a library, whether statically or using
--a shared library, the combination of the two is legally speaking a
--combined work, a derivative of the original library.  The ordinary
--General Public License therefore permits such linking only if the
--entire combination fits its criteria of freedom.  The Lesser General
--Public License permits more lax criteria for linking other code with
--the library.
--
--  We call this license the "Lesser" General Public License because it
--does Less to protect the user's freedom than the ordinary General
--Public License.  It also provides other free software developers Less
--of an advantage over competing non-free programs.  These disadvantages
--are the reason we use the ordinary General Public License for many
--libraries.  However, the Lesser license provides advantages in certain
--special circumstances.
--
--  For example, on rare occasions, there may be a special need to
--encourage the widest possible use of a certain library, so that it becomes
--a de-facto standard.  To achieve this, non-free programs must be
--allowed to use the library.  A more frequent case is that a free
--library does the same job as widely used non-free libraries.  In this
--case, there is little to gain by limiting the free library to free
--software only, so we use the Lesser General Public License.
--
--  In other cases, permission to use a particular library in non-free
--programs enables a greater number of people to use a large body of
--free software.  For example, permission to use the GNU C Library in
--non-free programs enables many more people to use the whole GNU
--operating system, as well as its variant, the GNU/Linux operating
--system.
--
--  Although the Lesser General Public License is Less protective of the
--users' freedom, it does ensure that the user of a program that is
--linked with the Library has the freedom and the wherewithal to run
--that program using a modified version of the Library.
--
--  The precise terms and conditions for copying, distribution and
--modification follow.  Pay close attention to the difference between a
--"work based on the library" and a "work that uses the library".  The
--former contains code derived from the library, whereas the latter must
--be combined with the library in order to run.
--
--                  GNU LESSER GENERAL PUBLIC LICENSE
--   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
--
--  0. This License Agreement applies to any software library or other
--program which contains a notice placed by the copyright holder or
--other authorized party saying it may be distributed under the terms of
--this Lesser General Public License (also called "this License").
--Each licensee is addressed as "you".
--
--  A "library" means a collection of software functions and/or data
--prepared so as to be conveniently linked with application programs
--(which use some of those functions and data) to form executables.
--
--  The "Library", below, refers to any such software library or work
--which has been distributed under these terms.  A "work based on the
--Library" means either the Library or any derivative work under
--copyright law: that is to say, a work containing the Library or a
--portion of it, either verbatim or with modifications and/or translated
--straightforwardly into another language.  (Hereinafter, translation is
--included without limitation in the term "modification".)
--
--  "Source code" for a work means the preferred form of the work for
--making modifications to it.  For a library, complete source code means
--all the source code for all modules it contains, plus any associated
--interface definition files, plus the scripts used to control compilation
--and installation of the library.
--
--  Activities other than copying, distribution and modification are not
--covered by this License; they are outside its scope.  The act of
--running a program using the Library is not restricted, and output from
--such a program is covered only if its contents constitute a work based
--on the Library (independent of the use of the Library in a tool for
--writing it).  Whether that is true depends on what the Library does
--and what the program that uses the Library does.
--
--  1. You may copy and distribute verbatim copies of the Library's
--complete source code as you receive it, in any medium, provided that
--you conspicuously and appropriately publish on each copy an
--appropriate copyright notice and disclaimer of warranty; keep intact
--all the notices that refer to this License and to the absence of any
--warranty; and distribute a copy of this License along with the
--Library.
--
--  You may charge a fee for the physical act of transferring a copy,
--and you may at your option offer warranty protection in exchange for a
--fee.
--
--  2. You may modify your copy or copies of the Library or any portion
--of it, thus forming a work based on the Library, and copy and
--distribute such modifications or work under the terms of Section 1
--above, provided that you also meet all of these conditions:
--
--    a) The modified work must itself be a software library.
--
--    b) You must cause the files modified to carry prominent notices
--    stating that you changed the files and the date of any change.
--
--    c) You must cause the whole of the work to be licensed at no
--    charge to all third parties under the terms of this License.
--
--    d) If a facility in the modified Library refers to a function or a
--    table of data to be supplied by an application program that uses
--    the facility, other than as an argument passed when the facility
--    is invoked, then you must make a good faith effort to ensure that,
--    in the event an application does not supply such function or
--    table, the facility still operates, and performs whatever part of
--    its purpose remains meaningful.
--
--    (For example, a function in a library to compute square roots has
--    a purpose that is entirely well-defined independent of the
--    application.  Therefore, Subsection 2d requires that any
--    application-supplied function or table used by this function must
--    be optional: if the application does not supply it, the square
--    root function must still compute square roots.)
--
--These requirements apply to the modified work as a whole.  If
--identifiable sections of that work are not derived from the Library,
--and can be reasonably considered independent and separate works in
--themselves, then this License, and its terms, do not apply to those
--sections when you distribute them as separate works.  But when you
--distribute the same sections as part of a whole which is a work based
--on the Library, the distribution of the whole must be on the terms of
--this License, whose permissions for other licensees extend to the
--entire whole, and thus to each and every part regardless of who wrote
--it.
--
--Thus, it is not the intent of this section to claim rights or contest
--your rights to work written entirely by you; rather, the intent is to
--exercise the right to control the distribution of derivative or
--collective works based on the Library.
--
--In addition, mere aggregation of another work not based on the Library
--with the Library (or with a work based on the Library) on a volume of
--a storage or distribution medium does not bring the other work under
--the scope of this License.
--
--  3. You may opt to apply the terms of the ordinary GNU General Public
--License instead of this License to a given copy of the Library.  To do
--this, you must alter all the notices that refer to this License, so
--that they refer to the ordinary GNU General Public License, version 2,
--instead of to this License.  (If a newer version than version 2 of the
--ordinary GNU General Public License has appeared, then you can specify
--that version instead if you wish.)  Do not make any other change in
--these notices.
--
--  Once this change is made in a given copy, it is irreversible for
--that copy, so the ordinary GNU General Public License applies to all
--subsequent copies and derivative works made from that copy.
--
--  This option is useful when you wish to copy part of the code of
--the Library into a program that is not a library.
--
--  4. You may copy and distribute the Library (or a portion or
--derivative of it, under Section 2) in object code or executable form
--under the terms of Sections 1 and 2 above provided that you accompany
--it with the complete corresponding machine-readable source code, which
--must be distributed under the terms of Sections 1 and 2 above on a
--medium customarily used for software interchange.
--
--  If distribution of object code is made by offering access to copy
--from a designated place, then offering equivalent access to copy the
--source code from the same place satisfies the requirement to
--distribute the source code, even though third parties are not
--compelled to copy the source along with the object code.
--
--  5. A program that contains no derivative of any portion of the
--Library, but is designed to work with the Library by being compiled or
--linked with it, is called a "work that uses the Library".  Such a
--work, in isolation, is not a derivative work of the Library, and
--therefore falls outside the scope of this License.
--
--  However, linking a "work that uses the Library" with the Library
--creates an executable that is a derivative of the Library (because it
--contains portions of the Library), rather than a "work that uses the
--library".  The executable is therefore covered by this License.
--Section 6 states terms for distribution of such executables.
--
--  When a "work that uses the Library" uses material from a header file
--that is part of the Library, the object code for the work may be a
--derivative work of the Library even though the source code is not.
--Whether this is true is especially significant if the work can be
--linked without the Library, or if the work is itself a library.  The
--threshold for this to be true is not precisely defined by law.
--
--  If such an object file uses only numerical parameters, data
--structure layouts and accessors, and small macros and small inline
--functions (ten lines or less in length), then the use of the object
--file is unrestricted, regardless of whether it is legally a derivative
--work.  (Executables containing this object code plus portions of the
--Library will still fall under Section 6.)
--
--  Otherwise, if the work is a derivative of the Library, you may
--distribute the object code for the work under the terms of Section 6.
--Any executables containing that work also fall under Section 6,
--whether or not they are linked directly with the Library itself.
--
--  6. As an exception to the Sections above, you may also combine or
--link a "work that uses the Library" with the Library to produce a
--work containing portions of the Library, and distribute that work
--under terms of your choice, provided that the terms permit
--modification of the work for the customer's own use and reverse
--engineering for debugging such modifications.
--
--  You must give prominent notice with each copy of the work that the
--Library is used in it and that the Library and its use are covered by
--this License.  You must supply a copy of this License.  If the work
--during execution displays copyright notices, you must include the
--copyright notice for the Library among them, as well as a reference
--directing the user to the copy of this License.  Also, you must do one
--of these things:
--
--    a) Accompany the work with the complete corresponding
--    machine-readable source code for the Library including whatever
--    changes were used in the work (which must be distributed under
--    Sections 1 and 2 above); and, if the work is an executable linked
--    with the Library, with the complete machine-readable "work that
--    uses the Library", as object code and/or source code, so that the
--    user can modify the Library and then relink to produce a modified
--    executable containing the modified Library.  (It is understood
--    that the user who changes the contents of definitions files in the
--    Library will not necessarily be able to recompile the application
--    to use the modified definitions.)
--
--    b) Use a suitable shared library mechanism for linking with the
--    Library.  A suitable mechanism is one that (1) uses at run time a
--    copy of the library already present on the user's computer system,
--    rather than copying library functions into the executable, and (2)
--    will operate properly with a modified version of the library, if
--    the user installs one, as long as the modified version is
--    interface-compatible with the version that the work was made with.
--
--    c) Accompany the work with a written offer, valid for at
--    least three years, to give the same user the materials
--    specified in Subsection 6a, above, for a charge no more
--    than the cost of performing this distribution.
--
--    d) If distribution of the work is made by offering access to copy
--    from a designated place, offer equivalent access to copy the above
--    specified materials from the same place.
--
--    e) Verify that the user has already received a copy of these
--    materials or that you have already sent this user a copy.
--
--  For an executable, the required form of the "work that uses the
--Library" must include any data and utility programs needed for
--reproducing the executable from it.  However, as a special exception,
--the materials to be distributed need not include anything that is
--normally distributed (in either source or binary form) with the major
--components (compiler, kernel, and so on) of the operating system on
--which the executable runs, unless that component itself accompanies
--the executable.
--
--  It may happen that this requirement contradicts the license
--restrictions of other proprietary libraries that do not normally
--accompany the operating system.  Such a contradiction means you cannot
--use both them and the Library together in an executable that you
--distribute.
--
--  7. You may place library facilities that are a work based on the
--Library side-by-side in a single library together with other library
--facilities not covered by this License, and distribute such a combined
--library, provided that the separate distribution of the work based on
--the Library and of the other library facilities is otherwise
--permitted, and provided that you do these two things:
--
--    a) Accompany the combined library with a copy of the same work
--    based on the Library, uncombined with any other library
--    facilities.  This must be distributed under the terms of the
--    Sections above.
--
--    b) Give prominent notice with the combined library of the fact
--    that part of it is a work based on the Library, and explaining
--    where to find the accompanying uncombined form of the same work.
--
--  8. You may not copy, modify, sublicense, link with, or distribute
--the Library except as expressly provided under this License.  Any
--attempt otherwise to copy, modify, sublicense, link with, or
--distribute the Library is void, and will automatically terminate your
--rights under this License.  However, parties who have received copies,
--or rights, from you under this License will not have their licenses
--terminated so long as such parties remain in full compliance.
--
--  9. You are not required to accept this License, since you have not
--signed it.  However, nothing else grants you permission to modify or
--distribute the Library or its derivative works.  These actions are
--prohibited by law if you do not accept this License.  Therefore, by
--modifying or distributing the Library (or any work based on the
--Library), you indicate your acceptance of this License to do so, and
--all its terms and conditions for copying, distributing or modifying
--the Library or works based on it.
--
--  10. Each time you redistribute the Library (or any work based on the
--Library), the recipient automatically receives a license from the
--original licensor to copy, distribute, link with or modify the Library
--subject to these terms and conditions.  You may not impose any further
--restrictions on the recipients' exercise of the rights granted herein.
--You are not responsible for enforcing compliance by third parties with
--this License.
--
--  11. If, as a consequence of a court judgment or allegation of patent
--infringement or for any other reason (not limited to patent issues),
--conditions are imposed on you (whether by court order, agreement or
--otherwise) that contradict the conditions of this License, they do not
--excuse you from the conditions of this License.  If you cannot
--distribute so as to satisfy simultaneously your obligations under this
--License and any other pertinent obligations, then as a consequence you
--may not distribute the Library at all.  For example, if a patent
--license would not permit royalty-free redistribution of the Library by
--all those who receive copies directly or indirectly through you, then
--the only way you could satisfy both it and this License would be to
--refrain entirely from distribution of the Library.
--
--If any portion of this section is held invalid or unenforceable under any
--particular circumstance, the balance of the section is intended to apply,
--and the section as a whole is intended to apply in other circumstances.
--
--It is not the purpose of this section to induce you to infringe any
--patents or other property right claims or to contest validity of any
--such claims; this section has the sole purpose of protecting the
--integrity of the free software distribution system which is
--implemented by public license practices.  Many people have made
--generous contributions to the wide range of software distributed
--through that system in reliance on consistent application of that
--system; it is up to the author/donor to decide if he or she is willing
--to distribute software through any other system and a licensee cannot
--impose that choice.
--
--This section is intended to make thoroughly clear what is believed to
--be a consequence of the rest of this License.
--
--  12. If the distribution and/or use of the Library is restricted in
--certain countries either by patents or by copyrighted interfaces, the
--original copyright holder who places the Library under this License may add
--an explicit geographical distribution limitation excluding those countries,
--so that distribution is permitted only in or among countries not thus
--excluded.  In such case, this License incorporates the limitation as if
--written in the body of this License.
--
--  13. The Free Software Foundation may publish revised and/or new
--versions of the Lesser General Public License from time to time.
--Such new versions will be similar in spirit to the present version,
--but may differ in detail to address new problems or concerns.
--
--Each version is given a distinguishing version number.  If the Library
--specifies a version number of this License which applies to it and
--"any later version", you have the option of following the terms and
--conditions either of that version or of any later version published by
--the Free Software Foundation.  If the Library does not specify a
--license version number, you may choose any version ever published by
--the Free Software Foundation.
--
--  14. If you wish to incorporate parts of the Library into other free
--programs whose distribution conditions are incompatible with these,
--write to the author to ask for permission.  For software which is
--copyrighted by the Free Software Foundation, write to the Free
--Software Foundation; we sometimes make exceptions for this.  Our
--decision will be guided by the two goals of preserving the free status
--of all derivatives of our free software and of promoting the sharing
--and reuse of software generally.
--
--                            NO WARRANTY
--
--  15. BECAUSE THE LIBRARY IS LICENSED FREE OF CHARGE, THERE IS NO
--WARRANTY FOR THE LIBRARY, TO THE EXTENT PERMITTED BY APPLICABLE LAW.
--EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR
--OTHER PARTIES PROVIDE THE LIBRARY "AS IS" WITHOUT WARRANTY OF ANY
--KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE
--IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
--PURPOSE.  THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE
--LIBRARY IS WITH YOU.  SHOULD THE LIBRARY PROVE DEFECTIVE, YOU ASSUME
--THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
--
--  16. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN
--WRITING WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY
--AND/OR REDISTRIBUTE THE LIBRARY AS PERMITTED ABOVE, BE LIABLE TO YOU
--FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR
--CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE
--LIBRARY (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING
--RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A
--FAILURE OF THE LIBRARY TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF
--SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH
--DAMAGES.
--
--                     END OF TERMS AND CONDITIONS
--
--           How to Apply These Terms to Your New Libraries
--
--  If you develop a new library, and you want it to be of the greatest
--possible use to the public, we recommend making it free software that
--everyone can redistribute and change.  You can do so by permitting
--redistribution under these terms (or, alternatively, under the terms of the
--ordinary General Public License).
--
--  To apply these terms, attach the following notices to the library.  It is
--safest to attach them to the start of each source file to most effectively
--convey the exclusion of warranty; and each file should have at least the
--"copyright" line and a pointer to where the full notice is found.
--
--    <one line to give the library's name and a brief idea of what it does.>
--    Copyright (C) <year>  <name of author>
--
--    This library is free software; you can redistribute it and/or
--    modify it under the terms of the GNU Lesser General Public
--    License as published by the Free Software Foundation; either
--    version 2.1 of the License, or (at your option) any later version.
--
--    This library is distributed in the hope that it will be useful,
--    but WITHOUT ANY WARRANTY; without even the implied warranty of
--    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
--    Lesser General Public License for more details.
--
--    You should have received a copy of the GNU Lesser General Public
--    License along with this library; if not, write to the Free Software
--    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
--    USA
--
--Also add information on how to contact you by electronic and paper mail.
--
--You should also get your employer (if you work as a programmer) or your
--school, if any, to sign a "copyright disclaimer" for the library, if
--necessary.  Here is a sample; alter the names:
--
--  Yoyodyne, Inc., hereby disclaims all copyright interest in the
--  library `Frob' (a library for tweaking knobs) written by James Random
--  Hacker.
--
--  <signature of Ty Coon>, 1 April 1990
--  Ty Coon, President of Vice
--
--That's all there is to it!
-+MIT License
-+
-+Copyright (c) <year> <copyright holders>
-+
-+Permission is hereby granted, free of charge, to any person obtaining a
-+copy of this software and associated documentation files (the "Software"),
-+to deal in the Software without restriction, including without limitation
-+the rights to use, copy, modify, merge, publish, distribute, sublicense,
-+and/or sell copies of the Software, and to permit persons to whom the
-+Software is furnished to do so, subject to the following conditions:
-+
-+The above copyright notice and this permission notice shall be included in
-+all copies or substantial portions of the Software.
-+
-+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-+DEALINGS IN THE SOFTWARE.
-diff --git a/LICENSES/LGPL-2.1 b/LICENSES/LGPL-2.1
-new file mode 100644
-index 000000000000..b73f9b6230f5
---- /dev/null
-+++ b/LICENSES/LGPL-2.1
-@@ -0,0 +1,505 @@
-+Valid-License-Identifier: LGPL-2.1
-+Valid-License-Identifier: LGPL-2.1-only
-+Valid-License-Identifier: LGPL-2.1+
-+Valid-License-Identifier: LGPL-2.1-or-later
-+SPDX-URL: https://spdx.org/licenses/LGPL-2.1.html
-+Usage-Guide:
-+  To use this license in source code, put one of the following SPDX
-+  tag/value pairs into a comment according to the placement
-+  guidelines in the licensing rules documentation.
-+  For 'GNU Lesser General Public License (LGPL) version 2.1 only' use:
-+    SPDX-License-Identifier: LGPL-2.1
-+  For 'GNU Lesser General Public License (LGPL) version 2.1 or any later
-+  version' use:
-+    SPDX-License-Identifier: LGPL-2.1+
-+License-Text:
-+
-+GNU LESSER GENERAL PUBLIC LICENSE
-+Version 2.1, February 1999
-+
-+Copyright (C) 1991, 1999 Free Software Foundation, Inc.
-+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+
-+Everyone is permitted to copy and distribute verbatim copies of this
-+license document, but changing it is not allowed.
-+
-+[This is the first released version of the Lesser GPL. It also counts as
-+the successor of the GNU Library Public License, version 2, hence the
-+version number 2.1.]
-+
-+Preamble
-+
-+The licenses for most software are designed to take away your freedom to
-+share and change it. By contrast, the GNU General Public Licenses are
-+intended to guarantee your freedom to share and change free software--to
-+make sure the software is free for all its users.
-+
-+This license, the Lesser General Public License, applies to some specially
-+designated software packages--typically libraries--of the Free Software
-+Foundation and other authors who decide to use it. You can use it too, but
-+we suggest you first think carefully about whether this license or the
-+ordinary General Public License is the better strategy to use in any
-+particular case, based on the explanations below.
-+
-+When we speak of free software, we are referring to freedom of use, not
-+price. Our General Public Licenses are designed to make sure that you have
-+the freedom to distribute copies of free software (and charge for this
-+service if you wish); that you receive source code or can get it if you
-+want it; that you can change the software and use pieces of it in new free
-+programs; and that you are informed that you can do these things.
-+
-+To protect your rights, we need to make restrictions that forbid
-+distributors to deny you these rights or to ask you to surrender these
-+rights. These restrictions translate to certain responsibilities for you if
-+you distribute copies of the library or if you modify it.
-+
-+For example, if you distribute copies of the library, whether gratis or for
-+a fee, you must give the recipients all the rights that we gave you. You
-+must make sure that they, too, receive or can get the source code. If you
-+link other code with the library, you must provide complete object files to
-+the recipients, so that they can relink them with the library after making
-+changes to the library and recompiling it. And you must show them these
-+terms so they know their rights.
-+
-+We protect your rights with a two-step method: (1) we copyright the
-+library, and (2) we offer you this license, which gives you legal
-+permission to copy, distribute and/or modify the library.
-+
-+To protect each distributor, we want to make it very clear that there is no
-+warranty for the free library. Also, if the library is modified by someone
-+else and passed on, the recipients should know that what they have is not
-+the original version, so that the original author's reputation will not be
-+affected by problems that might be introduced by others.
-+
-+Finally, software patents pose a constant threat to the existence of any
-+free program. We wish to make sure that a company cannot effectively
-+restrict the users of a free program by obtaining a restrictive license
-+from a patent holder. Therefore, we insist that any patent license obtained
-+for a version of the library must be consistent with the full freedom of
-+use specified in this license.
-+
-+Most GNU software, including some libraries, is covered by the ordinary GNU
-+General Public License. This license, the GNU Lesser General Public
-+License, applies to certain designated libraries, and is quite different
-+from the ordinary General Public License. We use this license for certain
-+libraries in order to permit linking those libraries into non-free
-+programs.
-+
-+When a program is linked with a library, whether statically or using a
-+shared library, the combination of the two is legally speaking a combined
-+work, a derivative of the original library. The ordinary General Public
-+License therefore permits such linking only if the entire combination fits
-+its criteria of freedom. The Lesser General Public License permits more lax
-+criteria for linking other code with the library.
-+
-+We call this license the "Lesser" General Public License because it does
-+Less to protect the user's freedom than the ordinary General Public
-+License. It also provides other free software developers Less of an
-+advantage over competing non-free programs. These disadvantages are the
-+reason we use the ordinary General Public License for many
-+libraries. However, the Lesser license provides advantages in certain
-+special circumstances.
-+
-+For example, on rare occasions, there may be a special need to encourage
-+the widest possible use of a certain library, so that it becomes a de-facto
-+standard. To achieve this, non-free programs must be allowed to use the
-+library. A more frequent case is that a free library does the same job as
-+widely used non-free libraries. In this case, there is little to gain by
-+limiting the free library to free software only, so we use the Lesser
-+General Public License.
-+
-+In other cases, permission to use a particular library in non-free programs
-+enables a greater number of people to use a large body of free
-+software. For example, permission to use the GNU C Library in non-free
-+programs enables many more people to use the whole GNU operating system, as
-+well as its variant, the GNU/Linux operating system.
-+
-+Although the Lesser General Public License is Less protective of the users'
-+freedom, it does ensure that the user of a program that is linked with the
-+Library has the freedom and the wherewithal to run that program using a
-+modified version of the Library.
-+
-+The precise terms and conditions for copying, distribution and modification
-+follow. Pay close attention to the difference between a "work based on the
-+library" and a "work that uses the library". The former contains code
-+derived from the library, whereas the latter must be combined with the
-+library in order to run.
-+
-+TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
-+
-+0. This License Agreement applies to any software library or other program
-+   which contains a notice placed by the copyright holder or other
-+   authorized party saying it may be distributed under the terms of this
-+   Lesser General Public License (also called "this License"). Each
-+   licensee is addressed as "you".
-+
-+   A "library" means a collection of software functions and/or data
-+   prepared so as to be conveniently linked with application programs
-+   (which use some of those functions and data) to form executables.
-+
-+   The "Library", below, refers to any such software library or work which
-+   has been distributed under these terms. A "work based on the Library"
-+   means either the Library or any derivative work under copyright law:
-+   that is to say, a work containing the Library or a portion of it, either
-+   verbatim or with modifications and/or translated straightforwardly into
-+   another language. (Hereinafter, translation is included without
-+   limitation in the term "modification".)
-+
-+   "Source code" for a work means the preferred form of the work for making
-+   modifications to it. For a library, complete source code means all the
-+   source code for all modules it contains, plus any associated interface
-+   definition files, plus the scripts used to control compilation and
-+   installation of the library.
-+
-+    Activities other than copying, distribution and modification are not
-+    covered by this License; they are outside its scope. The act of running
-+    a program using the Library is not restricted, and output from such a
-+    program is covered only if its contents constitute a work based on the
-+    Library (independent of the use of the Library in a tool for writing
-+    it). Whether that is true depends on what the Library does and what the
-+    program that uses the Library does.
-+
-+1. You may copy and distribute verbatim copies of the Library's complete
-+   source code as you receive it, in any medium, provided that you
-+   conspicuously and appropriately publish on each copy an appropriate
-+   copyright notice and disclaimer of warranty; keep intact all the notices
-+   that refer to this License and to the absence of any warranty; and
-+   distribute a copy of this License along with the Library.
-+
-+   You may charge a fee for the physical act of transferring a copy, and
-+   you may at your option offer warranty protection in exchange for a fee.
-+
-+2. You may modify your copy or copies of the Library or any portion of it,
-+   thus forming a work based on the Library, and copy and distribute such
-+   modifications or work under the terms of Section 1 above, provided that
-+   you also meet all of these conditions:
-+
-+   a) The modified work must itself be a software library.
-+
-+   b) You must cause the files modified to carry prominent notices stating
-+      that you changed the files and the date of any change.
-+
-+   c) You must cause the whole of the work to be licensed at no charge to
-+      all third parties under the terms of this License.
-+
-+   d) If a facility in the modified Library refers to a function or a table
-+      of data to be supplied by an application program that uses the
-+      facility, other than as an argument passed when the facility is
-+      invoked, then you must make a good faith effort to ensure that, in
-+      the event an application does not supply such function or table, the
-+      facility still operates, and performs whatever part of its purpose
-+      remains meaningful.
-+
-+   (For example, a function in a library to compute square roots has a
-+    purpose that is entirely well-defined independent of the
-+    application. Therefore, Subsection 2d requires that any
-+    application-supplied function or table used by this function must be
-+    optional: if the application does not supply it, the square root
-+    function must still compute square roots.)
-+
-+   These requirements apply to the modified work as a whole. If
-+   identifiable sections of that work are not derived from the Library, and
-+   can be reasonably considered independent and separate works in
-+   themselves, then this License, and its terms, do not apply to those
-+   sections when you distribute them as separate works. But when you
-+   distribute the same sections as part of a whole which is a work based on
-+   the Library, the distribution of the whole must be on the terms of this
-+   License, whose permissions for other licensees extend to the entire
-+   whole, and thus to each and every part regardless of who wrote it.
-+
-+   Thus, it is not the intent of this section to claim rights or contest
-+   your rights to work written entirely by you; rather, the intent is to
-+   exercise the right to control the distribution of derivative or
-+   collective works based on the Library.
-+
-+   In addition, mere aggregation of another work not based on the Library
-+   with the Library (or with a work based on the Library) on a volume of a
-+   storage or distribution medium does not bring the other work under the
-+   scope of this License.
-+
-+3. You may opt to apply the terms of the ordinary GNU General Public
-+   License instead of this License to a given copy of the Library. To do
-+   this, you must alter all the notices that refer to this License, so that
-+   they refer to the ordinary GNU General Public License, version 2,
-+   instead of to this License. (If a newer version than version 2 of the
-+   ordinary GNU General Public License has appeared, then you can specify
-+   that version instead if you wish.) Do not make any other change in these
-+   notices.
-+
-+   Once this change is made in a given copy, it is irreversible for that
-+   copy, so the ordinary GNU General Public License applies to all
-+   subsequent copies and derivative works made from that copy.
-+
-+   This option is useful when you wish to copy part of the code of the
-+   Library into a program that is not a library.
-+
-+4. You may copy and distribute the Library (or a portion or derivative of
-+   it, under Section 2) in object code or executable form under the terms
-+   of Sections 1 and 2 above provided that you accompany it with the
-+   complete corresponding machine-readable source code, which must be
-+   distributed under the terms of Sections 1 and 2 above on a medium
-+   customarily used for software interchange.
-+
-+   If distribution of object code is made by offering access to copy from a
-+   designated place, then offering equivalent access to copy the source
-+   code from the same place satisfies the requirement to distribute the
-+   source code, even though third parties are not compelled to copy the
-+   source along with the object code.
-+
-+5. A program that contains no derivative of any portion of the Library, but
-+   is designed to work with the Library by being compiled or linked with
-+   it, is called a "work that uses the Library". Such a work, in isolation,
-+   is not a derivative work of the Library, and therefore falls outside the
-+   scope of this License.
-+
-+   However, linking a "work that uses the Library" with the Library creates
-+   an executable that is a derivative of the Library (because it contains
-+   portions of the Library), rather than a "work that uses the
-+   library". The executable is therefore covered by this License. Section 6
-+   states terms for distribution of such executables.
-+
-+   When a "work that uses the Library" uses material from a header file
-+   that is part of the Library, the object code for the work may be a
-+   derivative work of the Library even though the source code is
-+   not. Whether this is true is especially significant if the work can be
-+   linked without the Library, or if the work is itself a library. The
-+   threshold for this to be true is not precisely defined by law.
-+
-+   If such an object file uses only numerical parameters, data structure
-+   layouts and accessors, and small macros and small inline functions (ten
-+   lines or less in length), then the use of the object file is
-+   unrestricted, regardless of whether it is legally a derivative
-+   work. (Executables containing this object code plus portions of the
-+   Library will still fall under Section 6.)
-+
-+   Otherwise, if the work is a derivative of the Library, you may
-+   distribute the object code for the work under the terms of Section
-+   6. Any executables containing that work also fall under Section 6,
-+   whether or not they are linked directly with the Library itself.
-+
-+6. As an exception to the Sections above, you may also combine or link a
-+   "work that uses the Library" with the Library to produce a work
-+   containing portions of the Library, and distribute that work under terms
-+   of your choice, provided that the terms permit modification of the work
-+   for the customer's own use and reverse engineering for debugging such
-+   modifications.
-+
-+   You must give prominent notice with each copy of the work that the
-+   Library is used in it and that the Library and its use are covered by
-+   this License. You must supply a copy of this License. If the work during
-+   execution displays copyright notices, you must include the copyright
-+   notice for the Library among them, as well as a reference directing the
-+   user to the copy of this License. Also, you must do one of these things:
-+
-+   a) Accompany the work with the complete corresponding machine-readable
-+      source code for the Library including whatever changes were used in
-+      the work (which must be distributed under Sections 1 and 2 above);
-+      and, if the work is an executable linked with the Library, with the
-+      complete machine-readable "work that uses the Library", as object
-+      code and/or source code, so that the user can modify the Library and
-+      then relink to produce a modified executable containing the modified
-+      Library. (It is understood that the user who changes the contents of
-+      definitions files in the Library will not necessarily be able to
-+      recompile the application to use the modified definitions.)
-+
-+   b) Use a suitable shared library mechanism for linking with the
-+      Library. A suitable mechanism is one that (1) uses at run time a copy
-+      of the library already present on the user's computer system, rather
-+      than copying library functions into the executable, and (2) will
-+      operate properly with a modified version of the library, if the user
-+      installs one, as long as the modified version is interface-compatible
-+      with the version that the work was made with.
-+
-+   c) Accompany the work with a written offer, valid for at least three
-+      years, to give the same user the materials specified in Subsection
-+      6a, above, for a charge no more than the cost of performing this
-+      distribution.
-+
-+   d) If distribution of the work is made by offering access to copy from a
-+      designated place, offer equivalent access to copy the above specified
-+      materials from the same place.
-+
-+   e) Verify that the user has already received a copy of these materials
-+      or that you have already sent this user a copy.
-+
-+   For an executable, the required form of the "work that uses the Library"
-+   must include any data and utility programs needed for reproducing the
-+   executable from it. However, as a special exception, the materials to be
-+   distributed need not include anything that is normally distributed (in
-+   either source or binary form) with the major components (compiler,
-+   kernel, and so on) of the operating system on which the executable runs,
-+   unless that component itself accompanies the executable.
-+
-+   It may happen that this requirement contradicts the license restrictions
-+   of other proprietary libraries that do not normally accompany the
-+   operating system. Such a contradiction means you cannot use both them
-+   and the Library together in an executable that you distribute.
-+
-+7. You may place library facilities that are a work based on the Library
-+   side-by-side in a single library together with other library facilities
-+   not covered by this License, and distribute such a combined library,
-+   provided that the separate distribution of the work based on the Library
-+   and of the other library facilities is otherwise permitted, and provided
-+   that you do these two things:
-+
-+   a) Accompany the combined library with a copy of the same work based on
-+      the Library, uncombined with any other library facilities. This must
-+      be distributed under the terms of the Sections above.
-+
-+   b) Give prominent notice with the combined library of the fact that part
-+      of it is a work based on the Library, and explaining where to find
-+      the accompanying uncombined form of the same work.
-+
-+8. You may not copy, modify, sublicense, link with, or distribute the
-+   Library except as expressly provided under this License. Any attempt
-+   otherwise to copy, modify, sublicense, link with, or distribute the
-+   Library is void, and will automatically terminate your rights under this
-+   License. However, parties who have received copies, or rights, from you
-+   under this License will not have their licenses terminated so long as
-+   such parties remain in full compliance.
-+
-+9. You are not required to accept this License, since you have not signed
-+   it. However, nothing else grants you permission to modify or distribute
-+   the Library or its derivative works. These actions are prohibited by law
-+   if you do not accept this License. Therefore, by modifying or
-+   distributing the Library (or any work based on the Library), you
-+   indicate your acceptance of this License to do so, and all its terms and
-+   conditions for copying, distributing or modifying the Library or works
-+   based on it.
-+
-+10. Each time you redistribute the Library (or any work based on the
-+    Library), the recipient automatically receives a license from the
-+    original licensor to copy, distribute, link with or modify the Library
-+    subject to these terms and conditions. You may not impose any further
-+    restrictions on the recipients' exercise of the rights granted
-+    herein. You are not responsible for enforcing compliance by third
-+    parties with this License.
-+
-+11. If, as a consequence of a court judgment or allegation of patent
-+    infringement or for any other reason (not limited to patent issues),
-+    conditions are imposed on you (whether by court order, agreement or
-+    otherwise) that contradict the conditions of this License, they do not
-+    excuse you from the conditions of this License. If you cannot
-+    distribute so as to satisfy simultaneously your obligations under this
-+    License and any other pertinent obligations, then as a consequence you
-+    may not distribute the Library at all. For example, if a patent license
-+    would not permit royalty-free redistribution of the Library by all
-+    those who receive copies directly or indirectly through you, then the
-+    only way you could satisfy both it and this License would be to refrain
-+    entirely from distribution of the Library.
-+
-+    If any portion of this section is held invalid or unenforceable under
-+    any particular circumstance, the balance of the section is intended to
-+    apply, and the section as a whole is intended to apply in other
-+    circumstances.
-+
-+    It is not the purpose of this section to induce you to infringe any
-+    patents or other property right claims or to contest validity of any
-+    such claims; this section has the sole purpose of protecting the
-+    integrity of the free software distribution system which is implemented
-+    by public license practices. Many people have made generous
-+    contributions to the wide range of software distributed through that
-+    system in reliance on consistent application of that system; it is up
-+    to the author/donor to decide if he or she is willing to distribute
-+    software through any other system and a licensee cannot impose that
-+    choice.
-+
-+    This section is intended to make thoroughly clear what is believed to
-+    be a consequence of the rest of this License.
-+
-+12. If the distribution and/or use of the Library is restricted in certain
-+    countries either by patents or by copyrighted interfaces, the original
-+    copyright holder who places the Library under this License may add an
-+    explicit geographical distribution limitation excluding those
-+    countries, so that distribution is permitted only in or among countries
-+    not thus excluded. In such case, this License incorporates the
-+    limitation as if written in the body of this License.
-+
-+13. The Free Software Foundation may publish revised and/or new versions of
-+    the Lesser General Public License from time to time. Such new versions
-+    will be similar in spirit to the present version, but may differ in
-+    detail to address new problems or concerns.
-+
-+    Each version is given a distinguishing version number. If the Library
-+    specifies a version number of this License which applies to it and "any
-+    later version", you have the option of following the terms and
-+    conditions either of that version or of any later version published by
-+    the Free Software Foundation. If the Library does not specify a license
-+    version number, you may choose any version ever published by the Free
-+    Software Foundation.
-+
-+14. If you wish to incorporate parts of the Library into other free
-+    programs whose distribution conditions are incompatible with these,
-+    write to the author to ask for permission. For software which is
-+    copyrighted by the Free Software Foundation, write to the Free Software
-+    Foundation; we sometimes make exceptions for this. Our decision will be
-+    guided by the two goals of preserving the free status of all
-+    derivatives of our free software and of promoting the sharing and reuse
-+    of software generally.
-+
-+NO WARRANTY
-+
-+15. BECAUSE THE LIBRARY IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
-+    FOR THE LIBRARY, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN
-+    OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
-+    PROVIDE THE LIBRARY "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
-+    EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-+    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE
-+    ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE LIBRARY IS WITH
-+    YOU. SHOULD THE LIBRARY PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL
-+    NECESSARY SERVICING, REPAIR OR CORRECTION.
-+
-+16. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
-+    WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR
-+    REDISTRIBUTE THE LIBRARY AS PERMITTED ABOVE, BE LIABLE TO YOU FOR
-+    DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL
-+    DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE LIBRARY
-+    (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING RENDERED
-+    INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A FAILURE OF
-+    THE LIBRARY TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF SUCH HOLDER OR
-+    OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
-+
-+END OF TERMS AND CONDITIONS
-+
-+How to Apply These Terms to Your New Libraries
-+
-+If you develop a new library, and you want it to be of the greatest
-+possible use to the public, we recommend making it free software that
-+everyone can redistribute and change. You can do so by permitting
-+redistribution under these terms (or, alternatively, under the terms of the
-+ordinary General Public License).
-+
-+To apply these terms, attach the following notices to the library. It is
-+safest to attach them to the start of each source file to most effectively
-+convey the exclusion of warranty; and each file should have at least the
-+"copyright" line and a pointer to where the full notice is found.
-+
-+one line to give the library's name and an idea of what it does.
-+Copyright (C) year name of author
-+
-+This library is free software; you can redistribute it and/or modify it
-+under the terms of the GNU Lesser General Public License as published by
-+the Free Software Foundation; either version 2.1 of the License, or (at
-+your option) any later version.
-+
-+This library is distributed in the hope that it will be useful, but WITHOUT
-+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-+FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
-+for more details.
-+
-+You should have received a copy of the GNU Lesser General Public License
-+along with this library; if not, write to the Free Software Foundation,
-+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA Also add
-+information on how to contact you by electronic and paper mail.
-+
-+You should also get your employer (if you work as a programmer) or your
-+school, if any, to sign a "copyright disclaimer" for the library, if
-+necessary. Here is a sample; alter the names:
-+
-+Yoyodyne, Inc., hereby disclaims all copyright interest in
-+the library `Frob' (a library for tweaking knobs) written
-+by James Random Hacker.
-+
-+signature of Ty Coon, 1 April 1990
-+Ty Coon, President of Vice
-+That's all there is to it!
-diff --git a/LICENSES/MIT b/LICENSES/MIT
-new file mode 100644
-index 000000000000..f33a68ceb3ea
---- /dev/null
-+++ b/LICENSES/MIT
-@@ -0,0 +1,30 @@
-+Valid-License-Identifier: MIT
-+SPDX-URL: https://spdx.org/licenses/MIT.html
-+Usage-Guide:
-+  To use the MIT License put the following SPDX tag/value pair into a
-+  comment according to the placement guidelines in the licensing rules
-+  documentation:
-+    SPDX-License-Identifier: MIT
-+License-Text:
-+
-+MIT License
-+
-+Copyright (c) <year> <copyright holders>
-+
-+Permission is hereby granted, free of charge, to any person obtaining a
-+copy of this software and associated documentation files (the "Software"),
-+to deal in the Software without restriction, including without limitation
-+the rights to use, copy, modify, merge, publish, distribute, sublicense,
-+and/or sell copies of the Software, and to permit persons to whom the
-+Software is furnished to do so, subject to the following conditions:
-+
-+The above copyright notice and this permission notice shall be included in
-+all copies or substantial portions of the Software.
-+
-+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-+DEALINGS IN THE SOFTWARE.
-diff --git a/Makefile b/Makefile
-index df065375187d..8a251027f21e 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1,4 +1,4 @@
--# SPDX-License-Identifier: LGPL-2.1
-+# SPDX-License-Identifier: MIT
- # libccli version:
- CCLI_VERSION = 1
- CCLI_PATCHLEVEL = 2
-diff --git a/check-manpages.sh b/check-manpages.sh
-index d352c87885bf..6782bea23515 100755
---- a/check-manpages.sh
-+++ b/check-manpages.sh
-@@ -1,5 +1,5 @@
- #!/bin/bash
--# SPDX-License-Identifier: LGPL-2.1
-+# SPDX-License-Identifier: MIT
- # Copyright (C) 2022, Google Inc, Steven Rostedt <rostedt@goodmis.org>
- #
- # This checks if any function is listed in a man page that is not listed
-diff --git a/include/ccli.h b/include/ccli.h
-index 9ef772721ded..dbd232bac8be 100644
---- a/include/ccli.h
-+++ b/include/ccli.h
-@@ -1,4 +1,4 @@
--// SPDX-License-Identifier: LGPL-2.1
-+// SPDX-License-Identifier: MIT
- #ifndef __CCLI__H
- #define __CCLI__H
- /*
-diff --git a/samples/Makefile b/samples/Makefile
-index 371fb30bfd72..1e159d398a5d 100644
---- a/samples/Makefile
-+++ b/samples/Makefile
-@@ -1,4 +1,4 @@
--# SPDX-License-Identifier: LGPL-2.1
-+# SPDX-License-Identifier: MIT
- 
- include $(src)/scripts/utils.mk
- 
-diff --git a/samples/cli-history.c b/samples/cli-history.c
-index 49a3c7327d9e..38e2e68c4666 100644
---- a/samples/cli-history.c
-+++ b/samples/cli-history.c
-@@ -1,4 +1,4 @@
--// SPDX-License-Identifier: LGPL-2.1
-+// SPDX-License-Identifier: MIT
- /*
-  * Read a ccli history file
-  * Copyright (C) 2022 Google Inc, Steven Rostedt <rostedt@goodmis.org>
-diff --git a/samples/clish.c b/samples/clish.c
-index 91f157950eb4..7c8cb6757f37 100644
---- a/samples/clish.c
-+++ b/samples/clish.c
-@@ -1,4 +1,4 @@
--// SPDX-License-Identifier: LGPL-2.1
-+// SPDX-License-Identifier: MIT
- /*
-  * Read a ccli history file
-  * Copyright (C) 2023 Google Inc, Steven Rostedt <rostedt@goodmis.org>
-diff --git a/scripts/utils.mk b/scripts/utils.mk
-index 72948a71e89e..d4b13cc6c475 100644
---- a/scripts/utils.mk
-+++ b/scripts/utils.mk
-@@ -1,4 +1,4 @@
--# SPDX-License-Identifier: LGPL-2.1
-+# SPDX-License-Identifier: MIT
- 
- # Utils
- 
-diff --git a/src/Makefile b/src/Makefile
-index 22f7faff0f02..bfa2de0b0592 100644
---- a/src/Makefile
-+++ b/src/Makefile
-@@ -1,4 +1,4 @@
--# SPDX-License-Identifier: LGPL-2.1
-+# SPDX-License-Identifier: MIT
- 
- include $(src)/scripts/utils.mk
- 
-diff --git a/src/ccli-local.h b/src/ccli-local.h
-index ec588bc880de..30e589f2ec37 100644
---- a/src/ccli-local.h
-+++ b/src/ccli-local.h
-@@ -1,4 +1,4 @@
--/* SPDX-License-Identifier: LGPL-2.1 */
-+/* SPDX-License-Identifier: MIT */
- #ifndef __CCLI_LOCAL_H
- #define __CCLI_LOCAL_H
- 
-diff --git a/src/ccli.c b/src/ccli.c
-index dcdccf470c7c..4002d3ace38e 100644
---- a/src/ccli.c
-+++ b/src/ccli.c
-@@ -1,4 +1,4 @@
--// SPDX-License-Identifier: LGPL-2.1
-+// SPDX-License-Identifier: MIT
- /*
-  * CLI interface for C.
-  *
-diff --git a/src/commands.c b/src/commands.c
-index 95549b44b6fe..1583cf32b8b6 100644
---- a/src/commands.c
-+++ b/src/commands.c
-@@ -1,4 +1,4 @@
--// SPDX-License-Identifier: LGPL-2.1
-+// SPDX-License-Identifier: MIT
- /*
-  * CLI interface for C.
-  *
-diff --git a/src/complete.c b/src/complete.c
-index 4e53b97db90f..58a147ec070e 100644
---- a/src/complete.c
-+++ b/src/complete.c
-@@ -1,4 +1,4 @@
--// SPDX-License-Identifier: LGPL-2.1
-+// SPDX-License-Identifier: MIT
- /*
-  * CLI interface for C.
-  *
-diff --git a/src/history.c b/src/history.c
-index 4e9c536ff6b4..4e75de55bce5 100644
---- a/src/history.c
-+++ b/src/history.c
-@@ -1,4 +1,4 @@
--// SPDX-License-Identifier: LGPL-2.1
-+// SPDX-License-Identifier: MIT
- /*
-  * CLI interface for C.
-  *
-diff --git a/src/line.c b/src/line.c
-index 34fdd3b5ed4f..f0034583b796 100644
---- a/src/line.c
-+++ b/src/line.c
-@@ -1,4 +1,4 @@
--// SPDX-License-Identifier: LGPL-2.1
-+// SPDX-License-Identifier: MIT
- /*
-  * Copyright (C) 2022 Steven Rostedt <rostedt@goodmis.org>
-  */
-diff --git a/utest/Makefile b/utest/Makefile
-index d6a3ca579e08..c619f2a2a8db 100644
---- a/utest/Makefile
-+++ b/utest/Makefile
-@@ -1,4 +1,4 @@
--# SPDX-License-Identifier: LGPL-2.1
-+# SPDX-License-Identifier: MIT
- 
- include $(src)/scripts/utils.mk
- 
-diff --git a/utest/ccli-utest.c b/utest/ccli-utest.c
-index 90c388f458b0..c2a9b34691a9 100644
---- a/utest/ccli-utest.c
-+++ b/utest/ccli-utest.c
-@@ -1,4 +1,4 @@
--// SPDX-License-Identifier: LGPL-2.1
-+// SPDX-License-Identifier: MIT
- /*
-  * Copyright (C) 2022 Steven Rostedt <rostedt@goodmis.org>
-  * Based off of trace-utest.c that is
-diff --git a/utest/ccli-utest.h b/utest/ccli-utest.h
-index 769f1a075415..522ef9cb2f9f 100644
---- a/utest/ccli-utest.h
-+++ b/utest/ccli-utest.h
-@@ -1,4 +1,4 @@
--/* SPDX-License-Identifier: LGPL-2.1 */
-+/* SPDX-License-Identifier: MIT */
- #ifndef __CCLI_UTEST_H
- #define __CCLI_UTEST_H
- 
-diff --git a/utest/libccli-utest.c b/utest/libccli-utest.c
-index e8dda8ce81ee..3ce9885a4b15 100644
---- a/utest/libccli-utest.c
-+++ b/utest/libccli-utest.c
-@@ -1,4 +1,4 @@
--// SPDX-License-Identifier: LGPL-2.1
-+// SPDX-License-Identifier: MIT
- /*
-  * Copyright (C) 2022, Steven Rostedt <rostedt@goodmis.org>
-  *  Based off of the libtracefs utests that are:
--- 
-2.47.2
+   BUILD                  trace-cmd
+/usr/bin/ld: /out/lib64/libtraceevent.a(libtraceevent.o): in function 
+`load_plugin':
+/libtraceevent/src/event-plugin.c:459:(.text+0x1458c): warning: Using 
+'dlopen' in statically linked applications requires at runtime the 
+shared libraries from the glibc version used for linking
+/usr/bin/ld: /trace-cmd/tracecmd/trace-setup-guest.o: in function 
+`trace_setup_guest':
+trace-setup-guest.c:(.text+0x5c8): warning: Using 'getgrnam' in 
+statically linked applications requires at runtime the shared libraries 
+from the glibc version used for linking
+/usr/bin/ld: /trace-cmd/tracecmd/trace-record.o: in function 
+`record_trace.isra.0':
+trace-record.c:(.text+0xe705): warning: Using 'initgroups' in statically 
+linked applications requires at runtime the shared libraries from the 
+glibc version used for linking
+/usr/bin/ld: /trace-cmd/tracecmd/trace-record.o: in function 
+`do_getaddrinfo':
+trace-record.c:(.text+0x865): warning: Using 'getaddrinfo' in statically 
+linked applications requires at runtime the shared libraries from the 
+glibc version used for linking
+/usr/bin/ld: /trace-cmd/tracecmd/trace-record.o: in function 
+`record_trace.isra.0':
+trace-record.c:(.text+0xe6ee): warning: Using 'getpwnam' in statically 
+linked applications requires at runtime the shared libraries from the 
+glibc version used for linking
+/usr/bin/ld: /trace-cmd/tracecmd/trace-record.o: in function 
+`tracecmd_stat_cpu_instance':
+trace-record.c:(.text+0x12ec): undefined reference to `trace_seq_printf'
+/usr/bin/ld: /trace-cmd/tracecmd/trace-record.o: in function `record_stats':
+trace-record.c:(.text+0x1419): undefined reference to `trace_seq_init'
+/usr/bin/ld: trace-record.c:(.text+0x1421): undefined reference to 
+`trace_seq_init'
+/usr/bin/ld: trace-record.c:(.text+0x1435): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-record.c:(.text+0x14c2): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-record.c:(.text+0x14e1): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-record.c:(.text+0x14ee): undefined reference to 
+`trace_seq_putc'
+/usr/bin/ld: trace-record.c:(.text+0x150e): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-record.c:(.text+0x1531): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-record.c:(.text+0x1569): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-record.c:(.text+0x15a1): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: /trace-cmd/tracecmd/trace-record.o: in function `record_data':
+trace-record.c:(.text+0x35e7): undefined reference to `trace_seq_init'
+/usr/bin/ld: trace-record.c:(.text+0x3600): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-record.c:(.text+0x3623): undefined reference to 
+`trace_seq_destroy'
+/usr/bin/ld: trace-record.c:(.text+0x36cf): undefined reference to 
+`trace_seq_do_printf'
+/usr/bin/ld: trace-record.c:(.text+0x370b): undefined reference to 
+`trace_seq_init'
+/usr/bin/ld: trace-record.c:(.text+0x3744): undefined reference to 
+`trace_seq_reset'
+/usr/bin/ld: trace-record.c:(.text+0x3761): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-record.c:(.text+0x3794): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-record.c:(.text+0x37a2): undefined reference to 
+`trace_seq_terminate'
+/usr/bin/ld: trace-record.c:(.text+0x37d3): undefined reference to 
+`trace_seq_destroy'
+/usr/bin/ld: trace-record.c:(.text+0x3924): undefined reference to 
+`trace_seq_do_printf'
+/usr/bin/ld: /trace-cmd/tracecmd/trace-record.o: in function 
+`record_trace.isra.0':
+trace-record.c:(.text+0xdf65): undefined reference to `trace_seq_do_printf'
+/usr/bin/ld: trace-record.c:(.text+0xe02f): undefined reference to 
+`trace_seq_destroy'
+/usr/bin/ld: trace-record.c:(.text+0xe03e): undefined reference to 
+`trace_seq_destroy'
+/usr/bin/ld: /trace-cmd/tracecmd/trace-record.o: in function 
+`trace_extract':
+trace-record.c:(.text+0x104b6): undefined reference to `trace_seq_destroy'
+/usr/bin/ld: trace-record.c:(.text+0x104c5): undefined reference to 
+`trace_seq_destroy'
+/usr/bin/ld: /trace-cmd/tracecmd/trace-sqlhist.o: in function 
+`trace_sqlhist':
+trace-sqlhist.c:(.text+0x2e5): undefined reference to `trace_seq_init'
+/usr/bin/ld: trace-sqlhist.c:(.text+0x3ae): undefined reference to 
+`trace_seq_do_printf'
+/usr/bin/ld: trace-sqlhist.c:(.text+0x3b6): undefined reference to 
+`trace_seq_destroy'
+/usr/bin/ld: /trace-cmd/lib/trace-cmd/libtracecmd.a(trace-input.o): in 
+function `update_page_info':
+trace-input.c:(.text+0x15d7): undefined reference to 
+`kbuffer_load_subbuffer'
+/usr/bin/ld: trace-input.c:(.text+0x15df): undefined reference to 
+`kbuffer_subbuffer_size'
+/usr/bin/ld: trace-input.c:(.text+0x15ec): undefined reference to 
+`kbuffer_timestamp'
+/usr/bin/ld: trace-input.c:(.text+0x1639): undefined reference to 
+`kbuffer_subbuffer_size'
+/usr/bin/ld: /trace-cmd/lib/trace-cmd/libtracecmd.a(trace-input.o): in 
+function `init_cpu_data':
+trace-input.c:(.text+0x1c3a): undefined reference to `kbuffer_alloc'
+/usr/bin/ld: trace-input.c:(.text+0x1c6b): undefined reference to 
+`kbuffer_set_old_format'
+/usr/bin/ld: trace-input.c:(.text+0x1ce9): undefined reference to 
+`kbuffer_free'
+/usr/bin/ld: /trace-cmd/lib/trace-cmd/libtracecmd.a(trace-input.o): in 
+function `tracecmd_refresh_record':
+trace-input.c:(.text+0x3bdb): undefined reference to 
+`kbuffer_read_at_offset'
+/usr/bin/ld: /trace-cmd/lib/trace-cmd/libtracecmd.a(trace-input.o): in 
+function `tracecmd_get_cursor':
+trace-input.c:(.text+0x41cd): undefined reference to `kbuffer_curr_offset'
+/usr/bin/ld: /trace-cmd/lib/trace-cmd/libtracecmd.a(trace-input.o): in 
+function `tracecmd_translate_data':
+trace-input.c:(.text+0x425c): undefined reference to 
+`kbuffer_translate_data'
+/usr/bin/ld: /trace-cmd/lib/trace-cmd/libtracecmd.a(trace-input.o): in 
+function `tracecmd_peek_data':
+trace-input.c:(.text+0x437c): undefined reference to `kbuffer_read_event'
+/usr/bin/ld: trace-input.c:(.text+0x4567): undefined reference to 
+`kbuffer_curr_offset'
+/usr/bin/ld: trace-input.c:(.text+0x459c): undefined reference to 
+`kbuffer_event_size'
+/usr/bin/ld: trace-input.c:(.text+0x45c9): undefined reference to 
+`kbuffer_missed_events'
+/usr/bin/ld: trace-input.c:(.text+0x45ee): undefined reference to 
+`kbuffer_curr_size'
+/usr/bin/ld: trace-input.c:(.text+0x4604): undefined reference to 
+`kbuffer_next_event'
+/usr/bin/ld: /trace-cmd/lib/trace-cmd/libtracecmd.a(trace-input.o): in 
+function `tracecmd_make_pipe':
+trace-input.c:(.text+0x5790): undefined reference to `kbuffer_alloc'
+/usr/bin/ld: trace-input.c:(.text+0x582d): undefined reference to 
+`kbuffer_set_old_format'
+/usr/bin/ld: /trace-cmd/lib/trace-cmd/libtracecmd.a(trace-input.o): in 
+function `tracecmd_close':
+trace-input.c:(.text+0x626a): undefined reference to `kbuffer_free'
+/usr/bin/ld: /trace-cmd/lib/trace-cmd/libtracecmd.a(trace-input.o): in 
+function `tracecmd_record_at_buffer_start':
+trace-input.c:(.text+0x69a6): undefined reference to `kbuffer_start_of_data'
+/usr/bin/ld: /trace-cmd/lib/trace-cmd/libtracecmd.a(trace-input.o): in 
+function `tracecmd_page_ts':
+trace-input.c:(.text+0x69f2): undefined reference to 
+`kbuffer_subbuf_timestamp'
+/usr/bin/ld: /trace-cmd/lib/trace-cmd/libtracecmd.a(trace-input.o): in 
+function `tracecmd_record_ts_delta':
+trace-input.c:(.text+0x6a4c): undefined reference to `kbuffer_ptr_delta'
+/usr/bin/ld: /trace-cmd/tracecmd/trace-read.o: in function `show_event_ts':
+trace-read.c:(.text+0x4de): undefined reference to `trace_seq_init'
+/usr/bin/ld: trace-read.c:(.text+0x516): undefined reference to 
+`trace_seq_destroy'
+/usr/bin/ld: /trace-cmd/tracecmd/trace-read.o: in function 
+`trace_show_data':
+trace-read.c:(.text+0x6fd): undefined reference to `trace_seq_init'
+/usr/bin/ld: trace-read.c:(.text+0x816): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-read.c:(.text+0x83c): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-read.c:(.text+0x8a1): undefined reference to 
+`trace_seq_do_printf'
+/usr/bin/ld: trace-read.c:(.text+0x8a9): undefined reference to 
+`trace_seq_destroy'
+/usr/bin/ld: trace-read.c:(.text+0x930): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-read.c:(.text+0x971): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-read.c:(.text+0x9ca): undefined reference to 
+`kbuffer_raw_get'
+/usr/bin/ld: trace-read.c:(.text+0x9ea): undefined reference to 
+`kbuffer_raw_get'
+/usr/bin/ld: trace-read.c:(.text+0xa32): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-read.c:(.text+0xa62): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-read.c:(.text+0xa84): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-read.c:(.text+0xaa1): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-read.c:(.text+0xac0): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-read.c:(.text+0xad6): undefined reference to 
+`trace_seq_putc'
+/usr/bin/ld: trace-read.c:(.text+0xaf5): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-read.c:(.text+0xb32): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-read.c:(.text+0xb4d): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-read.c:(.text+0xb72): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-read.c:(.text+0xb8d): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: 
+/trace-cmd/tracecmd/trace-read.o:trace-read.c:(.text+0xbad): more 
+undefined references to `trace_seq_printf' follow
+/usr/bin/ld: /trace-cmd/tracecmd/trace-profile.o: in function 
+`sched_switch_print':
+trace-profile.c:(.text+0xaa1): undefined reference to `trace_seq_putc'
+/usr/bin/ld: trace-profile.c:(.text+0xab9): undefined reference to 
+`trace_seq_putc'
+/usr/bin/ld: trace-profile.c:(.text+0xad9): undefined reference to 
+`trace_seq_putc'
+/usr/bin/ld: trace-profile.c:(.text+0xaf1): undefined reference to 
+`trace_seq_putc'
+/usr/bin/ld: trace-profile.c:(.text+0xb09): undefined reference to 
+`trace_seq_putc'
+/usr/bin/ld: 
+/trace-cmd/tracecmd/trace-profile.o:trace-profile.c:(.text+0xb21): more 
+undefined references to `trace_seq_putc' follow
+/usr/bin/ld: /trace-cmd/tracecmd/trace-profile.o: in function 
+`output_event':
+trace-profile.c:(.text+0x2cb4): undefined reference to `trace_seq_init'
+/usr/bin/ld: trace-profile.c:(.text+0x2cd2): undefined reference to 
+`trace_seq_terminate'
+/usr/bin/ld: trace-profile.c:(.text+0x2cf9): undefined reference to 
+`trace_seq_destroy'
+/usr/bin/ld: trace-profile.c:(.text+0x4f84): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-profile.c:(.text+0x50d9): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-profile.c:(.text+0x5284): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: /trace-cmd/tracecmd/trace-profile.o: in function 
+`syscall_print':
+trace-profile.c:(.text+0x1dd): undefined reference to `trace_seq_printf'
+/usr/bin/ld: /trace-cmd/tracecmd/trace-profile.o: in function 
+`softirq_print':
+trace-profile.c:(.text+0x222): undefined reference to `trace_seq_printf'
+/usr/bin/ld: 
+/trace-cmd/tracecmd/trace-profile.o:trace-profile.c:(.text+0x23a): more 
+undefined references to `trace_seq_printf' follow
+/usr/bin/ld: /trace-cmd/tracecmd/trace-profile.o: in function 
+`sched_switch_print':
+trace-profile.c:(.text+0xa8f): undefined reference to `trace_seq_putc'
+/usr/bin/ld: /trace-cmd/tracecmd/trace-profile.o: in function `func_print':
+trace-profile.c:(.text+0xbcf): undefined reference to `trace_seq_printf'
+/usr/bin/ld: trace-profile.c:(.text+0xbef): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: /trace-cmd/tracecmd/trace-list.o: in function `trace_option':
+trace-list.c:(.text+0x1115): undefined reference to `trace_seq_init'
+/usr/bin/ld: trace-list.c:(.text+0x1132): undefined reference to 
+`trace_seq_do_printf'
+/usr/bin/ld: /trace-cmd/tracecmd/trace-list.o: in function `trace_list':
+trace-list.c:(.text+0x1792): undefined reference to `trace_seq_init'
+/usr/bin/ld: trace-list.c:(.text+0x17af): undefined reference to 
+`trace_seq_do_printf'
+/usr/bin/ld: trace-list.c:(.text+0x17ed): undefined reference to 
+`trace_seq_init'
+/usr/bin/ld: trace-list.c:(.text+0x181b): undefined reference to 
+`trace_seq_do_printf'
+/usr/bin/ld: /trace-cmd/lib/trace-cmd/libtracecmd.a(trace-ftrace.o): in 
+function `function_handler':
+trace-ftrace.c:(.text+0x73): undefined reference to `trace_seq_printf'
+/usr/bin/ld: trace-ftrace.c:(.text+0xbc): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-ftrace.c:(.text+0xd1): undefined reference to 
+`trace_seq_putc'
+/usr/bin/ld: trace-ftrace.c:(.text+0x111): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-ftrace.c:(.text+0x131): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: /trace-cmd/lib/trace-cmd/libtracecmd.a(trace-ftrace.o): in 
+function `print_graph_duration':
+trace-ftrace.c:(.text+0x1b0): undefined reference to `trace_seq_printf'
+/usr/bin/ld: trace-ftrace.c:(.text+0x211): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-ftrace.c:(.text+0x226): undefined reference to 
+`trace_seq_puts'
+/usr/bin/ld: trace-ftrace.c:(.text+0x23c): undefined reference to 
+`trace_seq_putc'
+/usr/bin/ld: trace-ftrace.c:(.text+0x250): undefined reference to 
+`trace_seq_puts'
+/usr/bin/ld: /trace-cmd/lib/trace-cmd/libtracecmd.a(trace-ftrace.o): in 
+function `fgraph_ent_handler':
+trace-ftrace.c:(.text+0x383): undefined reference to `trace_seq_printf'
+/usr/bin/ld: trace-ftrace.c:(.text+0x392): undefined reference to 
+`trace_seq_puts'
+/usr/bin/ld: trace-ftrace.c:(.text+0x3dd): undefined reference to 
+`trace_seq_putc'
+/usr/bin/ld: trace-ftrace.c:(.text+0x440): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-ftrace.c:(.text+0x46b): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-ftrace.c:(.text+0x481): undefined reference to 
+`trace_seq_putc'
+/usr/bin/ld: trace-ftrace.c:(.text+0x4f9): undefined reference to 
+`trace_seq_putc'
+/usr/bin/ld: trace-ftrace.c:(.text+0x6ec): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-ftrace.c:(.text+0x73d): undefined reference to 
+`trace_seq_putc'
+/usr/bin/ld: trace-ftrace.c:(.text+0x79c): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-ftrace.c:(.text+0x80a): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-ftrace.c:(.text+0x835): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-ftrace.c:(.text+0x849): undefined reference to 
+`trace_seq_putc'
+/usr/bin/ld: trace-ftrace.c:(.text+0x866): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-ftrace.c:(.text+0x881): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-ftrace.c:(.text+0x897): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-ftrace.c:(.text+0x8ad): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-ftrace.c:(.text+0x8c3): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: 
+/trace-cmd/lib/trace-cmd/libtracecmd.a(trace-ftrace.o):trace-ftrace.c:(.text+0x8de): 
+more undefined references to `trace_seq_printf' follow
+/usr/bin/ld: /trace-cmd/lib/trace-cmd/libtracecmd.a(trace-ftrace.o): in 
+function `fgraph_ret_handler':
+trace-ftrace.c:(.text+0xa7d): undefined reference to `trace_seq_putc'
+/usr/bin/ld: trace-ftrace.c:(.text+0xa95): undefined reference to 
+`trace_seq_putc'
+/usr/bin/ld: trace-ftrace.c:(.text+0xb05): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-ftrace.c:(.text+0xb19): undefined reference to 
+`trace_seq_putc'
+/usr/bin/ld: trace-ftrace.c:(.text+0xbdc): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-ftrace.c:(.text+0xbfa): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-ftrace.c:(.text+0xc15): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-ftrace.c:(.text+0xc2d): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: trace-ftrace.c:(.text+0xc4d): undefined reference to 
+`trace_seq_printf'
+/usr/bin/ld: 
+/trace-cmd/lib/trace-cmd/libtracecmd.a(trace-ftrace.o):trace-ftrace.c:(.text+0xc6d): 
+more undefined references to `trace_seq_printf' follow
+/usr/bin/ld: /out/lib64/libtracefs.a(tracefs-instance.o): in function 
+`tracefs_instance_set_affinity_set':
+/libtracefs/src/tracefs-instance.c:954:(.text+0x183d): undefined 
+reference to `trace_seq_init'
+/usr/bin/ld: /libtracefs/src/tracefs-instance.c:995:(.text+0x1a49): 
+undefined reference to `trace_seq_printf'
+/usr/bin/ld: /libtracefs/src/tracefs-instance.c:999:(.text+0x1a7b): 
+undefined reference to `trace_seq_putc'
+/usr/bin/ld: /libtracefs/src/tracefs-instance.c:1006:(.text+0x1ab1): 
+undefined reference to `trace_seq_terminate'
+/usr/bin/ld: /libtracefs/src/tracefs-instance.c:1009:(.text+0x1adc): 
+undefined reference to `trace_seq_destroy'
+/usr/bin/ld: /out/lib64/libtracefs.a(tracefs-events.o): in function 
+`read_kbuf_record':
+/libtracefs/src/tracefs-events.c:44:(.text+0x50): undefined reference to 
+`kbuffer_read_event'
+/usr/bin/ld: /libtracefs/src/tracefs-events.c:50:(.text+0x9b): undefined 
+reference to `kbuffer_event_size'
+/usr/bin/ld: /libtracefs/src/tracefs-events.c:51:(.text+0xb2): undefined 
+reference to `kbuffer_curr_size'
+/usr/bin/ld: /libtracefs/src/tracefs-events.c:52:(.text+0xc9): undefined 
+reference to `kbuffer_missed_events'
+/usr/bin/ld: /libtracefs/src/tracefs-events.c:57:(.text+0x10e): 
+undefined reference to `kbuffer_next_event'
+/usr/bin/ld: /out/lib64/libtracefs.a(tracefs-hist.o): in function 
+`add_list':
+/libtracefs/src/tracefs-hist.c:83:(.text+0x93): undefined reference to 
+`trace_seq_puts'
+/usr/bin/ld: /libtracefs/src/tracefs-hist.c:86:(.text+0xb3): undefined 
+reference to `trace_seq_putc'
+/usr/bin/ld: /libtracefs/src/tracefs-hist.c:87:(.text+0xd9): undefined 
+reference to `trace_seq_puts'
+/usr/bin/ld: /out/lib64/libtracefs.a(tracefs-hist.o): in function 
+`add_hist_commands':
+/libtracefs/src/tracefs-hist.c:95:(.text+0x12b): undefined reference to 
+`trace_seq_putc'
+/usr/bin/ld: /libtracefs/src/tracefs-hist.c:106:(.text+0x1cc): undefined 
+reference to `trace_seq_printf'
+/usr/bin/ld: /libtracefs/src/tracefs-hist.c:110:(.text+0x208): undefined 
+reference to `trace_seq_puts'
+/usr/bin/ld: /libtracefs/src/tracefs-hist.c:111:(.text+0x220): undefined 
+reference to `trace_seq_puts'
+/usr/bin/ld: /libtracefs/src/tracefs-hist.c:112:(.text+0x238): undefined 
+reference to `trace_seq_puts'
+/usr/bin/ld: /libtracefs/src/tracefs-hist.c:117:(.text+0x26e): undefined 
+reference to `trace_seq_printf'
+/usr/bin/ld: /libtracefs/src/tracefs-hist.c:120:(.text+0x29e): undefined 
+reference to `trace_seq_printf'
+/usr/bin/ld: /out/lib64/libtracefs.a(tracefs-hist.o): in function 
+`tracefs_hist_echo_cmd':
+/libtracefs/src/tracefs-hist.c:153:(.text+0x339): undefined reference to 
+`trace_seq_puts'
+/usr/bin/ld: /libtracefs/src/tracefs-hist.c:157:(.text+0x36e): undefined 
+reference to `trace_seq_printf'
+/usr/bin/ld: /out/lib64/libtracefs.a(tracefs-hist.o): in function 
+`tracefs_hist_command':
+/libtracefs/src/tracefs-hist.c:190:(.text+0x419): undefined reference to 
+`trace_seq_init'
+/usr/bin/ld: /libtracefs/src/tracefs-hist.c:194:(.text+0x440): undefined 
+reference to `trace_seq_putc'
+/usr/bin/ld: /libtracefs/src/tracefs-hist.c:195:(.text+0x44c): undefined 
+reference to `trace_seq_terminate'
+/usr/bin/ld: /libtracefs/src/tracefs-hist.c:202:(.text+0x48b): undefined 
+reference to `trace_seq_destroy'
+/usr/bin/ld: /out/lib64/libtracefs.a(tracefs-hist.o): in function 
+`tracefs_synth_raw_fmt':
+/libtracefs/src/tracefs-hist.c:2112:(.text+0x3cfb): undefined reference 
+to `trace_seq_printf'
+/usr/bin/ld: /libtracefs/src/tracefs-hist.c:2113:(.text+0x3d21): 
+undefined reference to `trace_seq_printf'
+/usr/bin/ld: /libtracefs/src/tracefs-hist.c:2114:(.text+0x3d47): 
+undefined reference to `trace_seq_printf'
+/usr/bin/ld: /out/lib64/libtracefs.a(tracefs-hist.o): in function 
+`tracefs_synth_echo_cmd':
+/libtracefs/src/tracefs-hist.c:2473:(.text+0x4746): undefined reference 
+to `trace_seq_printf'
+/usr/bin/ld: /libtracefs/src/tracefs-hist.c:2488:(.text+0x47ff): 
+undefined reference to `trace_seq_printf'
+/usr/bin/ld: 
+/out/lib64/libtracefs.a(tracefs-hist.o):/libtracefs/src/tracefs-hist.c:2498: 
+more undefined references to `trace_seq_printf' follow
+/usr/bin/ld: /out/lib64/libtracefs.a(tracefs-record.o): in function 
+`tracefs_cpu_free_fd':
+/libtracefs/src/tracefs-record.c:280:(.text+0x4f1): undefined reference 
+to `kbuffer_free'
+/usr/bin/ld: /out/lib64/libtracefs.a(tracefs-record.o): in function 
+`tracefs_cpu_read_buf':
+/libtracefs/src/tracefs-record.c:539:(.text+0xc41): undefined reference 
+to `kbuffer_load_subbuffer'
+/usr/bin/ld: /out/lib64/libtracefs.a(tracefs-record.o): in function 
+`tracefs_cpu_buffered_read_buf':
+/libtracefs/src/tracefs-record.c:680:(.text+0xfb9): undefined reference 
+to `kbuffer_load_subbuffer'
+/usr/bin/ld: /out/lib64/libtracefs.a(tracefs-record.o): in function 
+`tracefs_cpu_flush_buf':
+/libtracefs/src/tracefs-record.c:799:(.text+0x1253): undefined reference 
+to `kbuffer_load_subbuffer'
+/usr/bin/ld: /out/lib64/libtracefs.a(tracefs-mmap.o): in function 
+`tfs_mmap':
+/libtracefs/src/tracefs-mmap.c:92:(.text+0xa9): undefined reference to 
+`kbuffer_dup'
+/usr/bin/ld: /libtracefs/src/tracefs-mmap.c:108:(.text+0x176): undefined 
+reference to `kbuffer_free'
+/usr/bin/ld: /libtracefs/src/tracefs-mmap.c:123:(.text+0x23e): undefined 
+reference to `kbuffer_free'
+/usr/bin/ld: /libtracefs/src/tracefs-mmap.c:131:(.text+0x29f): undefined 
+reference to `kbuffer_load_subbuffer'
+/usr/bin/ld: /libtracefs/src/tracefs-mmap.c:138:(.text+0x2c3): undefined 
+reference to `kbuffer_start_of_data'
+/usr/bin/ld: /libtracefs/src/tracefs-mmap.c:140:(.text+0x373): undefined 
+reference to `kbuffer_read_buffer'
+/usr/bin/ld: /out/lib64/libtracefs.a(tracefs-mmap.o): in function 
+`tfs_unmap':
+/libtracefs/src/tracefs-mmap.c:155:(.text+0x3fc): undefined reference to 
+`kbuffer_free'
+/usr/bin/ld: /out/lib64/libtracefs.a(tracefs-mmap.o): in function 
+`tfs_mmap_load_subbuf':
+/libtracefs/src/tracefs-mmap.c:180:(.text+0x4ae): undefined reference to 
+`kbuffer_subbuffer'
+/usr/bin/ld: /libtracefs/src/tracefs-mmap.c:181:(.text+0x4cb): undefined 
+reference to `kbuffer_load_subbuffer'
+/usr/bin/ld: /libtracefs/src/tracefs-mmap.c:183:(.text+0x4db): undefined 
+reference to `kbuffer_curr_index'
+/usr/bin/ld: /libtracefs/src/tracefs-mmap.c:184:(.text+0x4f9): undefined 
+reference to `kbuffer_curr_offset'
+/usr/bin/ld: /libtracefs/src/tracefs-mmap.c:186:(.text+0x59b): undefined 
+reference to `kbuffer_read_buffer'
+/usr/bin/ld: /libtracefs/src/tracefs-mmap.c:195:(.text+0x5b4): undefined 
+reference to `kbuffer_refresh'
+/usr/bin/ld: /libtracefs/src/tracefs-mmap.c:198:(.text+0x5c0): undefined 
+reference to `kbuffer_curr_size'
+/usr/bin/ld: /libtracefs/src/tracefs-mmap.c:200:(.text+0x5d0): undefined 
+reference to `kbuffer_curr_offset'
+/usr/bin/ld: /libtracefs/src/tracefs-mmap.c:200:(.text+0x5de): undefined 
+reference to `kbuffer_curr_size'
+/usr/bin/ld: /libtracefs/src/tracefs-mmap.c:218:(.text+0x65f): undefined 
+reference to `kbuffer_subbuffer'
+/usr/bin/ld: /libtracefs/src/tracefs-mmap.c:221:(.text+0x67f): undefined 
+reference to `kbuffer_load_subbuffer'
+/usr/bin/ld: /out/lib64/libtracefs.a(tracefs-mmap.o): in function 
+`tfs_mmap_read':
+/libtracefs/src/tracefs-mmap.c:242:(.text+0x714): undefined reference to 
+`kbuffer_read_buffer'
+/usr/bin/ld: /libtracefs/src/tracefs-mmap.c:247:(.text+0x72e): undefined 
+reference to `kbuffer_start_of_data'
+/usr/bin/ld: /out/lib64/libtracefs.a(tracefs-sqlhist.o): in function 
+`tfs_sql_parse_error':
+/libtracefs/src/tracefs-sqlhist.c:151:(.text+0x133): undefined reference 
+to `trace_seq_init'
+/usr/bin/ld: /libtracefs/src/tracefs-sqlhist.c:162:(.text+0x1b7): 
+undefined reference to `trace_seq_putc'
+/usr/bin/ld: /libtracefs/src/tracefs-sqlhist.c:163:(.text+0x1f4): 
+undefined reference to `trace_seq_putc'
+/usr/bin/ld: /libtracefs/src/tracefs-sqlhist.c:165:(.text+0x20d): 
+undefined reference to `trace_seq_putc'
+/usr/bin/ld: /libtracefs/src/tracefs-sqlhist.c:166:(.text+0x22d): 
+undefined reference to `trace_seq_puts'
+/usr/bin/ld: /libtracefs/src/tracefs-sqlhist.c:167:(.text+0x24c): 
+undefined reference to `trace_seq_printf'
+/usr/bin/ld: /libtracefs/src/tracefs-sqlhist.c:168:(.text+0x263): 
+undefined reference to `trace_seq_vprintf'
+/usr/bin/ld: /libtracefs/src/tracefs-sqlhist.c:170:(.text+0x26f): 
+undefined reference to `trace_seq_terminate'
+/usr/bin/ld: /libtracefs/src/tracefs-sqlhist.c:173:(.text+0x292): 
+undefined reference to `trace_seq_destroy'
+collect2: error: ld returned 1 exit status
+make[1]: *** [Makefile:76: /trace-cmd/tracecmd/trace-cmd] Error 1
+make: *** [Makefile:405: trace-cmd] Error 2
 
