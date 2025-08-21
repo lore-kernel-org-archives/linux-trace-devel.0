@@ -1,65 +1,64 @@
-Received: from server-vie001.gnuweeb.org (server-vie001.gnuweeb.org [89.58.62.56])
+Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C87A335C7
-	for <linux-trace-devel@vger.kernel.org>; Thu, 21 Aug 2025 00:16:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.58.62.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F731335C7
+	for <linux-trace-devel@vger.kernel.org>; Thu, 21 Aug 2025 00:18:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755735363; cv=none; b=tRbHgmxKDaWSMoKApTTkwc63KSiXEfLwynep3iftm4yad+FE4BchEFGNwHSgEqXt2PE/FTjLD2qhYzF83rnWwP5o+DZcUBsb17Nz0WlH6m3s2pIWbOUm7UAF+dJUuBugnWzbDD1qta4seF4dUfeHMqohQ553xaF0hu0vBVqbhFQ=
+	t=1755735533; cv=none; b=JIaYl2lFRQ1NwvKewohRvM7144lDSgMvyzZtCZdJ91hB043TNJk1sOSh+5JYSExThksF/vl5956Ti+dMDPeYJteLojaq0ze+bE/Q31/SU4NwYuA9OInjZNdRv85D6XGJlGtGSkAQpuS4zU/vgE0CGJKhkya6IsZvtL/yQhO8jro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755735363; c=relaxed/simple;
-	bh=qD+R64g13DQlVl6UabfafEACoauEAU4EDajfuuO0/lQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DCfywASTJAJXFbtl9NpRRPDaZGduWiticM+rq08Rg4p+T/3eWHOa5UZLJfU36WBwvHxu2eamrXDFdcSAsAVTGtxYaAzvOr5kjPT0WDer4GbbvnRJNbImtVsWyXIoldlPRcW2uDiN4aWKfJRclDucaYT16nUo0ml0aIrVzr7G3Mo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gnuweeb.org; spf=pass smtp.mailfrom=gnuweeb.org; dkim=pass (2048-bit key) header.d=gnuweeb.org header.i=@gnuweeb.org header.b=l9OZ+2c8; arc=none smtp.client-ip=89.58.62.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gnuweeb.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnuweeb.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gnuweeb.org header.i=@gnuweeb.org header.b="l9OZ+2c8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gnuweeb.org;
-	s=new2025; t=1755735359;
-	bh=qD+R64g13DQlVl6UabfafEACoauEAU4EDajfuuO0/lQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:In-Reply-To:Message-ID:Date:From:Reply-To:Subject:To:
-	 Cc:In-Reply-To:References:Resent-Date:Resent-From:Resent-To:
-	 Resent-Cc:User-Agent:Content-Type:Content-Transfer-Encoding;
-	b=l9OZ+2c8HMIFYGiB/r5pprVT7AuW+znHIZ8+cDANPY4MYL4HtohTpiwsY5m22FVk2
-	 8JJT/PIBhJ0WNDWVE4m19dMEay0FK+YvzeQ+RJeUmPPUTa8Vi6yp3+7OxBQbMybRje
-	 4CvIEzbDYnvPiPHD1VrXyexh2/bCKW+asMzuCgQOTq9ghu6BTvvBAZtwzd4GY2gYqB
-	 T2DJthTqvsmleROF8CCGWlXULbvPCM6XgHEB6YewH6QmM/qRNem9rouTF9+P+1Zx/h
-	 huLxDaiBgEgt6U8OykesKIJiBL1e2zEW/u0iSLXovqRe1ySVd+GR3haiMAlV7BvxFd
-	 kPTNTh1UF+u2g==
-Received: from biznet-home.integral.gnuweeb.org (unknown [182.253.126.177])
-	by server-vie001.gnuweeb.org (Postfix) with ESMTPSA id 5D3ED3127F97;
-	Thu, 21 Aug 2025 00:15:58 +0000 (UTC)
-X-Gw-Bpl: wU/cy49Bu1yAPm0bW2qiliFUIEVf+EkEatAboK6pk2H2LSy2bfWlPAiP3YIeQ5aElNkQEhTV9Q==
-Date: Thu, 21 Aug 2025 09:15:55 +0900
-From: Ammar Faizi <ammarfaizi2@gnuweeb.org>
-To: Steven Rostedt <rostedt@goodmis.org>
+	s=arc-20240116; t=1755735533; c=relaxed/simple;
+	bh=007tRnsDGUre0UEG4pbgEcE3AexyKh/eJkm1hdMU9cE=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Zx0ruN4R85w2HIm1ZUwt7jbtGVbbFiIgi3UbQIobYGQ+1Drr8dMr6K5juZ9dvl6w8aO89Dwzie8b0its9fpHoc3tJMFP2IcTIEXznzHOIK3esXd0JKaV1fH51bEx17Gfecg+3WA97cO8CJ/ktgCIlRitd5qEHM0XNAAmnDFiBhY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf02.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay04.hostedemail.com (Postfix) with ESMTP id 1EDBD1A01C8;
+	Thu, 21 Aug 2025 00:18:50 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf02.hostedemail.com (Postfix) with ESMTPA id 69E3880011;
+	Thu, 21 Aug 2025 00:18:48 +0000 (UTC)
+Date: Wed, 20 Aug 2025 20:18:51 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Ammar Faizi <ammarfaizi2@gnuweeb.org>
 Cc: Linux Trace Devel Mailing List <linux-trace-devel@vger.kernel.org>,
-	GNU/Weeb Mailing List <gwml@vger.gnuweeb.org>,
-	Alviro Iskandar Setiawan <alviro.iskandar@gnuweeb.org>
+ GNU/Weeb Mailing List <gwml@vger.gnuweeb.org>, Alviro Iskandar Setiawan
+ <alviro.iskandar@gnuweeb.org>
 Subject: Re: [PATCH 0/2] ccli: Two small fixes for ccli
-Message-ID: <aKZlOyjJ4gfnEVOl@biznet-home.integral.gnuweeb.org>
+Message-ID: <20250820201851.763972f7@gandalf.local.home>
+In-Reply-To: <aKZlOyjJ4gfnEVOl@biznet-home.integral.gnuweeb.org>
 References: <20250820211434.1857859-1-ammarfaizi2@gnuweeb.org>
- <20250820201236.3f685799@gandalf.local.home>
+	<20250820201236.3f685799@gandalf.local.home>
+	<aKZlOyjJ4gfnEVOl@biznet-home.integral.gnuweeb.org>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250820201236.3f685799@gandalf.local.home>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Stat-Signature: e37x8pemfehhnzeouyff3nsqpodeykwd
+X-Rspamd-Server: rspamout07
+X-Rspamd-Queue-Id: 69E3880011
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX1+o6JbIxDuoqiesBzNKzSF3pbJBVjZb/20=
+X-HE-Tag: 1755735528-929633
+X-HE-Meta: U2FsdGVkX18hyEwN6INkD5ccxegZ8OJ9DKNwAj4ZVNI5da0Ch6sHV1B3iqQNaIgHkL8QVFRbxtMmrt0lIHKlkWnY/BZo3PlIzvGC6G2noAqx3fmf140TiGCnccUHwwaIe/XEsZILv7TOaxaJlqAZFzW+nhHa0ie7b5uQX6Hvkpg1fgvZ1kD/fY0BG3lc8ntSS3+7L486rmrlmK5/XM8vqjehvAVrHcnwYBKyYHtYD3kfjXV1lMMgmZC6gDQA4twfTnlPbWhn9z/+ofSgiaLm/wMeELXNUf2j31zyVImuUcO9KmFZsdPf7yALQLP3q6q7NZGksSZKCDZSgCPd+9XgXFxztd03DJB9z63oOgpkhxOoxTOCmEiqaCTmtu0QYFpoiVuOJ6x1zNhb5zvTbJJc2w==
 
-On Wed, Aug 20, 2025 at 08:12:36PM -0400, Steven Rostedt wrote:
-> Thanks for the updates!
+On Thu, 21 Aug 2025 09:15:55 +0900
+Ammar Faizi <ammarfaizi2@gnuweeb.org> wrote:
+
+> On Wed, Aug 20, 2025 at 08:12:36PM -0400, Steven Rostedt wrote:
+> > Thanks for the updates!
+> > 
+> > FYI, I'm relicensing libccli under MIT from LGPL. Are you OK with that?  
 > 
-> FYI, I'm relicensing libccli under MIT from LGPL. Are you OK with that?
+> Yes, that is fine for me.
+> 
 
-Yes, that is fine for me.
+Ah, sorry, you already acked it. ;-)
 
--- 
-Ammar Faizi
-
+-- Steve
