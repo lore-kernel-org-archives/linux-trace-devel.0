@@ -1,29 +1,28 @@
-Received: from relay.hostedemail.com (smtprelay0010.hostedemail.com [216.40.44.10])
+Received: from relay.hostedemail.com (smtprelay0011.hostedemail.com [216.40.44.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A82A2AE7F
-	for <linux-trace-devel@vger.kernel.org>; Tue, 26 Aug 2025 14:52:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16BE74438B
+	for <linux-trace-devel@vger.kernel.org>; Wed, 27 Aug 2025 22:39:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756219933; cv=none; b=BVa5DCec0WM2VQFPY2QD7a4O24Sjch+oOEKx7XtacE62BjO90+mcRb+ehDLnskPl3zeZNXWuBAoyIkQUeFLElcMl/79z0DGX/7SBk384aDrp3rf/DAbU1C8aEypb/rt1GCP0Yq/XovhgArkEjL93MF81OSa+gZ5TqEHOLwCxCNo=
+	t=1756334395; cv=none; b=sx/gGJ0TFd4ExaQ79gX8yssfNrfZFMQO5Qo8vgGfbg34cJL1WNk7ZaYWkxI1CL9rk8MSnPr5zafZ4hoMOtranXeazo4tRKzYuIK0F9aPkBpREo/72aCcb1KewIneIti1dFC8xPTGP+QVfe2MRUaWJfpyL3BVYd674uHcB4Aa5aM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756219933; c=relaxed/simple;
-	bh=G7WK+k376F0HyA7oxjyj7u63cOZe5Zpc0fTPRlsKeZg=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=jdQF7MD8le/8vOBRxvyOzZgPBFDdbQo9VF42ttAiJJVt98A9wML0lCLLAcKuxErJCq2flr1ZtIND5qTncFoov9UnjRBtgRwo90OOz0vt1sT73j3nTvmzc8+2vzD9Z5ax76G1K+8c2N/eHoT5RpwAgTGYpqMKcbgwnlz+2DxcTj0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.10
+	s=arc-20240116; t=1756334395; c=relaxed/simple;
+	bh=V0EOPANh5dRgCHMaM4z6Cge0hnCBwXrY7aTHfWc/UZk=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=oFOvnHJ8q0ovinDgek+T4S6B/7PxsXLwSvIAQ6fXPV38oEqoDeGy8HZbHV/12cf+lfIsfJ1uuBv5LSdbgPt4mY86iSdgvXFvdLP0UtNS8UuzmzqIUGvDsqR7hj8NdKec1X4cD0azUVxOCPUKpzvHEn0wxzm4Xz8rA/JHHMePHw8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf19.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay07.hostedemail.com (Postfix) with ESMTP id 2987C16017D
-	for <linux-trace-devel@vger.kernel.org>; Tue, 26 Aug 2025 14:52:09 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf19.hostedemail.com (Postfix) with ESMTPA id D931E20026
-	for <linux-trace-devel@vger.kernel.org>; Tue, 26 Aug 2025 14:52:07 +0000 (UTC)
-Date: Tue, 26 Aug 2025 10:52:23 -0400
+Received: from omf13.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay10.hostedemail.com (Postfix) with ESMTP id 4C16FC08B3
+	for <linux-trace-devel@vger.kernel.org>; Wed, 27 Aug 2025 22:39:46 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf13.hostedemail.com (Postfix) with ESMTPA id 0CE192000E
+	for <linux-trace-devel@vger.kernel.org>; Wed, 27 Aug 2025 22:39:44 +0000 (UTC)
+Date: Wed, 27 Aug 2025 18:40:03 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] trace-cmd record/set: Use write() instead of fwrite() for
- options
-Message-ID: <20250826105223.4b857921@gandalf.local.home>
+Subject: [PATCH] libtracefs: Make comm field a string
+Message-ID: <20250827184003.17c63731@gandalf.local.home>
 X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -33,65 +32,50 @@ List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Stat-Signature: pqo1z8rnaj335ctipkup1dqarwrap1pc
-X-Rspamd-Server: rspamout03
-X-Rspamd-Queue-Id: D931E20026
+X-Stat-Signature: u8taose7kcqs7ufu19bg581smtufwjzw
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: 0CE192000E
 X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1+oj0gmSVn6h9oV+e+q8AY3A5fOLOPt8V0=
-X-HE-Tag: 1756219927-560938
-X-HE-Meta: U2FsdGVkX19dHsYgN5opZInJamawGv2Zgfi0TWOX6j3h+BqsLqDO5F7EXN0A1lwuKHWe+TUpT4AghdVhsh6CAHUWY5BGThM7TdyyWeeJ5hsld8v9hv0pGoFcveLJluxrtZAIbhiJBs0XtDge3XZ8J5qVpwO2gbvwtSYrHZqPyNWl3B3HoSkyvCAfBXFextOutObKbVCRRev6Qbfdjm9VQKO3ztFBBmftdmgTjQ4X2yMrISoeA7yxdzTya2ApNvT2/tNe0HRAFaQOProvP/vevls9ZOjPCrSnb4tiBVGIK1Lne0Wrn0T8y2L8oPTKCUDh2j/mj6xwtk5HcWCn7eZXU3tRZ1R0TRwkCYjWa+9OA/xdm3VYty5Bsjryf6yQrsav
+X-Session-ID: U2FsdGVkX19bxYcf3b4cnKcCB/K//6GAx43amZR7i/o=
+X-HE-Tag: 1756334384-825702
+X-HE-Meta: U2FsdGVkX1+D26R34RC+k14niEQIcgkXB31B6ALFi4/+p0Qbe8w9/LktpXqwBuZsiEkne7OLVJblFiigdH/ODDSBeuBY0JuG455sEOfr0Ai4r8ebMMH1ujs3mcbjqr0VWDCM8tWX6VQdgPCkBSo+45lG7mgrDyA4vLp54idXFP+ld0cJZ7lfVdNIhzurPJrWG50D+8yMlVBlWZSE5j8mBMoik3nnc9jaYxnDDrVTJ07DIFD9zdAWi/asAU1bHlqlQzPyO/9q6P1OetszHp+Ut8zI2GDTNtZfsKWfgfCVSOtcjZrecDtlbj6/783hYZRw/XYIQERdxK39g7tzE2EUA7faN3qd7/7oglzJnMJt52wW/Bvk2UJn8Spv1NFy1JiV
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-For some reason, using fwrite() to write to trace_options does not return
-the error messages. When using -O userstacktrace_delay on a system that did
-not have it supported, the  fwrite() succeeds and the user of trace-cmd
-things the option is set. This is confusing when looking at the output and
-not seeing the delayed stack traces.
+The COMM or comm that is used in filtering and creating synthetic events is
+a string, but it isn't defined as such when it is created. This limits how
+creating synthetic events with COMM can work.
 
-Switch fopen()/fwrite() over to open()/write() where there's no dependency
-on glibc getting it correct.
+Without designating COMM as a string, the following:
+
+  sqlhist -n hello select start.COMM from sched_switch as start where start.COMM = '"hello"'
+
+Errors out with:
+
+  Failed creating synthetic event!: Invalid argument
+  select start.COMM from sched_switch as start where start.COMM = "hello"
+         ^
+  ERROR: 'start.COMM'
+  Field 'COMM' is not compatible to be compared with the given value
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- tracecmd/trace-record.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ src/tracefs-filter.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index f36ee6cd..4872d0d7 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -1964,22 +1964,23 @@ static void save_option(struct buffer_instance *instance, const char *option)
+diff --git a/src/tracefs-filter.c b/src/tracefs-filter.c
+index 3b0933f..b7d050b 100644
+--- a/src/tracefs-filter.c
++++ b/src/tracefs-filter.c
+@@ -39,7 +39,7 @@ static const struct tep_format_field common_comm = {
+ 	.type			= "char",
+ 	.name			= "common_comm",
+ 	.size			= 4,
+-	.flags			= TEP_FIELD_IS_ARRAY | TEP_FIELD_IS_DYNAMIC,
++	.flags			= TEP_FIELD_IS_ARRAY | TEP_FIELD_IS_DYNAMIC | TEP_FIELD_IS_STRING,
+ };
  
- static int set_option(struct buffer_instance *instance, const char *option)
- {
--	FILE *fp;
- 	char *path;
-+	int ret;
-+	int fd;
- 
- 	path = tracefs_instance_get_file(instance->tracefs, "trace_options");
--	fp = fopen(path, "w");
--	if (!fp)
-+	fd = open(path, O_WRONLY | O_TRUNC);
-+	if (fd < 0)
- 		warning("writing to '%s'", path);
- 	tracefs_put_tracing_file(path);
- 
--	if (!fp)
-+	if (fd < 0)
- 		return -1;
- 
--	fwrite(option, 1, strlen(option), fp);
--	fclose(fp);
-+	ret = write(fd, option, strlen(option));
-+	close(fd);
- 
--	return 0;
-+	return ret < 0 ? ret : 0;
- }
- 
- static void disable_func_stack_trace_instance(struct buffer_instance *instance)
+ const struct tep_format_field tfs_common_stacktrace __hidden = {
 -- 
 2.47.2
 
