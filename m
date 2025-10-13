@@ -1,112 +1,104 @@
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+Received: from sonic305-22.consmr.mail.ne1.yahoo.com (sonic305-22.consmr.mail.ne1.yahoo.com [66.163.185.148])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1272D30F7FA
-	for <linux-trace-devel@vger.kernel.org>; Mon, 13 Oct 2025 15:55:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF39622068F
+	for <linux-trace-devel@vger.kernel.org>; Mon, 13 Oct 2025 20:07:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.185.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760370936; cv=none; b=bbqiQBIemFSH0ZVlBIrah5AhW3NE3A8cowSykQODl14Z2mqVQEwFCkVCLCFCz27l2NMWIgcezYnflL24a1XBprP5k/R8PnNR3K+l+qFrlEglVV9c0sRWZgKVPVuT4DgccD+jXiayRJsZMVDj6crgsnoh1ehQVy3nRY4uosQBgzo=
+	t=1760386057; cv=none; b=k6tRydFN4TJCkocsHQxJQg2h3DBeScD3UEC2/A5InCI9+iTtVdTI5x8bWz/LDWOZFBZo1U0log8c9vi0jMuWD8nuvLxdpYCePu5Ng1mMMO5okVUwDfqfkpf8D+66WVLSw/fm1o1EntujEKsqJn+lGwkVQ4/Rn2ZV+RH58rSIK2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760370936; c=relaxed/simple;
-	bh=KhLgxZOknUU27id2+JpjyZAh5hfeg0/PBunTJRcSi/E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=VzWjn9VBkb/oHUQGPDBmnaak8fCVfnoEfrkf+kJloYCkHmxpEe1or0Xvf66XKgacN3Pm/9EvyNdQdJsetVCfzdf+t/LRL25nrxm6un4WiJzxJpWWQcpQlZrH4GBmIVQE44AwazmAjbXP64edg5Ivnc6PaEC2qruq2FOl+fPmxxw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G96NksvA; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1760386057; c=relaxed/simple;
+	bh=gRN03udymAUNwmHtYq9NuYHsz+/nP5E0hsqnrKu9sQw=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type:
+	 References; b=jQvRnlMdu1IaCw2TjNdPKEKDZNi+5pdqEZsWsv6bu3zupytTNH67Ma2FVLQOv/D2/rEaji8W0QKQ7bMUZ/Za+I4XWeSmRMjHgaPyIF8EMUTZRF5LCI+RfYvOQocXsNPzv+tpoxbsh/vsLOTwsUsTIGuWhmbpbSrnEVQc4dyc0ck=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com; spf=pass smtp.mailfrom=yahoo.com; dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b=KQIRzmqK; arc=none smtp.client-ip=66.163.185.148
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yahoo.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G96NksvA"
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-637dbabdb32so8606478a12.2
-        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Oct 2025 08:55:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760370933; x=1760975733; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FZ2KU8GuydlzfTEkImEA8OepYDWFSXcKlQCD65AaaZs=;
-        b=G96NksvAkzMgxfo5zkLI2u8SoVm9rV++dI66+pDeXBgdsZcSb8LM7sZxK2WOjjgVBU
-         9l+6Ae/BGCk5LX0r7EzRxnCGmUFrO/4yuRC45EI7axWDzULu/iZGbqluqU9ppkqNO4rE
-         Nk5LDY55P4Xu9AlUGX00fDpypcByvsGsuGJHF5SRn7WD87DBwmon63yMn7CtmkkUFPAG
-         KacfC2gmbFdX3O4smTMAKQ1+z76KyouPP8UULvPl25wB5Bx5HyCJZDs5XZJtkjOSdMtK
-         VmQVYZvLI+R+KRZgyn9acJLutbtg481SaSopcmtJZWE5lw6nIB+nu3u8wj5tZYWETcWX
-         FOvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760370933; x=1760975733;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FZ2KU8GuydlzfTEkImEA8OepYDWFSXcKlQCD65AaaZs=;
-        b=SNtf0aH5UyGZ1RpGBJPvp7I7CCsQLpFd/HtccIZ2RcX4/uoypM25Oraa9JCcqTH5wH
-         WhWzbsO2FNASnLpSjVjMbXqrJ2I7O4sT28XZzdKMHmu/J/OzebsMUZNIBPJYFYGgV0tl
-         lGXHs/bcUj/aSiehtfkS0VPPDeoOMA8qoKjwip/NWInygB1Qn6DAa93Mbw/uOb89NPkU
-         PD1K5TPhfTbJoC/K2JSbR2cH+mPINyhZw5NZl5MPTPaZzBjm2yjm6b995ZzumVD1UoPp
-         25hb/Zs7KXs8ONIr7+gHBW0eFgziEgZThCJAd/Vc/iCE4n4uNvItifnCcVAPAwE2U5QG
-         zjQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWm6fz7YtkxITJFUf99ek0ToBx7BL+FiygggD31KisVa5h+QCkJ/EiZaWP2I3X/b7D25SEodIdrhmcEXlwG9a3FIA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzHrhHDlAVbYnHndsaHUNQw+ZboC6FHp+l7WXTtYZ78XdIyn7Ht
-	vazWgtPzZq6Ra6QYODykK6hGbHqukb55BK3j1CZQoWJbrrsMEJWaniDUH4y4lQ==
-X-Gm-Gg: ASbGnctkPJlfQwuWeKtS8onCPIdDB7zvkwhB6DgnJhk9ZUglppQ9Do2FWbJgAw4rwmQ
-	3SfVOsHUyxE+GAXoo+lqhOpNIdF1x+7zLwJ/rq2lFwKtva/DrhDzeBwHneJ54hnvyNRCepr1ZMk
-	xOWy/zkJ6EUdcUq1yr10w6hLuaKd1WKiT6bBQxpidXlpG1xMUQRsudyPLUaqWQkIbpyqCs/4fPn
-	sOkkLdfuHi38p4AbeP6+LLhC0t9BMkVlgwj1Zqa1XY8WE/Ti/xl9J+VwQlJjGd8iBG+j3Y0s9Qd
-	6nWcLEpvjAeyEovO6jrUe/oPGwL4Fu0Qdact11R0Ubshh42cNo77KgXBIathAT+9fxGrFHNZ7fn
-	t1SKWHNT4PZE42i2zp56V9FTnwz11gpPB11phvnM3M+Z2nfxZnWjEkV5I1jRoQXZXVw==
-X-Google-Smtp-Source: AGHT+IH4Ak2/38QUcqKuMqck/VAyLe3ny+dVIiD6XehMUI2xfzNlt4vFWk1FF2utbOeZoq8jv07WRg==
-X-Received: by 2002:a05:6402:278e:b0:639:e11d:650d with SMTP id 4fb4d7f45d1cf-639e11d6e63mr17601601a12.14.1760370933114;
-        Mon, 13 Oct 2025 08:55:33 -0700 (PDT)
-Received: from [192.168.0.107] (62-73-72-56.ip.btc-net.bg. [62.73.72.56])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-63a52b10072sm9019547a12.16.2025.10.13.08.55.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Oct 2025 08:55:32 -0700 (PDT)
-Message-ID: <7adea1bf-facd-7967-18fc-8021b2d7253f@gmail.com>
-Date: Mon, 13 Oct 2025 18:55:31 +0300
+	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="KQIRzmqK"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1760386049; bh=9/2qAsh0n9HJrW9v389JqQFTZYpHlrjAvtbawbdXBqM=; h=Date:To:Cc:From:Subject:References:From:Subject:Reply-To; b=KQIRzmqK9eZ1zpuNa1Xf2++wu7yu6jM4pielLRHs4Mt3/0CEoNzSCHRpm8ljdI/Kj3p7GBpmK9pZczioLAxqLkybXv+fKxUsURpPdgPNRdIpuNMospvnk64yTpSg3Y8JdXj5RP1AuylOrK3sfjoQNbqjSJcTC2ltAydkuwPhorOrbR/CmCGEeJHgIJuYRn6U6RzXSMBGWS0I3z6OGVI28rbcDK3Da5pUxj2FnNVc+3+shUs5n0h5K50n41OW9jfNUR8isqNqX6ERhCy4augP6DDUwy2n8gqa99aVtD2Dbz00oCPJ8X1jpgBgkJl2Si2mlec0nXE4pbsGK1oR8jdgKw==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1760386049; bh=9ypqzBIJF4jKvHiDpixh2s3QlAVXVDcQvwh+7++kx92=; h=X-Sonic-MF:Date:To:From:Subject:From:Subject; b=fCp/GTTKERoPk9LrRfhVOEDJJckthdRN6lhYrI1P5ZqZDrFFzl7j5NlazSdcYHEiSn0jZwx18jAm0L7R+afyYb6caYU6n8Q2Rju1KGffCIXiUdZe20VBAFGHMo1GC7qSKZmE4RCCUWLxj1WsfTxmAt8Ra6LE50rnHtnaogj1DRSWQ6GbTdfz0uvr+XmDWT2T0K+LlClrORLzaQMUfeGddffORlB4HUdEkOu1U9fUytLl/itWSl/Rpabwq5gPOv3S2NCMCkog9Lk0W6wPJkMDxNkmPPSVzCmIZvQhRDSHbuPWdB7TBC1ZIH7k+Mra+wdwZS1+FjksMUmbbqza769I1Q==
+X-YMail-OSG: 2QN1jkkVM1m3Z03ob1o5X0B0yhdD0n12Mo3Ppa9GQUydpNss8R3tZnv4qB1X3jV
+ TibJzgaIs.0uVY2572iSiB9fQysdjp6YxIpi5Z5hw7btEERCKb4BPNOaENtFsulvnIgh7KoFLChg
+ Q752bR0XbHqK73myiz68Bh141XXq_wo351OgrrjhhIlsi2xB3mrJgSPuI.LDP0Sv2.aaDh5Jflly
+ _kRsZlttAukWdtUDhMBdmiJ4ChWj129Mm2VNc.JUdAipaLmSE7rboTXoPFoFylEP.JD2nHEkvik6
+ weZKhGT1g8QQF8TgDywxhzXDTSdSuDFYUVBG0IiurM0Lq0uY7f2mKRcEoRR.sjUdvkzdhfs01Cvz
+ yDzV6YmwSazCJUuUuPB7ekPfYSHAz1Vu41IqzzRzaqWvG_yQ1Gng9rAxc8YQdxcjM1u.hDLaZn0t
+ DKLdSxB0twL0JuFKnBFalNTbEfgBpPjEj7ETA_9SrgTXnzP.j0eIkuhr3_uLVbLKklFBj4NLtli4
+ 7sXSJneIzH25sfzzqbsghWDMFHxeL8dNHkmYvtH_VJ2VCk7mEWCaTrKmZ8JnbtWX7bGyFRIbRjjP
+ 0tWovKYJxmq74uBHVOfTvnpHM7RldJBqMXEA1CJIq7DkZD.juu6WVkNDyWgMKsg80vAl8TqqSPmH
+ 8QNJCuJhccuyGK27R4GkTuSnXYXwrNa8SQQQZda_IfKhLRXMlJXRJ9G38Glzqi0a4u1T2ekxqO1W
+ 7y6xmOpFRcwfzACv6uWPAj.YqxLr4X_HeCBmNFwmMcDlKG7X8je6my05Ofx2YR6lgolHkml5oAMZ
+ Sr5G8q_33gzxRR7M0VIlSEKfSTMWtjYRnQnSKepyU61stgb6KLoTJ6EVCFdnQE_ByHRGclAbbd3d
+ q8G1M2UOX8JdWi.ZDNPE0V68bnFTBRCP1NpqHz7PeQjkiEZh1sJ8azbHAOJdF41Ut0fP8kfH45ub
+ Gfzu0P.zRLCvovgyuBfodDHhLM0y5C9HbLoEv_9Lq0_CxBzRch8EzAkqIdHqhxzUrvxv_92LXqDI
+ kCQSBOWhBx7c7CjNFTrMwZ.GUZlaZbxtl8_sdrTSyvCsdDjP7ofSiqujdiY8f6zPalNWnaGqFDad
+ yUDEouO17RmkJ__83ktgwBkkd0AdPkHl_gBmtxAF9_G1YoBbKjwS2JFp280Iat9ZhmeY3mGN2li1
+ g5aPnYss48_xiGRmRQ0.dAP_jztKEq5hSe1_A7lU8IUbsleGJOmZI2XyOe_YL5nZrTJKVF0PtbUO
+ tu6FM3ZHzwT.HW5o5B88jiBeRWcUcrd9k8Fgd4uqBOinZ_6R4YmDzlMXu1WVVcmrAB90QpJ39HVS
+ KpJBKe7bjzR1Pn_vPWYI1q_GbPIIvYAvqgMooFEGR5PpTn4ZRr_dQ88XhgyeprS2YSiofPsiyJB1
+ T6BsjWcc_BVu.0H.15b5U38006gB8aFqtsRwUq9VO3376jglMLoCi7N4pKdIdffaISxvPASrZWZE
+ _swhoY1TYp6H2TsGuyPiBJKzuExTE7aRyCFaafcdTwqWzNQjKuos.lG9SJzdrYU8mtIy_blhGxMm
+ V9JpQrgKUr954eR0_iVdsyB_ymVJvpmyDbPkTucRIzzmoEyugCScrRQ6VybjakgrkN99PHCMq1Au
+ iUV41vJ5hZ4ySF7HkaMMzF0H5knBCrZs2n._xS0ajpPwTOK6ZM7TFPac6yV1tKIgggTypWaJDWS5
+ 6gPDnEDzvWLk5CavMMuSx53cdH_rypA15LpETYSJmdUPLGo0Rh_67oO6dSamgYszhnFtcJ8kLnA_
+ oiDmhY9I7fnMoDj7Sq0KcFiUkbEYmRVd_rbcv1y1t1TMJBTr6ZdaGdoyaM__2UBFg6MMnwd3OQE5
+ 7YmNd0hr_ghX_Qhjyu8cQnU.a6TdlKDtpWZXpKySNonM.xGztL_2qaTlqsEYd.kPSYkLl7Zw9PJC
+ 7jKSIQw1owpqWQVzTRPBuEGF6GBACAwK1dihiy1WdsV3AKy8Yx8OolxqPdsHr1sKOjFFpXjxJ9Ga
+ oxT_r1BWN8.UPeahQ9_.OUznWl2Ql2qaz0NM611AW8WhlLDg6n1Vjp9OhdIx3YstoMJdPVXzL4WD
+ kck1lGW.HXTvXwrsuruxDCG3xas4fM1SkJS17NQ.DmINteRYzyenStIL2CVUKQatKZslkUnEmjQA
+ qYQDxJoMKNYDoiiKJt0loSO6_IQLh3PWoPnITSKwqfQFkPmW22MZqQymH68cjv4YPxcvl_rY7qop
+ EJ.NpZdUJ5I0MUCYokPvJx5.YeYQXlaRWON9jXO3XVad.RUNIRJcCjml2o7ZxwRyoDKOodng2.5u
+ DLA--
+X-Sonic-MF: <mircea.cirjaliu@yahoo.com>
+X-Sonic-ID: bfdcdbd7-6412-4520-953a-fa0879896439
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic305.consmr.mail.ne1.yahoo.com with HTTP; Mon, 13 Oct 2025 20:07:29 +0000
+Received: by hermes--production-ir2-77f4696bd9-57h57 (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 4968e49fd0e5ba596e5795b872ace99c;
+          Mon, 13 Oct 2025 20:07:27 +0000 (UTC)
+Message-ID: <51e122b0-8154-4e41-99ba-996ff42e5e98@yahoo.com>
+Date: Mon, 13 Oct 2025 22:07:26 +0200
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] kernelshark: Allow building with CMake 4+
+User-Agent: Mozilla Thunderbird
 Content-Language: en-US
-To: Michal Sojka <michal.sojka@cvut.cz>, linux-trace-devel@vger.kernel.org
-References: <20251010131715.1123934-1-michal.sojka@cvut.cz>
-From: Yordan Karadzhov <y.karadz@gmail.com>
-In-Reply-To: <20251010131715.1123934-1-michal.sojka@cvut.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: linux-trace-devel@vger.kernel.org
+Cc: y.karadz@gmail.com
+From: Mircea Cirjaliu <mircea.cirjaliu@yahoo.com>
+Subject: [PATCH] kernelshark: make sure ksmodels index is valid before use
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+References: <51e122b0-8154-4e41-99ba-996ff42e5e98.ref@yahoo.com>
+X-Mailer: WebService/1.1.24562 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 
-The patch is applied. Thanks!
 
-Yordan
+Pressing Ctrl+C with no data loaded will lead to a crash.
+Steps to reproduce:
+Click in the trace viewer window.
+Press Ctrl+C.
 
-On 10/10/25 16:17, Michal Sojka wrote:
-> CMake 4.0 removed compatibility with versions of CMake older than 3.5
-> [1]. In order to builde Kernelshark with CMake 4, at least version 3.5
-> needs to be declared. However, versions older than 3.10 are deprecated
-> so it's probably better to upgrade directly to 3.10.
-> 
-> To support builds with older CMake, as before, we use the "..." syntax
-> in cmake_minimum_required [3].
-> 
-> [1]: https://cmake.org/cmake/help/latest/release/4.0.html#deprecated-and-removed-features
-> [2]: https://cmake.org/cmake/help/latest/release/3.31.html#deprecated-and-removed-features
-> [3]: https://cmake.org/cmake/help/latest/command/cmake_minimum_required.html#command:cmake_minimum_required
-> 
-> Signed-off-by: Michal Sojka <michal.sojka@cvut.cz>
-> ---
->   CMakeLists.txt | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/CMakeLists.txt b/CMakeLists.txt
-> index 6aa1a5b..54ff97c 100644
-> --- a/CMakeLists.txt
-> +++ b/CMakeLists.txt
-> @@ -1,5 +1,5 @@
->   # Check if cmake has the required version
-> -cmake_minimum_required(VERSION 3.1.2 FATAL_ERROR)
-> +cmake_minimum_required(VERSION 3.1.2...3.10)
->   
->   # Set the name and version of the project
->   project(kernel-shark)
+Signed-off-by: Mircea Cirjaliu <mircea.cirjaliu@yahoo.com>
+---
+ src/KsModels.cpp | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/src/KsModels.cpp b/src/KsModels.cpp
+index c8a6ba3..cf4cfe9 100644
+--- a/src/KsModels.cpp
++++ b/src/KsModels.cpp
+@@ -309,7 +309,8 @@ QVariant KsViewModel::data(const QModelIndex &index, int role) const
+ 	}
+ 
+ 	if (role == Qt::DisplayRole)
+-		return this->getValue(index.column(), index.row());
++		if (index.isValid())
++			return this->getValue(index.column(), index.row());
+ 
+ 	return {};
+ }
+-- 
+2.43.0
+
