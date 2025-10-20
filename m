@@ -1,112 +1,97 @@
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F3B9354AC9
-	for <linux-trace-devel@vger.kernel.org>; Sun, 19 Oct 2025 14:48:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0324E1F875A
+	for <linux-trace-devel@vger.kernel.org>; Mon, 20 Oct 2025 16:17:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760885308; cv=none; b=dtC+Tle/dhgkh3A0slM3EZaUpuq0q7KU7u0wuF87DEwHXnSkzIE9LQdPFValzZEvHkbcN4LjWgahU+YlQkeqIc5OTWyIdrj8m4jEz2FchFcOzdtlga/uHlAOzf4pF0cqmz4jwuyqkbFWj0vylpAT4gbQ1I6Xu9F0Vl4AnE2vCyM=
+	t=1760977032; cv=none; b=koAqKmA0fTPSi0D6M8FMZLHMeZz0UjOjpTuZw0KlgX0U5J/mkPvR1ohmYhcaZrlx0f3MpPGyYpmt+iOqL4aE1MDw7X/m+WK515JdkOnsynn3iqKveJ4VqN9TkXI27KJ/WkdBGoWK1EVH4QXrgWfT6YYckhv8RyZznAAih6Uvjuo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760885308; c=relaxed/simple;
-	bh=U8UjyxEa3/KNgtvZC1MHvngatZZBLF3KW9geZCETQYE=;
+	s=arc-20240116; t=1760977032; c=relaxed/simple;
+	bh=H9VkACThFPLAi2hCvxuatat46txfURWCWqXJWAFK99Y=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=XUb4B08v9fS5aTJME/LWab698h/5nwvz3WOCz/rZZulUdeVAVLpKGCETq1/MdIt/3WCGCuxUKd7RCMJTRcrlCW9hC4bKbxwBT/qQNbmF448vw9sWdwhe7mxk8UfKEYm0QswkKF+c5UkBT9Tdcm2OkdnYhfaNArJqdyWXqebVw+Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VKGD5WnH; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	 In-Reply-To:Content-Type; b=WmlF5L8vh0+X7iGEXL3cU21NL0t7ATHanCftbixM1FYjNy16O4BfYbnIOhq04eoD9QB9+0g4nfiFOeptjoc1clk2649mGVbo2ZviXBAUil1Mu6vJyba2bjwzHmiekmif5h/7vHYnTNCQtJE4RCMrvE0VVHW0NokglGhsDkI8qTk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Tvi3PNGj; arc=none smtp.client-ip=91.218.175.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VKGD5WnH"
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3ece1102998so3081260f8f.2
-        for <linux-trace-devel@vger.kernel.org>; Sun, 19 Oct 2025 07:48:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760885305; x=1761490105; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=hU7NKC80OxUa8xiLeEv9KhMHbsSbRM000bArJ2AG654=;
-        b=VKGD5WnHE+Exgr/0mfZakgw7gTEuYHfmPKig2TjrTNVWtqSajUsRSKQ0Mxi5Hvs0/f
-         J7zWYh5lPH0t1cxXqqNeIqyy04Y1QfAYvrsVv71iqDVkd5SvpNWwQb4xNIJL9/Bc0+Po
-         m71rgdfHTIL8OtTGM33luyzr15IRaT9Crp+ocTOOcgCXIXwabo6CJWxEzbiJp46APho4
-         1lcMWCyPwVMaABeIrT0aVuEthpJ7DMB85R/sf7UXdGr8++jEf5XOSijpNW1FHeUpQATv
-         uKfOYiKCLAhN1D4Afmysydsury8mhTI5QfBf64NP1pmObts34qsmkHw7Emd2FUoPtcTh
-         PCQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760885305; x=1761490105;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hU7NKC80OxUa8xiLeEv9KhMHbsSbRM000bArJ2AG654=;
-        b=NLKuufxjIxv1tcukZJxnXaV/fNVcSoxCPt3WY3XLK38lgYs9KPCzt43J/8Ol4drPIa
-         +8A6gKeF5s7DTaZ/Yn7o8GdjIiEaQmA5TwpMUI9+GBWtrvPX1nAN1hJ0LTTRWagtVgta
-         HADzTpSKpCDwLso3DbJ3NobkejnU4JqkovZkRKW34NXZbTk9vAszgQFaESJ0bsXx2mL+
-         aMLd2YAu3WKgzY5+0R2BCOhU9x/hWYb6tQAzf6TFK7noODQ8J+JfUSiZdHeb5Zp+Tc8y
-         NBbB94ea/v9lEXXSxMXw7BqKSHUWDUCpmkqOuiUj8WOgGLIYs8DYqOhfc0aGK3daAsaP
-         xEaw==
-X-Forwarded-Encrypted: i=1; AJvYcCUID5GJCpSbqswGVqYENoWeTiUcvD+v0E0KFo9DbyA1UipyqT/WHQmLSEZpISTqnPnB/IWdwmeGg7TAAFWvi7Og8Q==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxWObXcFWxaxyhQfnb7njgzkERZGF6yFPsZajnUpW9gHT3l0dNQ
-	rO2tO/fGjvRqyDzA66dpNQB5qyNk2+wTn56O0eWzQEH0gDEhtkP27CdF
-X-Gm-Gg: ASbGncubcRZnsHA7cMt5u7NeAx2DmAfuOPtTry8xGLB/LssujSI4Ti63hyyKnITPtuA
-	NpWjYY2uMmHaObMpB6nwHvDycsSNsNMr0Bq5yJZMhPkbBTHn9e3ti7o7aJZ5jPr9S7suiE+uYvN
-	vNviX4DgKZqlYODdVQlO3+El67w+XXUoPhrqin9r8TKEEHKs3covp6HitmfAwO0qdBetR50rWNj
-	Vj+By3Q3P4g5o5qxExykuPDtFKnh2EBy9lhSo9onVKfH1qci3LDfaECnBYUCZnTWZBJK1ImLG4j
-	I+NORmX9Ed+JmbxL/6/3k6SE+cUCW8xw/aPT2mFFOXiWBBWA8GFcLRlg/9APBZnCCO329D1ZVOe
-	WO4aRXviu2jcq3Z0CMekSfBG90C7TWO/LJoX7k+2TshUbZUfRGJRjvILlhDGkagZxbrhprnFEwk
-	f/vTX1ecLu+YQ0UmLZSwH57evu
-X-Google-Smtp-Source: AGHT+IGniNvXdKn99RLr1kfg2p+1surpinIAq2yyhvj+gFIKlyXfUROKnYzNOgCDalPDftbOz/jo1g==
-X-Received: by 2002:a05:600c:8b66:b0:46e:1d8d:cfa2 with SMTP id 5b1f17b1804b1-471179117b3mr66839485e9.20.1760885304582;
-        Sun, 19 Oct 2025 07:48:24 -0700 (PDT)
-Received: from [192.168.0.107] (62-73-72-56.ip.btc-net.bg. [62.73.72.56])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4710cd833ebsm92430535e9.3.2025.10.19.07.48.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 19 Oct 2025 07:48:23 -0700 (PDT)
-Message-ID: <29dc77fc-d7e1-661f-dda2-f3d4ecd11f3a@gmail.com>
-Date: Sun, 19 Oct 2025 17:48:22 +0300
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Tvi3PNGj"
+Message-ID: <b2c14f3a-b023-4688-9198-1f9b3e71320f@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1760977028;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=y31gx+JgOGOkWUUMEOiEbmUvVKPpSmT/TRlWYtXvi2k=;
+	b=Tvi3PNGjxcyiFuM4OktAsl5vG/DlCJ6IWaCCsV81J9F4EUa+UWtz4j1CoI+QyDaqZ6fdoS
+	QliRgHymhZKR0d2tp53g0L4yiD/mpXf6D9Pmq5/I6+MnLLvRJ3u8hAkToBzHPA7su6Zlg+
+	YiLeIdGGFV76JXPSa3sfBKlQlj+7ySc=
+Date: Mon, 20 Oct 2025 12:17:05 -0400
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] kernelshark: make sure ksmodels index is valid before use
-To: Mircea Cirjaliu <mircea.cirjaliu@yahoo.com>,
- linux-trace-devel@vger.kernel.org
-References: <51e122b0-8154-4e41-99ba-996ff42e5e98.ref@yahoo.com>
- <51e122b0-8154-4e41-99ba-996ff42e5e98@yahoo.com>
+Subject: Re: [PATCH] Print arrays like Linux does
+To: linux-trace-devel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
+References: <20240826210022.2251838-1-sean.anderson@linux.dev>
 Content-Language: en-US
-From: Yordan Karadzhov <y.karadz@gmail.com>
-In-Reply-To: <51e122b0-8154-4e41-99ba-996ff42e5e98@yahoo.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Sean Anderson <sean.anderson@linux.dev>
+In-Reply-To: <20240826210022.2251838-1-sean.anderson@linux.dev>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-The patch is applied. Thanks!
-
-Yordan
-
-On 10/13/25 23:07, Mircea Cirjaliu wrote:
+On 8/26/24 17:00, Sean Anderson wrote:
+> In Linux, trace_print_array_seq prints array elements as hexadecimal
+> numbers, separates them with commas, and surrounds the whole thing with
+> curly braces. Modify print_str_arg to use the same formatting.
 > 
-> Pressing Ctrl+C with no data loaded will lead to a crash.
-> Steps to reproduce:
-> Click in the trace viewer window.
-> Press Ctrl+C.
-> 
-> Signed-off-by: Mircea Cirjaliu <mircea.cirjaliu@yahoo.com>
+> Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
 > ---
->   src/KsModels.cpp | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> diff --git a/src/KsModels.cpp b/src/KsModels.cpp
-> index c8a6ba3..cf4cfe9 100644
-> --- a/src/KsModels.cpp
-> +++ b/src/KsModels.cpp
-> @@ -309,7 +309,8 @@ QVariant KsViewModel::data(const QModelIndex &index, int role) const
->   	}
->   
->   	if (role == Qt::DisplayRole)
-> -		return this->getValue(index.column(), index.row());
-> +		if (index.isValid())
-> +			return this->getValue(index.column(), index.row());
->   
->   	return {};
->   }
+>  src/event-parse.c | 12 +++++++-----
+>  1 file changed, 7 insertions(+), 5 deletions(-)
+> 
+> diff --git a/src/event-parse.c b/src/event-parse.c
+> index ba4a153..3c6f6f2 100644
+> --- a/src/event-parse.c
+> +++ b/src/event-parse.c
+> @@ -4938,18 +4938,19 @@ static void print_str_arg(struct trace_seq *s, void *data, int size,
+>  		len = eval_num_arg(data, size, event, arg->int_array.count);
+>  		el_size = eval_num_arg(data, size, event,
+>  				       arg->int_array.el_size);
+> +		trace_seq_putc(s, '{');
+>  		for (i = 0; i < len; i++) {
+>  			if (i)
+> -				trace_seq_putc(s, ' ');
+> +				trace_seq_putc(s, ',');
+>  
+>  			if (el_size == 1) {
+> -				trace_seq_printf(s, "%u", *(uint8_t *)num);
+> +				trace_seq_printf(s, "0x%x", *(uint8_t *)num);
+>  			} else if (el_size == 2) {
+> -				trace_seq_printf(s, "%u", *(uint16_t *)num);
+> +				trace_seq_printf(s, "0x%x", *(uint16_t *)num);
+>  			} else if (el_size == 4) {
+> -				trace_seq_printf(s, "%u", *(uint32_t *)num);
+> +				trace_seq_printf(s, "0x%x", *(uint32_t *)num);
+>  			} else if (el_size == 8) {
+> -				trace_seq_printf(s, "%"PRIu64, *(uint64_t *)num);
+> +				trace_seq_printf(s, "0x%"PRIx64, *(uint64_t *)num);
+>  			} else {
+>  				trace_seq_printf(s, "BAD SIZE:%d 0x%x",
+>  						 el_size, *(uint8_t *)num);
+> @@ -4958,6 +4959,7 @@ static void print_str_arg(struct trace_seq *s, void *data, int size,
+>  
+>  			num += el_size;
+>  		}
+> +		trace_seq_putc(s, '}');
+>  		break;
+>  	}
+>  	case TEP_PRINT_TYPE:
+
+ping
