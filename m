@@ -1,62 +1,61 @@
-Received: from sonic302-22.consmr.mail.ne1.yahoo.com (sonic302-22.consmr.mail.ne1.yahoo.com [66.163.186.148])
+Received: from sonic310-24.consmr.mail.ne1.yahoo.com (sonic310-24.consmr.mail.ne1.yahoo.com [66.163.186.205])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A14BF2E4247
-	for <linux-trace-devel@vger.kernel.org>; Fri, 24 Oct 2025 20:11:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.186.148
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83DD42ECD10
+	for <linux-trace-devel@vger.kernel.org>; Fri, 24 Oct 2025 20:18:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.186.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761336711; cv=none; b=VPOE3iFVIm33YCHJg8CgFohfyXMPtaKYBFG8r+5WOoqRAW0j+Rr0tWh+Mujwpzy+iWKAnkXA2JC/RNQ/SPIeSbLXXcv2av/cg1CTFlxM9AyMyrx0p1vpUaNpg8UwPiB1sj4WReQCNHJT7aVdsnVaN2Kd+vvPOGvZ4gr16h4NQ7s=
+	t=1761337123; cv=none; b=feKWH9O2OxWBN9RYSv3AJjFiDB8J3iID7A0b6lCI6KCiBhrpECYl2PPh/esW86mOKrteV8NW+GRgwhkFJ6T+JkNZ6WCcZqZvigBgloCnWQnCE8O6nLmnNq/CH+hFgA7jCJUr+YRmXNBAIP5nMLcaOMY5l3juuR3EDv288XOZmBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761336711; c=relaxed/simple;
-	bh=CW0hUF1C6dVVdMPOmpnV/+Cqcm01lHtYqp6hG3pt7is=;
-	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type:
-	 References; b=rctmtQP4Ubz9LWimNgevHZdHi0s06lVThNwSNfNhCRN8/7R28SFRSiW0MbX7DBvTLWlLIV6iEr7LmAKMt+7BMJHRqmrYW7RNBsE0N95EJ7B7qthXHnmETb2D3F6Y4LceFvTAGl/6EZaXHqGjFlcFJq0ftnYDITxvQgLlWq6u6YM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com; spf=pass smtp.mailfrom=yahoo.com; dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b=ULhKkyPW; arc=none smtp.client-ip=66.163.186.148
+	s=arc-20240116; t=1761337123; c=relaxed/simple;
+	bh=PH8eQ6MQlfWebkxZiAnJ4Bht6xk8f8Q2LeWM6hVu4q4=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:Content-Type:
+	 References; b=Tlnfcp1R/+5BifQGMnH4Cp04fJqQRN9du5xKLLHDi6aJxdY3P9NN8nN5i12jCHmarwyM079b0OfAbOYBIsrfjtwST2+tOGjksBJyMNXwKc3gXp4JzG5cyqQcHqWw1ThhJ2Lhik5MTjNQvVkG7CrfNhvbym7G0lPZxEtTLKdCVa8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com; spf=pass smtp.mailfrom=yahoo.com; dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b=oNeKn188; arc=none smtp.client-ip=66.163.186.205
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yahoo.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="ULhKkyPW"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1761336707; bh=2mI+eETA7qFZLRFx7ggIjFEXXRNSUmpw/JsAHitbbio=; h=Date:To:Cc:From:Subject:References:From:Subject:Reply-To; b=ULhKkyPWFq5TpE4p30RkrZ0tewXgingDsVWN1/JjKPQ00RbOtPRSA9IERCMG+ZapvclLz4ZTTFlgOwMFVWx36vwxrPuUgLS1ueXWbg/r6xiH3WQj2ij3FZwgHds6IX1gp7rjvent+Wezy8ROnToZrNPjKxhiZWudYGhV3F9huVm6YxBfP3/b70e+YKy1i/nznkeVbdpxh+gqQc0KNRyddmC4Tou9MTRMzAGOzv4z5jsfUGFhFb9SEV6AdKJMfNl24vJIcN0I3G513W39XjYryzvn4Nu6z/Gxp8JMoO8hKbUO8ojXaJQSHX6/LfIT2E+ryo8H3TF0TtLHtdlXLH2sDg==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1761336707; bh=Ub3KitMJjCkQ4s84PcXgE47AvVm1sbQIfTkd1VGZeSK=; h=X-Sonic-MF:Date:To:From:Subject:From:Subject; b=HTjZxKAvj2YoNVv8iWwRV6eCe5//BkNUYC+/d4v26bTgA8TgHI6Rbdo/LABKVIco//0Ko3dMHAbfl8XTo1uecuXOY2J1pKZcl48kSiUlA8EenHTuziT7rFBG5MfdNTu1yCIV9qPz+XWAdONN0BwFvrbnZ8MeCHCR08sUg4RljTQfblItv2ciJrYFCuEa22BWAyUmbHiYyqSj19o5iAWjJTA6TQ1JBlTtC1SCrzgHkp+1XYwqVOOa/pF9YU9A5wawVxCjA4+xZBemmNnK5EY4qShDDiITpO7DOSKV/0tDsGI8EjSk4LLYMrAjd2M+L6ME3B8MKgQodBi1UpTqr1dmpw==
-X-YMail-OSG: ST2HqcEVM1nURL40rqJ3F28z3QsPqUKG5CQCeV84EaSQ3.DggRZLHqPYHEt6IF8
- fdJ.htfWhocPXlhZ7rEUmlcOqg9ukfXELQb.ROC2ZJYpeoQ.0IDqHgTpsoR.QpKUNr8dbJT6GpGp
- hiy7L9isBY.zewoPSaETiuGplweiX3C02nOFHd_OwNNZ2neOZjUd4DOD.zIorF0jQxRe_ujNgKv1
- l3t4fvbj2qlG9EnEaCcL5QXogWBgaW9NdNKRDotg7tAnlWhB_M_emH84wT7K1hm0aQ16cdhC7J4f
- xD4sMhV79a5vHNmTLtU4QvYIQl2pSZTGd63oIhDAE88ovpZipaRLvi43Rn9yuCrT1Wc2AKa89myW
- XwMqB7IYZ8R9HgEZ_V5jn2oKwqxhrIQO_dr7W3GxL5aCYovvi8e3YbZbN_nU3Jw1vvU2qoPm0roy
- .ZQ8oPPPybL1g5kFIwp1mvHk726Wb0j0JaFr6hPmvAMvdhZmVballuHG0bF3RdwoT3v7k.ZXGaxp
- xCumO1Z5GrqAtXpi443LvfgyALH1G7DOOOfMZbPsubYxY2FTrumaGl8uXysPNYT.kfONNTrYbGDG
- dM4HhFPg.769hKnk1QC1IWYvLFM1Go97BK7OtYRuPrBF3s0xR.Bdp0sXkYb5Pd4DtQuWh.WUR8sK
- rBmhyGF2_W.4TUjwzXwwarBPGNPVQIVN4srJB3poHTS_jGlcMxs2F.2HtXNcOxHTfRIdBu1IdScS
- Sl9k89Q8jvZXQX0oFHr1i8QxqItqRuXywpZ7DpB.GUnvve6s_l9HPqxQmfqzQgiiI.qyoiPIHQn8
- UNv71gxv2AI7MiIICW.mTuPFJLaH4aFNPNw_QuVD1mzLoKvnTUBpRaF7zzv0eOaAzsD2LSu9Awlo
- j6vhCM3tJFdTd1WaYRhrLFbLo25FDyXM0KQIJWJSC1qFVcSnCyM60ub3Si7FaKI4uY7ky0SyP7pd
- 8sBFCUessVN9Zrr4CFYYY1M7fl1Mh2QRPIPo9GOvNshQtEHMa.d8BhQAuFH8aylkCD3OKQr9hi2k
- ugOK7gUlflrowjwlZPikKjcBH81VarAB3jc1PQ4hkXqlPLwrqCFvrwrnKpsUHViLSNh4WyNZYYfB
- Z_uPNxSKga9NV0lhhGR2JbtEjT_IX7yeZq2LZszA6a2ykeQBhlxVixDyd5XkZmdm433glH7VSPHf
- 9DndfcgS0LUJplbSmuJUq1CaLndP4XI2Th.5787jM37b2hdJPeGIV.2cCcO.9AolX5awF9KRDPBb
- iXzNuYb6TZ9JkyeyUakwhZu.7CMJzMnXbM.Ku1mcnN_5U.IyQH5Ylwms_pmUrbV6SnLkzFZM1SFG
- eCtAAZljvotRjtfc5P57lOB4sUltkM5cje1LdkeOTH_mRXRelrdKdwO1tzgrA.QypfhaFYud67IE
- XFv6oPeb5Vc1EroMPY0iugBaJHxv645AxpzYEB5mgVdMM5GNuXGfw.Immp14Ep4lxzfSDHiS0tsA
- 4bAdJ2JLmDWBJYTyEFVUush59xdpxA8c5dl1R3g_MXbp6Pwd7lGbhsqoq2aS2ebcj98EESlmBKKC
- 8k4Xx71vaUpiY249vGGJFOxanvj8GtY2x.hB18VDe1qdD6Yy4NrVXEJkrH8FXYaPnyOAorj_CT5c
- SnR2z.4yzERBtQce2np._7y15RS1grAMZgjQ3idmdgnmb1FqBAeRDFGo_02V2GLQyipmypdXP7a1
- nx0zIyUGMj199kgGUYu00i_biwLOW81lifehktBPRQOH_ktBBtiBzqJs9WoT83EYyW3_VyPXeNFn
- aonYC_N33ei73DRyFIIjc62VA6mLhxVJszxC4PlYkrb3DSpjmh.NaOneogr9UA4dLI0xnAf7ldIb
- nE3BynDleJcgNbBsKRSEqCvV_NcjlbiyinwCCSlIbZJ25F1JGG_OYjn0WmUGvPNE5Zq.AJI1va_E
- qiCrv3.qyNLBGMe9Nnf7MjWhWP_5UJ.Kj5c.6bvI.MvtwsMyYoaowxvO91YDaaB1tsVJvZBUsVxN
- 7ye3Q9EXix.DTaXSRaqp7uCytBWKI6uMPYKKiMzd2o6Yf78zuDkOfVE2OlxNaEiqCk0pPxG713vF
- z1F86P6YRbw5WYMSf9NWF8KiECFaKYiJ1sFr11ooqqaPXQyj9RP4ltV1w1Rvg6xv7Vy_m26709V4
- KWJmqZMHEq7Ug5EbzWKeHf5.iHYHNSRHaVsHMuNjbK.NMadS3RxGT_REeyTuCox.hNRgfQih03Y5
- YuxCvdJUyzYCJ9Dv4xNGAk7YizOSlarQX5FYIuLqm4nsRBvZ14hq86WKF3_29tcqCaDXAmgO_xO4
- -
+	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="oNeKn188"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1761337114; bh=2OUqLwYEP2l3urb2nJ3vgO//0em/uFWc3i2ydg+LqHE=; h=Date:From:Subject:To:Cc:References:From:Subject:Reply-To; b=oNeKn1888fLH92gnmSGD28v+C/XL9u6ZLW3t5sJwdsegefNxCpuo322/wOdSR15jn/gPCJM8ksndK7ACpVhp+2oX69/Gpt2grfKEcFX8t02SjaYDAA7ifTpmM/WCPcS5sKJZoJwHiu3EsjPx9ZLViB7HuHFVZQhwnk8ITHqrr6lYZSwH4b+h3GKoI1kIlsQIFYSU0bAeqFVRcN55aigiwHgWHutCpPMywBlrZuBqC0Tpb4Enytb29eXfMl4vYiN7J8l0oM5NXu9yDBh3sQA7/XgZ3803wCpW1uzUL76JT6sg7ieViLU9WgwQ2HFrc68IdxrXOFT68TTANOvil+rwSw==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1761337114; bh=1NvEreTWwikCWBgQ6olXoBFB1ltZ/WQyfu1be0sbMTz=; h=X-Sonic-MF:Date:From:Subject:To:From:Subject; b=qyQ2YKGkuF0Li1uTgBt+NP7wxdSoyZuAqph9XvWeJfXM+0t7TIGV5sJk/ufBOGwfspQaoxIxNoSBE/DfH7tuQ9yisWoyh6J0a+D4ZYtD+tG7bqze3WrEY6X30W5tMuzhzDHtdQBJTYyWUH6BPJYgb6+4T00jAWSvDrllSu3KszZjTgf/JJp8PrBi/7z+rG9qDMAnSQqjh5sQ0smoFQeknCyRgRniWTrFP15WM+vHoB6xVp1GP+pQHGFSmA0gfjnz7KYCeNw01bAavh2vzkuhWjduAM22MtoQndiqivxjp7/zDWbAC3dUTih48IwzrKROVBNeU9U05toqMVTiurNWbQ==
+X-YMail-OSG: WwMKGO8VM1nmg0fmnJnY_LN62akeBfc66ciBDouDtECqTIxO7PbKgm18_0Us6Wj
+ ZXl_4CYwytdl1CaJjSy_RV4D4v.oy54PWmRzutAwjIZkCKgyG4m5t7zWP1jKtYMUttu_J5lcRsTF
+ jCCCfAqDxfjMMuC8udVTt090QZzrVR.pBQH5eS2Zb7NW.JkgMSSChmh7dGrUTpE2Y9oX96KpsUjs
+ NsnAujzA7v2CNEdvEiWAbeymwXaAZnME1CMDrEDQF8AGsL5dPZhirUuOU0WB0anp0HRjLpkAlM_L
+ El7L.lUz37tryYlJKmjfjoh6MQAU3FrnGoxTKMttgNyuPqa0pHVnovvTkRUEIDhx4W_5owZLKBRG
+ P0o_Ztj5ipmkUJDnQzpxt84.Z9NfjZuaaJ9prwqE.9yWFZAU6yR_jZuyYbjKXnLOP0eFsb2iOMkF
+ zhvQZAhj8TM50TA6HiKGCyfQY2LcTHKGBHW2PoTH7OD2afWDPtGkRUdoLQYDTsHaAckD0BNScKKX
+ aazuGicQi_R2cNC4mdHsXgtU9iM4hphF.1ZYT_wUnfib8Ha_nIU.jFDYtSio5SNZ5.qfdQ7ybmJi
+ MLDSAgcYhMDNANkzA5DQRVlIhZPsiyfHDOKLrYxllrh.79gEyUdHIfIl6QVDMGuytV_sbHM5LqXm
+ VEbrStEiXbtHbNUgGn2LAQ5V.YmJo_zD65xGLbkg5pA8EVGoh7LyqArNcu6geGtfGmtMG7gmDW2V
+ cVKM8uG3UKRAgBAvP2auT4FC.FrFtUDvav1.zmcYTsMIg52YPFy2QAO8Lya0SmHcgNStRYtLW27B
+ akwsDvqZRu3rRRUDKAmi55eNb1C4zyWhikMpGOM7iVILXjz0O_Ujq4fou.qHI6TE0W71VlmxwnIP
+ lZ9g060qJ884XRVCzQ87LPTWKZm193bMyQCNeXxcElzB9.IQETBb29IrBIXIJ2s9oYWShErdrICa
+ EA76Cdo6vqsF3revHzlAuHR9cD6O9Es7EdJQ4JSKfJcUT6Nmd5WHuK1iu.chUWSP8246sG6noeV9
+ QOwLwJHVIzU76eeUoD72WrNLOXfh3ZaOhhyi34vJPr43k4Bhu9SvYEUN16XCOCZkwkavaMhQx0AJ
+ sP4Jz9eD5QG98VAJvLaJaaZnMuQLqonal88VlJwhZxYfBPNkwBNM9XQJWjEqEVsw6GEpSmL9Etqr
+ BiiLeTTaRVGtARjXNouk_X9eeT.NuJaWhDgDuxncs_y2wmArQ5YghF8lj1eOudYqufhSGbnm0Hzb
+ vu4ZtUKNeNyAE7nYngRe5PHhQvEpoGnGE3Y4G5AWMt1ZH4Qja.t8PW7VOKfHtWKNnlnygefYUM7f
+ tb1TO9xuguLrVK946TJbVX5OtI8YfDrKauM8sCqu13pzvcNc0anzAURCAd6Cu0mCyzHrUn0M01HZ
+ r4ZDUb_gZV2TjXrThhTx7UMSxQiMY4yGKHNgsLi.Ve.o2i83r6Di9N9NdfRveXkNX3CqjbLktl1w
+ zQBM5zigAVC5fh_KEiiRIz8mpMdRBa6OCSNPIf48gVw2yQgvHXnqw8xk_zJpXINiY.XRwmMn6C1g
+ AYCmkYq01Suh1IOmx3VgTXQH_wyPpW8LDBk2VsZbiHF94g0lGhffVYd6G3pw193a.t21Ws3l1lQR
+ ckyV_a66HqSK65VCTGMOPfkTKGp61rStwPSrHJGM2AXzwXkVvO3MlHehFSs_.UeQQPXvNTsX_PG4
+ JB956bAQJL2ZMGLpS4umx74XGqaTXyey74CPOKILhC652G7Pimgr2l_SiZAvGpj9cZuGCqao6yW_
+ Cwxo9UoJBNK0FmOHu2pbkn1z0W9PbyKJ4dMTh0KWHKksSX2o6nguBfApUvGeeHcway_Hfnezfye7
+ ttWOUbY5ZR07slHXtNzsSlQGWOQ4leZw_w0k_APFc.RJqdEfRKiz0L.dzU7RIRIknxfcprWPdBL0
+ CSR5kvMB10608Pvq9sPl0nzXW9lm5mtGwjElp7UWqD8yECxtKsEwYjvV.4blf7Csgq764nYeq92o
+ AC0qNffGowDSmxRfKoKR9Q8bKwMm3KQDbmNf0ol4TTN.1KEAPRIAjnYwXg7D8MDly66t3fhaSWai
+ IHKctcZFgWxiPXj3cnPBvdS0e2ZLbN7eM0wXVaqjIiLeLnNsqan4yKOzMDX1tzj70C.6T2XO2yBN
+ SZ8n_rP_g7nu_7IS2EBo3xNlXfMGR3u.r9z7hD4uK6foGfhvvLql7AxIjxDTAjlPNR7Cpbn3DeGj
+ z6B4.SCuv4Gh2mNZTqEUhDEtjEw3fFVvBTAaqmewPWWNasJNRZu2G4MbJX45.YMAaLZpB
 X-Sonic-MF: <mircea.cirjaliu@yahoo.com>
-X-Sonic-ID: 552ba627-9cff-469d-948b-13ebfa5a9ae3
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic302.consmr.mail.ne1.yahoo.com with HTTP; Fri, 24 Oct 2025 20:11:47 +0000
-Received: by hermes--production-ir2-cdb597784-fmnpd (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 194f907e1bcf23af043227dc26fd9071;
-          Fri, 24 Oct 2025 20:01:35 +0000 (UTC)
-Message-ID: <ed24336c-4e14-48f5-ab0d-cd5f6f3f5c01@yahoo.com>
-Date: Fri, 24 Oct 2025 22:01:33 +0200
+X-Sonic-ID: 921a9463-a864-4087-ae47-5a6eb28faa27
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic310.consmr.mail.ne1.yahoo.com with HTTP; Fri, 24 Oct 2025 20:18:34 +0000
+Received: by hermes--production-ir2-cdb597784-z6mxk (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID df699c6384cfc4ba1972a7fa690cac78;
+          Fri, 24 Oct 2025 19:58:15 +0000 (UTC)
+Message-ID: <a5350178-93c4-4aad-a503-a622704fe764@yahoo.com>
+Date: Fri, 24 Oct 2025 21:58:13 +0200
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
@@ -65,45 +64,79 @@ List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Content-Language: en-US
+From: Mircea Cirjaliu <mircea.cirjaliu@yahoo.com>
+Subject: [PATCH] kernelshark: generate header file in the build directory
 To: linux-trace-devel@vger.kernel.org
 Cc: y.karadz@gmail.com
-From: Mircea Cirjaliu <mircea.cirjaliu@yahoo.com>
-Subject: [PATCH] kernelshark: add .gitignore for generated/build files
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-References: <ed24336c-4e14-48f5-ab0d-cd5f6f3f5c01.ref@yahoo.com>
+References: <a5350178-93c4-4aad-a503-a622704fe764.ref@yahoo.com>
 X-Mailer: WebService/1.1.24652 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 
-Not having a .gitignore will bloat git listings.
-Created a .gitignore for all build artifacts.
+Mixing versioned and generated files will bloat git listings.
+Put KsCmakeDef.hpp together with the rest of the generated files.
 
 Signed-off-by: Mircea Cirjaliu <mircea.cirjaliu@yahoo.com>
 ---
- .gitignore | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
- create mode 100644 .gitignore
+ CMakeLists.txt       | 4 ++--
+ build/cmake_clean.sh | 2 +-
+ src/CMakeLists.txt   | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/.gitignore b/.gitignore
-new file mode 100644
-index 0000000..38a45ac
---- /dev/null
-+++ b/.gitignore
-@@ -0,0 +1,16 @@
-+.vscode/
-+build/.cmake/
-+build/.qt/
-+build/CMakeCache.txt
-+build/CMakeFiles/
-+build/Makefile
-+build/cmake_install.cmake
-+build/compile_commands.json
-+build/examples/
-+build/include/
-+build/src/
-+bin/
-+lib/
-+kernelshark.desktop
-+libkshark.pc
-+org.freedesktop.kshark-record.policy
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 54ff97c..84215dd 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -129,7 +129,7 @@ else (CMAKE_BUILD_TYPE MATCHES Package)
+ endif (CMAKE_BUILD_TYPE MATCHES Package)
+ 
+ include_directories(${KS_DIR}/src/
+-                    ${KS_DIR}/build/src/)
++                    ${KS_DIR}/build/include/)
+ 
+ message("")
+ message(STATUS "C flags      : " ${CMAKE_C_FLAGS})
+@@ -163,7 +163,7 @@ if (_DOXYGEN_DOC AND DOXYGEN_FOUND)
+ endif ()
+ 
+ configure_file(${KS_DIR}/build/deff.h.cmake
+-               ${KS_DIR}/src/KsCmakeDef.hpp)
++               ${KS_DIR}/build/include/KsCmakeDef.hpp)
+ 
+ configure_file(${KS_DIR}/build/ks.desktop.cmake
+                ${KS_DIR}/${KS_APP_NAME}.desktop)
+diff --git a/build/cmake_clean.sh b/build/cmake_clean.sh
+index 67afd6c..2c05d3e 100755
+--- a/build/cmake_clean.sh
++++ b/build/cmake_clean.sh
+@@ -6,6 +6,7 @@ rm -f CTestTestfile.cmake
+ rm -f DartConfiguration.tcl
+ rm -rf CMakeFiles/
+ rm -rf src/
++rm -rf include/
+ rm -rf examples/
+ rm -rf tests/
+ rm -rf Testing/
+@@ -14,7 +15,6 @@ rm -f ../lib/*
+ rm ../kernelshark.desktop
+ rm ../libkshark.pc
+ rm ../org.freedesktop.kshark-record.policy
+-rm -f ../src/KsCmakeDef.hpp
+ rm -f CMakeDoxyfile.in
+ rm -f CMakeDoxygenDefaults.cmake
+ rm -rf .qt/
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 0643365..da31f8d 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -71,7 +71,7 @@ if (OPENGL_FOUND)
+                   "${KS_DIR}/src/libkshark-plot.h"
+                   "${KS_DIR}/src/KsPlotTools.hpp"
+                   "${KS_DIR}/src/KsPlugins.hpp"
+-                  "${KS_DIR}/src/KsCmakeDef.hpp"
++                  "${KS_DIR}/build/include/KsCmakeDef.hpp"
+             DESTINATION ${KS_INCLUDS_DESTINATION}
+                 COMPONENT libkshark-devel)
+ 
 -- 
 2.43.0
