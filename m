@@ -1,62 +1,61 @@
-Received: from sonic308-9.consmr.mail.ne1.yahoo.com (sonic308-9.consmr.mail.ne1.yahoo.com [66.163.187.32])
+Received: from sonic305-22.consmr.mail.ne1.yahoo.com (sonic305-22.consmr.mail.ne1.yahoo.com [66.163.185.148])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 078B31E47C5
-	for <linux-trace-devel@vger.kernel.org>; Tue, 28 Oct 2025 20:45:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.187.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54C374502F
+	for <linux-trace-devel@vger.kernel.org>; Tue, 28 Oct 2025 20:48:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.185.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761684339; cv=none; b=cXYcGMCXV1Ji5n8+JDF5ZTTX4XonoWMSQH9uMpnLhdW1qQch61ST41pr9b5fCaRKM2wFMEZPMPZf0UBE1qceL63MgaVzSgTTcyMdZYGPg2wByV1sr5rfN4SgRDVP2PatAZs33fDqmcTuOJm9Tr+JKo55F1ojr9dydv4gUQM7X/k=
+	t=1761684486; cv=none; b=AECBiMJ0QAs+QtfGsoOus/O/D5Iczp+V1PPsIRbxd8ceOu4fucU+UB79Ba2K3m+crTubhD0olUEgi6+Pqepw0qWNFE/2fnAdgsnqHMoYiFPQkIEawTxUfn7Dqw5NfQ0ZHyCViNBfetRS2HofxCjnMemtyPJsMW1kVwHRhERZ8bg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761684339; c=relaxed/simple;
-	bh=dsq13kztmSIftRMZ65MfCjiaDmlOcr3AbMqU6iw/tJg=;
-	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type:
-	 References; b=ko3JWZuL0WrLwnp8/XX5C6dGqk9cV2+gbVTaezlE8Y/ZFLZagO9DHsvUxgolExOPLZaKQFpIAVgobCSN85VzuXu1H/F8yOMMvx9jcAxClzx+ksmbuzj0z2ux6pmlRtEhK+5wY7kASGQRVf2aNOFsolI++6lM7EFksl2eu94rL3E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com; spf=pass smtp.mailfrom=yahoo.com; dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b=BfnRroNb; arc=none smtp.client-ip=66.163.187.32
+	s=arc-20240116; t=1761684486; c=relaxed/simple;
+	bh=7UpwLvSb7IcYLKbtOkBNI2MkO+9j/rZbd4+tGhF/E2o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
+	 In-Reply-To:Content-Type; b=WSMHKS10IbpAMo8iWXtND65OrpIDU3RqrBBEXZxg+kSsxU8CkclrnCHvcweXSQllEzqjLBmr60+4bxS4ad2i2iKktjb6w+MzUmhaMoTLhSPlOg9ypw7NwhUdSz4GiZIRF8BCN9PIKha2weK1vuK4+mnqpIY39lEMg2H2jTyV8ik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com; spf=pass smtp.mailfrom=yahoo.com; dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b=bUO+f3fW; arc=none smtp.client-ip=66.163.185.148
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yahoo.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="BfnRroNb"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1761684331; bh=IW44A5nymgr1DZglslO6imO7kZ/2nkbW4xKwrPH8D20=; h=Date:To:Cc:From:Subject:References:From:Subject:Reply-To; b=BfnRroNbAK3GTpl6fXjYuAE/RK3bs4QIBudwra7UINraZewl2BxIqXDur5L61G0sN3GW85iNoY3uLQDUBnldEE4Mdj5Lu7qdWULvgVsvsi+lnnjLSaHOBI2m36cmPozO6eHHjFqOYVyKTLPAauiwBubZQ4ZmRsl7XYRpPZ5QI5cBIXTYqA/YgU3rR+5SaZYNiDbrslkxg2vEGtYEyTOyCqvIQFRjePAmoyexQC1OqKUHKBrt81w81mNWUiiFguuzKJFTPK0K9rbSLhQp9BduJQxv9AyqIpYY781bQcrf0s3RQyxZRxiH5b27Gfs/2JxSiExP8HUeWqBWVLLnbnhTOw==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1761684331; bh=mvqlKNPmcoOyrlMFUG2FVx3xcy0Jk7FHkztZ7qHG+CV=; h=X-Sonic-MF:Date:To:From:Subject:From:Subject; b=K/iW09j2XAzPcD6Ox8vM5Ap+bwAq73Mn890T3B+p0deq7Na0PzhtDefKCMbxk/6hyVQ825lcQ3qED/yP+eRG7qU00TizbBIk5arvgH1N6GBnti9ChdJodyRRXAJpKjfm78zHOm8S3L8Yzs0/+xyVzSs8hT3scY8NEP8ODsv0noSnEMHzo0gViv5+xucDCz+FbNgrZxNxwVykXO2A71DeWaxcmbBmEyoE3UlJMRg4VGjnQg5wvT18DtY3+I6biRELrDWNAtelyhfj814n2ZFKwalvsIaVas5WJy9OP4E9+0JXU2PkO236RxH41q2RLXJqQsQR87azk/j+KCoTBkS9sQ==
-X-YMail-OSG: HmJHGngVM1nwgW9g49oBKcYKmOzM7mEG5kvDmhRX5BTKLkbyOlSiPBDCx1DpOFt
- K6J0cIo.2lTkyLvYY6mnbXnjuken2QCS5BKi6beWMIJk2kqCf6.PcUcH5G2bfu8a_hNd5v5XQhw8
- g_dbKgZwiWucw6pRzKAWuE3vZKmnTBu9NQoMbrCvklbwtpCaXSkWwkkB7aYucLqC6C1zeAYWQDiI
- 50jvMkJrmdfxHHoxPfW4b6dRr6tqdVsBGgywb5eYndpUCpwaad2iQgUH_2E8gOrMuOi4tHIMkS50
- jUeEP33fGiK.wgnBii2_d9FlIf2jusP2ufPehMG_.OYdiG9LaIT7Gc19AMpPES1ZSQ34sNCCxFsN
- ne4265otXA2Xjt7muuwhvzDvDPRDcsyxWwy9Prup4PYcGqAdqoPtHwvV_UU2dQg9fvQupDoXypFL
- Qj_gajuEYmPeE1C7Ggw62mHTXFlKjrRDxhIuLmkm8NWrYPE.RodhYsZAc6QUb8_k0xGequ6444aN
- cZhxEfl7hhIL7IBg7Y_1R0donzUZtfExu42sf..OoED6YFZeTamV5VonjqTJBB7Ua.n5oNTDItKr
- cEtNOTMe3yYdvzT1dxD_HUOVEryUOKme.x3IdrPFfJioMjI4CQeFcqGcZLWl.6EMZtDyjsXe.W.5
- 1iR8Yk3Mpc1O8pA3ia.2xgjldaTey9hERZaGmEhXac_qJvTW0wJD3NDhTapQ4xQJzSJIiOmtIoNU
- 57gCxbx8ci.Pn8K_Htz_zukqSeGyABop1umo6aV8BjcQhUVcFuEgTJr3eC7XMCO8Oa9Iq.0cPj.t
- Gu7EHDArDD8vE.YWNrS2bDD3.uq.5zBetly5Tby26XAg4o4Hf6b1fPBiSPFJd8gzhddiIq_5JCXt
- ZeSsYooTyHUROSdycaRbYtfCuITYqjHDqGNZBlyvWp9HiAtOrhhsHEMUum8NdEPa.M5yg5h4ijAx
- SGcbbCxZwQruHEBzrIEVv59laf8W4JY0G._gRP1StT_XjJd.qy0vRJkF1QUZH7ZUCeOeyZ_0Zoil
- yF6BCuSulqA.GAP_wxKyKjlAhYqnQPmJcjf_c6hrJ10r7sgci6i_N9.URgL1E6k1oC58qzIzJHqu
- oO1ulxsPZ7sCZwNL0EdI5EKz2nCFpXhu6tjLqpe8atM4kRxgVzQmjC1XjoGhbc1OMek6yTG1EGpA
- WSjBRvycwSIZchonZ0DLl.BFPjrm6YkxEBrIeJFxv_witEgLZNXtEffYT3f_gOOJpm_ZDvwX8Wi5
- _2WDk6QU1uJJn1sYxmOIcPtG8X6mWx4t0bqTVv1lsfOTL962_V75ae9j3DI0uC8VquEAWIyhn374
- o.BYYJf.AkMFpPA1qXSkVtYVoOoOT8RMWvfDDRn0NaIjZTE9PVVDvka7YbuCEEVIU9kfP6ucUkmt
- swG41SjHEVGaLYO_NZSc3F5CM.bQ62VrMz4RN0hn_Q3mBYNxzGvigp27Sgs64HzNshpvsgMGm0uZ
- 84UIe9I8FQl7PwpDsrEQSaYhj_3a26AyHPU8UZdT6TlR5X3t7tot1pROOy3whQmH18D9Ru4wnZS7
- mcglpEDSmByccsHPOGLfUvvvzeQf46GLM8pBKYYrrQZzTo7jseeWHxQis_EqyHxJrFz.mHv4yd1C
- uiC2Vt5yiboAId0k_c35fEnShzhsXKzE15G6S65qbpGT3BnyICJt524R4yaUzTjKWmEMGfaP4EdY
- Yp37S98ebGm7BdrtoLEa3wLKb4KsMvIlDHepwiDQDXpzo_LGcvS1yY6E3096OpFMjffF0wgni7vH
- 57uSR2qJYp5B9juUuIyrdZ09i.XDbvljVjnLqVaO_bzBI7bCwhBsYwPgLiytC6Q4m5Jv2h1jYsZe
- r8Hv2rgnzStJ3AArVNjAtfgCMbYQnnD_cGE8xXaHlwM6A4Vw15jHhvYeX77tI1MnK8FtVKocldC8
- RugpPa3KDTbmLJ_JrMyv8HjyjMTjndgGl_MsNj3kQj59rmQMsgcA71hRWKEV9vM3fq9qUE9GHZzA
- VRPRdBI8xcbwDfKSSexfD8d7UFuBRZjHOGskQpvHHTLqTsGWMPjzS7y4it8QDJd_.oqxudFRyX5j
- 6AUstKJPPoS1ohjhXe1P5wv.irSShrnMlUJNuBY2GWQbWSWziSe_v3vc8j2eN6cdrKNEHYWnUpP2
- 2wh39Wb.gqarg1Fm5reO0u1SxZgHkMf4mC380IA30rVY.OPhsayjO.hJi72kxifTc5CHWlOYnfJf
- fwnksXPAY0IzlD4ikW5HX.lvC7rRgkK2mQMa4I.ofdLbDjPhaM9hrl93MKhSljnpZ4DspM7Xic3Y
- -
+	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="bUO+f3fW"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1761684477; bh=rBYSrozK8m1dOvPMUYyW7/jbYfEnXdhDtfCosdp39Vk=; h=Date:Subject:To:References:From:Cc:In-Reply-To:From:Subject:Reply-To; b=bUO+f3fWeZ7mrBq4m6Jzgz905DxYlvQZH5Xn2v6x9G3B1Lc3qZK/C8fUaL23MgDrlBfyIMaCV5YmiS5nxeRmHwLkE3I5hEzTDFqOhKqzjS7eVEOhTUUHUglHN+riK3Xpd/rdpaQByx4rAqIbuE9rCeedLexbDNqMg5wcaohJOEVv8PzS+25RG9rBU+Dxl93Ev/MPbWhwMuZskcIyRBe1PzeSyY0Zg4RsUbbClOaccCejwLPno2KwYzjRj1uguZHEdY6hLPuxJFD5oRMvmS1F2NjYfH3nt3/Ajj6DS/iXZMNwuo3uKrkBHe3+lKReUFNOKomjQcNyZ8YoxJ24K0awvA==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1761684477; bh=pVyciwGZv+Jp9+ydwkeiojLcS+g2eQbl0NhlVqtl360=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=PYpJq87ZLEiGk0V4djavB1nbm2DaNAoMldoyUSWtCsylwk1/0zLgBUpNrCJ0Vf6ddjkk04zldDfxNgPxqt1KiLI/HYnwcbxQ6lzTKkFimCkrLQOX0EHsFOHBA9Us68KkGoGOHoUrTO2bZ3+B1ke/leKpxPoZAEekBZ3JhftJF0nntjtyX10ZRx8mSU7ofQOhlLdbUaU+uS289Ksm0YiAiJqvrBNZy7SvqmDSepb9tkbgZ/AVdjC6eOpUTNjwFTr+Pxwt0b57NyYlaFFnhkzVBwlyw3FzNW2sa0ab9ilwTQE+1tqa/QT1mhCDMisygxWm0+HuotYQYhsZyIq3013LUA==
+X-YMail-OSG: 8_1RkLwVM1lthzfZN78ZFaJ5aADJfcyBin7KY7sltd_9NrVWVk_tTEg_sAxFuTi
+ Lz.AVoB6jfsuybcoomwG7FlK1TwrsUbq0JaGkE_0Hndv4wxKFQYber8riHkb1ze5w3BGhzWGIIam
+ cw4x2XFGbJcn0xdUKtfgnbOfa1diQnPLO0C7F3YA7XFGFhuq1F4juCwn3Sxayfun5rkns8CIDnPQ
+ C_0p_Agi_Nj8ScJWnWoJRJ7A1rw9ht7Sn18dZ2XZvB2bkUav16E.0dDnOu8tszdMinGv13I7vyxP
+ ZTX1UDi3F70Lr4asfcsc59vS_kICb5liJjfH9aiZj9n3t5cv4LCLVl.rnt7m4LnDkxPBy1_EAizp
+ .u0zEVgLVXZ5oqoq1HamE_fIAu7jap60Dc1d7D6HUwZ7B0n9NBpHk9LjCPj3kpa43UnII4NlA9Pq
+ YBSftIqncbD46p6pV0BkdvzTi68Me.QiUrHI1pOsqyEgBG5XFz3gGkp0f0InSUlnGmlE3rLhUo.w
+ gRHf.bc.jguXv0VRddJKA.K4xeCNS0d1Tt47FBaJcBXEwJRX297Eapoh81SVrGBqlwwz0crWAaLX
+ 1MlhKq93ns7XXtvuXCyXGtT_ikcEU5Nf9Cu.Nm6YoSk1o9GoImIqceM7GlLsdAjkEfcFtcekJOWD
+ .Y336PjrOeHte_yqHKG4vVKpJ9fFWxW6yqqRANriNnFBiFlhfSZFAzQVeHvvnZW.P0zcLpWXARxj
+ EyuSZ3KurlitsESOmkJ5p33jOSfCsTLn4qyVryc.9nGw0DdBJbgUzbgloEhWz_HctvGAF9Mrg_Ec
+ ZZihPeLStxCQZlpM4V75nA5s5T1_A1_cQFC7o3RVbavBu9Ukk8cUoQY0k7wMN3tziqFG1EaJF48b
+ zoZ6QbYFydQN2TJMPVyjuodK4jCMI4OeGzlE25Knr.witNbXjGBIkA0APHsmQaVQN6Y0Vmaz6T68
+ 4oxe6h4SzGmqhxaqlboqweiIzwZnAGnAh9AddstBkm6DfsGUJBjRs_sseHqu0txnHcjHtTnBQAQe
+ 2dPMzwzibXMPIsE36tFjNthWm4T67Om6qk5ntt4kiNc4DRfqyb8mgd2jfDczcuPxOlDOEoWvB1FD
+ LyxRWAKjoQbClxgUu75Uz1w34VHPjMyAiXXRD7TqclRzrKUJuWutI2Syab4wltP9z6OyuR8wC3MO
+ Cfk4sglg_YPvBsANqTzo3novn3rY6.kRPoC5GaC2WBuhYoXIS5Q8f9etQr0FfLHjEmZaROpI.8ZC
+ pDEzCNWBa0EpAaxKl9LPkmGHxZqDA354Bndrs3zq2UjSdzKVEBSpT0WLAsfKuAhQVZVW4AGZhvdD
+ FPVhjRWUDko3uC2v6zhBWFcJLbamHnrqC6umxKGedbXRZGdpwDftAYRL7g1a3N4F.j0hvr95UNLf
+ au0sBJ3nkEsQ1gKtEnQ2DPDlIUIQJRzfAS3iGKu_9KGGpoGOF3AHhEe2ae3fTuLceGwxu2yH4gAF
+ MaaT5gXQP0GQT0ZVUOpNgP3q4P7H6qURRU2aU0Fr.l_Ob9KOg2Js8cN2i43_Ngoeq_32yoCAC5i1
+ wK.GFfo5q4oKFa.fzzj6iPS4Hjwjp8mMhGY2a8Y9JsUNCxkN08uyoAh3oVF.SFkVAqfHwQCk3bF2
+ NDRLonVNsaybaMxE7zW7ZtE_U0dY_yfWyozEYyniwBOagH65kSfg4O7Z.mBCUtB5PTrxOchtK7rJ
+ yufydxTOtyOMYoelNPsskmWgt6S5sJCK9ihXy.4OPSudII0sEta_nmuYe6KTfIMG5Kud6hs6G6LP
+ 6SIIxaog6pPVuGWCVJ2xh_CSczv3qjGdxwhJsk9ZcAGOC08UPZDy.i1vt72MkUVspAmxpeb7dD6A
+ Y.EDhg6ooiNrMBCS0C7OamUkYMuckPQWWFXK4W5S4kPyp45Zk2ebLzh4vevIh6_rK2agKOxe0KCe
+ wxXJJ8hef2xPdhaUa5KJ.g3lTysDZ93cQxWW6Agp.AzmgC26ndLINdECAJpCyLnaxutlTDrqNMaw
+ nZR8ziHdxs5j2IeuDnRbZ.3iwlCzGNS5b2cCCKd2QKROl9yEZG6F2xl0_NyPtJmMgZdcNapBtXnp
+ rizMMMrWf.hxr7E3hoo56BRC5uG5j9dPiIBaw1qtkZTJ7s51TGNnCNqlPHimuEudqn68jfh1iWB.
+ 50A7JZZMOTOmJfhEFwZrxy1HMh_ndipVnccJmdbtU6jnP0kcHChx4XV4KysSRHp_AF.tp.tPW6bQ
+ R0oqUTrOOkRpDM7bz3V6k7bU92FRsXN0MfFng0uYeRzBV3h.yuZ7JzJGKnll6lfKeddG12rrV
 X-Sonic-MF: <mircea.cirjaliu@yahoo.com>
-X-Sonic-ID: 8af386f1-e1e7-40ed-b732-4ad179bd7499
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic308.consmr.mail.ne1.yahoo.com with HTTP; Tue, 28 Oct 2025 20:45:31 +0000
-Received: by hermes--production-ir2-8c47c9895-ljhdn (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 08fc98dcdd7aee730c5c9e8d83b45226;
-          Tue, 28 Oct 2025 20:45:29 +0000 (UTC)
-Message-ID: <7b5dc58b-f4c1-4b8d-a88b-72fe6d04399a@yahoo.com>
-Date: Tue, 28 Oct 2025 21:45:27 +0100
+X-Sonic-ID: abc5a0e0-0eb8-48e8-9aa7-2fcc8b31d2c5
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic305.consmr.mail.ne1.yahoo.com with HTTP; Tue, 28 Oct 2025 20:47:57 +0000
+Received: by hermes--production-ir2-8c47c9895-2vz9t (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 84912c68f53f1cdff871eaed64ba6e5b;
+          Tue, 28 Oct 2025 20:27:39 +0000 (UTC)
+Message-ID: <cba49bd9-5172-4960-a2ec-6bfd9078d4be@yahoo.com>
+Date: Tue, 28 Oct 2025 21:27:37 +0100
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
@@ -64,109 +63,154 @@ List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: linux-trace-devel@vger.kernel.org
-Cc: Yordan Karadzhov <y.karadz@gmail.com>
-From: Mircea Cirjaliu <mircea.cirjaliu@yahoo.com>
-Subject: [PATCH v2] kernelshark: fix bug in the behavior of ksglwidget rubber
+Subject: Re: [PATCH] kernelshark: fix bug in the behavior of ksglwidget rubber
  band
+Content-Language: en-US
+To: Yordan Karadzhov <y.karadz@gmail.com>
+References: <5c7a78ce-b1f6-4396-982a-8b884242d8cc.ref@yahoo.com>
+ <5c7a78ce-b1f6-4396-982a-8b884242d8cc@yahoo.com>
+ <f6ec9f89-a161-e596-79bb-ec21aaa1047c@gmail.com>
+From: Mircea Cirjaliu <mircea.cirjaliu@yahoo.com>
+Cc: linux-trace-devel@vger.kernel.org
+In-Reply-To: <f6ec9f89-a161-e596-79bb-ec21aaa1047c@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <7b5dc58b-f4c1-4b8d-a88b-72fe6d04399a.ref@yahoo.com>
+Content-Transfer-Encoding: 8bit
 X-Mailer: WebService/1.1.24652 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 
-Accidentally pressing right mouse button while dragging
-the range will cause the rubber band to behave abnormally.
-Improved the logic behind range dragging to account for this case.
-The state of the rubber band will be reset on right click.
+Hi Yordan,
 
-Signed-off-by: Mircea Cirjaliu <mircea.cirjaliu@yahoo.com>
----
- src/KsGLWidget.cpp | 23 +++++++++++++++++++----
- src/KsGLWidget.hpp |  2 ++
- 2 files changed, 21 insertions(+), 4 deletions(-)
+I tend to favor debuggability, expressiveness and readability in my coding, even if it makes for longer code
+or seemingly unnecessary code constructs. I'll leave it to the compiler to optimize variable usage, I wanna
+make it easy (for me or others) to set a breakpoint or understand what the code is doing.
 
-diff --git a/src/KsGLWidget.cpp b/src/KsGLWidget.cpp
-index 7f2001c..ea8cb93 100644
---- a/src/KsGLWidget.cpp
-+++ b/src/KsGLWidget.cpp
-@@ -187,9 +187,15 @@ void KsGLWidget::reset()
- /** Reimplemented event handler used to receive mouse press events. */
- void KsGLWidget::mousePressEvent(QMouseEvent *event)
- {
-+	if (isEmpty())
-+		return;
-+
- 	if (event->button() == Qt::LeftButton) {
- 		_posMousePress = _posInRange(event->pos().x());
- 		_rangeBoundInit(_posMousePress);
-+	} else if (event->button() == Qt::RightButton) {
-+		if (_rubberBand.isVisible())
-+			_rangeBoundCancel();
- 	}
- }
- 
-@@ -262,8 +268,10 @@ void KsGLWidget::mouseMoveEvent(QMouseEvent *event)
- 	if (isEmpty())
- 		return;
- 
--	if (_rubberBand.isVisible())
--		_rangeBoundStretched(_posInRange(event->pos().x()));
-+	if (_rubberBand.isVisible()) {
-+		size_t posMouseRel = _posInRange(event->pos().x());
-+		_rangeBoundStretched(posMouseRel);
-+	}
- 
- 	bin = event->pos().x() - _bin0Offset();
- 	getPlotInfo(event->pos(), &sd, &cpu, &pid);
-@@ -287,11 +295,12 @@ void KsGLWidget::mouseMoveEvent(QMouseEvent *event)
- /** Reimplemented event handler used to receive mouse release events. */
- void KsGLWidget::mouseReleaseEvent(QMouseEvent *event)
- {
--	if (isEmpty())
-+	if (isEmpty() || !_rubberBand.isVisible())
- 		return;
- 
- 	if (event->button() == Qt::LeftButton) {
- 		size_t posMouseRel = _posInRange(event->pos().x());
-+
- 		int min, max;
- 		if (_posMousePress < posMouseRel) {
- 			min = _posMousePress - _bin0Offset();
-@@ -1132,7 +1141,7 @@ void KsGLWidget::_rangeChanged(int binMin, int binMax)
- 	/* The rubber band is no longer needed. Make it invisible. */
- 	_rubberBand.hide();
- 
--	if ( (binMax - binMin) < 4) {
-+	if ((binMax - binMin) < 4) {
- 		/* Most likely this is an accidental click. Do nothing. */
- 		return;
- 	}
-@@ -1182,6 +1191,12 @@ void KsGLWidget::_rangeChanged(int binMin, int binMax)
- 	}
- }
- 
-+void KsGLWidget::_rangeBoundCancel()
-+{
-+	/* The rubber band is no longer needed. Make it invisible. */
-+	_rubberBand.hide();
-+}
-+
- int KsGLWidget::_posInRange(int x)
- {
- 	int posX;
-diff --git a/src/KsGLWidget.hpp b/src/KsGLWidget.hpp
-index cafc70b..8fcac55 100644
---- a/src/KsGLWidget.hpp
-+++ b/src/KsGLWidget.hpp
-@@ -315,6 +315,8 @@ private:
- 
- 	void _rangeChanged(int binMin, int binMax);
- 
-+	void _rangeBoundCancel();
-+
- 	bool _findAndSelect(QMouseEvent *event);
- 
- 	bool _find(int bin, int sd, int cpu, int pid,
--- 
-2.43.0
+On 27/10/2025 21:51, Yordan Karadzhov wrote:
+> Hi Mircea,
+> 
+> Looks like this is indeed a bug, however it is hard to reproduce. I had to do a lot of right mouse button clicks before seeing this misbehavior to show up.
+> 
+> I will take the fix, but the patch itself heeds some additional work. See my comments in code below.
+> 
+> On 10/20/25 22:00, Mircea Cirjaliu wrote:
+>> Accidentally pressing right mouse button while dragging
+>> the range will cause the rubber band to behave abnormally.
+>> Improved the logic behind range dragging to account for this case.
+>> The state of the rubber band will be reset on right click.
+>>
+>> Signed-off-by: Mircea Cirjaliu <mircea.cirjaliu@yahoo.com>
+>> ---
+>>   src/KsGLWidget.cpp | 40 +++++++++++++++++++++++++++-------------
+>>   src/KsGLWidget.hpp |  2 ++
+>>   2 files changed, 29 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/src/KsGLWidget.cpp b/src/KsGLWidget.cpp
+>> index 7f2001c..a2c1fc8 100644
+>> --- a/src/KsGLWidget.cpp
+>> +++ b/src/KsGLWidget.cpp
+>> @@ -190,6 +190,9 @@ void KsGLWidget::mousePressEvent(QMouseEvent *event)
+>>       if (event->button() == Qt::LeftButton) {
+>>           _posMousePress = _posInRange(event->pos().x());
+>>           _rangeBoundInit(_posMousePress);
+>> +    } else if (event->button() == Qt::RightButton) {
+>> +        if (_rubberBand.isVisible())
+>> +            _rangeBoundCancel();
+>>       }
+>>   }
+>>   @@ -262,8 +265,10 @@ void KsGLWidget::mouseMoveEvent(QMouseEvent *event)
+>>       if (isEmpty())
+>>           return;
+>>   -    if (_rubberBand.isVisible())
+>> -        _rangeBoundStretched(_posInRange(event->pos().x()));
+>> +    if (_rubberBand.isVisible()) {
+>> +        size_t posMouseRel = _posInRange(event->pos().x());
+>> +        _rangeBoundStretched(posMouseRel);
+>> +    }
+> 
+> I don't see the point in this change.
+
+I needed a breakpoint there.
+
+> 
+>>         bin = event->pos().x() - _bin0Offset();
+>>       getPlotInfo(event->pos(), &sd, &cpu, &pid);
+>> @@ -291,17 +296,20 @@ void KsGLWidget::mouseReleaseEvent(QMouseEvent *event)
+>>           return;
+>>   
+> 
+> No need to pile if on top of another if here. Just start the function with
+> 
+>     if (isEmpty() || !_rubberBand.isVisible())
+>         return;
+> 
+> The rest may stay unchanged.
+
+Agree with you here, will fix.
+
+> 
+>>       if (event->button() == Qt::LeftButton) {
+>> -        size_t posMouseRel = _posInRange(event->pos().x());
+>> -        int min, max;
+>> -        if (_posMousePress < posMouseRel) {
+>> -            min = _posMousePress - _bin0Offset();
+>> -            max = posMouseRel - _bin0Offset();
+>> -        } else {
+>> -            max = _posMousePress - _bin0Offset();
+>> -            min = posMouseRel - _bin0Offset();
+>> -        }
+>> +        if (_rubberBand.isVisible()) {
+>> +            size_t posMouseRel = _posInRange(event->pos().x());
+>> +
+>> +            int min, max;
+>> +            if (_posMousePress < posMouseRel) {
+>> +                min = _posMousePress - _bin0Offset();
+>> +                max = posMouseRel - _bin0Offset();
+>> +            } else {
+>> +                max = _posMousePress - _bin0Offset();
+>> +                min = posMouseRel - _bin0Offset();
+>> +            }
+>>   -        _rangeChanged(min, max);
+>> +            _rangeChanged(min, max);
+>> +        }
+>>       }
+>>   }
+>>   @@ -1132,7 +1140,7 @@ void KsGLWidget::_rangeChanged(int binMin, int binMax)
+>>       /* The rubber band is no longer needed. Make it invisible. */
+>>       _rubberBand.hide();
+>>   -    if ( (binMax - binMin) < 4) {
+>> +    if ((binMax - binMin) < 4) {
+>>           /* Most likely this is an accidental click. Do nothing. */
+>>           return;
+>>       }
+>> @@ -1182,6 +1190,12 @@ void KsGLWidget::_rangeChanged(int binMin, int binMax)
+>>       }
+>>   }
+>>   +void KsGLWidget::_rangeBoundCancel()
+>> +{
+>> +    /* The rubber band is no longer needed. Make it invisible. */
+>> +    _rubberBand.hide();
+>> +}
+>> +
+> What is the point in defining a function that does nothing but calling another function.
+
+Layering functionality, i.e. mouse events call _rangeBoundXXX() functions, which instead act on _rubberBand.
+For improved code readability, also having a properly named logical entry point aids in debugging.
+
+> 
+> Thanks,
+> Yordan
+> 
+>>   int KsGLWidget::_posInRange(int x)
+>>   {
+>>       int posX;
+>> diff --git a/src/KsGLWidget.hpp b/src/KsGLWidget.hpp
+>> index cafc70b..8fcac55 100644
+>> --- a/src/KsGLWidget.hpp
+>> +++ b/src/KsGLWidget.hpp
+>> @@ -315,6 +315,8 @@ private:
+>>         void _rangeChanged(int binMin, int binMax);
+>>   +    void _rangeBoundCancel();
+>> +
+>>       bool _findAndSelect(QMouseEvent *event);
+>>         bool _find(int bin, int sd, int cpu, int pid,
+
+Best,
+Mircea
