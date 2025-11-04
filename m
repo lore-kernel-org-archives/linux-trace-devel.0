@@ -1,93 +1,92 @@
-Received: from relay.hostedemail.com (smtprelay0014.hostedemail.com [216.40.44.14])
+Received: from smtpout-04.galae.net (smtpout-04.galae.net [185.171.202.116])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAF242EAB6F
-	for <linux-trace-devel@vger.kernel.org>; Fri, 31 Oct 2025 15:54:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B7BB306489
+	for <linux-trace-devel@vger.kernel.org>; Tue,  4 Nov 2025 08:45:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.171.202.116
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761926080; cv=none; b=jr4AerRYVPEZdL+S7gJ2SWz94/ipbwiqLGK8+bxuD5kxtvbwvBGHJWAfg0Ngdo4SfT1vo4X86tB9gGbyZ8xwdwebhbk9VwldwO7kIXF9Ls97cdEFPZOIC0sESG2OZXJUrAGA+dTnaDCCCI+MM4QvOYcOQf+da8WCD0sK7RC4rYk=
+	t=1762245912; cv=none; b=X5WgpNiyd38ayBG94rraVKi36P7OPfy+22jWaAjPj3OzEMJuJeS+/WxlIfoSCTWK9TC9Gpo2xIWJ2aE4IRGgHDvC6nWK7u2QoqrRNcV3oVuCeMI1ufCEqCuuHTK1WlZ5QTN/1gti75yES0VciheWzIOlG+KO50gg/3mEeYj4JPw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761926080; c=relaxed/simple;
-	bh=lnYUOC6gUCqR8Jintp7b9OLB0Osye+DQUKp/GV+XKos=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=eAzmoYFqIZHnqci2K3KDud+m58wQhV3yC3cxjgl6RswQylthudRadUzrgg9cRDl+fMHaAZM3B4InkC1AU7EpRiu16veIN9nhPNXSbkS/Al1aEPlPT7Vew9gnikgZ6OB/p4bDhH7FiGapBv6bGiBDXHu/6LMWFzwwgkwYjZdzo4U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf13.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay07.hostedemail.com (Postfix) with ESMTP id 0F1B5160538;
-	Fri, 31 Oct 2025 15:54:31 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf13.hostedemail.com (Postfix) with ESMTPA id 83BB020013;
-	Fri, 31 Oct 2025 15:54:28 +0000 (UTC)
-Date: Fri, 31 Oct 2025 11:55:13 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Cc: Yordan Karadzhov <y.karadz@gmail.com>, Jorge Merlino
- <jorge.merlino@canonical.com>
-Subject: [PATCH] Documentation: Update latency description for migration
- disabled
-Message-ID: <20251031115513.41b86970@gandalf.local.home>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1762245912; c=relaxed/simple;
+	bh=MYcK23z+tbgUZzeK8j9bgN/f5oR/GjmXMgqRHymTTD0=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=FluQVVdZeRMvTZdrZNRh/1tH5Bwqj7ryrMcdHKdMTs1sJmGS8VmcRReZ0df11WByNUmWuqDG8UmFzAdblH3F175Icy7psKv4JnM6sqzImMOZhig7lRg+WLvCILkhV+ICKcZstCjrbNejn3nZ+45slljPvdw/xoqoymOj30oDw5w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=sD9wOQ9l; arc=none smtp.client-ip=185.171.202.116
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="sD9wOQ9l"
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-04.galae.net (Postfix) with ESMTPS id 29DF9C0E605
+	for <linux-trace-devel@vger.kernel.org>; Tue,  4 Nov 2025 08:44:41 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 0C6B9606EF
+	for <linux-trace-devel@vger.kernel.org>; Tue,  4 Nov 2025 08:45:02 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 350BB10B500CA;
+	Tue,  4 Nov 2025 09:45:01 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1762245901; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding; bh=0lrOmYnTUBsCOxpvWByiSQWpCXMGzp3x0c+HrRSEBgI=;
+	b=sD9wOQ9lL4Bc4ih3O05/IyGbvwgCn5kQqp5p+ubIH3U+Lat+C22dHVHl7KOXd4Cjn2ou5D
+	Bg/3kXKJ5XIyWLwLYXT/E7uvuXZuF9EvTRh8fYmd7+AkEvyPJqvN2TlokE3FoL7bh3sY+b
+	A/wfHZGByjmkhnMjZ3ihzQS6aKqRowXgcpL1QOYgxc7t+HIfn07FL52WsGxA2B0rMVnnRK
+	5lPkfXm2lVXSjfd7T9jExvZ7h6/dGO7yOZTfFNXorc8NQt+zXe9r/rUDz61J9E96v5R/Ev
+	+RHclSGcvDavx+UordRtB6EYaXI1FNwD/kkTVafHVNdiFa9i1Li1mphaLNCohQ==
+From: Bastien Curutchet <bastien.curutchet@bootlin.com>
+Date: Tue, 04 Nov 2025 09:45:00 +0100
+Subject: [PATCH] kbuffer: fix endianness flags for big-endian host
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Stat-Signature: 4owo64hzdxibcnddpewn5er8hgkqhpd8
-X-Rspamd-Server: rspamout01
-X-Rspamd-Queue-Id: 83BB020013
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX18AQUlsQiSq1rqIDOaZbjgFKiDQFxCwTvI=
-X-HE-Tag: 1761926068-105704
-X-HE-Meta: U2FsdGVkX1+W0rbQZtvTad9dFy7YDfkcOyvsvaNRu5zr5ZPcam94NbQ3rStKWUY1DmZwhHT1N9lJCHWE1KcvxZjgLWBnxxoqi09WQrTfyj7w/IB1Vat1rEPrj5tC1z8WrwQ+p+fzfxOGoDuEQ7VevnvYifbn0RTcGKQPilM7yBgmgRHHjtOrGR9PiI++N39IPJWZxUYELYtZMMqjDhXf2uBzxjahoLEjEvmHmo4gR/Auv1a8gnsRqcYEsliCfD9gBwT2Db21C8VIClbLsTfbRoe5Tj+8yqGr7UYV18d4/Pd0kqzcrydjc2FTCa1Mk7+31FSJAdr0SNVI91pEEapsqxCijIrV3Uy/DutXLeG3EXm3VzdN+eIWC75hUGT21Jdx0Dyabn4jByQrBWzH0wLdLOltQ1iXUP+8qVkX2OZ33+A0a5+86ftcipqcGUjz3Fkm26QvQTO2NZnn86nGclBjAQ==
+Message-Id: <20251104-fix-parse-v1-1-5af9b8965886@bootlin.com>
+X-B4-Tracking: v=1; b=H4sIAAu9CWkC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI1NDAyML3bTMCt2CxKLiVF1zY0vTRAtTc8MkcyMloPqColSgJNis6NjaWgC
+ OUKdJWwAAAA==
+X-Change-ID: 20251028-fix-parse-7395a8571b72
+To: linux-trace-devel@vger.kernel.org
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Bastien Curutchet <bastien.curutchet@bootlin.com>
+X-Mailer: b4 0.14.2
+X-Last-TLS-Session-Version: TLSv1.3
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+When KBUFFER_ENDIAN_SAME_AS_HOST is set on a big-endian host, the
+KBUFFER_FL_BIG_ENDIAN flag is added to the local flags variable instead
+of the kbuf->flags. Since the local flags variable has already been
+copied to kbuf->flags at that time, the KBUFFER_FL_BIG_ENDIAN flag is
+lost when we leave the function.
 
-Starting in 5.11, the Linux kernel implemented a "migrate disabled"
-counter for each task. When the counter is non-zero, the task will be
-temporarily pinned to its CPU. This is useful for accessing per CPU data
-that is protected by a per CPU mutex. The task can still be preempted, but
-it must not leave the CPU. When its "migrate disabled" counter is greater
-than zero, it will not migrate.
+Add KBUFFER_FL_BIG_ENDIAN to the kbuf->flags when
+KBUFFER_ENDIAN_SAME_AS_HOST is used on a big-endian host.
 
-The latency field of the tracer now shows this number. Updated the
-documentation to explain it.
-
-Reported-by: Jorge Merlino <jorge.merlino@canonical.com>
-Closes: https://lore.kernel.org/all/fe35c5eb-7132-4203-9d6f-0a8272b114fa@canonical.com/
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
+Fixes: 5f2aa8497c5b ("libtraceevent kbuffer: Add SAME_AS_HOST for endian and size")
 ---
- Documentation/HTML/index.html | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ src/kbuffer-parse.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/HTML/index.html b/Documentation/HTML/index.html
-index 7dac810bebbd..281307735289 100644
---- a/Documentation/HTML/index.html
-+++ b/Documentation/HTML/index.html
-@@ -353,7 +353,7 @@ The columns of the list are:
- resolution.
- <li><b>Task</b> - The name of the process that was running when the event occurred.
- <li><b>PID</b> - The process ID of the task that was running when the event occurred.
--<li><b><a name="latency">Latency</a></b> -  The latency is broken into 4 fields:
-+<li><b><a name="latency">Latency</a></b> -  The latency is broken into 4 or 5 fields:
-   <ol>
-     <li>Interrupts disabled - 'd' if interrupts are disabled, otherwise '.'
-     <li>Need reschedule - 'N' if the kernel was notified that a schedule is needed, otherwise '.'
-@@ -365,6 +365,12 @@ resolution.
-       than zero, then the kernel will not preempt the running tasks, even
-       if a schedule has been requested by some event. If the counter is zero,
-       then '.' is shown.
-+    <li>Migrate disabled counter - Starting in Linux kernel version 5.11, a task can
-+      be temporarily pinned to the CPU. For accessing critical sections that are protected
-+      by a per-CPU mutex, the task will need to stay on the current CPU. A "migrate_disable()"
-+      call is performed that increments the task's "migrate disabled counter" and will pin
-+      the task to the CPU. If the kernel has this feature, this number will be displayed
-+      as the 5th argument when it is not zero. Otherwise it will be '.'.
-   </ol>
-   <p>Note: These may be different depending on the kernel the trace.dat file came from.</p>
- <li><b>Event</b> - The name of the event.
+diff --git a/src/kbuffer-parse.c b/src/kbuffer-parse.c
+index 71291adf0860b8392e6cfa0b0640c6472def422c..232d1688934a946e19f52886c2d25e4c73637b4c 100644
+--- a/src/kbuffer-parse.c
++++ b/src/kbuffer-parse.c
+@@ -247,7 +247,7 @@ kbuffer_alloc(enum kbuffer_long_size size, enum kbuffer_endian endian)
+ 
+ 	if (host_is_bigendian()) {
+ 		if (endian == KBUFFER_ENDIAN_SAME_AS_HOST)
+-			flags |= KBUFFER_FL_BIG_ENDIAN;
++			kbuf->flags |= KBUFFER_FL_BIG_ENDIAN;
+ 		kbuf->flags |= KBUFFER_FL_HOST_BIG_ENDIAN;
+ 	}
+ 
+
+---
+base-commit: b3f5849527ae226b88342ef80fc42c66ab206f99
+change-id: 20251028-fix-parse-7395a8571b72
+
+Best regards,
 -- 
-2.51.0
+Bastien Curutchet <bastien.curutchet@bootlin.com>
 
