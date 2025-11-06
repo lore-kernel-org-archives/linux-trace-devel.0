@@ -1,92 +1,72 @@
-Received: from smtpout-04.galae.net (smtpout-04.galae.net [185.171.202.116])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B7BB306489
-	for <linux-trace-devel@vger.kernel.org>; Tue,  4 Nov 2025 08:45:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.171.202.116
+Received: from cmccmta2.chinamobile.com (cmccmta2.chinamobile.com [111.22.67.135])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E32FC347DD;
+	Thu,  6 Nov 2025 03:13:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=111.22.67.135
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762245912; cv=none; b=X5WgpNiyd38ayBG94rraVKi36P7OPfy+22jWaAjPj3OzEMJuJeS+/WxlIfoSCTWK9TC9Gpo2xIWJ2aE4IRGgHDvC6nWK7u2QoqrRNcV3oVuCeMI1ufCEqCuuHTK1WlZ5QTN/1gti75yES0VciheWzIOlG+KO50gg/3mEeYj4JPw=
+	t=1762398838; cv=none; b=ani/ZCqh03Iu/4Ht2gAzvLKClhdzdCq0rqbCY4wKVqLTMJdKncfsupNwrZkYbW5tb+z96aUdsTOtzlSZpVUwn4rT0nWipZ6lFgo4/WIhgYwZk38tvTTqGN/4e8n+zY/Xv4Drr1kES+AlNwhIip+6m2GhyTtnqs8Da924kCMcQ44=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762245912; c=relaxed/simple;
-	bh=MYcK23z+tbgUZzeK8j9bgN/f5oR/GjmXMgqRHymTTD0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=FluQVVdZeRMvTZdrZNRh/1tH5Bwqj7ryrMcdHKdMTs1sJmGS8VmcRReZ0df11WByNUmWuqDG8UmFzAdblH3F175Icy7psKv4JnM6sqzImMOZhig7lRg+WLvCILkhV+ICKcZstCjrbNejn3nZ+45slljPvdw/xoqoymOj30oDw5w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=sD9wOQ9l; arc=none smtp.client-ip=185.171.202.116
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="sD9wOQ9l"
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 29DF9C0E605
-	for <linux-trace-devel@vger.kernel.org>; Tue,  4 Nov 2025 08:44:41 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 0C6B9606EF
-	for <linux-trace-devel@vger.kernel.org>; Tue,  4 Nov 2025 08:45:02 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 350BB10B500CA;
-	Tue,  4 Nov 2025 09:45:01 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1762245901; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding; bh=0lrOmYnTUBsCOxpvWByiSQWpCXMGzp3x0c+HrRSEBgI=;
-	b=sD9wOQ9lL4Bc4ih3O05/IyGbvwgCn5kQqp5p+ubIH3U+Lat+C22dHVHl7KOXd4Cjn2ou5D
-	Bg/3kXKJ5XIyWLwLYXT/E7uvuXZuF9EvTRh8fYmd7+AkEvyPJqvN2TlokE3FoL7bh3sY+b
-	A/wfHZGByjmkhnMjZ3ihzQS6aKqRowXgcpL1QOYgxc7t+HIfn07FL52WsGxA2B0rMVnnRK
-	5lPkfXm2lVXSjfd7T9jExvZ7h6/dGO7yOZTfFNXorc8NQt+zXe9r/rUDz61J9E96v5R/Ev
-	+RHclSGcvDavx+UordRtB6EYaXI1FNwD/kkTVafHVNdiFa9i1Li1mphaLNCohQ==
-From: Bastien Curutchet <bastien.curutchet@bootlin.com>
-Date: Tue, 04 Nov 2025 09:45:00 +0100
-Subject: [PATCH] kbuffer: fix endianness flags for big-endian host
+	s=arc-20240116; t=1762398838; c=relaxed/simple;
+	bh=8WUsvx5/71QQ9Vr0SEtyYTPNQiuu5YWD7TnNwLyYXXA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UuT6GMnMypiqcAiBwCUTjmdWj2Beawy3vAvZCPntOqKDkFZyGWnLIaLzNW1wuvpQjjrrx2sYYfQED6/TJGEiNbco+8+n9CKPB6jR8UebO2YTCGtjpWLKFlvAx5C+8cUDr6l8bd6b5wP97GCxKrBn0RFYCWI20QYpr+1xx2aEotE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cmss.chinamobile.com; spf=pass smtp.mailfrom=cmss.chinamobile.com; arc=none smtp.client-ip=111.22.67.135
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cmss.chinamobile.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmss.chinamobile.com
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG:00000000
+Received:from spf.mail.chinamobile.com (unknown[10.188.0.87])
+	by rmmx-syy-dmz-app07-12007 (RichMail) with SMTP id 2ee7690c11b50e8-a31bb;
+	Thu, 06 Nov 2025 11:10:45 +0800 (CST)
+X-RM-TRANSID:2ee7690c11b50e8-a31bb
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG:00000000
+Received:from FHB-W5100149 (unknown[10.55.1.70])
+	by rmsmtp-syy-appsvr02-12002 (RichMail) with SMTP id 2ee2690c11b23c2-40760;
+	Thu, 06 Nov 2025 11:10:45 +0800 (CST)
+X-RM-TRANSID:2ee2690c11b23c2-40760
+From: Zhang Chujun <zhangchujun@cmss.chinamobile.com>
+To: rostedt@goodmis.org
+Cc: linux-trace-devel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Zhang Chujun <zhangchujun@cmss.chinamobile.com>
+Subject: [PATCH] tracing: fix incorrcet short option in usage text for --threads
+Date: Thu,  6 Nov 2025 11:10:40 +0800
+Message-ID: <20251106031040.1869-1-zhangchujun@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.50.1.windows.1
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20251104-fix-parse-v1-1-5af9b8965886@bootlin.com>
-X-B4-Tracking: v=1; b=H4sIAAu9CWkC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI1NDAyML3bTMCt2CxKLiVF1zY0vTRAtTc8MkcyMloPqColSgJNis6NjaWgC
- OUKdJWwAAAA==
-X-Change-ID: 20251028-fix-parse-7395a8571b72
-To: linux-trace-devel@vger.kernel.org
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- Bastien Curutchet <bastien.curutchet@bootlin.com>
-X-Mailer: b4 0.14.2
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Transfer-Encoding: 8bit
 
-When KBUFFER_ENDIAN_SAME_AS_HOST is set on a big-endian host, the
-KBUFFER_FL_BIG_ENDIAN flag is added to the local flags variable instead
-of the kbuf->flags. Since the local flags variable has already been
-copied to kbuf->flags at that time, the KBUFFER_FL_BIG_ENDIAN flag is
-lost when we leave the function.
+The help message incorrectly listed '-t' as the short option for
+--threads, but the actual getopt_long configuration uses '-e'.
+This mismatch can confuse users and lead to incorrect command-line
+usage. This patch updates the usage string to correctly show:
+	"-e, --threads NRTHR"
+to match the implementation.
 
-Add KBUFFER_FL_BIG_ENDIAN to the kbuf->flags when
-KBUFFER_ENDIAN_SAME_AS_HOST is used on a big-endian host.
+Note: checkpatch.pl reports a false-positive spelling warning on
+'Run', which is intentional.
 
-Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
-Fixes: 5f2aa8497c5b ("libtraceevent kbuffer: Add SAME_AS_HOST for endian and size")
----
- src/kbuffer-parse.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Signed-off-by: Zhang Chujun <zhangchujun@cmss.chinamobile.com>
 
-diff --git a/src/kbuffer-parse.c b/src/kbuffer-parse.c
-index 71291adf0860b8392e6cfa0b0640c6472def422c..232d1688934a946e19f52886c2d25e4c73637b4c 100644
---- a/src/kbuffer-parse.c
-+++ b/src/kbuffer-parse.c
-@@ -247,7 +247,7 @@ kbuffer_alloc(enum kbuffer_long_size size, enum kbuffer_endian endian)
+diff --git a/tools/tracing/latency/latency-collector.c b/tools/tracing/latency/latency-collector.c
+index cf263fe9deaf..ef97916e3873 100644
+--- a/tools/tracing/latency/latency-collector.c
++++ b/tools/tracing/latency/latency-collector.c
+@@ -1725,7 +1725,7 @@ static void show_usage(void)
+ "-n, --notrace\t\tIf latency is detected, do not print out the content of\n"
+ "\t\t\tthe trace file to standard output\n\n"
  
- 	if (host_is_bigendian()) {
- 		if (endian == KBUFFER_ENDIAN_SAME_AS_HOST)
--			flags |= KBUFFER_FL_BIG_ENDIAN;
-+			kbuf->flags |= KBUFFER_FL_BIG_ENDIAN;
- 		kbuf->flags |= KBUFFER_FL_HOST_BIG_ENDIAN;
- 	}
+-"-t, --threads NRTHR\tRun NRTHR threads for printing. Default is %d.\n\n"
++"-e, --threads NRTHR\tRun NRTHR threads for printing. Default is %d.\n\n"
  
-
----
-base-commit: b3f5849527ae226b88342ef80fc42c66ab206f99
-change-id: 20251028-fix-parse-7395a8571b72
-
-Best regards,
+ "-r, --random\t\tArbitrarily sleep a certain amount of time, default\n"
+ "\t\t\t%ld ms, before reading the trace file. The\n"
 -- 
-Bastien Curutchet <bastien.curutchet@bootlin.com>
+2.50.1.windows.1
+
+
 
