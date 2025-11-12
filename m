@@ -1,35 +1,38 @@
-Received: from relay.hostedemail.com (smtprelay0014.hostedemail.com [216.40.44.14])
+Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDDDE33AD8A
-	for <linux-trace-devel@vger.kernel.org>; Wed, 12 Nov 2025 16:29:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E841D278161
+	for <linux-trace-devel@vger.kernel.org>; Wed, 12 Nov 2025 20:59:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762964999; cv=none; b=t7aodrLizcrjUwBKm5rN6h7LcO17A/DOrAuxWEs9jZPpZqei20brWs8TN9bpCPL7Ar3p8JODH6EyURFdJhxtYTdzz7C86BDWJNOrZjBEUJUdrlf5iEmYmA0YfuA/5Ol5q2txUHwMmQIrjD4RfSPcBlkR5nlp0J1Ta7OX4aul/D4=
+	t=1762981187; cv=none; b=cEsorMrfzRij3JsdLUcLxm4XARWNlV2uhcee8dMapqI1NWMGFp0+lOuLJ7AJeM/ZZq8dDx2PXA1U2rfRkzdgRtOMUwDnRpa7F9ODSUk1JjqKL3UrVNdtUx00vIf3QiuQSbPr1rC/SSqJDjwijSIstCIz+qXomW2c8Jk+88dThqM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762964999; c=relaxed/simple;
-	bh=5JQrpzKlgApWJPPxVffjQxH69yyEhSDOSJhnbB1Wupk=;
+	s=arc-20240116; t=1762981187; c=relaxed/simple;
+	bh=jJs4OBlbXCwLO2VSYD9cOyQ0Un1nfWr/Lu202ou7Zng=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=B0iVfyWiKSkcnBI7GVcJJoBQeKd/FXyPwv/thCC79/jmqq9xKFhnDMMJIM/2anWaGvRfElcDN0eEpvQk8znrv3+WTLeirYEgvU3IX3gUYwPe+8ttqBSoVvqT1KWVkPk2U/ujDJs/vcxPCwKchTTObUNgDAGGHITC0MaOaPQXhy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.14
+	 MIME-Version:Content-Type; b=dQUfEV072XQsVMfdQG7bydmqwuB9lc1m/YX4tp+PIYERBsNsRDAiaIh5ubWf72VupjTVcTJcfJahthRg4+IjWVzY4H2g+jPlx3/hu+c2X1gyMni+HgiKRhjqxOwRpPudU4eRUhzFnlg9ikE558KrJ7AacInr3A6tuxYaWvOpsQU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf11.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay06.hostedemail.com (Postfix) with ESMTP id 60F3B12DF3B;
-	Wed, 12 Nov 2025 16:29:50 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf11.hostedemail.com (Postfix) with ESMTPA id D6E052002A;
-	Wed, 12 Nov 2025 16:29:48 +0000 (UTC)
-Date: Wed, 12 Nov 2025 11:30:01 -0500
+Received: from omf12.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay03.hostedemail.com (Postfix) with ESMTP id 65AA2BA75C;
+	Wed, 12 Nov 2025 20:59:43 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf12.hostedemail.com (Postfix) with ESMTPA id 76E871A;
+	Wed, 12 Nov 2025 20:59:41 +0000 (UTC)
+Date: Wed, 12 Nov 2025 15:59:54 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
-To: Metin Kaya <metin.kaya@arm.com>
-Cc: linux-trace-devel@vger.kernel.org, Douglas Raillard
- <douglas.raillard@arm.com>
-Subject: Re: [PATCH v2 0/2] libtraceevent: Fix static library to hide hidden
- functions
-Message-ID: <20251112113001.3062caa9@gandalf.local.home>
-In-Reply-To: <494a7e7f-6878-471f-a69a-f418ef140305@arm.com>
-References: <20251112144912.268258-1-rostedt@goodmis.org>
-	<494a7e7f-6878-471f-a69a-f418ef140305@arm.com>
+To: Douglas Raillard <douglas.raillard@arm.com>
+Cc: linux-trace-devel@vger.kernel.org, Masami Hiramatsu
+ <mhiramat@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Takaya Saeki
+ <takayas@google.com>, Ian Rogers <irogers@google.com>, aahringo@redhat.com
+Subject: Re: [PATCH 1/2] libtraceevent: Add loading of BTF to the tep handle
+Message-ID: <20251112155954.234f00e5@gandalf.local.home>
+In-Reply-To: <82376535-30a5-4602-aac7-1bd3abcd271a@arm.com>
+References: <20250731185559.1644753-1-rostedt@goodmis.org>
+	<20250731185559.1644753-2-rostedt@goodmis.org>
+	<e74be108-7ca5-466e-a89a-512a80a11beb@arm.com>
+	<20250804084322.15b8c321@gandalf.local.home>
+	<82376535-30a5-4602-aac7-1bd3abcd271a@arm.com>
 X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -39,30 +42,33 @@ List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: D6E052002A
-X-Stat-Signature: kjzy6kjctd7qn5w3tso6dkzmb8mxrbpd
+X-Rspamd-Queue-Id: 76E871A
+X-Stat-Signature: ue6or37gd41hfn7sc3k7xadnkspzwaj7
 X-Rspamd-Server: rspamout06
 X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX192fzWyWgX5H7mn66giizU0LlGDlxypIkw=
-X-HE-Tag: 1762964988-843265
-X-HE-Meta: U2FsdGVkX19RsOKS5s006wjzV++nhiKjKCRgKs++gdY9Z7Wy30sNgBFhhiba16zmE0FhXQI+1TDoUFaZb5HY1SknHFIKvQHfdg4BIyEEG4GU+de0MZfv6uH6MdhCOkqLbwnRL5Ta7r5CcElF/6/LBhNClSOAsEXxScPne6UVlsPEGiXf89xDIo9lZsy2PPt4sfHwcGrFTpPT5DK1ZKiX7cBiwOSbeL7ViULSqHUKY21qVzw4p37t9hnSFQqjC9684Lv78Ao6FzmnzQIDxOmLvIY6Wum56W6l7PFR5JolT1xuENNIvA0nhk7P7Sa4CtRGHfgbU5ppxo7GKIqgnnQTMlSVramu+2gSN7dXWVT8fG9XfND6i3s5YUuLyBhcfS3/
+X-Session-ID: U2FsdGVkX1+dFXbpsIwei20AwAnx5mhsDeHrlK4Gq6E=
+X-HE-Tag: 1762981181-442248
+X-HE-Meta: U2FsdGVkX18bJOaeH0QcbUHRFfTiJe+KMIrQTh+y8meKJPLn8JOP/DPG1hGkPs3rq7yF7qO5mr+RheXJ5G17jN2/R3PansM5J7XaJkTnT3x59fXPKs5I27iEo+MOgFpg4vHdd/T9Ua8xtz/bHTHabwlviKvQy2jY/n7mIJTyXJ5g3qg4TgfjNv0rLoydhLEdZlYipZbZL6UbwSxz4C/TGJIO36ldGYY6MzSkemmX/m2O0RzcztByrO7uM0yr0m/0NxkB4U9z+kQ2Lt6ECnRAjY4Pk5ui6S+Eawh0M2WS3FWTJyz55N9/3rtjMiIFzgibXU+o/suBGSLMaASZLGLp6mD1ZlcwyPYcPEI6nj2rY6tGbCZx3ZHRkzOLqQOWExWLcUAVojbTLH6rTIIXpZ+/JCKKKj2BJEDqco1shtxDSZx5OlVkVzZUMw==
 
-On Wed, 12 Nov 2025 16:19:54 +0000
-Metin Kaya <metin.kaya@arm.com> wrote:
+On Mon, 4 Aug 2025 15:18:41 +0100
+Douglas Raillard <douglas.raillard@arm.com> wrote:
 
-
-> Tested the changes on my Ubuntu-25.04 (6.14.0-34-generic x86_64) with 
-> HEAD of libtraceevent, libtracefs and trace-cmd.
+> > 
+> > You meant to the "arg" passed in?  
 > 
-> Could build trace-cmd statically. Did not see any regressions in unit 
-> tests. Basic smoke test (e.g., trace-cmd record/report) looks fine.
+> Yes, something like that:
 > 
-> You can have my:
+>    unsigned long long mask = (1 << BTF_INT_BITS(encode)) - 1;
+>    unsigned long long shift = BTF_INT_OFFSET(encode);
+>    arg = (arg >> shift) & mask;
 > 
-> Tested-by: Metin Kaya <metin.kaya@arm.com>
-> Reviewed-by: Metin Kaya <metin.kaya@arm.com>
+> I suppose that how BTF_INT_OFFSET() is to be used depends on endianness, and I'm not
+> sure what is the endianness of the arg value. t->size would probably be involved as
+> well in the big endian case: https://docs.kernel.org/bpf/btf.html#btf-kind-int
 
-Awesome! Thanks,
+I implemented this and got a lot of BTF_INT_BITS(encode) = 0, where it
+would not print anything. Then I realized this isn't really needed. Isn't
+this for bit fields in a structure? How would bit size matter for function
+parameters?
 
 -- Steve
-
