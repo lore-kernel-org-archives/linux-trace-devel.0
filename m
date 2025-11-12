@@ -1,85 +1,127 @@
-Received: from relay.hostedemail.com (smtprelay0016.hostedemail.com [216.40.44.16])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 331C313DDAE;
-	Fri,  7 Nov 2025 01:00:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B0F5339717
+	for <linux-trace-devel@vger.kernel.org>; Wed, 12 Nov 2025 14:49:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762477248; cv=none; b=ByL8YePUWeNxpGhKyYxK6TDE2sI3/EBFc0T6QXm9eleHSa0dwqc1EBUAzecCdDKRKLJ69odjmUvgONF/H1PePI21mHna87fODh0ON2xBwH8C2vgx6cv9SoOh/DYhIwr0Z4vleyJGYBpyrJnM3OJoCnucUHeoU5QQeVPhqSyVbQ8=
+	t=1762958964; cv=none; b=LaoWDSCsS/4XJIlLUl5dGmqC1n3WnyRtIpWjVR22mQ4ReIjw48fuc4A5n7yAQSCPd9pMpH/QKGhqj3YnTKgL/qaOQbzU+tfgIH5Ble+xka/ceDqBPHsAfxuPzDUoQ/oLYmmF4/3ZlB+5xHvh8eqm4Hh40tyuNXEXnJioG/ZPPGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762477248; c=relaxed/simple;
-	bh=sh7WBtru3Ve4ZXDu5KJHFHzU7u/zFBNHXk6GubNn0cM=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=sLHk+nmPazB7LQgSxn4Xb7EeUgglL/j1IJyRVEPogjSkjS8K51BlgaiS8qdmHWu9Owg9Sg9bKS6QtornRGJD/KtxFgcf2HNuArah8/KBmvUccUmDVp+/XrNo9L/H3WzigvF53TPxG06ugDkWidovDPA9GoFmC2mYvk9A+ujZu3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf03.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay03.hostedemail.com (Postfix) with ESMTP id 03A48B8103;
-	Fri,  7 Nov 2025 01:00:43 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf03.hostedemail.com (Postfix) with ESMTPA id 523E560010;
-	Fri,  7 Nov 2025 01:00:42 +0000 (UTC)
-Date: Thu, 6 Nov 2025 20:00:41 -0500
+	s=arc-20240116; t=1762958964; c=relaxed/simple;
+	bh=AaJ6Xbu01vZ8bMSEqFtpGTP2KiCJOiOs150V4x1gAK4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=nm6gjzo+KjLzuLYtT7mp3fPg5DlDWqr+PvzDb6SIR7/L7WNAnpicTcTH/gFontbq5JAhbcdtuZJxYFI3to+40hGfwpyunATWhin3rwm/frxBtqPpRSS17z2Cm2JfU4Wejhm+hUEEF7t8fG/sjECYfjEiZZBf9AlmZjauZWeyxbQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9CA3C19422;
+	Wed, 12 Nov 2025 14:49:23 +0000 (UTC)
+Received: from rostedt by gandalf with local (Exim 4.98.2)
+	(envelope-from <rostedt@rostedt.homelinux.com>)
+	id 1vJCAD-000000017qi-1MPe;
+	Wed, 12 Nov 2025 09:49:37 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
-To: Zhang Chujun <zhangchujun@cmss.chinamobile.com>
-Cc: linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tracing: fix incorrcet short option in usage text for
- --threads
-Message-ID: <20251106200041.6f21af65@batman.local.home>
-In-Reply-To: <20251106031040.1869-1-zhangchujun@cmss.chinamobile.com>
-References: <20251106031040.1869-1-zhangchujun@cmss.chinamobile.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+To: linux-trace-devel@vger.kernel.org
+Cc: Douglas Raillard <douglas.raillard@arm.com>,
+	Metin Kaya <metin.kaya@arm.com>,
+	"Steven Rostedt (Google)" <rostedt@goodmis.org>
+Subject: [PATCH v2 2/2] libtraceevent: Have meson build rename hidden global functions
+Date: Wed, 12 Nov 2025 09:45:07 -0500
+Message-ID: <20251112144912.268258-3-rostedt@goodmis.org>
+X-Mailer: git-send-email 2.51.0
+In-Reply-To: <20251112144912.268258-1-rostedt@goodmis.org>
+References: <20251112144912.268258-1-rostedt@goodmis.org>
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Stat-Signature: fkwyknonz573muhmqpiy81nr7nkjffoh
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: 523E560010
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1/jEbCTWv8sOAs3tljn2A8eHKTvwyf3lN4=
-X-HE-Tag: 1762477242-133882
-X-HE-Meta: U2FsdGVkX18++BX9ei/tNc2mAiu3nJAyP/S4+Eiwr08YNaBV07EJf3X2Jg3AxucuBvoUvUSzaiBNxbw8UR/CGOwwieegyNT7tbvCIuysFMQ0leUJ641Jf0ZrN576kJomVXVxDbfu4RqAgFy/OOiaddaNRCI7As0Fpk1NBF1os4FADo+3RHAWMvnBP7OE2epeaxYxJPH5HMec+Es5mdakWbLr8NiNKdbgyyqQSEXXBJvJ/9g8bv4EuJS4IuprXS/+kfOYicJlf2zMsbCH/JBK9VfVBx3F55sYtdnrtbm8Onte4G9ALmCO35hnufAqsC5SAdbOeR0Kycmj4ydYpJmDpDfggTn4GyDJ2Btx6jDBhf+kkwNlhO27JA==
+Content-Transfer-Encoding: 8bit
 
-On Thu,  6 Nov 2025 11:10:40 +0800
-Zhang Chujun <zhangchujun@cmss.chinamobile.com> wrote:
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-> The help message incorrectly listed '-t' as the short option for
-> --threads, but the actual getopt_long configuration uses '-e'.
-> This mismatch can confuse users and lead to incorrect command-line
-> usage. This patch updates the usage string to correctly show:
-> 	"-e, --threads NRTHR"
-> to match the implementation.
-> 
-> Note: checkpatch.pl reports a false-positive spelling warning on
-> 'Run', which is intentional.
+The meson build needs to perform the same operation as the normal make
+build with respect to global hidden functions within the static library.
 
-I'll pull this manually, but you sent to the wrong mailing list. It
-should go to linux-trace-kernel@vger.kernel.org and not
-linux-trace-devel. That's for user space tools that do not live in the
-kernel proper.
+Move the redefine_local function to utils.mk and have it take a parameter
+for what shared library it will read to find the global functions with.
+Then separate out a target in Makefile.meson for the static library to use
+this helper function to rename the non "tep_*" global functions to have a
+"_tep_local_*" prefix.
 
--- Steve
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ Makefile.meson   | 15 +++++++++++++--
+ scripts/utils.mk |  5 +++++
+ src/Makefile     |  7 +------
+ 3 files changed, 19 insertions(+), 8 deletions(-)
 
-
-> 
-> Signed-off-by: Zhang Chujun <zhangchujun@cmss.chinamobile.com>
-> 
-> diff --git a/tools/tracing/latency/latency-collector.c b/tools/tracing/latency/latency-collector.c
-> index cf263fe9deaf..ef97916e3873 100644
-> --- a/tools/tracing/latency/latency-collector.c
-> +++ b/tools/tracing/latency/latency-collector.c
-> @@ -1725,7 +1725,7 @@ static void show_usage(void)
->  "-n, --notrace\t\tIf latency is detected, do not print out the content of\n"
->  "\t\t\tthe trace file to standard output\n\n"
->  
-> -"-t, --threads NRTHR\tRun NRTHR threads for printing. Default is %d.\n\n"
-> +"-e, --threads NRTHR\tRun NRTHR threads for printing. Default is %d.\n\n"
->  
->  "-r, --random\t\tArbitrarily sleep a certain amount of time, default\n"
->  "\t\t\t%ld ms, before reading the trace file. The\n"
+diff --git a/Makefile.meson b/Makefile.meson
+index 71d6bf36c654..28c307ff6d9f 100644
+--- a/Makefile.meson
++++ b/Makefile.meson
+@@ -16,17 +16,28 @@ endef
+ $(call allow-override,MESON,meson)
+ $(call allow-override,MESON_BUILD_DIR,build)
+ 
++include $(src)/scripts/utils.mk
+ 
+-all: compile
++LIBTRACEEVENT_SHARED_MESON = $(srctree)/build/src/libtraceevent.so
++LIBTRACEEVENT_STATIC_MESON = $(srctree)/build/src/libtraceevent.a
++TEMP_MESON = $(srctree)/build/src/.tmp.libtraceevent.a
++
++all: $(LIBTRACEEVENT_STATIC_MESON) $(LIBTRACEEVENT_SHARED_MESON)
+ 
+ PHONY += compile
+ compile: $(MESON_BUILD_DIR) force
+ 	$(MESON) compile -C $(MESON_BUILD_DIR)
+ 
++$(LIBTRACEEVENT_SHARED_MESON): compile
++
++$(LIBTRACEEVENT_STATIC_MESON): $(LIBTRACEEVENT_SHARED_MESON)
++	$(Q)objcopy $(call redefine_local,$(LIBTRACEEVENT_SHARED_MESON)) $(LIBTRACEEVENT_STATIC_MESON) $(TEMP_MESON)
++	mv $(TEMP_MESON) $(LIBTRACEEVENT_STATIC_MESON)
++
+ $(MESON_BUILD_DIR):
+ 	$(MESON) setup --prefix=$(prefix) $(MESON_BUILD_DIR)
+ 
+-install: compile
++install: $(LIBTRACEEVENT_STATIC_MESON)
+ 	$(MESON) install -C $(MESON_BUILD_DIR)
+ 
+ docs: $(MESON_BUILD_DIR)
+diff --git a/scripts/utils.mk b/scripts/utils.mk
+index 7139088fbec2..7cd7355b811f 100644
+--- a/scripts/utils.mk
++++ b/scripts/utils.mk
+@@ -180,3 +180,8 @@ define do_install_pkgconfig_file
+ 		(echo Failed to locate pkg-config directory) 1>&2;		\
+ 	fi
+ endef
++
++# Make all global functions that do not start with "tep_" have a unique name.
++redefine_local = \
++	$(shell for f in a `nm $(1) 2>/dev/null | grep ' t ' | cut -d' ' -f3 | sort -u`;  do \
++	 if [ "$${f#tep_}" = "$$f" ]; then echo --redefine-sym $$f=_tep_local_$$f; fi; done)
+diff --git a/src/Makefile b/src/Makefile
+index c9e8498c2d05..169bc6af1cbc 100644
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -18,13 +18,8 @@ DEPS := $(OBJS:$(bdir)/%.o=$(bdir)/.%.d)
+ $(bdir)/%.o: %.c
+ 	$(Q)$(call do_fpic_compile)
+ 
+-# Make all global functions that do not start with "tep_" have a unique name.
+-redefine_local = \
+-	$(shell for f in a `nm ${LIBTRACEEVENT_SHARED} | grep ' t ' | cut -d' ' -f3 | sort -u`;  do \
+-	 if [ "$${f#tep_}" = "$$f" ]; then echo --redefine-sym $$f=_tep_local_$$f; fi; done)
+-
+ $(LIBTRACEEVENT_STATIC): $(bdir)/.tmp.libtraceevent.a $(LIBTRACEEVENT_SHARED)
+-	$(Q)objcopy $(call redefine_local) $< $@
++	$(Q)objcopy $(call redefine_local,${LIBTRACEEVENT_SHARED}) $< $@
+ 
+ $(bdir)/.tmp.libtraceevent.a: $(OBJS)
+ 	$(Q)$(call do_build_static_lib)
+-- 
+2.51.0
 
