@@ -1,317 +1,187 @@
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
+Received: from GVXPR05CU001.outbound.protection.outlook.com (mail-swedencentralazon11013036.outbound.protection.outlook.com [52.101.83.36])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93C4F1E0B9C;
-	Sun, 16 Nov 2025 21:13:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763327588; cv=none; b=tYvWhMGWMZRCCcgcXD617VGguADA+jCaalE9M9gQtm6KJT9ZUNECPzBAbXu1olL4WSEiG1nHRDcExqtoY9lbLRihkTtQOSA79ruQX8zFPBNkKpZSFkm/yFPwiOA+LLPYquTxwypM7tV4eLQvSf2yD/W0Lqs8P3xJOXYvA/BbcvE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763327588; c=relaxed/simple;
-	bh=fruUb+yIT8K1tNDPTPjtcTHpDHX6llvYmwp6arpEJhk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pc7TRVJYTNTFIijRjv6OCyifBsVbLpTjcMXWEMq3C4kq8SDRchvjpAyYxCDuhOuliT3mTBQhI4C8hWCyMdBE/IBBLFZLnR9aNoUTa7aniif4c/3yR1Cmf8xNFwiGcjR5C3UHJhM31MB9PNHB41KSctYh/Fp8f2BixMol+AEAisA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org; spf=pass smtp.mailfrom=mailbox.org; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=vvWcfMHD; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=UD3IX1x/; arc=none smtp.client-ip=80.241.56.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mailbox.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C566430DEBF
+	for <linux-trace-devel@vger.kernel.org>; Thu, 20 Nov 2025 12:24:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.83.36
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1763641463; cv=fail; b=Nst3PR6y6rtPAkv6qAdrZ1z6JFi6SMtCijVFWObV+fQ4gTHHR40elvAn/mtKlfnGBKcd7pTi+bdxX2CN/JS/D8uAKmgdvk9RZ4il6mm397r8fG37oVXqJcmr3GfdnNndGc61tMDuyvlnVF5UKkfoLI6VyBA9/EdX9mrZ2fc4IzY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1763641463; c=relaxed/simple;
+	bh=vXYUj0AOJ7apr08m/GjoPlUVeU1pkVxY1DpYrKBcx7A=;
+	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=G+UXKbWDrJHlBqU4futi30nSs0g73O4fP2eY5ciRljrHmU4qxnSYPPleTYpvrteKAfCIXeJNVLPu4K0KxOnGxaBFIj77iP1MVWLIqiaRrzaUV9zvRf92GqqeP22ejreSE7mVs3oXhOgXBNweizPkj0Xf/JXuS4IScdG33xUPBrc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com; spf=pass smtp.mailfrom=siemens.com; dkim=pass (2048-bit key) header.d=siemens.com header.i=@siemens.com header.b=uL0zBwG5; arc=fail smtp.client-ip=52.101.83.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=siemens.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="vvWcfMHD";
-	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="UD3IX1x/"
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:b231:465::202])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4d8jyx6g5tz9tjn;
-	Sun, 16 Nov 2025 22:03:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-	t=1763327018;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=8LaLvXISIknqjod/3CsBFa6XWWioHDWRs4VCwqkyOE4=;
-	b=vvWcfMHDNbJrHIxmWjShI/NqPUI7WOF97/1kKntlH5HXy6132xHqymUQYL9L0acVRumTUr
-	1SIpBWZhRW0bFOHy8aZ4hbouoQ0pOw/IbmHVxV5HZ0Z1W2M9gkqhwdWTgWpG9AVd8+0LtX
-	Gq2p6NjppwzGzSzX6Ljf7Ai9rnmodACivlsPzX/7fXWsCqztpbiK6qqBDLCo7Wm2rHgLtW
-	dK56gQNOWXIl4SBynbEuC7aTSxKC4rEQjYQCkPrkIVBfvGcP20tM33wEl7SgviAKSP6u7N
-	PlX8csGRwxGx/V+M8gyu8VQbvrsfCFB8A8bGCYDYfkW+DNUdLd6JUP25vad+Pg==
-Authentication-Results: outgoing_mbo_mout;
-	dkim=pass header.d=mailbox.org header.s=mail20150812 header.b="UD3IX1x/";
-	spf=pass (outgoing_mbo_mout: domain of mhi@mailbox.org designates 2001:67c:2050:b231:465::202 as permitted sender) smtp.mailfrom=mhi@mailbox.org
-From: Maurice Hieronymus <mhi@mailbox.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-	t=1763327017;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=8LaLvXISIknqjod/3CsBFa6XWWioHDWRs4VCwqkyOE4=;
-	b=UD3IX1x/dis4d1BM9SoQmgCRROkr7xZeG58tNPznxYECHO5D0ddxzu8hplHBIHvoCSytZI
-	MXNCCluE9tQUXDcnwubWCNGgnYHZ3XyQUGlJf+HJ23RkAN/yEqJnar5wdokLrUxIQHTRgG
-	ybmeqwNe/7xDAwXv6wzDVTCqdubn4qFkRyz11lXRPwBFJ3B37F4QfPfjc/d6261K1SdHnZ
-	7y/u61wcKSExLc2J0UXdOanykjzMYkimUMWbUXcFXwwHYIBd2EUY7b8wDGYpv9rxRbtP7j
-	0uF4SBB1DV+rhozuPBaJrHcidw3x7NtUtQl3gaD3XlLGY+bHM4juCNnPUxNTew==
-To: rostedt@goodmis.org,
-	mingo@redhat.com
-Cc: bristot@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-trace-devel@vger.kernel.org,
-	mhi@mailbox.org
-Subject: [PATCH] tracing: Fix several comment spelling mistakes
-Date: Sun, 16 Nov 2025 22:03:02 +0100
-Message-ID: <20251116210302.141405-1-mhi@mailbox.org>
+	dkim=pass (2048-bit key) header.d=siemens.com header.i=@siemens.com header.b="uL0zBwG5"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=lK9cFW5nzcfESjdn2OP9NHp8/ddLN8HypCfRsnKIEJ4UHPuACp4biZDF04wEe30NweuLBkLA4dERP94SZVMhy15m9fPO0ZTgVDTcZgOhy0M5OY5qMunNfktZ5KYOtwQFzjxILy+4mTnGSLaC0dEoksChAM4vqdLf3ahmwA9Vg5Pk+0xCZjvfGF+oIkL/vWMy9frMFaxq1ldCcz+SMdH4YYobLjFwccILcGINWumm77th4Wsy3ANw8MKXbux/mU9NUs9w35ac7irw5QisXIsUSemRDjySymTe+OvX7R0lfW5qa/5/22MrbrS+S6gH01POtrwnihdZ8jiYagAYWPglTQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vXYUj0AOJ7apr08m/GjoPlUVeU1pkVxY1DpYrKBcx7A=;
+ b=gYsdKofFjakPjK7cj8B/uBvMB3FjyACwXQCPIDQCZ4UqSnLgwrsLu9hcjLAwDsEkh/C47rQUx6tRNqkNYLLUEqSpCZXpuzF72VBCdHYaqV3Q9DWHMRdpjzJeoKmwOASBN1eZWDbVZknpEc9CbEGhVzzw0nRjiErPmXwG/6cKcLJhVC42WNaLPK2cnyWwcQY3ztIeFMYmntVP/NfCotOuDBD5bTBsw8avkJ9rF4RKz+WCQVknwb43HpPTs1YcpMI1SQNXyEFxDSkyGGoFk8o56zzx3dH3bJSOWILTKHk/zz0jTJAtBUpbYQF8/8NUKFI2l8mGy2n6nhXEpZQ3hoOrzw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=siemens.com; dmarc=pass action=none header.from=siemens.com;
+ dkim=pass header.d=siemens.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=siemens.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vXYUj0AOJ7apr08m/GjoPlUVeU1pkVxY1DpYrKBcx7A=;
+ b=uL0zBwG5ni/Vs4ylnKccrRKw5ktq4AVm12lm8KExii0ghOHqKoEGHw4pIdbEfXCH9g87+KSwJxroJVCPHkw748kxpAtJ3rgzYG/j3KvjA7HxehZd6LXKPV+Dii0jQjVWpg8JWWSNWsuSe31ou8UyMVmvzL30NyiDomEvEFaenumYqyYoDrceK532q9yNwuhxdPecKC1fYbLsADcc7dJZydu7dQKX/VwXMloQr5bqjHUTk/tFs4yBpZiA0bezousExQwv6B/jNbbffEozR2oMdIM2bWf8jLhA5HSlIDHwaMhz+bYUfYg0f2G0zZt+C6VaiJSSqMDZR8vJ71QIWRj52A==
+Received: from DU0PR10MB6828.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:47f::13)
+ by GV2PR10MB9656.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:303::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9343.10; Thu, 20 Nov
+ 2025 12:24:18 +0000
+Received: from DU0PR10MB6828.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::8198:b4e0:8d12:3dfe]) by DU0PR10MB6828.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::8198:b4e0:8d12:3dfe%4]) with mapi id 15.20.9343.009; Thu, 20 Nov 2025
+ 12:24:18 +0000
+From: "MOESSBAUER, Felix" <felix.moessbauer@siemens.com>
+To: "linux-trace-devel@vger.kernel.org" <linux-trace-devel@vger.kernel.org>
+CC: "Kiszka, Jan" <jan.kiszka@siemens.com>
+Subject: libtracecmd API extensions
+Thread-Topic: libtracecmd API extensions
+Thread-Index: AQHcWhiXNKfmgiYgakarPgqIPdEdDw==
+Date: Thu, 20 Nov 2025 12:24:18 +0000
+Message-ID: <ee6cc8b90fb0d71f412645d7671b7130d72fecc2.camel@siemens.com>
+Accept-Language: de-DE, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Evolution 3.56.2-7 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=siemens.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DU0PR10MB6828:EE_|GV2PR10MB9656:EE_
+x-ms-office365-filtering-correlation-id: c61c323e-bc87-4e7a-0da7-08de282fba58
+x-ms-exchange-atpmessageproperties: SA
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|366016|376014|1800799024|38070700021;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?VUtaek1SOU1uNFBka29CZ0h0ci9PUmpWZHZTeS9YME9pVzRlSjFFWjZDNUdj?=
+ =?utf-8?B?ZEdIQUZvMEFBZnBXS09EZnU5azRQdFg4NVFyTm02V2kxd2Zxd2svdldtaXln?=
+ =?utf-8?B?VjBPREFUTG5BS2xMT011Z0FTeUNTVkNDQWM1TGcxRVZKQjIyV0RQT01CWEVu?=
+ =?utf-8?B?cXRvK1pyY0JqaVZqUVhTSnJMY0MwOEJNWVEyL1QzNG5mTmIyZTdTRkY4SXVi?=
+ =?utf-8?B?Uk5yck9hQi83OW16WFVxTjRtNlFIRDVJNWE1Yk9KNzU3dnEwdVZtMjJLK0Nm?=
+ =?utf-8?B?dkErTDh4U0FmTko5UmN4dUlHNkIrR21GeGVqakkxZGt6UUhIUk9ieXpMd3Zn?=
+ =?utf-8?B?c2NvcXl1QklwRWJBekRGdDNyM0prUjgvVUI2Z2VrR3I1cnpQSW9KZFBUNGRB?=
+ =?utf-8?B?aExDL3djbFg5cmxuVUhmcHBaVUYxeHZEWHpFdUgvNHl0bHdjNi80UFo5eXRQ?=
+ =?utf-8?B?Mm1HMlBWb1JBSjNpclpROVg3cGMyOEtxdXUyOXBSUEFMaU81RFdTQ1h5Mm45?=
+ =?utf-8?B?SXpKcTkyYWUrTVBSYWVJZlp6dnVJcjB4S1pacytkL0lmajNEK1dQSWZYSUdU?=
+ =?utf-8?B?d09DRE90OTZRWWJXQkd6bk9kQWo4dy9Pd3pqRm4vU3dGWGkzd003b0xDb1Ju?=
+ =?utf-8?B?M2NrUld0NXRNKzV5dFZNWHkrQUZkQkJFUmZ6b3h4NzJmeVN1OWNta3Q5NS9F?=
+ =?utf-8?B?YVFUbmUxYlVlVlk4SVNKQ3NmZTBjK0F3YUFXMHQ2bmFDc2pGbHFSNHhhcVVI?=
+ =?utf-8?B?Ui9VUHFtRERxMUZIbUdvaVFkMklsMGhHMWtSYS9RN3IreSt3NWEzS2RmQUl2?=
+ =?utf-8?B?TkNGWWI2VGduS0V1NTFJbC9pOUROTFF5YXVQY2JFMkJFK1F2UHc5bUNQYTBO?=
+ =?utf-8?B?MUNyWUE4VVBZVG1NaXBPbHV1cFFxalhVdHFtR1BPYTBSMEVHYjNwWWt2MG9E?=
+ =?utf-8?B?RW9ZV1ZaN2ZoZFFqSTdML3Nhd2wwakp1eEpiSUtQa3RpL1ZMRm9SaURYTXZP?=
+ =?utf-8?B?UmxmRzQ3OTl0U0RsSDFYWjVReGJlS2ZIcGVMbmdrZ1ZtUW5qaXh0YzIyZno0?=
+ =?utf-8?B?aTJpbVZpSTFVQ21rYWZUM1IzQXJvaGc2eGZMczJpRFZzT3d0V2NocDlXRjE4?=
+ =?utf-8?B?dEx1MW8vWEFqM3FrMjlLS1V6OGlJMzdhS0poUFltWlZqV2xMaWQra0VUK2VC?=
+ =?utf-8?B?OWNPZ0lNTEI4QWFUeXpRQTB6LzI3cml5NDRHM082L09NSEVCL0luM1NjWlBB?=
+ =?utf-8?B?a0o1N1g1QjUzS0NxUVA5VkxCOXZMb2Y1cUJqclVvbzBhaVpsQXRvNDJaRksr?=
+ =?utf-8?B?R212eklkS0VkTVJwZjVWQmhzeXcxd3o3Z2tBQWszellQdVFXUUtaSlQ1akpW?=
+ =?utf-8?B?ZGJLbXZyMCtVYk5Ca1hZMXhRaGxmQmc5ekhIQU9JVmZZRCtKTndDMWxBUW9h?=
+ =?utf-8?B?ZjU0S2ZvMHVVbEJXT1JXdWFlWjNHb1RnM2VTNTEvRnZJQnZSMTRDTk5wY2F5?=
+ =?utf-8?B?UGRxVFpaNElEQmdsNFpZeW01dkI3SGJhaGh4YklMRVN4M2lCQUVLaUdVSUVz?=
+ =?utf-8?B?MGJuUHNiNFZYd0lYZUZXMGdMZisxQ2lVRGk4OHFJYVoyRW1IdzBDbkJQeHJo?=
+ =?utf-8?B?clV0U2UrTTZKeTFCV3U0OG5MdmFQR3ltTGxvQVVRbGUzeFZDdjdTZmthdWVQ?=
+ =?utf-8?B?SUtTUUw0UkJlNmlWS1Z4Y2pzcW44YTh1UzFDSk5WN2U2YmNGWGxqUHI1d1Jo?=
+ =?utf-8?B?M1pWNlRIZmpVQ0xDLzZ5L1d6cGN0NFk4SmN2MjRlNklpTHhISndXL3RraFoz?=
+ =?utf-8?B?WktMWGszR1RmR2hqaFhYTzNQcnpOSkZiM3BVeG1CaDlvVTBrYlFvUk9jZXZt?=
+ =?utf-8?B?RUcxdEZOWDVSV1U1a1FOeWgrYkEzYTdYaWYvMFowZjZ1YWNkdjdSVURTVEF5?=
+ =?utf-8?B?OGUvb1dRQXR4Yk9oVjRrSzB5OXExbldWQ0hGL2xMUzkyaytpd3dla1I0UitO?=
+ =?utf-8?B?UkJ0UEgyUXVqR1cyN0hWb3ozUWFrZ2hDU3VoS3FWelZNMFhMSzg2T1ljeGhE?=
+ =?utf-8?Q?ybqary?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR10MB6828.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024)(38070700021);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?YkdnVGowRGhQUVpBd1NBaEo1ajRrSm1Gd2FJMS84ZkRpamFhRTE1ejVSM3Ur?=
+ =?utf-8?B?ZFJmZysvUHF0OFVBMTJpbmtSRnVma0txS1hsRmtsZm9qZWorbHJUZE9qRG1J?=
+ =?utf-8?B?NUlTZ3dDa0NkT3lWLzhkdHgxN3VreCtCWGdHRU90T0FRMWNZdXJvYTdyRHFY?=
+ =?utf-8?B?bVVVMmFJTkRQWjBKRGJVSi8wdzg5S0dwTGk4RGhsalhmYmNoWWV5ZnJKaTVv?=
+ =?utf-8?B?UlRBY0EwUHBlTTU2eWRSaUFKWld2SUtsMmhNYzEzZ09PYXhHRFYwWVBONXZ6?=
+ =?utf-8?B?SEt3eU5MRGxTZTR6L0tvZVdBTVM5NERHMmFXNnFlRHJ2SW5oeWc3NkZkcS9I?=
+ =?utf-8?B?MGNZMVU3WGNpYjI4TEpsWmQ0bDUzbWxmVGNiN3duU3dTT0ZXYUxvbmZoV2pv?=
+ =?utf-8?B?aWdhakhqUi9SUWIzL0pjQ1FQTVJkSC84WVBoTHExSmZCMk50WnpGUmJ4dk9R?=
+ =?utf-8?B?THlBYW9Xbm5DWXY0OUY2SEgxN1lUaTVnVi9yUC9zQnlVMHpRV0R2U25oQ1pK?=
+ =?utf-8?B?bFhrTEViVCt2OCtwcEVjTW1NV3EzT3VnUTZwb1g2eTZMNC91QWdOeWw2eGRI?=
+ =?utf-8?B?ZjcyVlVGTHZRaGZ0TXJFTGVHZFM0MDA5bVJyL2dHSlBLT0Y2c2phdVdUcTZB?=
+ =?utf-8?B?cnVVOHR5SnBNb3phbS8zN1U1d2ZKcWFTQnFkN29ra04vY0Q2Y1N0d3BRZ3VD?=
+ =?utf-8?B?MXlneEt6empPNGhzZ2ZZOWllcEVTY3NpMnRWZ0x1WHJNTFJlUTN3c0xITmVX?=
+ =?utf-8?B?ekV5eEV2aUFHWFR5SzBpbnlFc2xOWTJOUEw4aDFtVnBTVG54Sjg1YWUzeXI4?=
+ =?utf-8?B?NDdzRnRncW45cE9ZVTRpZUJkb3dVVjJWNUtDUi9OSlZ1RVpoZHNQd1JkT3gy?=
+ =?utf-8?B?clllZzFiS29xckZTamZ4QWVUZW9KYVY3TVppRXRaZU5RSVhvWG1pOTFRK1dZ?=
+ =?utf-8?B?U2pJRUROVlNwZEYyNWxjVUpRM2t5bmZ3SHFWdW03N25tbmhXR2tEVk02VUNh?=
+ =?utf-8?B?VGErZjdxa3RFYmhlTVpBZEhLbHVUVGxuM3lRelZCWmhPVGRadkNXNzkxYW8x?=
+ =?utf-8?B?RTQzeTN2TDBGQjVaczF3bzB5Sm9JM0VmcG8rUW9LK1pkaWgxSGdCNDRHMVps?=
+ =?utf-8?B?emFMOHE0d3FRcmNJazdTYWNpYndoR1Nsa1M3UDRyL051WDNJMzExeDB5Qm1l?=
+ =?utf-8?B?OTNLVExoQkhXOEpiM3l2Vkh6ZDJRS0J0SVBRZ1pUajBVWW9QQjNlL2dpTEpF?=
+ =?utf-8?B?WjNkSTdDTmFQVEdnMDZhRTVaSklzcDd3bWxlNUlFbDZ3bWNsMmEvM010TnpK?=
+ =?utf-8?B?M3Rsc2xwMkQwbXJGcEZMTUN0bEE1SjJxdnkxLzRVbGRXdDhqeHVQMVYwZkJD?=
+ =?utf-8?B?TUNSRW8zYzVLNUNzWmYzZ0YyREhjc01Ya3VaS08veUxBWVQ3a0pFMDBOdXdn?=
+ =?utf-8?B?Qnd6aU94dnZubEtqa3Z6ZmJicHlEaVMxeGdRMWpTZVppMDB6eWp0VlpGbDQ3?=
+ =?utf-8?B?UDZERFpFTmJOZm1yTmtFY1hBSGwzQlNKNDlNaDc1ZE12MEg5OGUrUnhjc0lK?=
+ =?utf-8?B?MWlJUGVUMnlxeXRET1N6Zm9DUnlkTUtCdG95cmFRNlMxM0YwYjV2MTlUZlhI?=
+ =?utf-8?B?bUdqRHhpeW10ZEtvZW9xM1VCUlN0L05oWFZnbllQOGhCV0ZtcjUxNzhJbjhN?=
+ =?utf-8?B?TEFzY0dEUVBRazN0eXFyUXlmZEV5ZHE3cFB4MWxEWmZVY0JIaXJhSWJzNnkz?=
+ =?utf-8?B?Ymwra1Z1c0RoK3B1a3JsbzVpbEcySWhEbkNRWWE3TTJVSjU1NDR3YmEwTUNP?=
+ =?utf-8?B?bUpCcVZiT1pMQmtHNW5VZ2hXVGs1VVQrcU9WNDBWOXJ0bXJ6dXcvNnVkK0Jq?=
+ =?utf-8?B?Z0NhM0NxbWlyanhwaTF1MmhBakZ2MStKbVVaODMxQ0dRWEVxMUFUQzN4ejZC?=
+ =?utf-8?B?bFFtcGZmcS9tTlhrTnNmbW5yK1grNFYvTzJlUUQ4RFNzY1pJT3JiOGtBejFs?=
+ =?utf-8?B?ajN3QnRpc3pMbDExdmpUVkJwcmZxZTl0Z2tqMXlLQy9wNmkwNzRQNUpuTmFF?=
+ =?utf-8?B?MWxUdlBVa1RIYlI5QStoU3g2Vi8rTmdiWkVJVklBUW5mTk1DLzBLeHJXNEVR?=
+ =?utf-8?B?UWhCa0N5S3BlSnp6UlhKMTZpaXI5L1ZsZ0oyNGh0VytyTVhpVVhRY0hKRHZW?=
+ =?utf-8?Q?jclyCVfoxVf/SeSqRxBQR3k=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <FAABC5235E308C4DA7219E8DEFEF78F8@EURPRD10.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MBO-RS-META: bnuu4p8imo1zt6zdwk1gp1i8s7kzxgnm
-X-MBO-RS-ID: 95da841af65d2bfab9b
-X-Rspamd-Queue-Id: 4d8jyx6g5tz9tjn
+X-OriginatorOrg: siemens.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR10MB6828.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: c61c323e-bc87-4e7a-0da7-08de282fba58
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Nov 2025 12:24:18.7409
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: rYoHSFsFe33UZ+qkY6bK56NDOhpuiu2mnoL2kqD5yOvoJ6B4fLRPRmoDCk8Xc/C3ws1HY8+MCHGMcM6HItIrxrhHELtPNxuYtvM5a3mduYg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV2PR10MB9656
 
-Fix several spelling mistakes in comments in the trace subsystem.
-No functional changes. These fixes improve readability and correctness
-of comments in the tracing subsystem.
-
-Signed-off-by: Maurice Hieronymus <mhi@mailbox.org>
----
- kernel/trace/Kconfig                 |  2 +-
- kernel/trace/ring_buffer.c           |  2 +-
- kernel/trace/ring_buffer_benchmark.c |  2 +-
- kernel/trace/rv/Kconfig              |  2 +-
- kernel/trace/rv/rv.c                 |  2 +-
- kernel/trace/trace.c                 |  2 +-
- kernel/trace/trace_events.c          |  2 +-
- kernel/trace/trace_events_filter.c   |  2 +-
- kernel/trace/trace_events_trigger.c  |  2 +-
- kernel/trace/trace_events_user.c     |  4 ++--
- kernel/trace/trace_osnoise.c         | 16 ++++++++--------
- kernel/trace/trace_seq.c             |  2 +-
- 12 files changed, 20 insertions(+), 20 deletions(-)
-
-diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-index 1052126bdca2..87bc271c0b9d 100644
---- a/kernel/trace/Kconfig
-+++ b/kernel/trace/Kconfig
-@@ -918,7 +918,7 @@ config RING_BUFFER_RECORD_RECURSION
- 	default y
- 	help
- 	  The ring buffer has its own internal recursion. Although when
--	  recursion happens it wont cause harm because of the protection,
-+	  recursion happens it won't cause harm because of the protection,
- 	  but it does cause an unwanted overhead. Enabling this option will
- 	  place where recursion was detected into the ftrace "recursed_functions"
- 	  file.
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index d59b6a328b7f..74f8143dda8a 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -5966,7 +5966,7 @@ static __init int test_ringbuffer(void)
- 	/*
- 	 * Show buffer is enabled before setting rb_test_started.
- 	 * Yes there's a small race window where events could be
--	 * dropped and the thread wont catch it. But when a ring
-+	 * dropped and the thread won't catch it. But when a ring
- 	 * buffer gets enabled, there will always be some kind of
- 	 * delay before other CPUs see it. Thus, we don't care about
- 	 * those dropped events. We care about events dropped after
-diff --git a/kernel/trace/ring_buffer_benchmark.c b/kernel/trace/ring_buffer_benchmark.c
-index 78e576575b79..62a3d26e591e 100644
---- a/kernel/trace/ring_buffer_benchmark.c
-+++ b/kernel/trace/ring_buffer_benchmark.c
-@@ -431,7 +431,7 @@ static int __init ring_buffer_benchmark_init(void)
- {
- 	int ret;
- 
--	/* make a one meg buffer in overwite mode */
-+	/* make a one meg buffer in overwrite mode */
- 	buffer = ring_buffer_alloc(1000000, RB_FL_OVERWRITE);
- 	if (!buffer)
- 		return -ENOMEM;
-diff --git a/kernel/trace/rv/Kconfig b/kernel/trace/rv/Kconfig
-index 831779607e84..b76ba1aad0a0 100644
---- a/kernel/trace/rv/Kconfig
-+++ b/kernel/trace/rv/Kconfig
-@@ -45,7 +45,7 @@ config RV_MON_WWNR
- 	help
- 	  Enable wwnr (wakeup while not running) sample monitor, this is a
- 	  sample monitor that illustrates the usage of per-task monitor.
--	  The model is borken on purpose: it serves to test reactors.
-+	  The model is broken on purpose: it serves to test reactors.
- 
- 	  For further information, see:
- 	    Documentation/trace/rv/monitor_wwnr.rst
-diff --git a/kernel/trace/rv/rv.c b/kernel/trace/rv/rv.c
-index 6c97cc2d754a..d523accb1cbd 100644
---- a/kernel/trace/rv/rv.c
-+++ b/kernel/trace/rv/rv.c
-@@ -41,7 +41,7 @@
-  * per-task monitor, and so on), and the helper functions that glue the
-  * monitor to the system via trace. Generally, a monitor includes some form
-  * of trace output as a reaction for event parsing and exceptions,
-- * as depicted bellow:
-+ * as depicted below:
-  *
-  * Linux  +----- RV Monitor ----------------------------------+ Formal
-  *  Realm |                                                   |  Realm
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index d3005279165d..55b99081ce4e 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -124,7 +124,7 @@ cpumask_var_t __read_mostly	tracing_buffer_mask;
-  * If there is an oops (or kernel panic) and the ftrace_dump_on_oops
-  * is set, then ftrace_dump is called. This will output the contents
-  * of the ftrace buffers to the console.  This is very useful for
-- * capturing traces that lead to crashes and outputing it to a
-+ * capturing traces that lead to crashes and outputting it to a
-  * serial console.
-  *
-  * It is default off, but you can enable it with either specifying
-diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
-index 0356cae0cf74..b7312247eaa6 100644
---- a/kernel/trace/trace_events.c
-+++ b/kernel/trace/trace_events.c
-@@ -611,7 +611,7 @@ static int __ftrace_event_enable_disable(struct trace_event_file *file,
- 		 *
- 		 * When soft_disable is not set but the SOFT_MODE flag is,
- 		 * we do nothing. Do not disable the tracepoint, otherwise
--		 * "soft enable"s (clearing the SOFT_DISABLED bit) wont work.
-+		 * "soft enable"s (clearing the SOFT_DISABLED bit) won't work.
- 		 */
- 		if (soft_disable) {
- 			if (atomic_dec_return(&file->sm_ref) > 0)
-diff --git a/kernel/trace/trace_events_filter.c b/kernel/trace/trace_events_filter.c
-index 4b1057ab9d96..cd67ce285fc4 100644
---- a/kernel/trace/trace_events_filter.c
-+++ b/kernel/trace/trace_events_filter.c
-@@ -92,7 +92,7 @@ static bool is_not(const char *str)
- }
- 
- /**
-- * prog_entry - a singe entry in the filter program
-+ * prog_entry - a single entry in the filter program
-  * @target:	     Index to jump to on a branch (actually one minus the index)
-  * @when_to_branch:  The value of the result of the predicate to do a branch
-  * @pred:	     The predicate to execute.
-diff --git a/kernel/trace/trace_events_trigger.c b/kernel/trace/trace_events_trigger.c
-index 918730d74932..d6abd5fa8c93 100644
---- a/kernel/trace/trace_events_trigger.c
-+++ b/kernel/trace/trace_events_trigger.c
-@@ -650,7 +650,7 @@ static void unregister_trigger(char *glob,
-  *   param             - text following cmd and ':' and stripped of filter
-  *   filter            - the optional filter text following (and including) 'if'
-  *
-- * To illustrate the use of these componenents, here are some concrete
-+ * To illustrate the use of these components, here are some concrete
-  * examples. For the following triggers:
-  *
-  *   echo 'traceon:5 if pid == 0' > trigger
-diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-index a6621c52ce45..f26f99c0ed21 100644
---- a/kernel/trace/trace_events_user.c
-+++ b/kernel/trace/trace_events_user.c
-@@ -189,7 +189,7 @@ static int user_field_array_size(const char *type)
- 
- static int user_field_size(const char *type)
- {
--	/* long is not allowed from a user, since it's ambigious in size */
-+	/* long is not allowed from a user, since it's ambiguous in size */
- 	if (strcmp(type, "s64") == 0)
- 		return sizeof(s64);
- 	if (strcmp(type, "u64") == 0)
-@@ -227,7 +227,7 @@ static int user_field_size(const char *type)
- 	if (str_has_prefix(type, "__rel_loc "))
- 		return sizeof(u32);
- 
--	/* Uknown basic type, error */
-+	/* Unknown basic type, error */
- 	return -EINVAL;
- }
- 
-diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
-index 313439920a8c..d66862ac2567 100644
---- a/kernel/trace/trace_osnoise.c
-+++ b/kernel/trace/trace_osnoise.c
-@@ -326,7 +326,7 @@ static struct osnoise_data {
- 	u64	print_stack;		/* print IRQ stack if total > */
- 	int	timerlat_tracer;	/* timerlat tracer */
- #endif
--	bool	tainted;		/* infor users and developers about a problem */
-+	bool	tainted;		/* info users and developers about a problem */
- } osnoise_data = {
- 	.sample_period			= DEFAULT_SAMPLE_PERIOD,
- 	.sample_runtime			= DEFAULT_SAMPLE_RUNTIME,
-@@ -737,7 +737,7 @@ cond_move_thread_delta_start(struct osnoise_variables *osn_var, u64 duration)
- /*
-  * get_int_safe_duration - Get the duration of a window
-  *
-- * The irq, softirq and thread varaibles need to have its duration without
-+ * The irq, softirq and thread variables need to have its duration without
-  * the interference from higher priority interrupts. Instead of keeping a
-  * variable to discount the interrupt interference from these variables, the
-  * starting time of these variables are pushed forward with the interrupt's
-@@ -1182,7 +1182,7 @@ trace_sched_switch_callback(void *data, bool preempt,
- }
- 
- /*
-- * hook_thread_events - Hook the insturmentation for thread noise
-+ * hook_thread_events - Hook the instrumentation for thread noise
-  *
-  * Hook the osnoise tracer callbacks to handle the noise from other
-  * threads on the necessary kernel events.
-@@ -1199,9 +1199,9 @@ static int hook_thread_events(void)
- }
- 
- /*
-- * unhook_thread_events - *nhook the insturmentation for thread noise
-+ * unhook_thread_events - Unhook the instrumentation for thread noise
-  *
-- * Unook the osnoise tracer callbacks to handle the noise from other
-+ * Unhook the osnoise tracer callbacks to handle the noise from other
-  * threads on the necessary kernel events.
-  */
- static void unhook_thread_events(void)
-@@ -1330,7 +1330,7 @@ static int run_osnoise(void)
- 	stop_in = osnoise_data.stop_tracing * NSEC_PER_USEC;
- 
- 	/*
--	 * Start timestemp
-+	 * Start timestamp
- 	 */
- 	start = time_get();
- 
-@@ -1664,7 +1664,7 @@ static int timerlat_main(void *data)
- 	tlat->kthread = current;
- 	osn_var->pid = current->pid;
- 	/*
--	 * Anotate the arrival time.
-+	 * Annotate the arrival time.
- 	 */
- 	tlat->abs_period = hrtimer_cb_get_time(&tlat->timer);
- 
-@@ -1734,7 +1734,7 @@ static void stop_per_cpu_kthreads(void)
- }
- 
- /*
-- * start_kthread - Start a workload tread
-+ * start_kthread - Start a workload thread
-  */
- static int start_kthread(unsigned int cpu)
- {
-diff --git a/kernel/trace/trace_seq.c b/kernel/trace/trace_seq.c
-index 9c90b3a7dce2..ec63d0ae6a22 100644
---- a/kernel/trace/trace_seq.c
-+++ b/kernel/trace/trace_seq.c
-@@ -18,7 +18,7 @@
-  *
-  * A write to the buffer will either succeed or fail. That is, unlike
-  * sprintf() there will not be a partial write (well it may write into
-- * the buffer but it wont update the pointers). This allows users to
-+ * the buffer but it won't update the pointers). This allows users to
-  * try to write something into the trace_seq buffer and if it fails
-  * they can flush it and try again.
-  *
-
-base-commit: 70575e77839f4c5337ce2653b39b86bb365a870e
--- 
-2.50.1
-
+RGVhciBUcmFjZXJzLA0KDQp3aGlsZSBkZXZlbG9waW5nIGEga2VybmVsIGZ0cmFjZSB0byBDb21t
+b24gVHJhY2UgRm9ybWF0IChDVEYpIGNvbnZlcnRlcg0KWzFdLCBJIG5vdGljZWQgYSBjb3VwbGUg
+b2YgYXNwZWN0cyBvZiB0aGUgbGlidHJhY2VjbWQgQVBJIEkgd291bGQgbGlrZQ0KdG8gZGlzY3Vz
+cy4gSW4gZ2VuZXJhbCwgSSBhbSBWRVJZIGhhcHB5IHdpdGggdGhlIGxpYnRyYWNlZnMsDQpsaWJ0
+cmFjZWV2ZW50IGFuZCBsaWJ0cmFjZWNtZCBBUEkuIFRoZXNlIGFyZSBncmVhdCBsaWJyYXJpZXMg
+d2hpY2gNCnJlYWxseSBoZWxwZWQgdG8gZ2V0IHRoaXMgaW1wbGVtZW50ZWQgZWFzaWx5Lg0KDQpU
+cmFjZSBjbG9ja3M6DQoNCi0gSW5mb3JtYXRpb24gYWJvdXQgdGhlIHVzZWQgdHJhY2UgY2xvY2sg
+aXMgYXZhaWxhYmxlIGluIHRoZSB0cmFjZS5kYXQsDQpob3dldmVyIHRoZXJlIGlzIG5vIHB1Ymxp
+YyBBUEkgdG8gZXh0cmFjdCBpdA0KLSBBIHRyYWNlIGNsb2NrIChlLmcuIG1vbm8pIHRvIHdvcmxk
+LWNsb2NrIHNuYXBzaG90IGNvdWxkIGJlIGFkZGVkIHRvDQp0aGUgdHJhY2UuZGF0IHRvIG1vcmUg
+ZWFzaWx5IGFsaWduIHRoZSB0cmFjZSB3aXRoIG90aGVyIHRyYWNlcw0KDQpNZXRhZGF0YToNCg0K
+LSBzb21lIG1ldGFkYXRhIChsaWtlIHVuYW1lKSBpcyBhbHJlYWR5IGluY2x1ZGVkIGluIHRoZSB0
+cmFjZS5kYXQsDQpob3dldmVyIHRoZSBBUElzIHRvIHJldHJpZXZlIGl0IGFyZSBwcml2YXRlOiB0
+cmFjZWNtZF9nZXRfdW5hbWUNCi0gZnVydGhlciBtZXRhZGF0YSBsaWtlIGEgZnVsbCAidW5hbWUg
+LWEiIG91dHB1dCBhbmQgL3Byb2MvY21kbGluZQ0Kd291bGQgYmUgaGVscGZ1bA0KDQpFdmVudCB0
+aW1lIHJhbmdlczoNCg0KLSBpdCB3b3VsZCBiZSBnb29kIHRvIGhhdmUgYW4gQVBJIHRvIGdldCB0
+aGUgZmlyc3QgYW5kIGxhc3QgZXZlbnQNCnRpbWVzdGFtcCBwZXIgQ1BVIChJJ20gY3VycmVudGx5
+IGZ1bGx5IHdhbGtpbmcgdGhlIGV2ZW50cyB0byBnZXQgdGhhdA0KZGF0YSkNCg0KUFM6DQpXZSBh
+cmUgYWxzbyBsb29raW5nIGludG8gd3JpdGluZyBhIGNvbnZlcnRlciBpbiB0aGUgb3Bwb3NpdGUg
+ZGlyZWN0aW9uDQooaS5lLiBDVEYgLT4gZnRyYWNlIGJpbmFyeSBmb3JtYXQgLyB0cmFjZS5kYXQp
+LCBidXQgaXQgbG9va3MgbGlrZSB0aGUNCmxpYnRyYWNlZXZlbnQgaXMgYSBwdXJlIHBhcnNpbmcg
+bGlicmFyeSBhbmQgY2Fubm90IGJlIHVzZWQgZm9yDQpzeW50aGVzaXppbmcuIElzIHRoaXMgdHJ1
+ZSwgb3IgZGlkIEkgbWlzcyBzb21ldGhpbmc/DQoNClsxXSBodHRwczovL2dpdGh1Yi5jb20vc2ll
+bWVucy9idDItZnRyYWNlLXRvLWN0Zg0KDQpCZXN0IHJlZ2FyZHMsDQpGZWxpeCBNb2Vzc2JhdWVy
+DQoNCi0tIA0KU2llbWVucyBBRw0KTGludXggRXhwZXJ0IENlbnRlcg0KRnJpZWRyaWNoLUx1ZHdp
+Zy1CYXVlci1TdHIuIDMNCjg1NzQ4IEdhcmNoaW5nLCBHZXJtYW55DQoNCg==
