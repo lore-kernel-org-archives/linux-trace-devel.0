@@ -1,37 +1,31 @@
-Received: from relay.hostedemail.com (smtprelay0014.hostedemail.com [216.40.44.14])
+Received: from relay.hostedemail.com (smtprelay0015.hostedemail.com [216.40.44.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A3F8303A28
-	for <linux-trace-devel@vger.kernel.org>; Wed,  3 Dec 2025 16:06:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE90A1624D5
+	for <linux-trace-devel@vger.kernel.org>; Thu,  4 Dec 2025 03:04:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764777968; cv=none; b=WcWW5qAO0JvLxfBCVPPMVW9i9yEjloKLg1Hjx0DX8fkt/boJOoubohfuZRY7h062K3aOg+MkB4FiBp4/tK5WJ4yBJ2oXN25b7tgWF+/MVtooGYRKc3vMcv3A7CZNPejoEB0GLbTsBx2/KZHAG/pAVsJTji7eEVNCBtmQ+ZOKFwY=
+	t=1764817443; cv=none; b=L+8ANb3W5/Ht4e1aR+6XCaluTDHZP2L2GzIKfGnNyjfjO9ZwG938obhTYdUOjEi6e7jnYvUYUgNT+O3hqvN1oHm8SWAc9ZIzct7JIt71zLj7gPVMtPasohlCGz7wqlcVji/WQu0sjSeeeVHqAtNMHaASr49bDmEqyX4+I+SpB3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764777968; c=relaxed/simple;
-	bh=fvZ93GHz+imD/t1YnkoDcmPVFpbVFCRW/whRnsHlgE0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ub+RJbUyNZRIPYZqoE5sS/poITFk7tic5sCI6ULoXXF3krN/8nocYkU15pWB98qIJ4HDf2HkG3rL4XtNO7Uj+5mG2APj4MuEHVy6l9sR2okq0uA9LBU5FA11vdc8pJzGYOh54J+vO9ePvh23XMZwxTDaIMnQYBScUFxgqIRX79Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.14
+	s=arc-20240116; t=1764817443; c=relaxed/simple;
+	bh=paaRq1/4vFusxuL80VqVEsPLJ/NdnRfrl83/PxrZit4=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=VStJnzx8sCD7cK5ws9LI8UDNPgbWPkWr71PxuvHHoek+n8USQOJ0DFfa0dDKh2pcc1I0+qZfyWlR/7KO/4rGfzX49vVqHDZKlpo+xn0ldq/jGebifkbOv6putplMG7BZwyRIMlYkNdlUdlYBBN0AiEsCQaeyzVHKqMEWS6Ner0w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf07.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay03.hostedemail.com (Postfix) with ESMTP id B1683B9A6C;
-	Wed,  3 Dec 2025 16:06:04 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf07.hostedemail.com (Postfix) with ESMTPA id F0F362002C;
-	Wed,  3 Dec 2025 16:06:02 +0000 (UTC)
-Date: Wed, 3 Dec 2025 11:07:05 -0500
+Received: from omf10.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay04.hostedemail.com (Postfix) with ESMTP id 9F2921A0906;
+	Thu,  4 Dec 2025 03:03:55 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf10.hostedemail.com (Postfix) with ESMTPA id 3CE8335;
+	Thu,  4 Dec 2025 03:03:54 +0000 (UTC)
+Date: Wed, 3 Dec 2025 22:03:53 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
-To: "MOESSBAUER, Felix" <felix.moessbauer@siemens.com>
-Cc: "Kiszka, Jan" <jan.kiszka@siemens.com>, "Poljakow, Andre"
- <andre.poljakow@siemens.com>, "linux-trace-devel@vger.kernel.org"
- <linux-trace-devel@vger.kernel.org>
-Subject: Re: libtraceevent | API clarifications needed
-Message-ID: <20251203110705.714daa5e@gandalf.local.home>
-In-Reply-To: <a22fa13aad752c43c927ab42b71d8e9caf7bf573.camel@siemens.com>
-References: <7ce07a566354a6d2233e231a6a7bc760447c7547.camel@siemens.com>
-	<20251202112539.1e042264@gandalf.local.home>
-	<a22fa13aad752c43c927ab42b71d8e9caf7bf573.camel@siemens.com>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Cc: Felix Moessbauer <felix.moessbauer@siemens.com>
+Subject: [PATCH v2] libtracecmd: Fix continuing in
+ tracecmd_iterate_events_reverse()
+Message-ID: <20251203220353.4c520524@robin>
+X-Mailer: Claws Mail 4.3.1 (GTK 3.24.51; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
@@ -40,77 +34,85 @@ List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Stat-Signature: wj3afmx7iyosstk684c9rf44agyrnkej
-X-Rspamd-Server: rspamout01
-X-Rspamd-Queue-Id: F0F362002C
+X-Rspamd-Queue-Id: 3CE8335
+X-Stat-Signature: pach9nd53hcj9g7czth6wk5j7dctfddm
+X-Rspamd-Server: rspamout08
 X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1/gXYPSiCxFGnxyNWLsOKGRrQjtDsKtLyE=
-X-HE-Tag: 1764777962-94950
-X-HE-Meta: U2FsdGVkX1/qYgVOKSmBX5EGNoDdr1ft32NM9irP1LWbuy5MmpsX+U12FNpTXB/wOQ3CPYWoF/mPqKwgDIfkMPVnzOXVORBovFo63CI9O12nLLdks5BeE5wSh+5SnlcKUVRa7PN8f7qCYdRw7B4A525bTMZ/g0JdH/nRUk00fiZanGGVEbQ5Sqo9YtMGA2qaLd17GqYrvda7DzuByeYFankxntmZeDjmppogfYQsqcrhmunj7Gn3L+arTGClsxq851M8azoLBDpX1B3aGwp/ISXejtUXIelTFCwlLZ5IaFADfTqvNYB5KFUMoEF0Mbn9va+trT0KwpmSDDaIMc77hd4mmdq7aOca
+X-Session-ID: U2FsdGVkX1+0zRtdvyF6LmKjVle1JarkrdpZT4sqYEU=
+X-HE-Tag: 1764817434-240660
+X-HE-Meta: U2FsdGVkX1/+7r+x6+7f9/+WgLWYl58GoxZfgVtXpVnIcsCW/w+io1vRSc+XrQNlihqH78YMIe2ZyAbn0mizgclPFbv3h81luNzGrkTWiQVKfa+4Il+E/6EAIahTBz3XnX0msSVOMeyQWJ++FRccSp+BeCTkhNP506RvdPl02rzQci/D9QHub0cTvr38969FR8yrufVD5het6Xss62WAyI3pL45Ak3BDmsoyyaAtJoTIeBb1RV6K+P0RzpyER52SBNUTriH8S5pXezbOxoAp8xGAe8iihkkx2xyh30S0F96o87J6ZOMCVacjflpPw0qFjFfZL0cM1ZyL6W15AFIYelE6s5Gtpz7RzXnVNMnhYK0ae8M+PY6zSRWnmbqvDAhO7+zq8uSHETuDOsa6jXSofQ==
 
-On Wed, 3 Dec 2025 11:20:34 +0000
-"MOESSBAUER, Felix" <felix.moessbauer@siemens.com> wrote:
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-> > First I'll say that I absolutely hate the libtraceevent interface.
-> > Unfortunately, it was ported over to perf before it was "sanitized". But oh
-> > well, I have to live with it. I would love to come up with a new interface
-> > that would make all this easier.  
-> 
-> No need for excuses. The library is great and tremendously simplifies
-> working with trace events. Thank you!
+When a callback from tracecmd_iterate_events_reverse() returns non-zero it
+cause the function to exit out early. Calling tracecmd_iterate_events_reverse()
+again with cont=true, is supposed to restart where it left off. But
+because of the way the reverse traverses all the events on a page, by
+calling tracecmd_read_data() to find the next task, it does not pick the
+next task. It can pick the next task at the start of the page.
 
-Not an excuse. I curse the API all the time ;-)
+If the callback back causes the function to exit out early, record the
+page_offset of the last record read, and then set the cursor back to that
+event. Then the next tracecmd_iterate_events_reverse() called with
+continue will start with the next record after the one that was last
+read.
 
-I wrote it, but I still need to reference the man pages to figure out how
-to use it. If the author can't use their own API without referencing a
-manual, that's a sure sign that the API sucks!
+Link: https://lore.kernel.org/all/20251121120117.20e82d9e@gandalf.local.home/
 
+Fixes: 56cbc522518a5 ("trace-cmd library: Add tracecmd_iterate_events_reverse() API")
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
 
-> > If tep->file_bigendian != tep_is_bigendian() then a swap is needed.  
-> 
-> Ok, but I just found the tep_read_number() interface which I'm now
-> using as following:
-> 
-> data_raw=tep_get_field_raw(NULL, trace_event, field->name, rec, &len,
-> 0);
-> item_size=len / field->arraylen;
-> val=tep_read_number(field->event->tep, &data_raw[i * item_size], len);
-> 
-> This should also do the job, as tep_read_number() takes care of the
-> endianess handling.
+[ RESEND to the correct mailing list this time ]
 
-Great!
+Changes since v1: https://lore.kernel.org/all/20251121120947.368ad1bd@gandalf.local.home/
 
+- Make the next call to tracecmd_iterate_events_reverse() start with
+  the next record after the last one read and not the last one that was
+  read.
 
-> > > 
-> > > symbolic fields
-> > > 
-> > > How to get the symbolic representation of fields that are marked
-> > > TEP_FIELD_IS_SYMBOLIC (example: softirq_entry->vec)? I tried
-> > > tep_print_field_content, but this converts the data to a string integer
-> > > instead of the symbolic representation (e.g. I get a "0" instead of a 
-> > > "HI").  
-> > 
-> > This is something I even wanted, but there's not really a good way to do
-> > it. Although, I wanted a generic way, but if a field is marked symbolic, we
-> > could use that. That is, we would need to parse the print_fmt array itself,
-> > and find the:
-> > 
-> >  "__print_symbolic(REC->vec, { 0, "HI" }, { 1, "TIMER" }, { 2, "NET_TX" }, { 3, "NET_RX" }, { 4, "BLOCK" }, { 5, "IRQ_POLL" }, { 6, "TASKLET" }, { 7, "SCHED" }, { 8, "HRTIMER" }, { 9, "RCU" })"
-> > 
-> > That is, look for the "__print_symbolic(REC->[FIELD-NAME], ..." and parse that.  
-> 
-> The trace-cmd report seems to be able to symbolize this, as well as
-> symbolizing instruction pointers (e.g. the caller field of the ftrace
-> kernel_stack). Not that I currently need this, but I'm wondering how
-> trace-cmd is able to do this. Probably need to check the sources.
-> 
+ lib/trace-cmd/trace-input.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-Probably due to plugins. Run: trace-cmd report -N
+diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
+index afdbd2aa98b6..5cb13c3f804b 100644
+--- a/lib/trace-cmd/trace-input.c
++++ b/lib/trace-cmd/trace-input.c
+@@ -3036,6 +3036,7 @@ int tracecmd_iterate_events_reverse(struct tracecmd_input *handle,
+ 				    void *callback_data, bool cont)
+ {
+ 	unsigned long long last_timestamp = 0;
++	unsigned long long page_offset = 0;
+ 	struct tep_record **records;
+ 	struct tep_record *record;
+ 	int next_cpu;
+@@ -3072,6 +3073,8 @@ int tracecmd_iterate_events_reverse(struct tracecmd_input *handle,
+ 			record = next_last_event(handle, records, next_cpu);;
+ 			ret = call_callbacks(handle, record, next_cpu,
+ 					     callback, callback_data);
++			if (ret)
++				page_offset = record->offset;
+ 			tracecmd_free_record(record);
+ 		}
+ 	} while (next_cpu >= 0 && ret == 0);
+@@ -3079,6 +3082,17 @@ int tracecmd_iterate_events_reverse(struct tracecmd_input *handle,
+ 	free_last_events(handle, records, cpus, cpu_size, max_cpus);
+ 	free(records);
+ 
++	/*
++	 * If the callback exited out early, then set the cursor back
++	 * to the location of that record so that if this gets called
++	 * again with cont = true, it will continue where it left off.
++	 */
++	if (page_offset) {
++		/* Set the internal cursor to the last record that was read */
++		record = tracecmd_read_at(handle, page_offset, NULL);
++		tracecmd_free_record(record);
++	}
++
+ 	return ret;
+ }
+ 
+-- 
+2.51.0
 
-If it still shows things properly, then it did do something special.
-Otherwise a plugin took over. They are in libtraceevent, in the plugins
-directory. There are several plugins that override how an event is read and
-it does the work manually.
-
--- Steve
