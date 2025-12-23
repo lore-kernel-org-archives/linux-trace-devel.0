@@ -1,167 +1,113 @@
-Received: from relay.hostedemail.com (smtprelay0011.hostedemail.com [216.40.44.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f193.google.com (mail-pl1-f193.google.com [209.85.214.193])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7D081B78F3
-	for <linux-trace-devel@vger.kernel.org>; Thu,  4 Dec 2025 21:22:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B7602C235B
+	for <linux-trace-devel@vger.kernel.org>; Tue, 23 Dec 2025 14:42:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764883341; cv=none; b=cRpMHK2V63gmJrJIEaM0ViixZIIbzZYL+5keRqPiGjv41eZphnJmyHdKZowx4nlOygY1FPMFx6WP7mgJ0Rg2kho5+iSJENMDbreE33Zqv2oY8IRO9QFJLj9YF7jOQOtCQxSYnB6ItqDEA4WqWtSnIKtHHyqkEPewY9SIfzoKu9k=
+	t=1766500956; cv=none; b=Xso8bGBRvmPR9nSSFStU75XxLZugbhXC29IAsLz2O5JbYXckWW/vXThQ3YXmJGEGuJawFQg/IApT58eJ3k5v0d+kfMVbrCvtQp3b6c/E5FNYeS7KkQjkET6r2G0wTvrQtkM/H3y8I1I9Gaka500qewF65sV1hvM6Dr0XNrmeH0E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764883341; c=relaxed/simple;
-	bh=A0k1g0OtneAoBPxigU1g2lQcb02rXN8objAqFYWE3Os=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=s7wUn7lT0Jwc77p2Q9dpXnl/ehpYR36IrHCQV2LyW9FdSi+nDaPECzRjJ8qO8zLmMBFBozfIVlH6kYlIGNvH4HNqNM93rcwBQmyw2lLEcRH3jCMAJPYfALJPzub3I51AHSvYjk8qtidSmFSsmbeHuHAjdVZ/1623ABUeT1ojfiw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf15.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay07.hostedemail.com (Postfix) with ESMTP id EE06F16024F;
-	Thu,  4 Dec 2025 21:22:06 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf15.hostedemail.com (Postfix) with ESMTPA id 6FF621E;
-	Thu,  4 Dec 2025 21:22:05 +0000 (UTC)
-Date: Thu, 4 Dec 2025 16:23:10 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Marcelo Tosatti <mtosatti@redhat.com>
-Cc: linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH] tracecmd: --poll option is not passed down to guest
-Message-ID: <20251204162310.745aeab8@gandalf.local.home>
-In-Reply-To: <aPu6yVSp0BtyNXc2@tpad>
-References: <aPu6yVSp0BtyNXc2@tpad>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1766500956; c=relaxed/simple;
+	bh=0IQ6nFZW00ENxe832PfPo841YN3nurGfQ0WsabXJ3L4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=GlWjdzyW3TuItbrWBnabiXDYIH7RmfypAHhE4TsoRnsdP1Ocwv2gEjtb/AbXx8U4j2A0pHS2KCcQMBjB05xJNhbDtJn6OGB9PL6GCIqW/rAdp+HzAdcPj0ymcZPkQGuFEnFkwt0Y1kz/3BxG+eu99d4/OF7qz21B61gQwM5H+oE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H/+nhZ+J; arc=none smtp.client-ip=209.85.214.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H/+nhZ+J"
+Received: by mail-pl1-f193.google.com with SMTP id d9443c01a7336-2a07fac8aa1so54863935ad.1
+        for <linux-trace-devel@vger.kernel.org>; Tue, 23 Dec 2025 06:42:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1766500954; x=1767105754; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=0IQ6nFZW00ENxe832PfPo841YN3nurGfQ0WsabXJ3L4=;
+        b=H/+nhZ+JghXA6ty425k/EziiBG6NVs9D4xTmqtzXZ/QqzmE2V/S3q/4EvfPVicrb6n
+         OZnlp8uITxFfkjUFtpu8qsryRmAzPK0rZ6M/BLWDkQCuPuJLKQKa78EiTl826D1mIdDa
+         penAPlctoZm2Xuq/AZ0eSzpZ1lPksDqmHwqU4UDuo7/eWqNUq449IBKQWZv/nqly/s0h
+         uyhFIaUGDOGvxLvAa0Ic282AnzZcCSP0btjFJqf+AddnfqCFk/+Sqqyrlv/2P39N7ndM
+         ZuTitwYpHUHUQxMn5W/cAcaH0HEH42hrbV925aeX+vmLHINvRl8NnqFUmMajoue/185f
+         X+0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1766500954; x=1767105754;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0IQ6nFZW00ENxe832PfPo841YN3nurGfQ0WsabXJ3L4=;
+        b=fcKtfcSGd3r1UsWfzb5ilYGxPU2hDfMO6CR0jpDskl8aPedd9jtdMeAZQoQDDbHrhd
+         x60hk1Rex8xGdvngfacI01cMo7JYLy2RwimjXOrp5+KTFZdi5vZgb/zXLSu7YRChEt4s
+         Hu1af8GOAHuB7p89BgKH/NQIzW1WUECQEjcxDooTd+F18f1viK4IioD4mCm7ppTkfSzJ
+         hRkT3LKlRbw52Sz6ii7nN88b5ajp4kmNjgyQGIyK5+0C7hGwg1i9duqsAsvj85Iz5rK5
+         d1g1gPOFngAFuh56+RFYA18Wg3W32T2ayvXKtyCTU8DuLX6tEns/UIM0GcfXy1Z1PYV4
+         NiGg==
+X-Gm-Message-State: AOJu0YweKaEyhQ3qzT4AcQPAmWCxuwTA7jkGkJVltAtv/+uhNYnUvYTC
+	IqLFTB2anzvKKlu/9UJH7NvCHPz1YemtUoWOwH2MEaox7pJBHK6UUcRnlAA5CEQ6gdI=
+X-Gm-Gg: AY/fxX7hsZO3w6IWusDKwhbVWX/4CoiyeY8wSEznsYLhVH68OGQwF8Bmj5oOGOrWpPO
+	V5dvwKweYNA7ozj4YQr0YwVpYWx38Q13Lnl86k+Ic76EN5Kj0Mybwy+YhRdCk35pKoOEMs5xRde
+	ErVLJOAHbRIDpmmReT/G4ABgQPt3I2Ub39APYiUuqxxYKlIylaespy2b1D5Qau3in6MoNyMoOwQ
+	XJoAe7mPabOUBVoiPGSilMQ61HHAeRKzRR+WzjOeYcEVi+Yi/cHvJXB6pG2DlveNL0iIUU53clJ
+	UmSurxPhtSAHvp2qjzFXMSn0zDO6RXoKD1WG2Tnx8AhiLTLGDpgmG2RCynFWqNUiPaNmjjSGsr8
+	sW+hThccegVCznwaP2z7rCC9ZGyyhXumdDDz6iWd1Vv0Bc1BLdq42dAz1UlFD8rxhts9mjzEswe
+	hpjXBFDaJeBEXRfkmcuBKxwkjAAGjkKkJ8xcp4UiZNUhlMDw==
+X-Google-Smtp-Source: AGHT+IEzmngfXv94XILrYvCZR4CaFsYV9WxWduYRZbpt7U09q8NtE7xMzT30ZNOgASdKmtmzNJkWSw==
+X-Received: by 2002:a17:902:c403:b0:299:e031:173 with SMTP id d9443c01a7336-2a2f273241fmr143819795ad.35.1766500954289;
+        Tue, 23 Dec 2025 06:42:34 -0800 (PST)
+Received: from DESKTOP-J2JE76D.localdomain ([183.193.49.53])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34e7710a5f8sm6411784a91.6.2025.12.23.06.42.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Dec 2025 06:42:33 -0800 (PST)
+From: Wenjun Huo <huowenjun.dev@gmail.com>
+To: linux-trace-devel@vger.kernel.org
+Cc: Wenjun Huo <huowenjun.dev@gmail.com>
+Subject: trace-cmd: question about explicit host endianness setting
+Date: Tue, 23 Dec 2025 22:42:21 +0800
+Message-ID: <20251223144221.1624-1-huowenjun.dev@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Stat-Signature: 5u8jjohz3iqajkkekob9kaoys8qriz7z
-X-Rspamd-Server: rspamout01
-X-Rspamd-Queue-Id: 6FF621E
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1/UQVhEPiT6dPWn/Y7c1PM7lITF70CuiM0=
-X-HE-Tag: 1764883325-493812
-X-HE-Meta: U2FsdGVkX1+taFXvZ81kBXVYfoAy/vIOf5pnrOWI2gm0koXPM2mlwGaxME7cwgMMNSE8kih8x1mKMOoQDtHS0uUGrt0m0xS75eoD4flC3Ea4KvyVaKYqJG9RT8GpNK0S2YYI7PaYn+KWVRvDNUDxo1R8LiJpKyD5n/PvcYbI+5llXEtCNK1D4sFMFYKDh8icdzbpBbYWTaWgWfwDHycob/FiKjcqXALWoGtzVI4+XPYr4bDQP2Iq8/LI0NyJFWn/lO1strha9wGG2Rydj5Fssyyh8JtiQgLvjEWATLF8tzShj462kA/Z06UMZ/iEh/8s1zB9ylx8fRDQj+VylfKxOLgjF+ViBdmc
+Content-Transfer-Encoding: 8bit
 
-On Fri, 24 Oct 2025 14:43:37 -0300
-Marcelo Tosatti <mtosatti@redhat.com> wrote:
+Dear Tracers,
 
-Hi Marcelo,
+While reading the trace-cmd code, I noticed a detail in
+tracecmd_alloc_fd() regarding endianness handling and wanted to
+double-check my understanding.
 
-Sorry for the late reply. Unfortunately, trace-cmd updates is usually my
-low priority task :-/
+In tracecmd_alloc_fd(), after tep_alloc() and plugin loading,
+trace-cmd explicitly sets both file and local endianness:
 
-> --- a/tracecmd/trace-record.c
-> +++ b/tracecmd/trace-record.c
-> @@ -6220,9 +6220,16 @@ static void add_arg(struct buffer_instance *instance,
->  {
->  	char *ptr, *arg;
->  	int i, ret;
-> +	int long_opt;
-> +
-> +	long_opt = 0;
-> +	for (i = 0; long_options[i].name; i++) {
-> +		if (long_options[i].val == c)
-> +			long_opt = 1;
-> +	}
+tep_set_file_bigendian(handle->pevent, buf[0]);
+tep_set_local_bigendian(handle->pevent, tracecmd_host_bigendian());
 
-I hate looking at every long option to determine if this is a long option
-or not.
+I understand that setting the file endianness here is required,
+since it is read from the trace file header.
 
->  
->  	/* Short or long arg */
-> -	if (!(c & 0x80)) {
-> +	if (long_opt == 0) {
->  		ptr = strchr(opts, c);
->  		if (!ptr)
->  			return; /* Not found? */
+For the local/host endianness, tep_alloc() already initializes
+host_bigendian via tep_is_bigendian(), and in the common case
+tracecmd_host_bigendian() resolves to the same value. So in practice
+this explicit call usually does not change the value.
 
-What about this patch?
+My understanding is that this is intentional, and that the call to
+tep_set_local_bigendian() serves as an explicit binding step, making
+it clear that trace-cmd confirms the local execution endianness
+after parsing the trace header and loading plugins, rather than
+relying on tep_alloc() defaults.
 
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 4e1157c99294..29938b1bb701 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -5932,36 +5932,39 @@ void init_top_instance(void)
- 	init_instance(&top_instance);
- }
- 
-+#define LONG_OPT(opt)		(0x80 + ((opt) << 8))
-+#define IS_LONG_OPT(opt)	((opt) & 0x80)
-+
- enum {
--	OPT_compression		= 237,
--	OPT_file_ver		= 238,
--	OPT_verbose		= 239,
--	OPT_tsc2nsec		= 240,
--	OPT_fork		= 241,
--	OPT_tsyncinterval	= 242,
--	OPT_user		= 243,
--	OPT_procmap		= 244,
--	OPT_quiet		= 245,
--	OPT_debug		= 246,
--	OPT_no_filter		= 247,
--	OPT_max_graph_depth	= 248,
--	OPT_tsoffset		= 249,
--	OPT_bycomm		= 250,
--	OPT_stderr		= 251,
--	OPT_profile		= 252,
--	OPT_nosplice		= 253,
--	OPT_funcstack		= 254,
--	OPT_date		= 255,
--	OPT_module		= 256,
--	OPT_nofifos		= 257,
--	OPT_cmdlines_size	= 258,
--	OPT_poll		= 259,
--	OPT_name		= 260,
--	OPT_proxy		= 261,
--	OPT_temp		= 262,
--	OPT_notimeout		= 264,
--	OPT_daemonize		= 265,
--	OPT_subbuf		= 266,
-+	OPT_compression		= LONG_OPT(0),
-+	OPT_file_ver		= LONG_OPT(1),
-+	OPT_verbose		= LONG_OPT(2),
-+	OPT_tsc2nsec		= LONG_OPT(3),
-+	OPT_fork		= LONG_OPT(4),
-+	OPT_tsyncinterval	= LONG_OPT(5),
-+	OPT_user		= LONG_OPT(6),
-+	OPT_procmap		= LONG_OPT(7),
-+	OPT_quiet		= LONG_OPT(8),
-+	OPT_debug		= LONG_OPT(9),
-+	OPT_no_filter		= LONG_OPT(10),
-+	OPT_max_graph_depth	= LONG_OPT(11),
-+	OPT_tsoffset		= LONG_OPT(12),
-+	OPT_bycomm		= LONG_OPT(13),
-+	OPT_stderr		= LONG_OPT(14),
-+	OPT_profile		= LONG_OPT(15),
-+	OPT_nosplice		= LONG_OPT(16),
-+	OPT_funcstack		= LONG_OPT(17),
-+	OPT_date		= LONG_OPT(18),
-+	OPT_module		= LONG_OPT(19),
-+	OPT_nofifos		= LONG_OPT(20),
-+	OPT_cmdlines_size	= LONG_OPT(21),
-+	OPT_poll		= LONG_OPT(22),
-+	OPT_name		= LONG_OPT(23),
-+	OPT_proxy		= LONG_OPT(24),
-+	OPT_temp		= LONG_OPT(25),
-+	OPT_notimeout		= LONG_OPT(26),
-+	OPT_daemonize		= LONG_OPT(27),
-+	OPT_subbuf		= LONG_OPT(28),
- };
- 
- void trace_stop(int argc, char **argv)
-@@ -6222,7 +6225,7 @@ static void add_arg(struct buffer_instance *instance,
- 	int i, ret;
- 
- 	/* Short or long arg */
--	if (!(c & 0x80)) {
-+	if (!IS_LONG_OPT(c)) {
- 		ptr = strchr(opts, c);
- 		if (!ptr)
- 			return; /* Not found? */
+Could you please confirm if this interpretation is correct, and
+whether this explicit setting is mainly for clarity / defensive API
+usage rather than functional necessity?
 
+If maintainers think there is a better way to clarify or improve
+this behavior (for example via comments, documentation, or code
+adjustments), I would be very happy to help by preparing and sending
+a patch based on your guidance.
 
--- Steve
+Thanks for your time.
+
+Best regards,
+Wenjun Huo
 
