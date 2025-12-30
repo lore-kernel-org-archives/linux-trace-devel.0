@@ -1,104 +1,271 @@
-Received: from mail-pl1-f195.google.com (mail-pl1-f195.google.com [209.85.214.195])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-a4-smtp.messagingengine.com (fhigh-a4-smtp.messagingengine.com [103.168.172.155])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 587C31494A8
-	for <linux-trace-devel@vger.kernel.org>; Sat, 27 Dec 2025 14:09:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68FB92DCC13
+	for <linux-trace-devel@vger.kernel.org>; Tue, 30 Dec 2025 01:02:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.155
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766844590; cv=none; b=kdm1XbxFgEVBnl0ThbGGIq3BLfVs6G0gupK35wLeV2OgUBTx7geSPrqSQg1OoF+Rc+9K3yAbB2/5M3cr0Q6yVuqT9YK+rAo3VzRX1tz97r14oX6iCKejg3WE4HFvKCPpKtNRIDgA+rS2sw70LvdI1+0lmdW6AM8Eyj2tKs3PAjk=
+	t=1767056540; cv=none; b=AjZAAHDKFRc2KR3h8QK2iOSdrtyG82fAHLwrLKFHcr0P+Fm7vUqOCvCJSIVALGBYo78LaTa59BxP6d2YxPoG4vjnhrRDzuHw3YuyYG6an5Jch9b5/XPRH5zGytwgQnPaF5jiSG6pO44kx37HfF7TgXIVhgAsE07kZ3RVYlaqtvI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766844590; c=relaxed/simple;
-	bh=Uk5tNrLZXId7j62PKoQXVhFqRxNkJzyx7pmi7FdxJ3M=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mxL9TB91rvQudIbMgIheaGAw17tmUKSv7Cj7ZsA7l1x/0X4+oHmwualN4f1o3ptKhTwDP1RvwSOUu9IOND4PQVeqNtpfV7FxTH+F7JpJ4hGf0oVxkJqREv6cjN1eFqMph8mPDhsoec/eRTqG8ogXqFJdWAYsqNlcSBEdUGFnVRM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PYjP64zk; arc=none smtp.client-ip=209.85.214.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1767056540; c=relaxed/simple;
+	bh=LUSNC0345d4OC+4BtxInGK8Fih1bXnyONmYw26E4z2I=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=aNMpkt7slnhXzl4W0SIuaONEGJhY/YSavA/gz2aHNtUOUk7KkGhc4vgHPY3u1kyCzYlhDDcsoPFG8Dao95rUlQH5/6lRZgiOjJREsnCkooT6k98Q6s5Mf/NUO6DJs0dG86aiYGAg110KMveEUV0+ffmyXvCV5k6+WRFwzLNE844=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rostedt.org; spf=pass smtp.mailfrom=rostedt.org; dkim=pass (2048-bit key) header.d=rostedt.org header.i=@rostedt.org header.b=b3qt6QBV; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Q0yF4sNK; arc=none smtp.client-ip=103.168.172.155
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rostedt.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rostedt.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PYjP64zk"
-Received: by mail-pl1-f195.google.com with SMTP id d9443c01a7336-2a09a3bd9c5so70095425ad.3
-        for <linux-trace-devel@vger.kernel.org>; Sat, 27 Dec 2025 06:09:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1766844588; x=1767449388; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=UfZ/yJ6Xa6/JL2AQGK74TEZ3af+VVqekhx7FHOfzp+8=;
-        b=PYjP64zkJ14MbRlIKlQ2Lmh0QDk1JNC9daEWkwv7RHnkt+unjGbeUQ9EzDYafavlbO
-         RwKUQxuXs5aTT/EgOOF/cdEU6/zFs9hoKwi90PJyzf7VpxAbjeKuN7kW2OfGjDdquhiw
-         NyFdpMzcBhjGxgvUiyooYKjeeJzCHIjLOJWnWDEmszVj/Z/yOrXjjU/on4AlzKSUhZMJ
-         fLVU/oJtnjGqluvTTzLdRc8zYOQsKLpPBWHelZdKzDorIDiCtj4lXW8gV0m+pOS8g9o7
-         OoaLbW9ZomlWKflc1h8enOYyh8bT2KpbLclNYw5IjDYp1Nqgjr/VNYAauVu65ddDO4j7
-         gh3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766844588; x=1767449388;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UfZ/yJ6Xa6/JL2AQGK74TEZ3af+VVqekhx7FHOfzp+8=;
-        b=fZkKHgONx+M32S/tz7Rh2oHiaQIiS8C6qWaQbnw/GuOgcSS9yl2MxUJeRmce7scjGZ
-         r+boyyWwpA8vs/MUtMVWWZLnFg2VjNORKTvu4YoRF6Rjd9fSdijeh4D/DdWCjrt58hJH
-         XnEeKYIATnk8B5YKA20BjxQa7jP3uXcTryf4UPEyY3FaJ0588J34Bx6AtpktIumXloeZ
-         R7qwmHraeSwY+aWaKYAIKOhKdxdyhvTgS173Gt6AvT3pixH9ABGZVU+YIruwRV7C6pKM
-         CzJp3XG2EOZSMTx6nO5frGXImgfJwj8w0MQuIwzk5oC77kZFO4m591yRRgCc3x5BOJjK
-         W7Zg==
-X-Gm-Message-State: AOJu0Yy/8yJBFHIspkpQce5rC0TqaJszDUSIOOd79+5RkXdDvlXzI3xG
-	p9psGhulMp8ksumNEuq6nMPzNRKuGvvmbB25NL2Sv7qBQwJw5OsodeHGXggt54EQCs0Txg==
-X-Gm-Gg: AY/fxX4rqs73VwQn36v+iaFCJNsCnqadxwSxnoS0LKQULYe45cyXTqCMkx42iApmV5R
-	IhnfWB45CYoYQ/CTEvYHCYz2RxdKS3kJkLX0UMeDY1oLNpTyhT8K7cddF/wkAYtnBiYLHudaz/W
-	cK0f68FMv/8AB249aPujiKTACBmHJvydEbLmNDEgznXWyMQPjHfLh9wH0xcCUtNp3gYMDDIIv5D
-	h0FBTzELYHRJzNEuzZPqZq9ACrQCm4bdu70GiEKYbo+/7EinjelGrM/pYX0O9oe6LIViZA0OS/x
-	IVatqGTyV4aesMAR3dcm746nL6fYah7VGSaVhbwNm4jhogsW2SwCT5doj1sTD0I2b2k7TjMMo1c
-	urYYj24Dy4J5+R320tyWVv0WGGi/qkaMgy/2Y6dfjYYJrppZU8zOVfk314HHn/YTBU7e6/nIm2N
-	egXp+wdG0LsgS9QRgnBGsGQnxAzxRx3qeGgVEQ
-X-Google-Smtp-Source: AGHT+IFK3LwIYFAr5mYAYcefPoGPvsuTP/goKJ8u4a12ujChlvAtE566bretE0oudZaowHK6Dkgb6Q==
-X-Received: by 2002:a17:902:ce0d:b0:295:1e50:e7cb with SMTP id d9443c01a7336-2a2f232c836mr286026955ad.23.1766844588359;
-        Sat, 27 Dec 2025 06:09:48 -0800 (PST)
-Received: from DESKTOP-J2JE76D.localdomain ([183.193.50.244])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a2f3c82858sm228396365ad.29.2025.12.27.06.09.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Dec 2025 06:09:47 -0800 (PST)
-From: Wenjun Huo <huowenjun.dev@gmail.com>
-To: linux-trace-devel@vger.kernel.org
-Cc: rostedt@goodmis.org,
-	Wenjun Huo <huowenjun.dev@gmail.com>
-Subject: [PATCH 1/1] trace-cmd: remove obsolete tep_set_local_bigendian() call
-Date: Sat, 27 Dec 2025 22:09:10 +0800
-Message-ID: <20251227140910.2024-1-huowenjun.dev@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	dkim=pass (2048-bit key) header.d=rostedt.org header.i=@rostedt.org header.b="b3qt6QBV";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Q0yF4sNK"
+Received: from phl-compute-03.internal (phl-compute-03.internal [10.202.2.43])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 85037140007F;
+	Mon, 29 Dec 2025 20:02:17 -0500 (EST)
+Received: from phl-frontend-03 ([10.202.2.162])
+  by phl-compute-03.internal (MEProxy); Mon, 29 Dec 2025 20:02:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rostedt.org; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:message-id:mime-version:reply-to
+	:subject:subject:to:to; s=fm3; t=1767056537; x=1767142937; bh=u0
+	p/26waoVkjICeIi3ldy3CnYrLwMxad2S+wQUbwFlo=; b=b3qt6QBVsg9XQE2AWo
+	fUD/4JAvdir0iHTnkyUMlxIYbdJDygD58YeQwswBwdUHmQkr7ffPf3QZ8uLQO582
+	GGUUHhg0VlbSn/NnFjlF50o+fIEOOkYCR60NsD4AItN6A1lUObJ+b6owgK4um5WE
+	wb8YfVTHlQ8vJmfEzP7DlxaBONRBxOcCEP0uhjPdDKAIKQoLBEJHf39E0lcIIgJd
+	AM2TpaGFme4dKsWfjEpk2Ovr0DJX+8tJ5+dsqmxmVjnj+WVL6hH/SyfO0XEX6vj6
+	a0CTHom1bKAdjuLTNQlPAmzhLsa6zxjySlvAx9RJS/nNT+f6At2AAFYBQBidxMS0
+	XgEQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:message-id:mime-version:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1767056537; x=1767142937; bh=u0p/26waoVkjICeIi3ldy3CnYrLw
+	Mxad2S+wQUbwFlo=; b=Q0yF4sNKIA41xIwrEN3X4tXGrZPg8gnQ7R9HG0vP6xYq
+	DSj7tF7mKfIehhsnw0vbstjaY+KV66FOJOKRZi5TiWvQswNonVGlCaXWdFbrqqy4
+	RBozbu5W6LzXa0d3RRfYqPXDr/neWKxeV1qVYFbLtP7Y2Tmr2nT4qGyg+hpUbN6P
+	wOe2TmU5H04CaeI4B/YPctrC0gKqkua0wUhVGJHyAyrQOksqizZ3h8akHk6LGHTO
+	MRVkB054Wm/KwAeGjzpMep2QPcwwp+0e9kssyminsSXOYrPYzfb51QwcaKsEb1xg
+	adILODBlmdydQOFcS190atyFTOVbL7wYCm6nB8r9hQ==
+X-ME-Sender: <xms:mSRTaYW4Tc1grXcYl61PefpfW3wUzG5CmpifcBfdGJq0DPVtJa_wDg>
+    <xme:mSRTaSmuDofsBstuDvsJF0fK-du4BumGB9tJg6rxLYvSq6KwU491yMzX9nSMiTwms
+    eu6DFx3md-MuiBVYjKcL7FMuhvIozGVbuj93zW0noKkPW84LXd5uXs>
+X-ME-Received: <xmr:mSRTaaDzzQEIohXhHy9hIwvqjLhiuopUUMI1uBuvsZb8N_GlnPVTnw17coWx1Qs117xgX_5t>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdejkeeihecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpeffhffvvefukffogggtgfesthejredtredtvdenucfhrhhomhepufhtvghvvghnucft
+    ohhsthgvughtuceoshhtvghvvghnsehrohhsthgvughtrdhorhhgqeenucggtffrrghtth
+    gvrhhnpeehteduiefftdefuddvjeelhedvhedtgeejheekfeeugfehgedvieeftdfhledu
+    tdenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
+    enucfrrghrrghmpehmrghilhhfrhhomhepshhtvghvvghnsehrohhsthgvughtrdhorhhg
+    pdhnsggprhgtphhtthhopedvpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehlih
+    hnuhigqdhtrhgrtggvqdguvghvvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghp
+    thhtohepjhholhhsrgeskhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:mSRTaSfE7EyFtb7qJzSN5K7B5jJIOZ8R4Dm5MKnIuATjITgEQJUauQ>
+    <xmx:mSRTaVIMxQj7_s_iwdq--sRZenjPrcJD03QdG4GES0uoSfKhicZraQ>
+    <xmx:mSRTaVfWJ9owGVBMkr9WylDCMr-oDDIPhtrH3iFwfZjcaiXdeX7IaA>
+    <xmx:mSRTac0fUZPwdO2jyMy1dyhwxp2nKHGBm_3W0W7SxkUOMmS9YDJZ6Q>
+    <xmx:mSRTaWp3I-dtK8teVSIBdmiaf7XQ2HKatBJ-llfMEHQur3p2cU0fCO7P>
+Feedback-ID: id06e481b:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 29 Dec 2025 20:02:17 -0500 (EST)
+Date: Mon, 29 Dec 2025 20:02:23 -0500
+From: Steven Rostedt <steven@rostedt.org>
+To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Subject: [PATCH] libtraceevent: Handle __get_stacktrace()
+Message-ID: <20251229200223.04c8d2bc@gandalf.local.home>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-The tep_set_local_bigendian() call in tracecmd_alloc_fd() is obsolete
-because tep_alloc() already initializes the host endianness. This was
-a legacy from commit cd001f7b40f9d ("Add handler to pevent functions")
-when pevent_alloc() did not initialize host_bigendian.
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-The removal has been functionally tested by recording a trace on an
-x86 (little-endian) host and successfully reporting it on an s390x
-(big-endian) virtual machine, confirming endianness conversion works
-correctly without this line.
+A synthetic event can add a stacktrace as one of its fields. The print fmt
+of getting to the stacktrace field is the __get_stacktrace() function
+helper. Add support for parsing the __get_stacktrace() so that it properly
+displays the stacktrace of synthetic events.
 
-Signed-off-by: Wenjun Huo <huowenjun.dev@gmail.com>
+Link: https://lore.kernel.org/all/aVG2VoBpFoEEE1gG@krava/
+
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- lib/trace-cmd/trace-input.c | 1 -
- 1 file changed, 1 deletion(-)
+ include/traceevent/event-parse.h |  7 +++
+ src/event-parse.c                | 76 ++++++++++++++++++++++++++++++++
+ 2 files changed, 83 insertions(+)
 
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index f2471c92..95a8de53 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -4942,7 +4942,6 @@ struct tracecmd_input *tracecmd_alloc_fd(int fd, int flags)
- 	handle->plugin_list = tcmd_load_plugins(handle->pevent, flags);
+diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
+index ebfc2c7abac2..9c1abfae28d9 100644
+--- a/include/traceevent/event-parse.h
++++ b/include/traceevent/event-parse.h
+@@ -138,6 +138,11 @@ struct tep_print_arg_bitmask {
+ 	struct tep_format_field	*field;
+ };
  
- 	tep_set_file_bigendian(handle->pevent, buf[0]);
--	tep_set_local_bigendian(handle->pevent, tracecmd_host_bigendian());
++struct tep_print_arg_stacktrace {
++	char			*stacktrace;
++	struct tep_format_field	*field;
++};
++
+ struct tep_print_arg_field {
+ 	char			*name;
+ 	struct tep_format_field	*field;
+@@ -215,6 +220,7 @@ enum tep_print_arg_type {
+ 	TEP_PRINT_DYNAMIC_ARRAY_LEN,
+ 	TEP_PRINT_HEX_STR,
+ 	TEP_PRINT_CPUMASK,
++	TEP_PRINT_STACKTRACE,
+ };
  
- 	do_read_check(handle, buf, 1);
- 	handle->long_size = buf[0];
+ struct tep_print_arg {
+@@ -231,6 +237,7 @@ struct tep_print_arg {
+ 		struct tep_print_arg_func	func;
+ 		struct tep_print_arg_string	string;
+ 		struct tep_print_arg_bitmask	bitmask;
++		struct tep_print_arg_stacktrace	stacktrace;
+ 		struct tep_print_arg_op		op;
+ 		struct tep_print_arg_dynarray	dynarray;
+ 	};
+diff --git a/src/event-parse.c b/src/event-parse.c
+index 939b0a8fbdf2..09d9092d9d20 100644
+--- a/src/event-parse.c
++++ b/src/event-parse.c
+@@ -1129,6 +1129,9 @@ static void free_arg(struct tep_print_arg *arg)
+ 		free_arg(arg->op.left);
+ 		free_arg(arg->op.right);
+ 		break;
++	case TEP_PRINT_STACKTRACE:
++		free(arg->stacktrace.stacktrace);
++		break;
+ 	case TEP_PRINT_FUNC:
+ 		while (arg->func.args) {
+ 			farg = arg->func.args;
+@@ -2895,6 +2898,7 @@ static int arg_num_eval(struct tep_print_arg *arg, long long *val)
+ 	case TEP_PRINT_BSTRING:
+ 	case TEP_PRINT_BITMASK:
+ 	case TEP_PRINT_CPUMASK:
++	case TEP_PRINT_STACKTRACE:
+ 	default:
+ 		do_warning("invalid eval type %d", arg->type);
+ 		ret = 0;
+@@ -2925,6 +2929,7 @@ static char *arg_eval (struct tep_print_arg *arg)
+ 	case TEP_PRINT_BSTRING:
+ 	case TEP_PRINT_BITMASK:
+ 	case TEP_PRINT_CPUMASK:
++	case TEP_PRINT_STACKTRACE:
+ 	default:
+ 		do_warning("invalid eval type %d", arg->type);
+ 		break;
+@@ -3462,6 +3467,34 @@ process_cpumask(struct tep_event *event __maybe_unused, struct tep_print_arg *ar
+ 	return type;
+ }
+ 
++static enum tep_event_type
++process_stacktrace(struct tep_event *event, struct tep_print_arg *arg, char **tok)
++{
++	enum tep_event_type type;
++	char *token;
++
++	if (read_expect_type(event->tep, TEP_EVENT_ITEM, &token) < 0)
++		goto out_free;
++
++	arg->type = TEP_PRINT_STACKTRACE;
++	arg->stacktrace.stacktrace = token;
++	arg->stacktrace.field = NULL;
++
++	if (read_expected(event->tep, TEP_EVENT_DELIM, ")") < 0)
++		goto out_err;
++
++	type = read_token(event->tep, &token);
++	*tok = token;
++
++	return type;
++
++ out_free:
++	free_token(token);
++ out_err:
++	*tok = NULL;
++	return TEP_EVENT_ERROR;
++}
++
+ static struct tep_function_handler *
+ find_func_handler(struct tep_handle *tep, char *func_name)
+ {
+@@ -3750,6 +3783,10 @@ process_function(struct tep_event *event, struct tep_print_arg *arg,
+ 		free_token(token);
+ 		return process_dynamic_array_len(event, arg, tok);
+ 	}
++	if (strcmp(token, "__get_stacktrace") == 0) {
++		free_token(token);
++		return process_stacktrace(event, arg, tok);
++	}
+ 	if (strcmp(token, "__builtin_expect") == 0) {
+ 		free_token(token);
+ 		return process_builtin_expect(event, arg, tok);
+@@ -4414,6 +4451,7 @@ eval_num_arg(void *data, int size, struct tep_event *event, struct tep_print_arg
+ 	case TEP_PRINT_BSTRING:
+ 	case TEP_PRINT_BITMASK:
+ 	case TEP_PRINT_CPUMASK:
++	case TEP_PRINT_STACKTRACE:
+ 		return 0;
+ 	case TEP_PRINT_FUNC: {
+ 		struct trace_seq s;
+@@ -4859,6 +4897,33 @@ more:
+ 	free(str);
+ }
+ 
++static void print_stacktrace_to_seq(struct tep_handle *tep,
++				    struct trace_seq *s, const char *format,
++				    int len_arg, const void *data, int size)
++{
++	int nr_funcs = size / tep->long_size;
++	struct func_map *func;
++	unsigned long long val;
++
++	trace_seq_putc(s, '\n');
++
++	/* The first entry is a counter, skip it */
++	data += tep->long_size;
++
++	for (int i = 1; i < nr_funcs; i++) {
++		trace_seq_puts(s, "=> ");
++		val = tep_read_number(tep, data, tep->long_size);
++		func = find_func(tep, val);
++		if (func) {
++			trace_seq_puts(s, func->func);
++			trace_seq_printf(s, "+0x%llx\n", val - func->addr);
++		} else {
++			trace_seq_printf(s, "%llx\n", val);
++		}
++		data += tep->long_size;
++	}
++}
++
+ static void print_str_arg(struct trace_seq *s, void *data, int size,
+ 			  struct tep_event *event, const char *format,
+ 			  int len_arg, struct tep_print_arg *arg)
+@@ -5097,6 +5162,17 @@ static void print_str_arg(struct trace_seq *s, void *data, int size,
+ 				     data + offset, len);
+ 		break;
+ 	}
++	case TEP_PRINT_STACKTRACE: {
++		if (!arg->stacktrace.field) {
++			arg->stacktrace.field = tep_find_any_field(event, arg->stacktrace.stacktrace);
++			if (!arg->stacktrace.field)
++				break;
++		}
++		dynamic_offset_field(tep, arg->stacktrace.field, data, size, &offset, &len);
++		print_stacktrace_to_seq(tep, s, format, len_arg,
++					data + offset, len);
++		break;
++	}
+ 	case TEP_PRINT_OP:
+ 		/*
+ 		 * The only op for string should be ? :
 -- 
-2.43.0
+2.51.0
 
