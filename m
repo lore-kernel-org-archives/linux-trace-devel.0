@@ -1,29 +1,30 @@
-Received: from relay.hostedemail.com (smtprelay0010.hostedemail.com [216.40.44.10])
+Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 707962D0606
-	for <linux-trace-devel@vger.kernel.org>; Fri,  2 Jan 2026 20:12:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5118634AAEB
+	for <linux-trace-devel@vger.kernel.org>; Tue, 20 Jan 2026 16:55:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767384727; cv=none; b=KGM0r9/k7ea/NJegxD5k0JVHRXRAFA1+UQSlVYiNmm5xHL2HEAP/46JQqjrnuc27FTeHdvdhWreMc5zhB7l9QY7OxTjxUgDwEVR0KqUYCVzhfPi2rqwIfp+RqSaiEVBJdpPAfpA2iV+VKj9KOl8d3rIKRT6OYLgPYndM+6MxDsM=
+	t=1768928130; cv=none; b=feknTuks/jy/3q6937b9Q+ZsugVuZQ/EisFYQc/5QGsN8LFTauoRItvedG+UM2d3Fkbj/1h3tmE0PD+k2qUqKWznswk2dRAcnllSJw+wMgsZOkS/TLfxPb6Ly0KBL/vuNLoTW1bKNF/W3HRk01HntWOCg6VvsntjMbUEu74z/JU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767384727; c=relaxed/simple;
-	bh=Kuc4hMbkpGmQzw/SGd2ycJNgZFhMIHXdc+pCDkEZV7M=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=F8Kr9cEELxg3Lj22VNAgVx67vKqBqSDYPtZY4ygo/QeIS/ztFmspoTWTlOntRUWnO98ud31B7OhEH1fZI1JxAUmraum63j9WDHP2ZXKXn3fan2A57EGeoFy2RWpkwOvJU1XddARbVl/aysEO3FrHYI40vqhiZGx1JxTXslncU9E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.10
+	s=arc-20240116; t=1768928130; c=relaxed/simple;
+	bh=CTZBfhsTDiyUGEaUOnF/huGd8vg3sVH7KnXVhyLD71c=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=guHkSeKI1aXnwherp58vrXgLbcqcZPeoqMzPRncnRB0wOlUO8AGTnjF//52xlKquE/loDC1yWsbGc/b/h9pGoSH/3BTjQxByn2Bry+ycXgKiyt0s4pL7pL5VWOnUpaD1jKvg6FayrOjykDCFmV8NacaV9GCR2nR4o6e+EnGbgy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf12.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay04.hostedemail.com (Postfix) with ESMTP id 4E1931A0C49
-	for <linux-trace-devel@vger.kernel.org>; Fri,  2 Jan 2026 20:12:03 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf12.hostedemail.com (Postfix) with ESMTPA id 0C76E17
-	for <linux-trace-devel@vger.kernel.org>; Fri,  2 Jan 2026 20:12:01 +0000 (UTC)
-Date: Fri, 2 Jan 2026 15:12:16 -0500
+Received: from omf09.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay01.hostedemail.com (Postfix) with ESMTP id 1640BD25A7;
+	Tue, 20 Jan 2026 16:55:21 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf09.hostedemail.com (Postfix) with ESMTPA id A799320028;
+	Tue, 20 Jan 2026 16:55:19 +0000 (UTC)
+Date: Tue, 20 Jan 2026 11:55:40 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH v2] trace-cmd list: Allow adding a regex to filter out
- showing of options
-Message-ID: <20260102151216.088f27cd@gandalf.local.home>
+Cc: Donglin Peng <pengdonglin@xiaomi.com>
+Subject: [PATCH] libtracecmd: Add support to display parent function in
+ function graph
+Message-ID: <20260120115540.2f391ad9@gandalf.local.home>
 X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -33,129 +34,122 @@ List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Stat-Signature: urcu9r1tnn78i431ttqkdxiiu8jxdxgc
-X-Rspamd-Server: rspamout04
-X-Rspamd-Queue-Id: 0C76E17
+X-Stat-Signature: 6ut5q8n3rrga1chzctjffqbwi9e3dhqf
+X-Rspamd-Server: rspamout01
+X-Rspamd-Queue-Id: A799320028
 X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX19wLKBGkAX2ii/PtnxMvZ2a0AN2b1DT8qc=
-X-HE-Tag: 1767384721-520767
-X-HE-Meta: U2FsdGVkX1/Mk5EWkAzIi7c7KBP6y/WO85sgcQ5FUfwBihOjAStl6fTFcFfmXhh2WHVFvjCq5Xd+YLYCtCOXIeOXHo7/M6koWvLx2eZm0mO2ciwd0IFqjKbg+pLEz7edNoaKGi3kXX6ZHgE5Dx4KLAJtR1Y05bvt3NQPcQRUKCbPXeGPHvBFUp1UJoPv0InNOSXYuWAis7KtRfqXk9MNYA2Au97kHKiaizAdr/RIKA6DVJ/wMYI6mehEtJLhrHE/AVl1FDrK5fxtYx0M4TSpu4aH1wGcIke2uYaAgO/8oRyPzG6Cc1UWa84iqCxhk8zLxCAh8omgNFKs9wGUe7j+clNgwgcVAu2QMryk8qMntz6BAhgwV6n6URNk5vMcWqRwB2k3XTMFc9i2KUbXAJkNNA==
+X-Session-ID: U2FsdGVkX1/cQJtQXUYR/24iV3m5vheBskRq1PeK5LE=
+X-HE-Tag: 1768928119-74643
+X-HE-Meta: U2FsdGVkX194QPg9CPtmBtbfpMMFAY6VdiczKColw75sVWH1m8wOhdP/fnyBPfU5XPSzohI8+uzolfFI9anZeuekPPK9/c/XgObld/eLpGKt0KxYsbG+SRXWhgBpxVHmdvO5bKcGxFhEXePoLJEnixd/KcN8YnaMvw7qOLYiIztJ1x2Dtt/ztDhY7SYkx5w5S23uEK7ejCENkzd8gKOLXo2TOhy1H4qbMlLkQMs8HxUcxjl0V+tq/aYFstYZKhtiddu/ZGTrAXiLWQZFAji+roPORxBiMNan6QzaXQWhmYFhtel6YYBOqoNJh8ZcG6bWKCU3XiakypScdfWSK9Xh3jD5bicJvF8aDE2NPCx+9d1rM5V83w/uhU2JdEAKMo8M
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-The command "trace-cmd list -o" list all the options that are enabled. Most
-of the time the user just wants to see a single option. Allow the -o option
-to take an optional parameter that will filter the options shown.
+If the trace was recorded with the function graph option: funcgraph-retaddr
+The function trace includes the parent function in the address space.
+Add support to show the parent function in a /* <-[parent] */ format.
+
+ fgraph_retaddr_entry:              |  irq_enter_rcu() /* <-sysvec_call_function_single */ {
+ fgraph_retaddr_entry:   0.748 us   |    preempt_count_add(val=65536); /* <-irq_enter_rcu */ (ret=0x10001)
+ fgraph_retaddr_entry:              |    tick_irq_enter() /* <-irq_enter_rcu */ {
+ fgraph_retaddr_entry:   0.524 us   |      tick_check_oneshot_broadcast_this_cpu(); /* <-tick_irq_enter */ (ret=0x6)
+ fgraph_retaddr_entry:   2.030 us   |      ktime_get(); /* <-tick_irq_enter */ (ret=0x4695e53ad9c)
+ fgraph_retaddr_entry:              |      tick_nohz_stop_idle(ts=0xffff90273df22610, now=4850600619420) /* <-tick_irq_enter */ {
+ fgraph_retaddr_entry:   0.437 us   |        nr_iowait_cpu(cpu=6); /* <-tick_nohz_stop_idle */ (ret=0x0)
+ funcgraph_exit:         2.043 us   |      } (ret=0xb882194c0316dc00)
+ funcgraph_exit:         6.764 us   |    } (ret=0x31)
+ funcgraph_exit:       + 11.033 us  |  } (ret=0x31)
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
-Changes since v1: https://lore.kernel.org/all/20250827204100.2cc9d9b1@gandalf.local.home/
+ lib/trace-cmd/trace-ftrace.c | 30 +++++++++++++++++++++++++++---
+ 1 file changed, 27 insertions(+), 3 deletions(-)
 
-- Fix a missed "show_options()" update
-
- tracecmd/include/trace-local.h |  2 +-
- tracecmd/trace-list.c          | 19 ++++++++++++++++---
- tracecmd/trace-stat.c          |  2 +-
- 3 files changed, 18 insertions(+), 5 deletions(-)
-
-diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
-index 54a1b51e..4ad07b63 100644
---- a/tracecmd/include/trace-local.h
-+++ b/tracecmd/include/trace-local.h
-@@ -343,7 +343,7 @@ void add_instance(struct buffer_instance *instance, int cpu_count);
- void update_first_instance(struct buffer_instance *instance, int topt);
+diff --git a/lib/trace-cmd/trace-ftrace.c b/lib/trace-cmd/trace-ftrace.c
+index c61dd543..f52b203c 100644
+--- a/lib/trace-cmd/trace-ftrace.c
++++ b/lib/trace-cmd/trace-ftrace.c
+@@ -253,6 +253,7 @@ print_graph_entry_leaf(struct trace_seq *s,
+ 	unsigned long long val;
+ 	unsigned long long retval;
+ 	bool fgraph_retval_supported = true;
++	const char *retfunc = NULL;
+ 	const char *func;
+ 	int ret;
+ 	int i;
+@@ -270,6 +271,10 @@ print_graph_entry_leaf(struct trace_seq *s,
+ 			return trace_seq_putc(s, '!');
+ 	}
  
- void show_instance_file(struct buffer_instance *instance, const char *name);
--void show_options(const char *prefix, struct buffer_instance *buffer);
-+void show_options(const char *prefix, struct buffer_instance *buffer, const char *re);
++	/* In case this is a retaddr event */
++	if (!tep_get_field_val(s, event, "retaddr", record, &val, 1))
++		retfunc = tep_find_function(pevent, val);
++
+ 	duration = rettime - calltime;
  
- struct trace_guest {
- 	struct tracefs_instance *instance;
-diff --git a/tracecmd/trace-list.c b/tracecmd/trace-list.c
-index 073b37fb..b9e23f66 100644
---- a/tracecmd/trace-list.c
-+++ b/tracecmd/trace-list.c
-@@ -389,14 +389,22 @@ static void show_tracers(void)
- 	show_file("available_tracers");
- }
+ 	/* Overhead */
+@@ -299,6 +304,9 @@ print_graph_entry_leaf(struct trace_seq *s,
+ 	if (ret && fgraph_depth->set)
+ 		ret = trace_seq_printf(s, " (%lld)", depth);
  
--void show_options(const char *prefix, struct buffer_instance *buffer)
-+void show_options(const char *prefix, struct buffer_instance *buffer, const char *re)
- {
- 	struct tracefs_instance *instance = buffer ? buffer->tracefs : NULL;
- 	struct dirent *dent;
- 	struct stat st;
-+	regex_t reg;
- 	char *path;
- 	DIR *dir;
++	if (retfunc)
++		ret = trace_seq_printf(s, " /* <-%s */", retfunc);
++
+ 	/* Return Value */
+ 	if (ret && fgraph_retval_supported && !fgraph_retval_skip->set) {
+ 		if (fgraph_retval_dec->set) {
+@@ -324,6 +332,7 @@ static int print_graph_nested(struct trace_seq *s,
+ 	struct tep_handle *pevent = event->tep;
+ 	unsigned long long depth;
+ 	unsigned long long val;
++	const char *retfunc = NULL;
+ 	const char *func;
+ 	int ret;
+ 	int i;
+@@ -337,6 +346,10 @@ static int print_graph_nested(struct trace_seq *s,
+ 	if (tep_get_field_val(s, event, "depth", record, &depth, 1))
+ 		return trace_seq_putc(s, '!');
  
-+	if (re && strlen(re)) {
-+		if (regcomp(&reg, re, REG_ICASE|REG_NOSUB))
-+			die("invalid function regex '%s'", re);
++	/* In case this is a retaddr event */
++	if (!tep_get_field_val(s, event, "retaddr", record, &val, 1))
++		retfunc = tep_find_function(pevent, val);
++
+ 	/* Function */
+ 	for (i = 0; i < (int)(depth * TRACE_GRAPH_INDENT); i++)
+ 		trace_seq_putc(s, ' ');
+@@ -346,12 +359,20 @@ static int print_graph_nested(struct trace_seq *s,
+ 
+ 	func = tep_find_function(pevent, val);
+ 
++
+ 	if (func) {
+ 		ret = trace_seq_printf(s, "%s(", func);
+ 		print_args(s, event, record, func);
+-		ret = trace_seq_puts(s, ") {");
+-	} else
+-		ret = trace_seq_printf(s, "%llx() {", val);
++		if (retfunc)
++			ret = trace_seq_printf(s, ") /* <-%s */ {", retfunc);
++		else
++			ret = trace_seq_puts(s, ") {");
 +	} else {
-+		re = NULL;
++		if (retfunc)
++			ret = trace_seq_printf(s, "%llx() /* <-%s */ {", val, retfunc);
++		else
++			ret = trace_seq_puts(s, ") {");
 +	}
+ 
+ 	if (ret && fgraph_depth->set)
+ 		ret = trace_seq_printf(s, " (%lld)", depth);
+@@ -504,6 +525,9 @@ int tracecmd_ftrace_overrides(struct tracecmd_input *handle,
+ 	tep_register_event_handler(pevent, -1, "ftrace", "funcgraph_entry",
+ 				      fgraph_ent_handler, finfo);
+ 
++	tep_register_event_handler(pevent, -1, "ftrace", "fgraph_retaddr_entry",
++				      fgraph_ent_handler, finfo);
 +
- 	if (!prefix)
- 		prefix = "";
+ 	tep_register_event_handler(pevent, -1, "ftrace", "funcgraph_exit",
+ 				      fgraph_ret_handler, finfo);
  
-@@ -423,6 +431,9 @@ void show_options(const char *prefix, struct buffer_instance *buffer)
- 		    strcmp(name, "..") == 0)
- 			continue;
- 
-+		if (re && regexec(&reg, name, 0, NULL, 0) != 0)
-+			continue;
-+
- 		ret = asprintf(&file, "options/%s", name);
- 		if (ret < 0)
- 			die("Failed to allocate file name");
-@@ -645,6 +656,7 @@ void trace_list(int argc, char **argv)
- 	const char *arg;
- 	const char *funcre = NULL;
- 	const char *eventre = NULL;
-+	const char *optionre = NULL;
- 
- 	for (i = 2; i < argc; i++) {
- 		arg = NULL;
-@@ -694,6 +706,7 @@ void trace_list(int argc, char **argv)
- 				break;
- 			case 'o':
- 				options = 1;
-+				optionre = arg;
- 				show_all = 0;
- 				break;
- 			case 'f':
-@@ -735,7 +748,7 @@ void trace_list(int argc, char **argv)
- 		show_tracers();
- 
- 	if (options)
--		show_options(NULL, NULL);
-+		show_options(NULL, NULL, optionre);
- 
- 	if (plug)
- 		show_plugins();
-@@ -763,7 +776,7 @@ void trace_list(int argc, char **argv)
- 		printf("\ntracers:\n");
- 		show_tracers();
- 		printf("\noptions:\n");
--		show_options(NULL, NULL);
-+		show_options(NULL, NULL, NULL);
- 		show_compression();
- 	}
- 
-diff --git a/tracecmd/trace-stat.c b/tracecmd/trace-stat.c
-index 7ac62f2a..41f6358f 100644
---- a/tracecmd/trace-stat.c
-+++ b/tracecmd/trace-stat.c
-@@ -851,7 +851,7 @@ static void stat_instance(struct buffer_instance *instance, bool opt)
- 		    "Filtered function tracer notrace PIDs:\n");
- 	if (opt) {
- 		printf("\nOptions:\n");
--		show_options("   ", instance);
-+		show_options("   ", instance, NULL);
- 	}
- 	report_traceon(instance);
- 	report_file(instance, "error_log", "", "Error log:\n");
 -- 
 2.50.1
 
