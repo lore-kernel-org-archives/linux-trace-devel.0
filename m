@@ -1,405 +1,237 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from relay.hostedemail.com (smtprelay0016.hostedemail.com [216.40.44.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C8E939E171
-	for <linux-trace-devel@vger.kernel.org>; Tue, 20 Jan 2026 20:15:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FAE230C373
+	for <linux-trace-devel@vger.kernel.org>; Wed, 21 Jan 2026 19:46:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768940123; cv=none; b=Qp4/85zmUUMHmZSQAM1Rxe8MfcsyOx3hnYnr/X6wSEkVpaZW+KQzAgwJOy6MeIK3oBW7rB5+d9cxpUDLtOqeud40epNbw9O3PZATIe/I22jvwo+OskoDtTPGnf+OrnRCgtGExczz0e2EGZJHwT1Kk6eAtJ9nsQL/bUUWTtVcfB4=
+	t=1769024780; cv=none; b=j1Nxt+8eMpmHvYOnxaXCcGat+n9FKEwyO3B8GjGiETCbBOVT3vok0+m2GM9BJwzmH7DC9etPrpNXNQjcfwuwG99epQT6FnzNnEK44HfDkKYoOYrZMMiY8PNCNCMsvqDJLN+Vf2ywZGUYkjQx2iOqpwICNm5dIatsLe4m5yQ4+vE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768940123; c=relaxed/simple;
-	bh=+O/FgdDGRG9aCrKetiCN9Xasn9vM/aNabHkFxZIaChw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Z5koyEYwiYR47fAgAstEk9Oy8Aa6oA9yNLuz5LH5eAOw2+On42sosfllJkwRPhhriAiU3uPjxwj19wz+Akvy311CmjOT9pFQ9qs/Sz2k32/HvCcAF4occMQB0gRAvba8ispepvn4idrEPu5/X7gIW+DdrgYbY0553rdbMRGCzzg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54E38C16AAE;
-	Tue, 20 Jan 2026 20:15:23 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.99.1)
-	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1viI8f-00000001vwP-1aLo;
-	Tue, 20 Jan 2026 15:15:45 -0500
+	s=arc-20240116; t=1769024780; c=relaxed/simple;
+	bh=9ar1z445Oq+MwRu/uQxn+s73/s57CALrVqJuWuhK+gI=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=EOPg0u8PjOVYI/KVWXbmi6lVvIciuEbAYddlvq3GH8G+s3y5zS1Ati6eS2YgKbNRouBGqO73si2ayJHV45rCKYpheM+TcPkWKNDIpYBueoWQ9cKD8PvQWh2GDUcs7Pcuxw71dgKseqwq/3lUeEvzAPLJKSm1mvkKnQU3DqyFiqY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf02.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay09.hostedemail.com (Postfix) with ESMTP id 016178D0C3
+	for <linux-trace-devel@vger.kernel.org>; Wed, 21 Jan 2026 19:37:41 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf02.hostedemail.com (Postfix) with ESMTPA id B45DE8000E
+	for <linux-trace-devel@vger.kernel.org>; Wed, 21 Jan 2026 19:37:40 +0000 (UTC)
+Date: Wed, 21 Jan 2026 14:38:03 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-trace-devel@vger.kernel.org
-Cc: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH 2/2] libtraceevent: Add tep_btf_list_args()
-Date: Tue, 20 Jan 2026 15:13:37 -0500
-Message-ID: <20260120201543.460979-3-rostedt@goodmis.org>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20260120201543.460979-1-rostedt@goodmis.org>
-References: <20260120201543.460979-1-rostedt@goodmis.org>
+To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] trace-cmd list: Add --proto option to show fuction
+ prototype
+Message-ID: <20260121143803.0a20acda@gandalf.local.home>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Server: rspamout06
+X-Rspamd-Queue-Id: B45DE8000E
+X-Stat-Signature: iuddedxzmcs8ptsxmborxkfj3dpyxrqg
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX18cw8JaV4AcDmbGO/75gk3yVPp/9UkvT+8=
+X-HE-Tag: 1769024260-684058
+X-HE-Meta: U2FsdGVkX1/DNdfNUASKaAq+Dum/rFM0YDbh5s35UBqhw0CBkNdyfHKn59sLV+2VNZzM1C/yavvoVlkrwcYtx73qU9Pdm3KHfYbeVNIwwl1gSZNu5vbGbFu/cJchNkPL5gitHqNYWCcIh9fYk6IrEx7F6AXvXd4Sn6wSaaaRsosM4+JxbcJPAyr25zN5S4uGopBcyE3Em6HIbTd1OuKKoo2ynCzqnkKSzDTN51vVjbHI0dRJX/nhxD7R5TyWH+7xUNd+SaBj7AMLn4yTa+DU7SROtWfFQDrcFUKjIdYyUPW0EdEMq7WiBTDV5PUWbawap3jWI4fd0ksALd1nmoHQ7LPKDnNYL5ufniEiMTJRhWtqOTN+mKB24DCiLmSSiVmj
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Add tep_btf_list_args() to display a function's prototype:
-
- struct trace_seq s;
-
- trace_seq_init(&s);
- tep_btf_list_args(tep, &s, "proc_scheduler");
- trace_seq_do_printf(&s);
-
-produces:
-
-    const struct ctl_table *ctl, int write, void *buffer, size_t *lenp, loff_t *ppos
-
-Where the prototype of proc_scheduler() is:
-
- static int proc_scheduler(const struct ctl_table *ctl, int write,
-			  void *buffer, size_t *lenp, loff_t *ppos)
+If BTF is available and the user adds --proto to the command line, the
+function list (-f) will include the prototypes of the functions.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- Documentation/libtraceevent-btf-proto.txt | 124 ++++++++++++++++++
- Documentation/libtraceevent.txt           |   1 +
- include/traceevent/event-parse.h          |   1 +
- src/trace-btf.c                           | 151 +++++++++++++++++++++-
- 4 files changed, 275 insertions(+), 2 deletions(-)
- create mode 100644 Documentation/libtraceevent-btf-proto.txt
+ Documentation/trace-cmd/trace-cmd-list.1.txt |  7 ++
+ tracecmd/trace-cmd.bash                      |  2 +-
+ tracecmd/trace-list.c                        | 76 ++++++++++++++++++--
+ tracecmd/trace-usage.c                       |  1 +
+ 4 files changed, 81 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/libtraceevent-btf-proto.txt b/Documentation/libtraceevent-btf-proto.txt
-new file mode 100644
-index 000000000000..1a51edd7ed4d
---- /dev/null
-+++ b/Documentation/libtraceevent-btf-proto.txt
-@@ -0,0 +1,124 @@
-+libtraceevent(3)
-+================
+diff --git a/Documentation/trace-cmd/trace-cmd-list.1.txt b/Documentation/trace-cmd/trace-cmd-list.1.txt
+index b77e3460..e0a1a3b8 100644
+--- a/Documentation/trace-cmd/trace-cmd-list.1.txt
++++ b/Documentation/trace-cmd/trace-cmd-list.1.txt
+@@ -58,6 +58,13 @@ OPTIONS
+ 
+     trace-cmd list -f '^sched.*'
+ 
++    If *--proto* is also added to the command line, the functions will also have
++    show their prototypes if BTF is available.
 +
-+NAME
-+----
-+tep_btf_list_args - Show the arguments of a function from BTF
++*--proto*::
++    If BTF is available on the running kernel, it will also show the function
++    parameters with *-f*.
 +
-+SYNOPSIS
-+--------
-+[verse]
-+--
-+*#include <event-parse.h>*
-+
-+int *tep_btf_list_args*(struct tep_handle pass:[*]_tep_, struct trace_seq pass:[*]_s_, const char pass:[*]_func_);
-+--
-+
-+DESCRIPTION
-+-----------
-+If the Linux kernel has BTF configured, then a binary file will exist
-+in the path of */sys/kernel/btf/vmlinux*. If this file is read into memory
-+and passed to *tep_load_btf()* function, then it can be used to read the arguments
-+of a given function, if that function data is found within the BTF file.
-+
-+The *tep_btf_print_args()* takes a _tep_ handle, a trace_seq _s_ pointer
-+(that was initialized by *trace_seq_init(3)*), and a _func_ string that is
-+the name of the function to find the BTF information to use to print the function's prototype. 
-+If BTF is not loaded or the _func_ name is not found it will return a negative.
-+
-+RETURN VALUE
-+------------
-+*tep_btf_list_args()* returns the number of arguments read on success and -1 on failure
-+(for example, if the function is not found).
-+
-+EXAMPLE
-+-------
-+[source,c]
-+--
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <fcntl.h>
-+#include <event-parse.h>
-+#include <sys/stat.h>
+ *-P*::
+     List the plugin files that get loaded on trace-cmd report.
+ 
+diff --git a/tracecmd/trace-cmd.bash b/tracecmd/trace-cmd.bash
+index a7e81e0d..fca77201 100644
+--- a/tracecmd/trace-cmd.bash
++++ b/tracecmd/trace-cmd.bash
+@@ -108,7 +108,7 @@ __trace_cmd_list_complete()
+     case "$prev" in
+ 	list)
+ 	    local cmds=$(trace-cmd list -h |egrep "^ {10}-" | \
+-				 sed -e 's/.*\(-.\).*/\1/')
++				 sed -e 's/^ *\(-[^ ]*\).*/\1/')
+ 	    COMPREPLY=( $(compgen -W "${cmds}" -- "${cur}") )
+ 	    ;;
+ 	-e)
+diff --git a/tracecmd/trace-list.c b/tracecmd/trace-list.c
+index b9e23f66..da2604ed 100644
+--- a/tracecmd/trace-list.c
++++ b/tracecmd/trace-list.c
+@@ -6,10 +6,12 @@
+ 
+ #include <stdlib.h>
+ #include <sys/stat.h>
 +#include <unistd.h>
-+
-+#define BTF_FILE "/sys/kernel/btf/vmlinux"
-+
-+int main(int argc, char **argv)
+ 
+ #include "tracefs.h"
+ #include "trace-local.h"
+ 
++#define BTF_FILE	"/sys/kernel/btf/vmlinux"
+ 
+ static void dump_file_content(const char *path)
+ {
+@@ -474,9 +476,53 @@ static void show_clocks(void)
+ 	free(clocks);
+ }
+ 
++static struct tep_handle *load_btf(void)
 +{
 +	struct tep_handle *tep;
-+	struct trace_seq s;
 +	struct stat st;
++	ssize_t size;
 +	char *buf;
-+	int fd, r, z;
++	int ret;
++	int fd;
++	int r, s = 0;
 +
-+	if (argc < 2)
-+		exit(-1);
++	ret = stat(BTF_FILE, &st);
++	if (ret < 0)
++		return NULL;
 +
-+	if (stat(BTF_FILE, &st) < 0) {
-+		perror(BTF_FILE);
-+		exit(-1);
-+	}
-+
-+	buf = malloc(st.st_size);
++	size = st.st_size;
++	buf = malloc(size);
 +	if (!buf)
-+		exit(-1);
++		return NULL;
++
 +	fd = open(BTF_FILE, O_RDONLY);
-+	if (fd < 0) {
-+		perror(BTF_FILE);
-+		exit(-1);
-+	}
-+	for (z = 0; z < st.st_size; ) {
-+		r = read(fd, buf + z, st.st_size - z);
-+		if (r <= 0)
++	if (fd < 0)
++		return NULL;
++
++	while (size) {
++		r = read(fd, buf + s, size);
++		if (r < 0)
 +			break;
-+		z += r;
++		s += r;
++		size -= r;
 +	}
 +	close(fd);
++
 +	tep = tep_alloc();
-+	if (!tep)
-+		exit(-1);
 +
-+	tep_load_btf(tep, buf, z);
-+	free(buf);
-+
-+	trace_seq_init(&s);
-+	tep_btf_list_args(tep, &s, argv[1]);
-+	printf("%s(", argv[1]);
-+	trace_seq_do_printf(&s);
-+	printf(")\n");
-+	exit(0);
-+}
-+
-+--
-+FILES
-+-----
-+[verse]
-+--
-+*event-parse.h*
-+	Header file to include in order to have access to the library APIs.
-+*-ltraceevent*
-+	Linker switch to add when building a program that uses the library.
-+--
-+
-+SEE ALSO
-+--------
-+*tep_btf_load*(3), *tep_btf_print_args*(3), *libtraceevent*(3), *trace-cmd*(1)
-+
-+AUTHOR
-+------
-+[verse]
-+--
-+*Steven Rostedt* <rostedt@goodmis.org>, author of *libtraceevent*.
-+--
-+REPORTING BUGS
-+--------------
-+Report bugs to  <linux-trace-devel@vger.kernel.org>
-+
-+LICENSE
-+-------
-+libtraceevent is Free Software licensed under the GNU LGPL 2.1
-+
-+RESOURCES
-+---------
-+https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git/
-diff --git a/Documentation/libtraceevent.txt b/Documentation/libtraceevent.txt
-index 5fb5fc19ffc1..6e5fdbc6e886 100644
---- a/Documentation/libtraceevent.txt
-+++ b/Documentation/libtraceevent.txt
-@@ -170,6 +170,7 @@ BTF parsing:
- 	int *tep_load_btf*(struct tep_handle pass:[*]_tep_, void pass:[*]_raw_data_, size_t _data_size_);
- 	int *tep_btf_print_args*(struct tep_handle pass:[*]_tep_, struct trace_seq pass:[*]_s_, void pass:[*]_args_,
- 		       int nmem, int size, const char pass:[*]_func_);
-+	int *tep_btf_list_args*(struct tep_handle pass:[*]_tep_, struct trace_seq pass:[*]_s_, const char pass:[*]_func_);
- 
- Trace sequences:
- *#include <trace-seq.h>*
-diff --git a/include/traceevent/event-parse.h b/include/traceevent/event-parse.h
-index 9c1abfae28d9..0070e21eb952 100644
---- a/include/traceevent/event-parse.h
-+++ b/include/traceevent/event-parse.h
-@@ -589,6 +589,7 @@ struct kbuffer *tep_kbuffer(struct tep_handle *tep);
- 
- /* BTF */
- int tep_load_btf(struct tep_handle *tep, void *raw_data, size_t data_size);
-+int tep_btf_list_args(struct tep_handle *tep, struct trace_seq *s, const char *func);
- int tep_btf_print_args(struct tep_handle *tep, struct trace_seq *s, void *args,
- 		       int nmem, int size, const char *func);
- 
-diff --git a/src/trace-btf.c b/src/trace-btf.c
-index 0b733bf9cb75..cf5a9780ab8e 100644
---- a/src/trace-btf.c
-+++ b/src/trace-btf.c
-@@ -323,6 +323,89 @@ static struct btf_type *btf_skip_modifiers(struct tep_btf *btf, int id)
- 	return t;
- }
- 
-+static void add_name(struct tep_btf *btf, struct btf_type *t,
-+		     struct trace_seq *s, const char *alt)
-+{
-+	const char *name;
-+
-+	name = btf_name(btf, t->name_off);
-+	if (name)
-+		trace_seq_printf(s, "%s ", name);
-+	else if (alt)
-+		trace_seq_printf(s, "%s ", alt);
-+	else
-+		trace_seq_puts(s, "?? ");
-+}
-+
-+static void btf_add_type(struct tep_btf *btf, struct trace_seq *s, int id)
-+{
-+	struct btf_type *t = btf_get_type(btf, id);
-+	unsigned int encode;
-+	int bits;
-+
-+	while (t) {
-+		switch (BTF_INFO_KIND(t->info)) {
-+		case BTF_KIND_TYPEDEF:
-+			add_name(btf, t, s, "typedef");
-+			return;
-+
-+		case BTF_KIND_ENUM:
-+			trace_seq_puts(s, "enum ");
-+			add_name(btf, t, s, NULL);
-+			return;
-+
-+		case BTF_KIND_STRUCT:
-+			trace_seq_puts(s, "struct ");
-+			add_name(btf, t, s, NULL);
-+			return;
-+
-+		case BTF_KIND_UNION:
-+			trace_seq_puts(s, "union ");
-+			add_name(btf, t, s, NULL);
-+			return;
-+
-+		case BTF_KIND_PTR:
-+			if (t->type)
-+				btf_add_type(btf, s, t->type);
-+			else
-+				trace_seq_puts(s, "void ");
-+			trace_seq_puts(s, "*");
-+			return;
-+
-+		case BTF_KIND_VOLATILE:	trace_seq_puts(s, "volatile ");
-+			btf_add_type(btf, s, t->type);
-+			return;
-+
-+		case BTF_KIND_CONST:	trace_seq_puts(s, "const ");
-+			btf_add_type(btf, s, t->type);
-+			return;
-+
-+		case BTF_KIND_INT:
-+			encode = *(int *)((void *)t + sizeof(*t));
-+			if (!(BTF_INT_ENCODING(encode) & BTF_INT_SIGNED))
-+				trace_seq_puts(s, "unsigned ");
-+
-+			bits = BTF_INT_BITS(encode);
-+			switch (bits) {
-+			case 8:		trace_seq_puts(s, "char "); break;
-+			case 16:	trace_seq_puts(s, "short "); break;
-+			case 32:	trace_seq_puts(s, "int "); break;
-+			case 64:	trace_seq_puts(s, "long long "); break;
-+			default:	trace_seq_printf(s, "int%d ", bits);
-+			}
-+			return;
-+
-+
-+		case BTF_KIND_RESTRICT:
-+		case BTF_KIND_TYPE_TAG:
-+			id = t->type;
-+			t = btf_get_type(btf, t->type);
-+			continue;
-+		}
-+		break;
++	if (!tep || tep_load_btf(tep, buf, s) < 0) {
++		tep_free(tep);
++		tep = NULL;
 +	}
+ 
+-static void show_functions(const char *funcre)
++	free(buf);
++	return tep;
 +}
 +
- static void assign_arg(unsigned long long *arg, void *args, int size, int a)
++static void show_functions(const char *funcre, int params)
  {
- 	*arg = size == 4 ?
-@@ -338,7 +421,7 @@ static int init_btf_func(struct tep_btf *btf, struct trace_seq *s,
- 	unsigned long long arg;
- 	const char *fp;
- 
--	if (size != 4 && size != 8)
-+	if (args && (size != 4 && size != 8))
- 		return -1;
- 
- 	if (!type && (fp = strchr(func, '.'))) {
-@@ -353,7 +436,7 @@ static int init_btf_func(struct tep_btf *btf, struct trace_seq *s,
++	struct tep_handle *tep = NULL;
++	struct trace_seq s;
+ 	bool found = false;
+ 	char *new_re = NULL;
+ 	char **list;
+@@ -487,6 +533,13 @@ static void show_functions(const char *funcre)
+ 		return;
  	}
  
- 	if (!type) {
--		for (int i = 0; i < nmem; i++) {
-+		for (int i = 0; args && i < nmem; i++) {
- 			assign_arg(&arg, args, size, i);
- 			trace_seq_printf(s, "%llx", arg);
- 			if (i + 1 < nmem)
-@@ -375,6 +458,70 @@ static int init_btf_func(struct tep_btf *btf, struct trace_seq *s,
- 	return 0;
- }
++	trace_seq_init(&s);
++	if (params) {
++		tep = load_btf();
++		if (!tep)
++			params = 0;
++	}
++
+ 	/* if the re doesn't have any regular expressions, then add them */
+ 	for (i = 0; !found && funcre[i]; i++) {
+ 		if (funcre[i] == '\\')
+@@ -510,8 +563,18 @@ static void show_functions(const char *funcre)
  
-+/**
-+ * tep_btf_list_args - List the arguments (type and name) for a function
-+ * @tep: The tep descriptor to use
-+ * @s: The trace_seq to write the arguments into
-+ * @func: The name of the function.
-+ *
-+ * Loads up @s with the type and name of @func's arguments (basically
-+ * its prototype).
-+ *
-+ * Returns: number of arguments found, or -1 on failure.
-+ */
-+int tep_btf_list_args(struct tep_handle *tep, struct trace_seq *s, const char *func)
-+{
-+	struct tep_btf *btf = tep->btf;
-+	struct btf_type *type = tep_btf_find_func(btf, func);
-+	struct btf_param *param;
-+	const char *param_name;
-+	int p, nr;
-+
-+	if (init_btf_func(btf, s, NULL, 0, 0, func, &type) < 0)
-+		return -1;
-+
-+	/* Type is NULL if function wasn't found */
-+	if (!type)
-+		return -1;
-+
-+	/* Get the function proto */
-+	type = btf_get_type(btf, type->type);
-+
-+	/* No proto means "()" ? */
-+	if (!type)
-+		return 0;
-+
-+	if (BTF_INFO_KIND(type->info) != BTF_KIND_FUNC_PROTO) {
-+		tep_warning("Invalid func proto type %d %s for function %s\n",
-+			    BTF_INFO_KIND(type->info),
-+			    btf_type_str(type), func);
-+		return -1;
+ 	if (tracefs_filter_functions(funcre, NULL, &list) < 0)
+ 		die("Failed to read filte functions");
+-	for (i = 0; list && list[i]; i++)
+-		printf("%s\n", list[i]);
++	for (i = 0; list && list[i]; i++) {
++		printf("%s", list[i]);
++		if (params) {
++			trace_seq_reset(&s);
++			if (tep_btf_list_args(tep, &s, list[i]) >= 0) {
++				printf("(");
++				trace_seq_do_printf(&s);
++				printf(")");
++			}
++		}
++		printf("\n");
 +	}
-+
-+	/* Get the number of parameters */
-+	nr = BTF_INFO_VLEN(type->info);
-+
-+	/* The parameters are right after the FUNC_PROTO type */
-+	param = ((void *)type) + sizeof(*type);
-+
-+	for (p = 0; p < nr; p++) {
-+
-+		if (p)
-+			trace_seq_puts(s, ", ");
-+
-+		param_name = btf_name(btf, param[p].name_off);
-+		if (!param_name)
-+			param_name = "??";
-+
-+		btf_add_type(btf, s, param[p].type);
-+
-+
-+		if (param_name)
-+			trace_seq_printf(s, "%s", param_name);
-+	}
-+	return p;
-+}
-+
- /**
-  * tep_btf_print_args - Print function arguments from BTF info
-  * @tep: The tep descriptor to use
+ 	tracefs_list_free(list);
+ 	free(new_re);
+ }
+@@ -652,6 +715,7 @@ void trace_list(int argc, char **argv)
+ 	int systems = 0;
+ 	int show_all = 1;
+ 	int compression = 0;
++	int params = 0;
+ 	int i;
+ 	const char *arg;
+ 	const char *funcre = NULL;
+@@ -731,6 +795,10 @@ void trace_list(int argc, char **argv)
+ 					flags |= SHOW_EVENT_FULL;
+ 					break;
+ 				}
++				if (strcmp(argv[i], "--proto") == 0) {
++					params = 1;
++					break;
++				}
+ 				fprintf(stderr, "list: invalid option -- '%s'\n",
+ 					argv[i]);
+ 			default:
+@@ -757,7 +825,7 @@ void trace_list(int argc, char **argv)
+ 		show_plugin_options();
+ 
+ 	if (funcs)
+-		show_functions(funcre);
++		show_functions(funcre, params);
+ 
+ 	if (buffers)
+ 		show_buffers();
+diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
+index 3fd975c0..f5a1c74c 100644
+--- a/tracecmd/trace-usage.c
++++ b/tracecmd/trace-usage.c
+@@ -391,6 +391,7 @@ static struct usage_help usage_help[] = {
+ 		"          -B list defined buffer instances\n"
+ 		"          -C list the defined clocks (and active one)\n"
+ 		"          -c list the supported trace file compression algorithms\n"
++		"          --proto list the prototype of a function (if BTF is available)\n"
+ 	},
+ 	{
+ 		"restore",
 -- 
-2.51.0
+2.50.1
 
