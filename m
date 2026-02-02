@@ -1,237 +1,167 @@
-Received: from relay.hostedemail.com (smtprelay0016.hostedemail.com [216.40.44.16])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FAE230C373
-	for <linux-trace-devel@vger.kernel.org>; Wed, 21 Jan 2026 19:46:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87C2EB652
+	for <linux-trace-devel@vger.kernel.org>; Mon,  2 Feb 2026 22:39:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769024780; cv=none; b=j1Nxt+8eMpmHvYOnxaXCcGat+n9FKEwyO3B8GjGiETCbBOVT3vok0+m2GM9BJwzmH7DC9etPrpNXNQjcfwuwG99epQT6FnzNnEK44HfDkKYoOYrZMMiY8PNCNCMsvqDJLN+Vf2ywZGUYkjQx2iOqpwICNm5dIatsLe4m5yQ4+vE=
+	t=1770071958; cv=none; b=tBCIIB6qD1dYLYc6D5FmG5VphPNqNA6JskDuvuV+YEZXx5d2TRZNg6xHc9SsId+SNQ/Yqd+5bcnGR35AuKOcwRBeD/VhkXAzG0OkuOL/qpi9tzvp068LWqknI84CNbwWSJtJC+9c/lb8ALXo+yJY7IfoeWgkyxAnVdZLWbOob2E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769024780; c=relaxed/simple;
-	bh=9ar1z445Oq+MwRu/uQxn+s73/s57CALrVqJuWuhK+gI=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=EOPg0u8PjOVYI/KVWXbmi6lVvIciuEbAYddlvq3GH8G+s3y5zS1Ati6eS2YgKbNRouBGqO73si2ayJHV45rCKYpheM+TcPkWKNDIpYBueoWQ9cKD8PvQWh2GDUcs7Pcuxw71dgKseqwq/3lUeEvzAPLJKSm1mvkKnQU3DqyFiqY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf02.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay09.hostedemail.com (Postfix) with ESMTP id 016178D0C3
-	for <linux-trace-devel@vger.kernel.org>; Wed, 21 Jan 2026 19:37:41 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf02.hostedemail.com (Postfix) with ESMTPA id B45DE8000E
-	for <linux-trace-devel@vger.kernel.org>; Wed, 21 Jan 2026 19:37:40 +0000 (UTC)
-Date: Wed, 21 Jan 2026 14:38:03 -0500
+	s=arc-20240116; t=1770071958; c=relaxed/simple;
+	bh=14J7V0sqS2pcOQkyXtaxK+qqZokvfIYlQcMJWoO2h6k=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=TW+tYV0NLZwlxfWPKfNAMqZcxJQXJTqLalPFXr4z7tf/diA5NEAqxDJCeDXUtgTi5q0+67+/Gm0hA7UDV0WbbubA7/HDjctu6+YYaqPel2Js9koo4NOpPoRVON5XB+/xCRlNuSmrw8QprJ0Bu0BAevfjDlpWAPSuPSapQqaqfAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63414C2BC86;
+	Mon,  2 Feb 2026 22:39:18 +0000 (UTC)
+Received: from rostedt by gandalf with local (Exim 4.99.1)
+	(envelope-from <rostedt@rostedt.homelinux.com>)
+	id 1vn2a8-00000008WeE-3fSO;
+	Mon, 02 Feb 2026 17:39:44 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
-To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: [PATCH] trace-cmd list: Add --proto option to show fuction
- prototype
-Message-ID: <20260121143803.0a20acda@gandalf.local.home>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+To: linux-trace-devel@vger.kernel.org
+Cc: Douglas Raillard <douglas.raillard@arm.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Takaya Saeki <takayas@google.com>,
+	Ian Rogers <irogers@google.com>,
+	"Steven Rostedt (Google)" <rostedt@goodmis.org>
+Subject: [PATCH v3 5/6] libtracecmd: Add printing of arguments for function graph tracer
+Date: Mon,  2 Feb 2026 17:37:00 -0500
+Message-ID: <20260202223941.2031858-6-rostedt@goodmis.org>
+X-Mailer: git-send-email 2.51.0
+In-Reply-To: <20260202223941.2031858-1-rostedt@goodmis.org>
+References: <20260202223941.2031858-1-rostedt@goodmis.org>
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Server: rspamout06
-X-Rspamd-Queue-Id: B45DE8000E
-X-Stat-Signature: iuddedxzmcs8ptsxmborxkfj3dpyxrqg
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX18cw8JaV4AcDmbGO/75gk3yVPp/9UkvT+8=
-X-HE-Tag: 1769024260-684058
-X-HE-Meta: U2FsdGVkX1/DNdfNUASKaAq+Dum/rFM0YDbh5s35UBqhw0CBkNdyfHKn59sLV+2VNZzM1C/yavvoVlkrwcYtx73qU9Pdm3KHfYbeVNIwwl1gSZNu5vbGbFu/cJchNkPL5gitHqNYWCcIh9fYk6IrEx7F6AXvXd4Sn6wSaaaRsosM4+JxbcJPAyr25zN5S4uGopBcyE3Em6HIbTd1OuKKoo2ynCzqnkKSzDTN51vVjbHI0dRJX/nhxD7R5TyWH+7xUNd+SaBj7AMLn4yTa+DU7SROtWfFQDrcFUKjIdYyUPW0EdEMq7WiBTDV5PUWbawap3jWI4fd0ksALd1nmoHQ7LPKDnNYL5ufniEiMTJRhWtqOTN+mKB24DCiLmSSiVmj
+Content-Transfer-Encoding: 8bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-If BTF is available and the user adds --proto to the command line, the
-function list (-f) will include the prototypes of the functions.
+If the function graph tracer was recorded with the funcgraph-args option
+set, then the BTF file would also be recorded. Print the contents of the
+arguments with the information provided by BTF.
+
+The output will look like this:
+
+             cat-43792 [006] ..... 147894.472393: funcgraph_entry:                   |  mutex_unlock(lock=0xffffffff831dbbe0) {
+             cat-43792 [006] ..... 147894.472394: funcgraph_entry:        1.005 us   |    __mutex_unlock_slowpath(lock=0xffffffff831dbbe0, ip=0xffffffff812f2e30); (ret=0x0)
+             cat-43792 [006] ..... 147894.472396: funcgraph_exit:         3.581 us   |  } (ret=0x0)
+             cat-43792 [006] ..... 147894.472397: funcgraph_entry:                   |  __f_unlock_pos(f=0xffff8881538df980) {
+             cat-43792 [006] ..... 147894.472397: funcgraph_entry:                   |    mutex_unlock(lock=0xffff8881538dfa10) {
+             cat-43792 [006] ..... 147894.472397: funcgraph_entry:        0.434 us   |      __mutex_unlock_slowpath(lock=0xffff8881538dfa10, ip=0xffffffff812f2e30); (ret=0x0)
+             cat-43792 [006] ..... 147894.472398: funcgraph_exit:         1.216 us   |    } (ret=0x0)
+             cat-43792 [006] ..... 147894.472399: funcgraph_exit:         2.152 us   |  } (ret=0x0)
+             cat-43792 [006] d.... 147894.472399: funcgraph_entry:        0.360 us   |  fpregs_assert_state_consistent(); (ret=0x6)
+             cat-43792 [006] ..... 147894.472403: funcgraph_entry:                   |  __x64_sys_execve(regs=0xffffc900029f3f58) {
+             cat-43792 [006] ..... 147894.472404: funcgraph_entry:                   |    getname_flags(filename=0x7fff4a902080, flags=0) {
+             cat-43792 [006] ..... 147894.472404: funcgraph_entry:                   |      getname_flags.part.0(7fff4a902080, 0, 0, 0, 0, 0) {
+             cat-43792 [006] ..... 147894.472405: funcgraph_entry:                   |        kmem_cache_alloc_noprof(s=0xffff8881001d3800, gfpflags=0xcc0) {
+             cat-43792 [006] ..... 147894.472405: funcgraph_entry:        0.618 us   |          fs_reclaim_acquire(gfp_mask=0xcc0); (ret=0x0)
+             cat-43792 [006] ..... 147894.472406: funcgraph_entry:        0.380 us   |          fs_reclaim_release(gfp_mask=0xcc0); (ret=0x0)
+             cat-43792 [006] ..... 147894.472407: funcgraph_entry:                   |          kmemleak_alloc(ptr=0xffff8881120b0000, size=0x1000, min_count=1, gfp=0xcc0) {
+             cat-43792 [006] ..... 147894.472408: funcgraph_entry:                   |            __create_object(ptr=0xffff8881120b0000, size=0x1000, min_count=1, gfp=0xcc0, objflags=0x0) {
+             cat-43792 [006] ..... 147894.472408: funcgraph_entry:                   |              __alloc_object(gfp=0xcc0) {
+             cat-43792 [006] ..... 147894.472408: funcgraph_entry:                   |                kmem_cache_alloc_noprof(s=0xffff888100045700, gfpflags=0x92cc0) {
+             cat-43792 [006] ..... 147894.472409: funcgraph_entry:        0.570 us   |                  fs_reclaim_acquire(gfp_mask=0x92cc0); (ret=0x0)
+             cat-43792 [006] ..... 147894.472410: funcgraph_entry:        0.370 us   |                  fs_reclaim_release(gfp_mask=0x92cc0); (ret=0x0)
+             cat-43792 [006] ..... 147894.472411: funcgraph_exit:         2.226 us   |                } (ret=0xffff88814bbcf6a8)
+
+Even if libtraceevent 1.9 is not available, print the raw arg registers if
+they exist in the function entry event.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- Documentation/trace-cmd/trace-cmd-list.1.txt |  7 ++
- tracecmd/trace-cmd.bash                      |  2 +-
- tracecmd/trace-list.c                        | 76 ++++++++++++++++++--
- tracecmd/trace-usage.c                       |  1 +
- 4 files changed, 81 insertions(+), 5 deletions(-)
+ lib/trace-cmd/trace-ftrace.c | 58 ++++++++++++++++++++++++++++++++----
+ 1 file changed, 52 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/trace-cmd/trace-cmd-list.1.txt b/Documentation/trace-cmd/trace-cmd-list.1.txt
-index b77e3460..e0a1a3b8 100644
---- a/Documentation/trace-cmd/trace-cmd-list.1.txt
-+++ b/Documentation/trace-cmd/trace-cmd-list.1.txt
-@@ -58,6 +58,13 @@ OPTIONS
- 
-     trace-cmd list -f '^sched.*'
- 
-+    If *--proto* is also added to the command line, the functions will also have
-+    show their prototypes if BTF is available.
-+
-+*--proto*::
-+    If BTF is available on the running kernel, it will also show the function
-+    parameters with *-f*.
-+
- *-P*::
-     List the plugin files that get loaded on trace-cmd report.
- 
-diff --git a/tracecmd/trace-cmd.bash b/tracecmd/trace-cmd.bash
-index a7e81e0d..fca77201 100644
---- a/tracecmd/trace-cmd.bash
-+++ b/tracecmd/trace-cmd.bash
-@@ -108,7 +108,7 @@ __trace_cmd_list_complete()
-     case "$prev" in
- 	list)
- 	    local cmds=$(trace-cmd list -h |egrep "^ {10}-" | \
--				 sed -e 's/.*\(-.\).*/\1/')
-+				 sed -e 's/^ *\(-[^ ]*\).*/\1/')
- 	    COMPREPLY=( $(compgen -W "${cmds}" -- "${cur}") )
- 	    ;;
- 	-e)
-diff --git a/tracecmd/trace-list.c b/tracecmd/trace-list.c
-index b9e23f66..da2604ed 100644
---- a/tracecmd/trace-list.c
-+++ b/tracecmd/trace-list.c
-@@ -6,10 +6,12 @@
- 
- #include <stdlib.h>
- #include <sys/stat.h>
-+#include <unistd.h>
- 
- #include "tracefs.h"
- #include "trace-local.h"
- 
-+#define BTF_FILE	"/sys/kernel/btf/vmlinux"
- 
- static void dump_file_content(const char *path)
- {
-@@ -474,9 +476,53 @@ static void show_clocks(void)
- 	free(clocks);
+diff --git a/lib/trace-cmd/trace-ftrace.c b/lib/trace-cmd/trace-ftrace.c
+index d0e6a8e7ac0d..c61dd543e250 100644
+--- a/lib/trace-cmd/trace-ftrace.c
++++ b/lib/trace-cmd/trace-ftrace.c
+@@ -198,6 +198,48 @@ static void print_graph_duration(struct trace_seq *s, unsigned long long duratio
+ 	trace_seq_puts(s, "|  ");
  }
  
-+static struct tep_handle *load_btf(void)
++/* Returns true if it printed args, otherwise it returns false */
++static bool print_args(struct trace_seq *s, struct tep_event *event,
++		       struct tep_record *record, const char *func)
 +{
-+	struct tep_handle *tep;
-+	struct stat st;
-+	ssize_t size;
-+	char *buf;
-+	int ret;
-+	int fd;
-+	int r, s = 0;
++	struct tep_format_field *field;
++	int long_size = tep_get_long_size(event->tep);
++	void *args;
++	int len;
 +
-+	ret = stat(BTF_FILE, &st);
-+	if (ret < 0)
-+		return NULL;
++	if (!long_size)
++		long_size = sizeof(long);
 +
-+	size = st.st_size;
-+	buf = malloc(size);
-+	if (!buf)
-+		return NULL;
++	field = tep_find_field(event, "args");
++	if (!field)
++		return false;
 +
-+	fd = open(BTF_FILE, O_RDONLY);
-+	if (fd < 0)
-+		return NULL;
++	len = record->size - field->offset;
 +
-+	while (size) {
-+		r = read(fd, buf + s, size);
-+		if (r < 0)
-+			break;
-+		s += r;
-+		size -= r;
++	len /= long_size;
++
++	args = record->data + field->offset;
++
++#ifdef HAVE_KERNEL_BTF
++	tep_btf_print_args(event->tep, s, args, len, long_size, func);
++#else
++	for (int i = 0; i < len; i++) {
++		void *arg;
++
++		if (i)
++			trace_seq_puts(s, ", ");
++
++		arg = args + i * long_size;
++		if (long_size == 4)
++			trace_seq_printf(s, "%x", *(unsigned int *)arg);
++		else
++			trace_seq_printf(s, "%llx", *(unsigned long long *)arg);
 +	}
-+	close(fd);
++#endif
 +
-+	tep = tep_alloc();
-+
-+	if (!tep || tep_load_btf(tep, buf, s) < 0) {
-+		tep_free(tep);
-+		tep = NULL;
-+	}
- 
--static void show_functions(const char *funcre)
-+	free(buf);
-+	return tep;
++	return true;
 +}
 +
-+static void show_functions(const char *funcre, int params)
- {
-+	struct tep_handle *tep = NULL;
-+	struct trace_seq s;
- 	bool found = false;
- 	char *new_re = NULL;
- 	char **list;
-@@ -487,6 +533,13 @@ static void show_functions(const char *funcre)
- 		return;
- 	}
+ static int
+ print_graph_entry_leaf(struct trace_seq *s,
+ 		       struct tep_event *event,
+@@ -247,9 +289,11 @@ print_graph_entry_leaf(struct trace_seq *s,
+ 		return trace_seq_putc(s, '!');
+ 	func = tep_find_function(pevent, val);
  
-+	trace_seq_init(&s);
-+	if (params) {
-+		tep = load_btf();
-+		if (!tep)
-+			params = 0;
-+	}
-+
- 	/* if the re doesn't have any regular expressions, then add them */
- 	for (i = 0; !found && funcre[i]; i++) {
- 		if (funcre[i] == '\\')
-@@ -510,8 +563,18 @@ static void show_functions(const char *funcre)
+-	if (func)
+-		ret = trace_seq_printf(s, "%s();", func);
+-	else
++	if (func) {
++		ret = trace_seq_printf(s, "%s(", func);
++		print_args(s, event, record, func);
++		ret = trace_seq_puts(s, ");");
++	} else
+ 		ret = trace_seq_printf(s, "%llx();", val);
  
- 	if (tracefs_filter_functions(funcre, NULL, &list) < 0)
- 		die("Failed to read filte functions");
--	for (i = 0; list && list[i]; i++)
--		printf("%s\n", list[i]);
-+	for (i = 0; list && list[i]; i++) {
-+		printf("%s", list[i]);
-+		if (params) {
-+			trace_seq_reset(&s);
-+			if (tep_btf_list_args(tep, &s, list[i]) >= 0) {
-+				printf("(");
-+				trace_seq_do_printf(&s);
-+				printf(")");
-+			}
-+		}
-+		printf("\n");
-+	}
- 	tracefs_list_free(list);
- 	free(new_re);
- }
-@@ -652,6 +715,7 @@ void trace_list(int argc, char **argv)
- 	int systems = 0;
- 	int show_all = 1;
- 	int compression = 0;
-+	int params = 0;
- 	int i;
- 	const char *arg;
- 	const char *funcre = NULL;
-@@ -731,6 +795,10 @@ void trace_list(int argc, char **argv)
- 					flags |= SHOW_EVENT_FULL;
- 					break;
- 				}
-+				if (strcmp(argv[i], "--proto") == 0) {
-+					params = 1;
-+					break;
-+				}
- 				fprintf(stderr, "list: invalid option -- '%s'\n",
- 					argv[i]);
- 			default:
-@@ -757,7 +825,7 @@ void trace_list(int argc, char **argv)
- 		show_plugin_options();
+ 	if (ret && fgraph_depth->set)
+@@ -302,9 +346,11 @@ static int print_graph_nested(struct trace_seq *s,
  
- 	if (funcs)
--		show_functions(funcre);
-+		show_functions(funcre, params);
+ 	func = tep_find_function(pevent, val);
  
- 	if (buffers)
- 		show_buffers();
-diff --git a/tracecmd/trace-usage.c b/tracecmd/trace-usage.c
-index 3fd975c0..f5a1c74c 100644
---- a/tracecmd/trace-usage.c
-+++ b/tracecmd/trace-usage.c
-@@ -391,6 +391,7 @@ static struct usage_help usage_help[] = {
- 		"          -B list defined buffer instances\n"
- 		"          -C list the defined clocks (and active one)\n"
- 		"          -c list the supported trace file compression algorithms\n"
-+		"          --proto list the prototype of a function (if BTF is available)\n"
- 	},
- 	{
- 		"restore",
+-	if (func)
+-		ret = trace_seq_printf(s, "%s() {", func);
+-	else
++	if (func) {
++		ret = trace_seq_printf(s, "%s(", func);
++		print_args(s, event, record, func);
++		ret = trace_seq_puts(s, ") {");
++	} else
+ 		ret = trace_seq_printf(s, "%llx() {", val);
+ 
+ 	if (ret && fgraph_depth->set)
 -- 
-2.50.1
+2.51.0
 
