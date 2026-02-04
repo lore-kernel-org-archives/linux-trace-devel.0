@@ -1,32 +1,29 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FC48263F44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FBC821B9F5
 	for <linux-trace-devel@vger.kernel.org>; Wed,  4 Feb 2026 01:16:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770167762; cv=none; b=KB24ZVAscwGxqUKDfmnf/JRB20exb643fF7uxtmpffEEy0tGGB9DEYFhR3Ofi/WsxcXYMzEyIOv8dcOckL7YBBPKWOhZeakqMHmdFbUGencKVjt822NovPHtes/8hzvd4LSgbrDfNe+p2dDXbhw7/ojhVWZRMACnZ0O/Bw7WHCk=
+	t=1770167762; cv=none; b=Wl97sf377fmjHMlmMC7CcS6nMdP/AMMnZrPoOmxhjsk5Fnpfu1ziJtcal0g1fmVBkip9XJqak19Lghly3ZrsYWn5mZY4oAEych1pgrkS12YVPDILXGNeGVK/3OJoIvYMpmUn2loA21SeoE1Hb+NVVshY+Fvj2Frs/SjaCXTmB/E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1770167762; c=relaxed/simple;
-	bh=1bdLyIS4QkBX4PFCirddYKG1lrFpKMfbRcj5k+bzquQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lSBt/lGijQyWuNho3g4U95sB3AW2BQA5/Mn5fMoeVPTuApoi8w70HtMxGmtSai2xuODgsfMGDbm6F2QC1Mali8RCEvrNofkaUZzq24VxHh3FgXjDm3UkWQSQCimjnAaiRY0S+OhqvIvP2kkbNym6CI8w1QPkqai3ehdQxCZxxow=
+	bh=SPGO40fpJ3INZ6j2UFWLqH2DIQhuyFr2YIRn+R8Pe1Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gCFZK2dDdi+xOikad4NRFMjYG+pmtsjLm/Zm/M8ZikBM3yKHkfoWLpTk2YHYdE5Qci1XGVQ1AOpaHKlOEyfD9HuVMI+Ap6AI9XP7+AwAdUWEkoA/n+iZIF716EkvS5v//KeMIdGMxpn3pdeQ4vlT9H8jRwXlG3go1RDqKUKflnU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0B7BC116D0;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4CBBC19422;
 	Wed,  4 Feb 2026 01:16:00 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.99.1)
 	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1vnRVP-00000008xVD-0178;
-	Tue, 03 Feb 2026 20:16:31 -0500
+	id 1vnRVO-00000008xV4-3tjG;
+	Tue, 03 Feb 2026 20:16:30 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-trace-devel@vger.kernel.org
 Cc: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH 3/3] trace-cmd extract: Do not delete instances after extraction
-Date: Tue,  3 Feb 2026 20:14:55 -0500
-Message-ID: <20260204011629.2135260-4-rostedt@goodmis.org>
+Subject: [PATCH 0/3] trace-cmd extract:
+Date: Tue,  3 Feb 2026 20:14:52 -0500
+Message-ID: <20260204011629.2135260-1-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20260204011629.2135260-1-rostedt@goodmis.org>
-References: <20260204011629.2135260-1-rostedt@goodmis.org>
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
@@ -37,28 +34,27 @@ Content-Transfer-Encoding: 8bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-After trace-cmd extract is finished reading an instance, it deletes that
-instance. That is incorrect behavior.
+Some updates for trace-cmd extract:
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- tracecmd/trace-record.c | 3 +++
- 1 file changed, 3 insertions(+)
+ - Always read the BTF file if it exists, as it isn't known if it is needed
+   or not.
 
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 1707345b343f..30727d613492 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -7454,6 +7454,9 @@ void trace_extract(int argc, char **argv)
- 		/* Some instances may not be created yet */
- 		if (instance->tracing_on_init_val < 0)
- 			instance->tracing_on_init_val = 1;
-+
-+		/* Keep all instances */
-+		instance->flags |= BUFFER_FL_KEEP;
- 	}
- 
- 	/* Extracting data records all events in the system. */
+ - Do not delete the instance that it is extracting after it extracts the
+   data. That was simply annoying.
+
+ - Add a -K flag to trace-cmd record that doesn't reset anything before it
+   starts recording.
+
+Steven Rostedt (Google) (3):
+  trace-cmd extract: Always read BTF file if available
+  trace-cmd record: Add -K flag to keep current settings
+  trace-cmd extract: Do not delete instances after extraction
+
+ .../trace-cmd/trace-cmd-record.1.txt          |  7 +++-
+ tracecmd/trace-record.c                       | 39 +++++++++++--------
+ tracecmd/trace-usage.c                        |  1 +
+ 3 files changed, 30 insertions(+), 17 deletions(-)
+
 -- 
 2.51.0
 
