@@ -1,30 +1,30 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81B1E182D0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81B8281724
 	for <linux-trace-devel@vger.kernel.org>; Wed,  4 Feb 2026 01:22:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770168135; cv=none; b=GBYpez1DVf2M/QrFZyZPh7b0lXeF0x9/v8DMQstft1REPNU4f8VYQPkabAQhBmSA+H2283pFQ5Sib2wTOMhj68CFYJ3GXWL2RnDdqOrdCj+UMG63Ayr3qudWHzxhD8tdqy4KLWr2j+/nnXqtnBCixvcys1hVszNfawyXHz3Rljc=
+	t=1770168135; cv=none; b=Ebz1xjMPqjouWJA1ngxtKJCclCNwPOyFJKRi5UxKbJRE5lwduVSWK5Na9FSWDvttnzs1tq+9Ajai2m4FwydxGmCDx1IiOEDOwfrOYLpTpnjAvrLkLJo0poDQod1lKtl83AT0kJFNSWtV/VBdaRCcAdNeyrGzkV7zH4bBPRs2y34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1770168135; c=relaxed/simple;
-	bh=ghNsgbETDNZfT3oZWD8/7khAIv8/jQm7nbBQDPseCBw=;
+	bh=JdVlv1uui4/zl/44spgxlbvgYVhhTdxCYia5gcxs6SE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=byHOlAPHv+oBtJPFxsDmVBF5J0m+6VTyauTnj+4EYC8n8Uk/bYsNSTPiENCjFr9PjvdRQEGR+nTT2MUvJGBFx+oz5FiOOl5wNBgQuDaM9lQypoxKC9XNpbtpo75yhRhxqroSqkLyhNKgw43ula7Kv/UQ93lcDQjCZcBXcZ+A/1o=
+	 MIME-Version; b=RAKFC7ZiSrVw9glg5H+pfL9RgcFKXkREbWMndTnfM/yEJfy45SxBBPzCX2uqu8Y0O50ZHUv+5rbI3tta+Huh6edjbVY12uBh2DXvhgz+15/+ju28GQyCQlYDf8ei4hLjP/VSpsmu02RvihBHDf8SqHtA1Cb5sctImHvfy/AH4hY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2ED3BC116D0;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30A4EC19425;
 	Wed,  4 Feb 2026 01:22:15 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.99.1)
 	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1vnRbR-00000008xa7-1Bhd;
+	id 1vnRbR-00000008xaA-1I8A;
 	Tue, 03 Feb 2026 20:22:45 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-trace-devel@vger.kernel.org
 Cc: Masami Hiramatsu <mhiramat@kernel.org>,
 	"Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH 1/2] trace-cmd record: Handle last_boot_info file
-Date: Tue,  3 Feb 2026 20:18:05 -0500
-Message-ID: <20260204012244.2135465-2-rostedt@goodmis.org>
+Subject: [PATCH 2/2] trace-cmd record: Add section for /proc/modules
+Date: Tue,  3 Feb 2026 20:18:06 -0500
+Message-ID: <20260204012244.2135465-3-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260204012244.2135465-1-rostedt@goodmis.org>
 References: <20260204012244.2135465-1-rostedt@goodmis.org>
@@ -38,193 +38,278 @@ Content-Transfer-Encoding: 8bit
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-A persistent ring buffer has the ability to record a trace and have it
-exposed after a crash or reboot. The issue with that buffer is that the
-function pointers in it have the addresses of the last boot (the one that
-the function events were recorded in). Due to KASLR, these address do not
-match the address in kallsyms and can not be used directly to map the
-address to the names of the functions.
+Add a MODULES_FILE section that contains a compressed copy of the
+/proc/modules file. This is recorded when the last_boot_info is recorded
+so that the functions recorded in a previous boot can have their addresses
+calculated with where the old modules were to find their function names in
+the kallsyms file of the current boot.
 
-To solve this, the kernel exposes the addresses in a last_boot_info file
-if the content of the buffer is from the last boot. If the content is of
-the current boot, the file simply contains "# Current".
-
-If the file exists in the instance and contains something other than
-"# Current" then record it into a new section called
-TRACECMD_OPTION_LAST_BOOT_INFO.
+To do that, the module addresses in the last_boot_info file is not enough.
+It needs the module addresses of where they are loaded in the current boot
+which is what /proc/modules contains.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- .../trace-cmd/trace-cmd.dat.v7.5.txt          |  7 +++
- .../include/private/trace-cmd-private.h       |  1 +
- lib/trace-cmd/trace-ftrace.c                  |  4 +-
- lib/trace-cmd/trace-input.c                   | 12 +++++
- tracecmd/include/trace-local.h                |  2 +
- tracecmd/trace-record.c                       | 49 +++++++++++++++++++
- 6 files changed, 73 insertions(+), 2 deletions(-)
+ .../trace-cmd/trace-cmd.dat.v7.5.txt          | 24 +++++++++++---
+ .../include/private/trace-cmd-private.h       |  2 ++
+ lib/trace-cmd/trace-input.c                   | 19 +++++++++++
+ lib/trace-cmd/trace-output.c                  | 32 +++++++++++++++++++
+ tracecmd/trace-dump.c                         | 32 +++++++++++++++++++
+ tracecmd/trace-record.c                       |  3 ++
+ 6 files changed, 107 insertions(+), 5 deletions(-)
 
 diff --git a/Documentation/trace-cmd/trace-cmd.dat.v7.5.txt b/Documentation/trace-cmd/trace-cmd.dat.v7.5.txt
-index 73857d1a04f8..154ffe271df3 100644
+index 154ffe271df3..b8ecab20e123 100644
 --- a/Documentation/trace-cmd/trace-cmd.dat.v7.5.txt
 +++ b/Documentation/trace-cmd/trace-cmd.dat.v7.5.txt
-@@ -276,6 +276,13 @@ OPTIONS SECTION
-      compression algorthim defined by the trace.dat header. The compression data
-      includes the size of the uncompressed output.
+@@ -283,6 +283,12 @@ OPTIONS SECTION
+      the instance name is not used, but exists in case in the future there are
+      more than one instance with this file.
  
-+  LAST_BOOT_INFO: id 24, size vary
-+    The LAST_BOOT_INFO option data contains the content of the last_boot_info if
-+     the file existed for an instance. It starts with the instance name, followed
-+     by a colon ":" and then the content of the last_boot_info file. Currently
-+     the instance name is not used, but exists in case in the future there are
-+     more than one instance with this file.
++  MODULES_FILE: id 25, size 8
++    The MODULES_FILE option data is:
++     A compressed data from the host file /proc/modules, using the compression
++     algorthim defined by the trace.dat header. The compression data includes
++     the size of the uncompressed output.
 +
  HEADER INFO SECTION
  -------------------
  
+@@ -455,15 +461,23 @@ BTF FILE SECTION
+ 
+   Section ID: 23
+ 
+-  Directly after the section header comes the information mapping
+-  a PID to a process name.
+-
+-  The next 8 bytes contain a 64-bit word that holds the size of the
+-  data mapping the PID to a process name.
++  Directly after the section header comes the a 8 byte value that contains
++  a 64-bit word that holds he size of the BTF file (may be compressed)
+ 
+   The next set of data is of the size defined by the previous 8 bytes
+   and contains the information from /sys/kernel/btf/vmlinux.
+ 
++MODULES FILE SECTION
++--------------------
++
++  Section ID: 25
++
++  Directly after the section header comes the a 8 byte value that contains
++  a 64-bit word that holds he size of the modules file (may be compressed)
++
++  The next set of data is of the size defined by the previous 8 bytes
++  and contains the information from /proc/modules.
++
+ SEE ALSO
+ --------
+ trace-cmd(1), trace-cmd-record(1), trace-cmd-report(1), trace-cmd-start(1),
 diff --git a/lib/trace-cmd/include/private/trace-cmd-private.h b/lib/trace-cmd/include/private/trace-cmd-private.h
-index 4743bbc62048..cf19c0d6f7e1 100644
+index cf19c0d6f7e1..33fa2f80dad1 100644
 --- a/lib/trace-cmd/include/private/trace-cmd-private.h
 +++ b/lib/trace-cmd/include/private/trace-cmd-private.h
-@@ -160,6 +160,7 @@ enum {
- 	TRACECMD_OPTION_CMDLINES,
+@@ -161,6 +161,7 @@ enum {
  	TRACECMD_OPTION_BUFFER_TEXT,
  	TRACECMD_OPTION_BTF_FILE,
-+	TRACECMD_OPTION_LAST_BOOT_INFO,
+ 	TRACECMD_OPTION_LAST_BOOT_INFO,
++	TRACECMD_OPTION_MODULES_FILE,
  	TRACECMD_OPTION_MAX,
  };
  
-diff --git a/lib/trace-cmd/trace-ftrace.c b/lib/trace-cmd/trace-ftrace.c
-index f52b203ccbd4..c874113bc66e 100644
---- a/lib/trace-cmd/trace-ftrace.c
-+++ b/lib/trace-cmd/trace-ftrace.c
-@@ -272,7 +272,7 @@ print_graph_entry_leaf(struct trace_seq *s,
- 	}
+@@ -343,6 +344,7 @@ struct tracecmd_output *tracecmd_get_output_handle_fd(int fd);
+ unsigned long tracecmd_get_out_file_version(struct tracecmd_output *handle);
+ size_t tracecmd_get_out_file_offset(struct tracecmd_output *handle);
+ int tracecmd_append_btf_file(struct tracecmd_output *handle);
++int tracecmd_append_modules_file(struct tracecmd_output *handle);
  
- 	/* In case this is a retaddr event */
--	if (!tep_get_field_val(s, event, "retaddr", record, &val, 1))
-+	if (!tep_get_field_val(s, event, "retaddr", record, &val, 0))
- 		retfunc = tep_find_function(pevent, val);
+ /* --- Reading the Fly Recorder Trace --- */
  
- 	duration = rettime - calltime;
-@@ -347,7 +347,7 @@ static int print_graph_nested(struct trace_seq *s,
- 		return trace_seq_putc(s, '!');
- 
- 	/* In case this is a retaddr event */
--	if (!tep_get_field_val(s, event, "retaddr", record, &val, 1))
-+	if (!tep_get_field_val(s, event, "retaddr", record, &val, 0))
- 		retfunc = tep_find_function(pevent, val);
- 
- 	/* Function */
 diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 7e03c0da5485..ef5095b83b09 100644
+index ef5095b83b09..22990430f14b 100644
 --- a/lib/trace-cmd/trace-input.c
 +++ b/lib/trace-cmd/trace-input.c
-@@ -4227,6 +4227,18 @@ static int handle_options(struct tracecmd_input *handle)
- 			if (!(handle->flags & TRACECMD_FL_RAW_TS))
- 				handle->flags |= TRACECMD_FL_IN_USECS;
- 			break;
-+		case TRACECMD_OPTION_LAST_BOOT_INFO:
-+			{
-+				char *file;
-+
-+				/* Skip the name of the instance (for now) */
-+				file = strchr(buf, ':');
-+				if (!file)
-+					break;
-+				file++;
-+				tep_parse_last_boot_info(handle->pevent, file);
-+				break;
-+			}
- 		case TRACECMD_OPTION_HEADER_INFO:
- 		case TRACECMD_OPTION_FTRACE_EVENTS:
- 		case TRACECMD_OPTION_EVENT_FORMATS:
-diff --git a/tracecmd/include/trace-local.h b/tracecmd/include/trace-local.h
-index 4ad07b6357b1..32c5c5a3c4e9 100644
---- a/tracecmd/include/trace-local.h
-+++ b/tracecmd/include/trace-local.h
-@@ -298,6 +298,8 @@ struct buffer_instance {
- 	int			argc;
- 	char			**argv;
- 
-+	char			*last_boot_info;
-+
- 	struct addrinfo		*result;
- 	unsigned int		cid;
- 	unsigned int		port;
-diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
-index 30727d613492..dfa6cb91c436 100644
---- a/tracecmd/trace-record.c
-+++ b/tracecmd/trace-record.c
-@@ -4778,6 +4778,22 @@ static void record_data(struct common_record_context *ctx)
- 							cpus);
- 				add_buffer_stat(handle, instance);
- 				check_need_btf(&need_btf, instance->tracefs);
-+				if (instance->last_boot_info && instance->name) {
-+					char *buf;
-+					int len;
-+
-+					if (asprintf(&buf, "%s:%s", instance->name,
-+						     instance->last_boot_info) < 0) {
-+						warning("Failed to add last_boot_info");
-+						continue;
-+					}
-+					len = strlen(instance->name);
-+					len += strlen(instance->last_boot_info) + 2;
-+
-+					tracecmd_add_option(handle, TRACECMD_OPTION_LAST_BOOT_INFO,
-+							    len, buf);
-+					free(buf);
-+				}
- 			}
- 		}
- 
-@@ -7425,6 +7441,37 @@ void trace_set(int argc, char **argv)
- 	exit(0);
+@@ -1048,6 +1048,21 @@ static inline int read_btf(struct tracecmd_input *handle)
  }
+ #endif
  
-+static void read_last_boot_info(void)
++static int read_modules(struct tracecmd_input *handle)
 +{
-+	struct buffer_instance *instance;
-+	char *path;
-+	char *buf;
++	char *modules;
++	size_t size;
 +
-+	for_all_instances(instance) {
-+		if (is_guest(instance))
-+			continue;
++	modules = tracecmd_uncompress_buffer(handle->compress, &size);
++	if (!modules)
++		return -1;
 +
-+		if (!tracefs_file_exists(instance->tracefs, "last_boot_info"))
-+			continue;
++	tep_load_modules(handle->pevent, modules, size);
 +
-+		path = tracefs_instance_get_file(instance->tracefs, "last_boot_info");
-+		if (!path) {
-+			warning("Could not read last_boot_info");
-+			return;
-+		}
-+		buf = read_file(path);
-+		tracefs_put_tracing_file(path);
-+		if (!buf) {
-+			warning("Could not copy last_boot_info");
-+			return;
-+		}
-+		if (strncmp(buf, "# Current", 9) == 0)
-+			free(buf);
-+		else
-+			instance->last_boot_info = buf;
-+	}
++	free(modules);
++	return 0;
 +}
 +
- void trace_extract(int argc, char **argv)
- {
- 	struct common_record_context ctx;
-@@ -7466,6 +7513,8 @@ void trace_extract(int argc, char **argv)
- 	if (ctx.events)
- 		expand_event_list();
+ static int read_and_parse_cmdlines(struct tracecmd_input *handle);
  
-+	read_last_boot_info();
+ /**
+@@ -1228,6 +1243,9 @@ static int handle_section(struct tracecmd_input *handle, struct file_section *se
+ 	case TRACECMD_OPTION_BTF_FILE:
+ 		ret = read_btf(handle);
+ 		break;
++	case TRACECMD_OPTION_MODULES_FILE:
++		ret = read_modules(handle);
++		break;
+ 	default:
+ 		ret = 0;
+ 		break;
+@@ -4246,6 +4264,7 @@ static int handle_options(struct tracecmd_input *handle)
+ 		case TRACECMD_OPTION_PRINTK:
+ 		case TRACECMD_OPTION_CMDLINES:
+ 		case TRACECMD_OPTION_BTF_FILE:
++		case TRACECMD_OPTION_MODULES_FILE:
+ 			if (size < 8)
+ 				break;
+ 			section_add_or_update(handle, option, -1,
+diff --git a/lib/trace-cmd/trace-output.c b/lib/trace-cmd/trace-output.c
+index c239f50b10e9..3ef6db6b80f2 100644
+--- a/lib/trace-cmd/trace-output.c
++++ b/lib/trace-cmd/trace-output.c
+@@ -2324,6 +2324,38 @@ int tracecmd_write_cmdlines(struct tracecmd_output *handle)
+ 	return 0;
+ }
+ 
++#define MODULES_FILE "/proc/modules"
 +
- 	page_size = getpagesize();
- 	update_plugins(type);
- 	set_options();
++int tracecmd_append_modules_file(struct tracecmd_output *handle)
++{
++	tsize_t offset;
++	struct stat st;
++	int ret;
++
++	if (!HAS_SECTIONS(handle))
++		return -1;
++
++	ret = stat(MODULES_FILE, &st);
++	if (ret < 0)
++		return -1;
++
++	offset = write_compress_section_header(handle, TRACECMD_OPTION_MODULES_FILE, "modules", true);
++	if (offset == (off_t)-1)
++		return -1;
++
++	tcmd_out_compression_start(handle);
++
++	copy_file(handle, MODULES_FILE);
++
++	if (tcmd_out_compression_end(handle))
++		return -1;
++
++	if (tcmd_out_update_section_header(handle, offset))
++		return -1;
++
++	return 0;
++}
++
+ #define BTF_FILE "/sys/kernel/btf/vmlinux"
+ 
+ int tracecmd_append_btf_file(struct tracecmd_output *handle)
+diff --git a/tracecmd/trace-dump.c b/tracecmd/trace-dump.c
+index 0a21356e442d..6b115bf51b2d 100644
+--- a/tracecmd/trace-dump.c
++++ b/tracecmd/trace-dump.c
+@@ -47,6 +47,8 @@ enum dump_items {
+ 	CLOCK		= (1 << 11),
+ 	SECTIONS	= (1 << 12),
+ 	STRINGS		= (1 << 13),
++	LAST_BOOT_INFO	= (1 << 14),
++	MODULES_FILE	= (1 << 15),
+ };
+ 
+ struct file_section {
+@@ -423,6 +425,22 @@ static void dump_cmdlines(int fd)
+ 	read_dump_string(fd, size, CMDLINES);
+ }
+ 
++static void dump_modules(int fd)
++{
++	unsigned int size = 0;
++	char buf[1024];
++	int len;
++
++	do_print((SUMMARY | MODULES_FILE), "\t[Saved modules]\n");
++
++	while ((len = read_compressed(fd, buf, 1024)) > 0) {
++		do_print((SUMMARY | MODULES_FILE), "%*s", len, buf);
++		size += len;
++	}
++
++	do_print((SUMMARY | MODULES_FILE), "\n[%d bytes]\n", size);
++}
++
+ static void dump_cpus_count(int fd)
+ {
+ 	if (read_file_number(fd, &trace_cpus, 4))
+@@ -801,6 +819,9 @@ static void dump_sections(int fd, int count)
+ 		case TRACECMD_OPTION_CMDLINES:
+ 			dump_cmdlines(fd);
+ 			break;
++		case TRACECMD_OPTION_MODULES_FILE:
++			dump_modules(fd);
++			break;
+ 		}
+ 		uncompress_reset();
+ 		sec = sec->next;
+@@ -921,6 +942,12 @@ static int dump_options_read(int fd)
+ 		case TRACECMD_OPTION_CMDLINES:
+ 			dump_option_section(fd, size, option, "CMDLINES", CMDLINES);
+ 			break;
++		case TRACECMD_OPTION_LAST_BOOT_INFO:
++			dump_option_string(fd, size, "LAST_BOOT_INFO");
++			break;
++		case TRACECMD_OPTION_MODULES_FILE:
++			dump_option_section(fd, size, option, "MODULES_FILE", MODULES_FILE);
++			break;
+ 		case TRACECMD_OPTION_DONE:
+ 			uncompress_reset();
+ 			count += dump_option_done(fd, size);
+@@ -1231,6 +1258,7 @@ enum {
+ 	OPT_ftrace	= 253,
+ 	OPT_head_event	= 254,
+ 	OPT_head_page	= 255,
++	OPT_modules	= 256,
+ };
+ 
+ void trace_dump(int argc, char **argv)
+@@ -1257,6 +1285,7 @@ void trace_dump(int argc, char **argv)
+ 			{"kallsyms", no_argument, NULL, OPT_kallsyms},
+ 			{"printk", no_argument, NULL, OPT_printk},
+ 			{"cmd-lines", no_argument, NULL, OPT_cmd_lines},
++			{"modules", no_argument, NULL, OPT_modules},
+ 			{"options", no_argument, NULL, OPT_options},
+ 			{"flyrecord", no_argument, NULL, OPT_flyrecord},
+ 			{"clock", no_argument, NULL, OPT_clock},
+@@ -1321,6 +1350,9 @@ void trace_dump(int argc, char **argv)
+ 		case OPT_clock:
+ 			verbosity |= CLOCK;
+ 			break;
++		case OPT_modules:
++			verbosity |= MODULES_FILE;
++			break;
+ 		case OPT_verbose:
+ 			if (trace_set_verbose(optarg) < 0)
+ 				die("invalid verbose level %s", optarg);
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index dfa6cb91c436..a1f9b2363e9d 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -4793,6 +4793,9 @@ static void record_data(struct common_record_context *ctx)
+ 					tracecmd_add_option(handle, TRACECMD_OPTION_LAST_BOOT_INFO,
+ 							    len, buf);
+ 					free(buf);
++
++					/* Also add modules */
++					tracecmd_append_modules_file(handle);
+ 				}
+ 			}
+ 		}
 -- 
 2.51.0
 
