@@ -1,151 +1,148 @@
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBCD02FE57B
-	for <linux-trace-devel@vger.kernel.org>; Sun,  8 Feb 2026 12:03:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.52
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770552189; cv=pass; b=ViHLJPv5SnPl/tXaQgiAlSVtjbWpphOH4+Vmqmsx1l/Yi/DgzHOIHbN4HYwv5D5lm3FQfIqQEMr34sGp65OCKE8RXzaonDJFOqLTKWUnPZK85SgzvxI/Ec3W0xKdskzuk8A3LGZwUYrXqLk3yzLb8sMaCYhCnuIfMWyTDve6QmI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770552189; c=relaxed/simple;
-	bh=wKJ/SYSGbJHcvRrLjm7/R0Zm8PRi8D5247OnTO93NhQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SZ8t16Ac6W5qhLAB6oImfDeBrdSTqow/RcO22yEX8w4NZ93ATFSDFcNyHQ9qiBmX0myziSY2lb62RDD1xx3zCXIwuFlZS3viKQDpFrKVxBg1Z9ZR7N9JyJxdJBdKxy2x/1rHmhU2ELQeruhc7nadKjy82J5Qi8rfAqrpgqvVadg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eACJz0ec; arc=pass smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA9AC1E9B3A
+	for <linux-trace-devel@vger.kernel.org>; Sun,  8 Feb 2026 12:44:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1770554654; cv=none; b=Ag7WjxTT7LnVYrPWR3mp5j4dkL66P20V1Ko5XhrRFhCnV5zrqF7feshOeRvC4WPZCwJy1Glf9cn05f76T6EWc9kgiUmu/gTHKGz7bhGYhF1AXgTZ/wvN/QqPlkkbdjYa/ro84NqF8Pf1PhZc+9LBtI4xbx1cwDNfDFvl7ufZU9Q=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1770554654; c=relaxed/simple;
+	bh=FsNqPfU+WLtwP9WvAUcK82uK6irMNnVYbyybzxTfyr4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=CB7S/2tiDGqk3nNUkX7ylPjPnwj5kn+CvGZ+o3T7haxRug6na5BVY4taRbtMp1oVJQYYN2izukpo0DQ6gznaRcDCEP1DabgtPJINDuTeR5UUq4oPfp9PSq/SvqEDkEqv93HR6ZVIxWl/Ku9FaCk8QuAY0K1R+xKvTUSwvOO2qtw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TOUElimt; arc=none smtp.client-ip=209.85.210.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eACJz0ec"
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-658b6757f7fso5982404a12.1
-        for <linux-trace-devel@vger.kernel.org>; Sun, 08 Feb 2026 04:03:08 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1770552187; cv=none;
-        d=google.com; s=arc-20240605;
-        b=ian7nWYJjqkkVphT2mtHOLg4DWUBY5K8i1tqfr+PtMfjVZ1O5ONqt4Oc1iWxc4l21l
-         Wnet4jCfxx1H41oKGOMwswCdYa41SSsJ6PzuKMWBfpKi6kg+q3nt0OD6DmT2rWCjCHvO
-         Xuu8AtpZXV1FGm2BQ3BWt4S2px/svlaD6qT86YtlVumrLE/d/hOT2KeeI1UvzkU1uDy7
-         JJ1Sd/9i810JzE87eAjmN6/7S70VGrMndZThTxyoOP7meYqQ/sganb/NaZU5ki92fU7P
-         pkvkzcyA6CtFGWKW0UD/DVqa39nKU3h3kjjhqNzK/2WvNds+JPtaZfL9SyfQDr7gzSR0
-         b4HQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=l6UuuI/JNYHq0vfN4KIs9mABs2bzglO9MstKOXOZ+ik=;
-        fh=q+PDVs3qd+Wl6LrbesczUak6Bncq3UKgWZ4ixQ6aASs=;
-        b=g27gMHnc4UOVqVXYFBuWlXOEnvAaaNOnggd3nou+THNOtYIlNlSYP1KDG/ZO3cUT15
-         O9lzo6kesq1/mUEol8OfCs22rhSDC7XQ2XVlIBhOzJrhU6K41kqAEBU18BbswcdiACuB
-         M9Wb5siJNcC+MLJTHVbuOT7XBJj/rXWRKy1H2+ZKodS6wc5JYfFfHlfUJ6Idx9+SiClN
-         Z0ce72X+Cx1Y9kgOvpHjK+tFD5rb/0DqdvffGa7cJ/pmdpoCddfcAhRQHSzD5EN4NN+O
-         i8l0lJHrWjt5EITC3vqy2UKs+AiYlB4yH/W1dGLzuGIArPsTuYHy6dkGx2WlWHWFFE/Z
-         uiXQ==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TOUElimt"
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-81f5381d168so3966689b3a.2
+        for <linux-trace-devel@vger.kernel.org>; Sun, 08 Feb 2026 04:44:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1770552187; x=1771156987; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l6UuuI/JNYHq0vfN4KIs9mABs2bzglO9MstKOXOZ+ik=;
-        b=eACJz0ecTj39kVKZG/OdgQCfwORP04hmXMi+IXOBXrAvVxxcF/aGK0eFLGOT1HNUF1
-         IAIhpEsXNmHZjV2zN7BLAjYPls+U4JJS1v3zkebv4DuH1bIxMAfAk6QQ7aOWK97r+9Xc
-         sy8/MfRq/2+R2i5NdMrexYyLHsGWgAz5o5gAqoG5NRQ1b7PMF8KJZzU5Sk0QEPcHM3aG
-         SVWrUkYYvMsGn2V00IqWlvuedA5mNtQb/YB03RupfMmQRjo1xU/R2bjEahk6rfKn/Z/C
-         R1oVQf+0hIV+Ws2bv6/Sgyb99VfHASAlgQqV+ghgSzgC6Dfrh7A7qnTbtfWg/m3irZXt
-         lxZQ==
+        d=gmail.com; s=20230601; t=1770554653; x=1771159453; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+YcCU+9EW6fQ3iQGZpjy0c67hFx/h7iRGpvlMCCbir8=;
+        b=TOUElimtQzTX3QgA0FIAZU7u4wbNRde7QUI9rachVvvXY1oec8B65O2Ij04uvLCiPO
+         tu4y8ZmfiG4GznDrd5Hh1HBagLWfnA61VaRew6EdPYpEMCvX3V3ANCXO24EkbmcP7g9Y
+         e6BK+kHErP4BzvfAjM4e/Q0XnEbuChmJDXpMMqgZI4ap0REiyi+IBHsQ4i0aHIZ7hS/6
+         qp0rHSaOh8G8lGCHHKg4eAkZFAf7t/pwoY013sqYc3+poJHOIHzHai1yNk2cZdNlg8tR
+         BSbVuE9HDzybXIbgVxkgMws82ENf00dVp3GtgI6mu8gc820BHmGFpRcrLkijxSQt+Nnm
+         7SEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770552187; x=1771156987;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=l6UuuI/JNYHq0vfN4KIs9mABs2bzglO9MstKOXOZ+ik=;
-        b=bspof2Nut1lLaRSlWTM/wtAOQBDJjRF/czS9OVFVeI2cTrhtCtqYKHnw2zVpc0vai+
-         iJG2WC/1XJ53qLoLCWd8uDh9wfAFdRdWxlj2QSVt3bNZseBL3Cqw2bZVNgwQouD74kiV
-         oow6QnBeyv1pNLavstsnBQ/e4D1T/EL2MmTace0LGx49NMxMY0XnmWNYDt1FvI1eOT4p
-         EdJimmW3AeDPX4hmQn7Oa3ehzPSTcK2RezPOmCbaM7ebjBZGyq8qhotVD6m0AtlG6RsV
-         QzqHF19L0eHrCYNV4QNGmL2doYLndAfe6EO+w5Rq+T9naCxbTdle8U1dfOXYuYgxs9/5
-         ving==
-X-Forwarded-Encrypted: i=1; AJvYcCUeWaoB5Fnmoe/W9kgjwwH0mCShcrOMOot30ewT7BmZuEdhxbP/V1KPkUjYEPdIYULftR6v9JWyVxZPbSipzkWZMw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzM/KwS4IWzYaDqfiKBGhIvql4NGORZURzhzgR9bCoSBv933hD5
-	LRXxCs/dGW5ZjZoiEl1/WomEnMZtvdbLM6c39FqQdIn9NUm/FfvwR92EVdQzAn0h1WVlq7j8NrL
-	XtdiuPY9dy4ypqBkh59+fFH772PAZjsk=
-X-Gm-Gg: AZuq6aJQ9TD/gYtSKvu6aelkeyesn72c41Ax7ucROZHUdvwloO5/twZjzVqKA6RVLUu
-	p+xgAPOGP9ubLTuWOIAfISZ5qDTto+rUozyX/tOuXhzo+2GVauw+4wifxxJSo3YZgZv1M+vTUtC
-	vJd2OO7OxicFVsTWDQkS1eif0rlEqr/XWMYBNgi85V9GiXBBL9od2iW6lhXFctIDRELlzo+WVHm
-	JFoZL2zsXOgzcaxUdMngZKmgWRYtb0nGboeHZvGDvpmbI3kz8T2NXMzmK3YcbDrBsN2VC6zVoG0
-	P+jAhBA=
-X-Received: by 2002:a17:907:6e9e:b0:b88:50ea:f64f with SMTP id
- a640c23a62f3a-b8eba0e10dcmr768803566b.11.1770552186770; Sun, 08 Feb 2026
- 04:03:06 -0800 (PST)
+        d=1e100.net; s=20230601; t=1770554653; x=1771159453;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+YcCU+9EW6fQ3iQGZpjy0c67hFx/h7iRGpvlMCCbir8=;
+        b=JWeDhAy7ACiIx5R1rizuB8LaXWETDaKgEvlpQ0ooJ3fCM0XhQZxfH/KR1PL7BF6aRw
+         m3ktnDX4a03s5mmc3ueeo2/5fnmCDQT6WnPd57OYD1AUefON91IiToEKPaauEYSA+WIi
+         vhwQOSiXSYJF8c8Np0ec2QkSr/AAyTQ3+hS38NBlrGIGuIj+syYFgeav9KVRTsdiuJNm
+         awaRU691xtPahp9nCtKXn1WvOlCd1unRIrXbS6x9NUkEHjGPGz7velKtRa0WeZu32Yvn
+         IcRBtiYpREngOFiqD2ANcDW4o1X7905b/REariREsIwOgDsHVJ4y8otoiLqmPE/5hstm
+         9mXA==
+X-Forwarded-Encrypted: i=1; AJvYcCWiOu1CSIvh6VL12Be7hqeOA7Z+JMFfMvtmMxMjXm3OSU0u3h9PQHYBSeEvXkBqJvvQURBabU5reqFDpPVvQFUAIA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzvCgWFlmfb8ufTA67rq0se6m8IifJWOW/XWkczCnMmJtzex16Q
+	6kD4PZuOxnKzsy3nHGXncOukR/ZPIPZ5IWK7cX8+UXbHTT7lmFZ4HFCs
+X-Gm-Gg: AZuq6aJuqOHWd3ZeULYGv4chiE9S5m/l1OLp34cZHwVRT8oicCynmVnBzIVD7pa+lyM
+	bASc6KjjfkwAEbr3qNXTAmg7Bfj6F42SUNGVfXCANazXL+eXVZYyRdiZsW0XpkVEzfN2vVIWwX2
+	W7vOWxdFJa0a0uo+3F1BNOHVtJzn7UcbQ8az2FybMJmo4tYZ6xfxpzycDEeyOjkE9yzjQpGCuul
+	1o30lwtAKJiaUJLVB7TS4r119YeUl48QCVP2jJfxNvETbCzn6KMW2BtDzHYIH+4KQJZfi+UBD8N
+	m8s17A2ou2Fn30IpxsspqcDZXmU1MCW/NS68lbo3bMPeGGbNcHRvjeGcMBmfegRoKdiumetRMiq
+	G7N6WZzIEw8EeF5RY2hhgEjvp9fluZXPM5/RQUsv05xxlOGCRTmzXEh6jNNFhxXd2jKKGhJM4lf
+	W0/y7cn4KLTC+wQ45BeEcME1oUUUk=
+X-Received: by 2002:a05:6a00:4507:b0:823:ac8:ed82 with SMTP id d2e1a72fcca58-824417ae506mr7369710b3a.69.1770554653119;
+        Sun, 08 Feb 2026 04:44:13 -0800 (PST)
+Received: from pengdl-pc.mioffice.cn ([43.224.245.249])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-82441882481sm7275856b3a.35.2026.02.08.04.44.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Feb 2026 04:44:12 -0800 (PST)
+From: Donglin Peng <dolinux.peng@gmail.com>
+To: rostedt@goodmis.org
+Cc: mhiramat@kernel.org,
+	linux-trace-devel@vger.kernel.org,
+	Donglin Peng <pengdonglin@xiaomi.com>
+Subject: [PATCH v2] libtraceevent: Pretty print function parameters of enum-type
+Date: Sun,  8 Feb 2026 20:44:06 +0800
+Message-Id: <20260208124406.3050593-1-dolinux.peng@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260206091512.2127246-1-dolinux.peng@gmail.com>
- <20260206100211.78193ec0@gandalf.local.home> <CAErzpmt8EQXD_noaR+gsBaAV90xAQSMJ38BgBd_8r-Q_40-abA@mail.gmail.com>
- <20260207091612.2bb72f61@robin>
-In-Reply-To: <20260207091612.2bb72f61@robin>
-From: Donglin Peng <dolinux.peng@gmail.com>
-Date: Sun, 8 Feb 2026 20:02:55 +0800
-X-Gm-Features: AZwV_QgeLpq8oJcE1r8RQ3f6ZdnAxEr7XXGUi0XV6DpWp-USUa_j8lLozWb5fIo
-Message-ID: <CAErzpmuGSUJVogLgY3gu+e5=1qJohoga49t0w4hkkgRVoV7yHQ@mail.gmail.com>
-Subject: Re: [PATCH RESEND] libtraceevent: Pretty print function parameters of enum-type
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: mhiramat@kernel.org, linux-trace-devel@vger.kernel.org, 
-	Donglin Peng <pengdonglin@xiaomi.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Sat, Feb 7, 2026 at 10:16=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org=
-> wrote:
->
-> On Sat, 7 Feb 2026 13:04:02 +0800
-> Donglin Peng <dolinux.peng@gmail.com> wrote:
->
-> > > > +#define for_each_enum(i, enum_type, member)                  \
-> > > > +     for (i =3D 0, member =3D btf_enum(enum_type);               \
-> > > > +          i < BTF_INFO_VLEN(enum_type->info);                \
-> > > > +          i++, member++)
-> > >
-> > >
-> > > You can make the above into:
-> > >
-> > >  #define for_each_enum(enum_type, member)                       \
-> > >         for (int __i =3D 0, member =3D btf_enum(enum_type);         \
-> > >              __i < BTF_INFO_VLEN((enum_type)->info);            \
-> > >              __i++, member++)
-> > >
-> > > Then you don't need to pass in the counter "i".
-> >
-> > Sorry, I found that the previous change causes a build failure.
-> >
-> > The error occurs in trace-btf.c:36:
-> > warning: initialization of 'int' from 'struct btf_enum *' makes
-> > integer from pointer without a cast [-Wint-conversion]
-> >    36 |         for (int __i =3D 0, member =3D btf_enum(enum_type); \
-> >
-> > This is due to the member variable being redefined as an int type,
-> > conflicting with its assignment of a struct btf_enum *pointer from
-> > btf_enum(enum_type).
->
-> Ah, I had that issue before. But this should work:
->
->  #define for_each_enum(enum_type, member)                               \
->         member =3D btf_enum(enum_type);                                  =
- \
->         for (int __i =3D 0; __i < BTF_INFO_VLEN((enum_type)->info);      =
- \
->              __i++, member++)
->
-> Just can't use it as a single line for if statements.
->
->         if (x)
->                 for_each_enum() {
->                 }
->
-> But we shouldn't be doing that anyway.
+From: Donglin Peng <pengdonglin@xiaomi.com>
 
-Thanks. I will do it in v2.
+The tep_btf_print_args() function currently prints values of
+enum parameters in decimal format, which reduces readability.
 
->
-> -- Steve
+Utilize the BTF information to resolve enum type parameters
+and print their symbolic names where possible. This enhances
+the trace log readability by displaying meaningful identifiers
+instead of raw numbers.
+
+Before:
+mod_memcg_lruvec_state(lruvec=0xffff88800c18a540, idx=5, val=320)
+
+After:
+mod_memcg_lruvec_state(lruvec=0xffff88800c18a540, idx=5 [NR_SLAB_RECLAIMABLE_B], val=320)
+
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Donglin Peng <pengdonglin@xiaomi.com>
+---
+v1 -> v2:
+ - Refactor for_each_enum helper macro to use internal loop variable __i
+   (thanks to Steve)
+---
+ src/trace-btf.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+diff --git a/src/trace-btf.c b/src/trace-btf.c
+index 859b0860ce2a..2d66e0113077 100644
+--- a/src/trace-btf.c
++++ b/src/trace-btf.c
+@@ -32,6 +32,16 @@ struct tep_btf {
+ #define REALLOC_SIZE (1 << 10)
+ #define REALLOC_MASK (REALLOC_SIZE - 1)
+ 
++#define for_each_enum(enum_type, member)				\
++	member = btf_enum(enum_type);					\
++	for (int __i = 0; __i < BTF_INFO_VLEN((enum_type)->info);	\
++		__i++, member++)
++
++static inline struct btf_enum *btf_enum(struct btf_type *t)
++{
++	return (struct btf_enum *)(t + 1);
++}
++
+ static const char *btf_name(struct tep_btf *btf, int off)
+ {
+ 	if (off < btf->hdr->str_len)
+@@ -546,6 +556,7 @@ int tep_btf_print_args(struct tep_handle *tep, struct trace_seq *s, void *args,
+ 	struct tep_btf *btf = tep->btf;
+ 	struct btf_type *type = tep_btf_find_func(btf, func);
+ 	struct btf_param *param;
++	struct btf_enum *enump;
+ 	unsigned long long arg;
+ 	unsigned int encode;
+ 	const char *param_name;
+@@ -628,6 +639,13 @@ int tep_btf_print_args(struct tep_handle *tep, struct trace_seq *s, void *args,
+ 			break;
+ 		case BTF_KIND_ENUM:
+ 			trace_seq_printf(s, "%lld", arg);
++			for_each_enum(t, enump) {
++				if (arg == enump->val) {
++					trace_seq_printf(s, " [%s]",
++						btf_name(btf, enump->name_off));
++					break;
++				}
++			}
+ 			break;
+ 		default:
+ 			/* This does not handle complex arguments */
+-- 
+2.34.1
+
