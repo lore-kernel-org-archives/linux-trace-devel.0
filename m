@@ -1,66 +1,63 @@
-Received: from smtpcmd0756.aruba.it (smtpcmd0756.aruba.it [62.149.156.56])
+Received: from relay.hostedemail.com (smtprelay0014.hostedemail.com [216.40.44.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C679533FE06
-	for <linux-trace-devel@vger.kernel.org>; Sun,  8 Feb 2026 20:56:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.149.156.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4113F2DECA8
+	for <linux-trace-devel@vger.kernel.org>; Sun,  8 Feb 2026 21:32:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770584203; cv=none; b=o5ALhSDpEYz14zVSvWuGlwdCki8dQhOKITc2fAXv94nMLreOe0AI82UQ2W3vJu/kQKaghVmGPIYSJLDoDlj58GIUyS/GCAqj6QvQqsq3+sfmmqz+YSqmiG6wPSthYJkjpJaDjpCAH+Dl/fOCKLw71zYIz2Lf29MwEfvnOHuQsTQ=
+	t=1770586341; cv=none; b=kgTUiDvuOKpK7kfdRHn+OoRuxFEWhgbYKWemZot9pc4ZJ24yH4UL8uZDIwvBth5O/mEwKw+g4QXNEVitV9yiN4G1tegWEog5nWIQnztwP/E4ld4Dp+RXlypg9vqkRpNYHO324YVGSQtJZ63SWxtAQVcwD0uU8fkl1F72PFRAEaY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770584203; c=relaxed/simple;
-	bh=CPYIil8x0Sa9meGsWAEH+a2MuYl9oNNGvn/LX+t8Qkw=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=LYIOHqYWwKJqhPC0/XQOgvITZgrKGrmOEsoCLa+XgKtRLjLv6NgkGArybL4xaihBzzbtdfqhQie0gXA6pEOC5NY9xqDyHmd1tybEDHDxXTp33A2A03Yjt6NNvkwOsoeR9znhlaJvnCtFApI8FwNiwjyTsUT01/0ooW2vvfLO+GI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=benettiengineering.com; spf=pass smtp.mailfrom=benettiengineering.com; dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b=X7S5zGLG; arc=none smtp.client-ip=62.149.156.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=benettiengineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=benettiengineering.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b="X7S5zGLG"
-Received: from [192.168.50.134] ([84.33.84.190])
-	by Aruba SMTP with ESMTPSA
-	id pBmevOSuItpTfpBmev1o3o; Sun, 08 Feb 2026 21:53:32 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-	t=1770584012; bh=CPYIil8x0Sa9meGsWAEH+a2MuYl9oNNGvn/LX+t8Qkw=;
-	h=Date:MIME-Version:To:From:Subject:Content-Type;
-	b=X7S5zGLGFd391ygUYjj4FL19LzZ7cHI1O9ePoTe3I0/JPUz0/OuuPPMe0rv4YcNCZ
-	 abkNWJa9ULzdxRKTvVECZesN6U722H4opkqyc548k9oCLQSCXcaZhwc84JHTHMdCwT
-	 YPpwmLsTz/9L0TLOtm9fosYLtVTF2PquWCHF5maO8GlYSChW6FfahpH9BKOIqopW8x
-	 r7psNUAMYjPVvTZovXKvB5PB/clvdbPVzZ/72qpXDMHDOc/TbIxm1ogvCUSHCoAAhv
-	 I4l3AM2/S+2lqs/D0mbk9yNiGlnryffaB2m+r4SyG/aeyGM10tvAWKKLDlYZn5H7J+
-	 MO/Us78foTBIw==
-Message-ID: <5984db8a-a93a-4efc-9b81-c87140d38042@benettiengineering.com>
-Date: Sun, 8 Feb 2026 21:53:31 +0100
+	s=arc-20240116; t=1770586341; c=relaxed/simple;
+	bh=mxaMXojYBDuiMjs97DADvxLHrN9gpMywVT5yKsRWgPo=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=uolMQ9kpboenSB37KyeUdtNXlDysZ38jhaWI32ixZeKKzxftJxD3AJgo7PczPsPhCBCi5IlshtCxMLaPEnh45YND43x4tQE4tOm+/mdx/f2NBvtR0lcEKAJVxW2+vdjD+KKj3LEdlZFtnrEWbjigkMfiIKg59g1DvGLFaDaWIZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf18.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay02.hostedemail.com (Postfix) with ESMTP id 069E313B46E;
+	Sun,  8 Feb 2026 21:32:13 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf18.hostedemail.com (Postfix) with ESMTPA id 7C1D42E;
+	Sun,  8 Feb 2026 21:32:12 +0000 (UTC)
+Date: Sun, 8 Feb 2026 16:32:11 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Giulio Benetti <giulio.benetti@benettiengineering.com>
+Cc: linux-trace-devel@vger.kernel.org
+Subject: Re: Build failure bft for trace-cmd and libtraceevent
+Message-ID: <20260208163211.63e645cb@robin>
+In-Reply-To: <5984db8a-a93a-4efc-9b81-c87140d38042@benettiengineering.com>
+References: <5984db8a-a93a-4efc-9b81-c87140d38042@benettiengineering.com>
+X-Mailer: Claws Mail 4.3.1 (GTK 3.24.51; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: linux-trace-devel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
-From: Giulio Benetti <giulio.benetti@benettiengineering.com>
-Subject: Build failure bft for trace-cmd and libtraceevent
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfNE1rwbF5zAyKodEfyJwavSDR1iq7luZ9tCPiryvWRHqGtcs2Yb07OK8mLMjj1gyAutz4OU5+9WMA/L/ef0syr/RuVceSITRdvwMyUxpZWB3j8fqgwHp
- 1gtS60rRnbxZH6FuP1mzy+A4plMQCG/hH0JVaVlVp+3S0tWchlYUlyVcSoYNB3FsRv+roYrCuhWjySYT+NScpUNfOfB/z1YBc/+FmIxsb7qx5Nqp1yP2+/1s
- if9mCIIqwxPKxEtU9d1smQkPiwvGi2bEwLfGumKLc1Q=
+X-Stat-Signature: ofboi7ahiospfc8p6rd69jii37nr55fr
+X-Rspamd-Server: rspamout02
+X-Rspamd-Queue-Id: 7C1D42E
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX19HTOr4/QWLRX4Q2X5HmCvPbUgHNjZhOm8=
+X-HE-Tag: 1770586332-61504
+X-HE-Meta: U2FsdGVkX1+RCHwIH1sW+NUUIZwsxdJrDtsUq7bL8l3pM3TPHpbRoCF+7Lh+1rl/njODAMDGoZLkulXg6jvbreoyn+ubwBlxCIzkjDzEHqCMswrNENv6yooORa6KaE79dLyRx2K82m9qGB19/lrD3AXaiYHWG7TuZUicMLrn/M2pMPgsm+s6P5VKuJEZo9KBRuCJpH2k28a/kiuv8XNDRB6kCqZUt2FsvQxPnv7ja7Pp/lbFmSnzk0vda4ZzVDWumrSdlE1l2O3nC4fr89woqONRcBC+ieZNIFanH4Io8eCflEbzEmewTzKj20zuCmrU/+6iMoqEpr+UZwgqzQEPOmFQ8bkUtCC3ohniV852Y7tpJWNlIVaUHkpj0uaLeR8EP29fTAgCW0ej77k+pcwLAw==
 
-Hi Steven, All,
+On Sun, 8 Feb 2026 21:53:31 +0100
+Giulio Benetti <giulio.benetti@benettiengineering.com> wrote:
 
-in Buildroot I'm bumping libtraceevent to 1.9.0 and trace-cmd to 3.4 and
-experiencing build failures because of the change of uapi/linux/bft.h
-defines/enums
+> Otherwise the solution could be to switch according to Linux version
+> between print_args() with and without bft support, basically re-adding
+> the function here:
+> https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git/commit/?id=e798103c0815e6642e74d9317c325b2c62681f2e
+> 
+> What do you think about it?
 
-I see as possible solution to create a bft_compat.h to deal with
-different Linux versions, but this is not a quick solution.
+Is the failure found at runtime? That is, the loaded BTF file doesn't
+parse correctly? What is the error exactly?
 
-Otherwise the solution could be to switch according to Linux version
-between print_args() with and without bft support, basically re-adding
-the function here:
-https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git/commit/?id=e798103c0815e6642e74d9317c325b2c62681f2e
+I guess if the tep_btf_print_args() fails, it should just print the raw
+args then.
 
-What do you think about it?
-
-Best regards
-Giulio Benetti
+-- Steve
