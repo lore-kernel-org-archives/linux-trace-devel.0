@@ -1,134 +1,108 @@
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+Received: from mail-dy1-f170.google.com (mail-dy1-f170.google.com [74.125.82.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97AB1369233
-	for <linux-trace-devel@vger.kernel.org>; Fri, 27 Feb 2026 07:45:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A243731AF3B
+	for <linux-trace-devel@vger.kernel.org>; Mon,  2 Mar 2026 06:19:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772178312; cv=none; b=c3JssHd+csicwJKIxAgf+VyAsLEMOjRrlbzz1wgcYt8T+bfPzgPv77+Q8vm3GalieHqXyQI9KCVM7JY0okG45hVDVdxMJsmBc4tttF7Q/7HmpDDaColfpTPPgtXhELB1lZ8U6Px5Sk9YlNkCo4gKgV0Xl/rHRWI0vkp1TaIZoQo=
+	t=1772432402; cv=none; b=ulG/zVaJMhJmdbKrVznn9uxJ0flw1NSf/43aPESWadmjzIGphItRwnc0GGtMdpSCVV1+CSQWd6PWC2OORWT5r7zlFWt4pMQ19F0qBJaDRbQwjYvsMrF19Go6/2bCJwwQQ3UK35opiMi7zsMn3JkrOciPrxQAmHgdf96o/EhQT/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772178312; c=relaxed/simple;
-	bh=SwUu+NAKlEUkpiTZDDTGpxNysECH/AriS5LRl6phWdY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=qb47Bo8x60ndtiFyjttrlt/MVmZC9EMVhGvf9xDayWQzO+SqgFUYH0DfTb1dAjy9wB4UUOotQUqk/MH5jMS32JtCJi3BAADK0mACGtJsjzIgSO381VnAcQJ4oLrE4cKhZ6ARSd1Pxq7W05xi0D+PUZQdjY0OBeCi2ii5mfm5/CI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FykDFDOG; arc=none smtp.client-ip=209.85.128.52
+	s=arc-20240116; t=1772432402; c=relaxed/simple;
+	bh=9L2CJvXtGIPSowN59rKUdbGInOJuHm2IIVuNY9fiirE=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=ITWTb2oROcEjGghEISkzPx0q/1nUJYAKJUPCffX1iQ7+8NbViMojHe5s4yDv7vhIsiahN8F8FXQwtohrVmfyCZe0cw12c3Icn8H1RKNSKudSZL5k67bgIUey6S3689p76LqskgZtonxtMPdJSCWHGsV9/RDJNSkEQGK2RzP35Us=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=io3/fpYz; arc=none smtp.client-ip=74.125.82.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FykDFDOG"
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4834826e5a0so18361645e9.2
-        for <linux-trace-devel@vger.kernel.org>; Thu, 26 Feb 2026 23:45:09 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="io3/fpYz"
+Received: by mail-dy1-f170.google.com with SMTP id 5a478bee46e88-2ba895adfeaso3441223eec.0
+        for <linux-trace-devel@vger.kernel.org>; Sun, 01 Mar 2026 22:19:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1772178308; x=1772783108; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=rxoqrIQHlXfnwsLGnTS2nr12rQ9Ig7eu0rnQiPEJeo8=;
-        b=FykDFDOG6ExhhIz4N7l/+zR7EmHbmdHk9CQKdDJtt0W+3KevjEVhNs5R72YGcutCCe
-         3ooGFzH10hqyAkPr7141Zko7Oh1ZyrcwgrrIBw+GT9SgHSLYo1hNhLK4waLXowYByYlT
-         qHgWqciRGDIy95JwPXaolT4PV1/GM9294gRJy5gHiK9wtLFAxduPZlXyX+V9KO9V9SiN
-         JmaWWBfbzu/sm/Ke9JYohVv2KB9yzGfNRN7B6aPVubReLgHn9ruOyOy2+Twi83XtxPYC
-         UR0li9hXNCcsr46+COsw9PhzuPEIVyd+YaA46+HRdX41P6zgNb+LGi2/5lY4aw+qyFaL
-         XFqg==
+        d=gmail.com; s=20230601; t=1772432398; x=1773037198; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pyApFpN+LFjT689OTsmyfpRwK642HgLJ1Y/I/9AgjuM=;
+        b=io3/fpYzdhfE6ww1NZT5pnGUT8C5PinfBgPW9Swgl8Ffj22QdxqiBwnFeFeCjUUH1+
+         Wey35ycsTKQU4PciVI7+CdLfXe1Ak1Uby/Fdjkc0uDWKAR6BqaL1maDTm9lq9pl2XhuI
+         ZJHCOo/V3XVy6sYBIOMBoai++TY6lmeSbXcyhhl67kZU5GtZQBZi0djPcrk8xWF7xpMX
+         pfyLQb0g7QIgGaCJJBqtJkhFBXpL4Igz6yNwQ1+WcQcnPE/yDPKb4RLLRWfPHamQXNh+
+         BxBtH+Kofx+dseUaZ4+3uL/OD0CU9H9yG4XGTTXL0ftUhp6UsE2lG32tD6kifufOWxgd
+         RK0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772178308; x=1772783108;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1772432398; x=1773037198;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=rxoqrIQHlXfnwsLGnTS2nr12rQ9Ig7eu0rnQiPEJeo8=;
-        b=B68y4UrhJIdI+4v8oFjV9d+MyDO6dESZ3PgV/Vt67kG31GcpBbUTWa4dAL3/xoxWEy
-         PrVIJgr1Y2KHMnHF68mINSiBAfIftYN8EXwz5wSYlVheHt9UJxYqYSy8cdqq1Xi4g8Q9
-         bjquNYprLJQDDHyvChHXala2pAOx0iMh6zWzIn3pa+Svad4twlsw9YspPOioYcYMLunI
-         mdBJpJCILPH+K4rsAxiKWZHa6YhmNEwE4j76tLnTFt2Dr6Hr3m0EUExRnEPw1VGrRiPA
-         bPReT1tnN+rDWlz+B2GmZ19XyYxOSguPg8+AWXuJGyqHHIEG1IpTFL/y8f8OZKEZzllx
-         IT9A==
-X-Forwarded-Encrypted: i=1; AJvYcCVs3a44Okp1jFlxVFMCMdYN/vkNQM1M0JhyVLn7x7vDk3PEEvybDSug//ZvWPG9JpT5M5T5PFEOJvowJctKb1dNfA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxB9O03tc3zPMTlcGLAn15mmqcWaxLmgMpavGtZvWDEa/8mSbNz
-	Kqmo4YHqMxwAdeSQKSA+fUyQQoDH/kwhyU4+pHTkIaSTvDi0kF2nwjwsjywonQ==
-X-Gm-Gg: ATEYQzwQaeFv6xZOtDHOVsglXmES89cMsw9yDfedNv4SeVH0JzYRSs2Ix7x3JTEStxI
-	mZAlBUEDNrhVAY1eqPm3sIZYu6AtXBxcyJ6ak+q8hJOTWRU699HMTXZrgF1fagHw2y4WJRLuaN5
-	t6G7EEQ9FXRPwQe0lkc3++0+vHCFqz6jFF8huRaFwpZUVC15D689kXD5tguLMw0vhCXvMaCaXDl
-	e3YpnMDoR6wrOl3wieo30MAXbBmNCamit9WNb5tr7dJUwgQ/qTGBqY9NGWSj6V0PuenJg25J1qB
-	fwatHTORnJLxkwZ7uiU/Ju44acGP+XvcHnQLyxibxi/oST0DNalwiYp0SHqlsX7uav6D6Y98nP4
-	43UPwF2Pa6WZVCEYhk0oPFO+tHk1k+2lGSjnJBNOKE4bXhBLef0PP2FOGFHGfIL+bSDKRRksmqX
-	Hx54upUPeASeYFNv3zXrHIMRf91V8cCioB4NbV8iv+TMHp+NU=
-X-Received: by 2002:a05:600c:314a:b0:477:58:7cf4 with SMTP id 5b1f17b1804b1-483c9ba7e58mr21646685e9.4.1772178307528;
-        Thu, 26 Feb 2026 23:45:07 -0800 (PST)
-Received: from [192.168.0.106] (62-73-72-56.ip.btc-net.bg. [62.73.72.56])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-483c3b3474dsm87812385e9.1.2026.02.26.23.45.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Feb 2026 23:45:07 -0800 (PST)
-Message-ID: <bab134df-d903-da46-37df-b564a3a58a30@gmail.com>
-Date: Fri, 27 Feb 2026 09:45:05 +0200
+        bh=pyApFpN+LFjT689OTsmyfpRwK642HgLJ1Y/I/9AgjuM=;
+        b=bsamuNhGQWtXjidI+B+GiamWicG37H3c8bNchVCfUPALCJkd1VxuwdKd0OeCKMowYt
+         9kdiqGEQ+J1eLVUYMO/3+adZJAEfsY0+Z8cbXSVpDWawU0TbU2hDdTJVPAigjMKGtEma
+         n6mReejABl9TUC4+c+KHuUip3YMCyLdxfbqrtRwZHAFIDnJi0EyHhOhf4ZmJ/yptZmTI
+         T8H9Qix5/BVuesU1sfvpPSaPWpjpXGiSITkvSf+tcPYpgJDmt8z4k9ud0Bl/9HM3sgKp
+         hHrPtXH2NSLCk00KSxsBvVNdVRkCRce9vLJc82S+nlSKKLqkCIxDDYDHc0DV/UcGIMww
+         MCiA==
+X-Forwarded-Encrypted: i=1; AJvYcCWPkPa/xu4AeNF4IWdgtGcN/dvb6KvfXv+b1kVOxXS/vUQicoGb1E+lrHyUdQJuxtLeBDrc3ocG4SO5OFd5LI7oOw==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxzp8dH/NAZWepmvsOLvjxXsxtWquSSlaP1BQvSH8QyLJSHv/Xh
+	J+IGHyeLLcXJS3sYZW/9JluCY78HZVHIOjIhEZPRKSoY3ekEJj77fpQ+
+X-Gm-Gg: ATEYQzzDY68YpGKQLfalaZE3Lr+hKMkYrD6Sm4Hc8wcKvQGuYsr+4kuO1Iil0F86sg6
+	P9Pt0e3Rd9tXqg6cecuL+wHlYP1QxWglXzHYWmfqXLINTQN1v2imHT+VmpRnJYeSZMSTdq0dXp4
+	IFIwCzZSYJ/clm4sfpaWtVLdWInU9xomzzju7YHz1bKR2xF/waA7yeCWLgQZ6hslW79ycmAEmml
+	/BYWZ13dnIWRcjgh5915Q+MvWnQUp3q3KRBPfUI9+wS/6RW2dZeSX29FPs5ypiKM2ef0Qp96HvE
+	Aq4gyxEtc31+5Qm0gCYQ0EfJa65xoZ+qBHcPgOx7inZWz4vlEYzqJ9dgp6XbP4xfUZWM5XOBrka
+	lZXnCD8e8nF6Ryc+PNzWH7wpn6rhaf8BiitZewEGExD3Ha6TiExYbG72vnmY+/YpDFyFjnliMO9
+	+6JxQs
+X-Received: by 2002:a05:7300:c9e:b0:2ba:a623:c323 with SMTP id 5a478bee46e88-2bde1c938b4mr4203653eec.10.1772432397568;
+        Sun, 01 Mar 2026 22:19:57 -0800 (PST)
+Received: from z2 ([2601:647:4401:2cb0::4c64])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2bdf0cd07e6sm5529594eec.21.2026.03.01.22.19.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Mar 2026 22:19:56 -0800 (PST)
+From: Namhyung Kim <namhyung@gmail.com>
+To: uftrace@googlegroups.com,
+	linux-trace-devel@vger.kernel.org
+Subject: [ANNOUNCE] uftrace v0.19 is released
+Date: Sun,  1 Mar 2026 22:19:49 -0800
+Message-ID: <20260302061950.7293-1-namhyung@gmail.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] kernelshark: Fix TEP filter array parsing logic
-To: Ciunas Bennett <ciunas@linux.ibm.com>, linux-trace-devel@vger.kernel.org
-References: <20260224170528.728883-1-ciunas@linux.ibm.com>
-Content-Language: en-US
-From: Yordan Karadzhov <y.karadz@gmail.com>
-In-Reply-To: <20260224170528.728883-1-ciunas@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-The patch is applied. Thanks!
+Hello,
 
-Yordan
+I'm excited to announce that uftrace v0.19 is just released!
+This is a small release with bug fixes/updates and some new features.
+You can get it from the below link:
 
-On 2/24/26 19:05, Ciunas Bennett wrote:
-> When saving a session with more than a single TEP advanced filter,
-> KernelShark triggers a json-c assertion:
-> 
-> "json_object_array_get_idx: Assertion
-> `json_object_get_type(jso) == json_type_array' failed."
-> 
-> This is caused because the code reuses the `jfilter` variable inside
-> the loop to fetch each array element:
-> 
->      jfilter = json_object_array_get_idx(jfilter, i);
-> 
-> This overwrites the original array object. On the next iteration,
-> `jfilter` is no longer a json_type_array, causing the assertion.
-> 
-> Fix this by introducing a temporary variable `jitem` to store each
-> array element, leaving `jfilter` to point to the actual array.
-> 
-> Signed-off-by: Ciunas Bennett <ciunas@linux.ibm.com>
-> ---
->   src/libkshark-configio.c | 8 ++++----
->   1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/src/libkshark-configio.c b/src/libkshark-configio.c
-> index 88c2c9a..568ec73 100644
-> --- a/src/libkshark-configio.c
-> +++ b/src/libkshark-configio.c
-> @@ -1528,7 +1528,7 @@ bool kshark_export_adv_filters(struct kshark_context *kshark_ctx, int sd,
->   static bool kshark_adv_filters_from_json(struct kshark_data_stream *stream,
->   					 struct json_object *jobj)
->   {
-> -	json_object *jfilter, *jname, *jcond;
-> +	json_object *jfilter, *jname, *jcond, *jitem;
->   	int i, length, n, ret = 0;
->   	char *filter_str = NULL;
->   
-> @@ -1548,10 +1548,10 @@ static bool kshark_adv_filters_from_json(struct kshark_data_stream *stream,
->   	/* Set the filter. */
->   	length = json_object_array_length(jfilter);
->   	for (i = 0; i < length; ++i) {
-> -		jfilter = json_object_array_get_idx(jfilter, i);
-> +		jitem = json_object_array_get_idx(jfilter, i);
->   
-> -		if (!json_object_object_get_ex(jfilter, "name", &jname) ||
-> -		    !json_object_object_get_ex(jfilter, "condition", &jcond))
-> +		if (!json_object_object_get_ex(jitem, "name", &jname) ||
-> +		    !json_object_object_get_ex(jitem, "condition", &jcond))
->   			goto fail;
->   
->   		n = asprintf(&filter_str, "%s:%s",
+https://github.com/namhyung/uftrace/releases/tag/v0.19
+
+uftrace dump command that generates chrome trace output format supports
+adding source file and line number information.
+
+  $ uftrace dump --chrome --srcline
+
+Also it now shows the timestamp as realtime with UTC offsets so that it
+can correlate trace output with external events easily.
+
+And it has a new script to show function execution time percentiles
+(P90, P95, P99).
+
+  $ uftrace script -S scripts/func-percentile.py  $FUNCNAME
+
+As more useful scripts are added, we'll need to think about how to
+deploy them.
+
+And there are a couple of important bug fixes.
+
+PLT functions generated by mold linker have different code patterns and
+cause uftrace crash.  Now it's fixed and trace them correctly.
+
+And it checks RISC-V 64 CPUs properly in the hashmap code.
+
+And there are more bug fixes and improvements.  Thank you all for
+making uftrace more useful, efficient and portable!
+
+Namhyung
