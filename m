@@ -1,41 +1,37 @@
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.2])
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.2])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C18429B78F
-	for <linux-trace-devel@vger.kernel.org>; Mon,  6 Apr 2026 06:29:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7280D2D7BF
+	for <linux-trace-devel@vger.kernel.org>; Mon,  6 Apr 2026 07:04:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775456964; cv=none; b=kFJwo6zURcQ77g6D3HE3C4a3U1Gk9UcHzR36RjifnK3rD/eED5iJMXmfhnznu73QAlPXQ9MGCIJ3hxqiymcY3FT41CZagCcSzowiycb3NE47bGVbianPCAmc5quQFi9XXMzaw6fYAaDdQNN8CrV/R6j35o8ugQcNAa7nXlmkKag=
+	t=1775459060; cv=none; b=Dqum1TmoUsXAsbY4FBAZqv2om9EBph+z0ea6fARMWXBj1/8qC0l/b1AxzfstHIYWSpskCMb2BUWXc+/2I73a1WTI+HpSs3xzKSkB+O+00hQuSC/4/w37rrMkGfD89nssMCGSerZBaKlT1T4MU6QWw/e5zwAQInlwV1NCJ6YCzSI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775456964; c=relaxed/simple;
-	bh=1vKwbNKsH+KdxBMROjwpVpmPVlMgGBix/GCkDP95HSw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=taIoBAHvRxjdAQ8KLWxVKpI+emaBrry9IV12QdTTOwKNPcFpiRm4i0vltIPcS4in2QUmEacGf1XCRTCvFh+Bk5yv51MRjPoH4G9Ha03vbGgpz9n4sfXt67mVgCFA2rpH43kWVK5zRByU/FVXQVQ+RClLESSN40hWRBq2tP8OJTA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=f+nD5a80; arc=none smtp.client-ip=220.197.31.2
+	s=arc-20240116; t=1775459060; c=relaxed/simple;
+	bh=Wwpou1YIC97LecPfRAhHflDGcc0Zuy4UmqXASTbe3Uo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ogrqbpxUOMkQ5L7FGAb2r0vG7EV+J8sPLR23mI64fV9rXLYFVitRfZqe/1DPvKvijuqosOCXAKZt3DsXvzXbv1NRaMxNphkm/5TRB2wFcpgm5b78Tt9RdYGz7gZZ3DBIZEbsg57BMlgiqoslFQ6gw4n/sohx0/1ZNSKZwN3/y7Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=oThJ48zt; arc=none smtp.client-ip=117.135.210.2
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="f+nD5a80"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="oThJ48zt"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=AD
-	vcWqhmT769+eFq6qqmNNzOdQoVhvqrF6wPZVsu0v8=; b=f+nD5a80hUk2dAPJdU
-	a1vyjU1NoAziIqFXVbcAN+g5N1LcmSewFfvP86Iu5ksjHbOZGtg+OhLhATRht5Pb
-	YXkYfbY/fdr6tbwWfkv0NWaWUS4ca9jlxY7DZEXOHIThzRnh7OWcpq53SSTa529M
-	7hTFuR19EozoaGwWDdIsY7o60=
+	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=w4
+	iii02mdoLNsfmfxGZ3+cPGfCu4xxUWB6HXkL9Aauw=; b=oThJ48ztaNWyp/Hl5b
+	xoT6MCpSAMd2uoYZDa8Xbm1BjauXYMpcDu/pRgReo2PKjlmZayuWZ+pzt/htGXor
+	/WEgcGjO9egwNED5ypBiIYlhuV+KYK42WU1FCeF5RektoCDgm+GrfsnM8CKtE+Ch
+	qCEfpU0+4Nk51FILanzP+IoIk=
 Received: from localhost.localdomain (unknown [])
-	by gzga-smtp-mtada-g1-4 (Coremail) with SMTP id _____wAHDamtUtNp9Bx3Dg--.49875S2;
-	Mon, 06 Apr 2026 14:29:03 +0800 (CST)
+	by gzga-smtp-mtada-g0-1 (Coremail) with SMTP id _____wD3H4XVWtNpJYexDQ--.64445S2;
+	Mon, 06 Apr 2026 15:03:51 +0800 (CST)
 From: CaoRuichuang <create0818@163.com>
 To: linux-trace-devel@vger.kernel.org
-Cc: rostedt@goodmis.org,
-	tz.stoyanov@gmail.com,
-	create0818@163.com
-Subject: [PATCH v2] libtraceevent: avoid racing recursive builds of both libraries
-Date: Mon,  6 Apr 2026 14:28:55 +0800
-Message-Id: <20260406062855.58598-1-create0818@163.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Subject: [PATCH] trace-cmd report: keep a separator before long timestamps
+Date: Mon,  6 Apr 2026 15:03:44 +0800
+Message-Id: <20260406070344.64152-1-create0818@163.com>
 X-Mailer: git-send-email 2.39.5 (Apple Git-154)
-In-Reply-To: <20260405222102.9204-1-create0818@163.com>
-References: <20260405222102.9204-1-create0818@163.com>
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
@@ -43,48 +39,91 @@ List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wAHDamtUtNp9Bx3Dg--.49875S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7tF18CrWUWr15Ww4DKrW5Awb_yoW8Xr1Upr
-	W5WrsxKw4kJrWIv3Z7Z3yUGr1jvasYq393t3WUWw1rur45XF4UXFyI93y8WF4fA3yktF9F
-	ywsY93sFgFyUXrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pRO4S5UUUUU=
-X-CM-SenderInfo: pfuht3jhqyimi6rwjhhfrp/xtbC6BAQSWnTUrARwwAA3r
+X-CM-TRANSID:_____wD3H4XVWtNpJYexDQ--.64445S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxuF1kuFWfCry8CF1xXr4DCFg_yoW5WrWrpF
+	Wjyr1qkF48tFsayw1S9F4Duw1Yywn7CFW2gryxu34Ykr15Jr1UXryxKa42qr4fX3ykZ3yf
+	Aw4qkw1vka1kZaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07Upa0QUUUUU=
+X-CM-SenderInfo: pfuht3jhqyimi6rwjhhfrp/xtbCwBkcVWnTWtndHwAA3r
 
-A top-level parallel build currently starts separate recursive makes for
-libtraceevent.a and libtraceevent.so. Both sub-makes rebuild the same
-object files in the same output directory, which can corrupt the .o
-files and make the final link fail with file format errors.
+trace-cmd report formats normal nanosecond timestamps with "%12d:".
+That relies on the field width to provide the separator before the
+timestamp.
 
-The src/ Makefile already builds libtraceevent.so as part of the
-libtraceevent.a target. Reflect that at the top level too by making the
-shared library target depend on the static library target, so parallel
-requests for either or both libraries funnel through a single recursive
-make.
+With --raw-ts and a large --ts-offset, the timestamp can grow beyond
+12 digits. Once that happens, the padding disappears and the output
+runs into the raw flags field, producing lines such as:
 
-This fixes repeated `make -j8`, `make -j8 libs`, and
-`make -j8 libtraceevent.a libtraceevent.so` failures in a Linux VM,
-where the unfixed tree reproduces the race within a few runs.
+  [003] dNh2.749686305812356:
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=217428
+Make the normal timestamp format include an explicit leading space so
+the separator remains present regardless of the timestamp width.
+
+Add a unit test that exercises report --raw-ts with a large timestamp
+offset and checks both the fixed and the broken output forms.
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=221303
 Signed-off-by: CaoRuichuang <create0818@163.com>
 ---
- Makefile | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ tracecmd/trace-read.c  |  2 +-
+ utest/tracecmd-utest.c | 24 ++++++++++++++++++++++++
+ 2 files changed, 25 insertions(+), 1 deletion(-)
 
-diff --git a/Makefile b/Makefile
-index e1a10a0..6649303 100644
---- a/Makefile
-+++ b/Makefile
-@@ -211,8 +211,7 @@ libs: libtraceevent.a libtraceevent.so
- $(LIBTRACEEVENT_STATIC): force
- 	$(Q)$(call descend,$(src)/src,$@)
+diff --git a/tracecmd/trace-read.c b/tracecmd/trace-read.c
+index 355ee0f4..aef9b4c5 100644
+--- a/tracecmd/trace-read.c
++++ b/tracecmd/trace-read.c
+@@ -170,7 +170,7 @@ static const char *time_format(struct tracecmd_input *handle, enum time_fmt tf)
+ 			else
+ 				return tf == TIME_FMT_NORMAL ? " %6.1000d:" : "%6.1000d";
+ 		} else
+-			return tf == TIME_FMT_NORMAL ? "%12d:" : "%12d";
++			return tf == TIME_FMT_NORMAL ? " %12d:" : "%12d";
+ 	}
+ }
  
--$(LIBTRACEEVENT_SHARED): force
--	$(Q)$(call descend,$(src)/src,libtraceevent.so)
-+$(LIBTRACEEVENT_SHARED): $(LIBTRACEEVENT_STATIC)
+diff --git a/utest/tracecmd-utest.c b/utest/tracecmd-utest.c
+index c18fb2ea..cc487d13 100644
+--- a/utest/tracecmd-utest.c
++++ b/utest/tracecmd-utest.c
+@@ -445,6 +445,28 @@ static void test_trace_convert6(void)
+ 	CU_TEST(ret == 0);
+ }
  
- $(bdir)/libtraceevent.so: $(bdir)/libtraceevent.so.$(EP_VERSION)
- 	@ln -sf $(<F) $@
++static void test_trace_report_long_timestamp_separator(void)
++{
++	struct stat st;
++	int ret;
++
++	/* If the trace data is already created, just use it, otherwise make it again */
++	if (stat(TRACECMD_FILE, &st) < 0) {
++		ret = run_trace("record", TRACECMD_OUT, "-e", "sched", "sleep", "1", NULL);
++		CU_TEST(ret == 0);
++	}
++
++	ret = grep_match("\\[[0-9][0-9][0-9]\\] [^ ]*\\. [0-9]\\{12,\\}:",
++			 "report", TRACECMD_IN, "--raw-ts",
++			 "--ts-offset", "100000000000000", NULL);
++	CU_TEST(ret == 0);
++
++	ret = grep_match("\\[[0-9][0-9][0-9]\\] [^ ]*\\.[0-9]\\{12,\\}:",
++			 "report", TRACECMD_IN, "--raw-ts",
++			 "--ts-offset", "100000000000000", NULL);
++	CU_TEST(ret == 1);
++}
++
+ struct callback_data {
+ 	long			counter;
+ 	struct trace_seq	seq;
+@@ -798,6 +820,8 @@ void test_tracecmd_lib(void)
+ 		    test_trace_sqlhist_hist);
+ 	CU_add_test(suite, "Test convert from v7 to v6",
+ 		    test_trace_convert6);
++	CU_add_test(suite, "Keep separator before long timestamps",
++		    test_trace_report_long_timestamp_separator);
+ 	CU_add_test(suite, "Use libraries to read file",
+ 		    test_trace_library_read);
+ 	CU_add_test(suite, "Use libraries to read file incremental",
 -- 
 2.39.5 (Apple Git-154)
 
