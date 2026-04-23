@@ -1,120 +1,125 @@
-Received: from mail-dy1-f174.google.com (mail-dy1-f174.google.com [74.125.82.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay.hostedemail.com (smtprelay0014.hostedemail.com [216.40.44.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35231399354
-	for <linux-trace-devel@vger.kernel.org>; Mon, 13 Apr 2026 07:58:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2CF331AF14
+	for <linux-trace-devel@vger.kernel.org>; Thu, 23 Apr 2026 20:22:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776067138; cv=none; b=RY/CGFC3WU0P3vRdrPcAVroyinojXMnmS83hGJVZOiqc88Wsf0C3JMkM4yB+kI9N8E8SuQqp7O4E1e3IEUXtRx8HoCtzopuym1cxFrtC7FWAaSszUiBsPtoEZa31IN1mygCgiN/kmgf22NHySzwchMoKfb/3eEnyKEwCP4VI7YA=
+	t=1776975727; cv=none; b=cWutDgv1qoA3XaWpyZy5kPvl+snTY76biyVFAJk1wsBy6PMh2JnjYIKlkEZeC18bsnzyVGyj1KvffJJITB13zSp0mUYHT/MVV/7o3dYFQ35/pwOzGKyJde6QVP4Cm0azNyDRCLgKWjEs8RuGGf0lZrRln/whzsBYGbp+LecIbdg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776067138; c=relaxed/simple;
-	bh=okws4UjvfhK3kr6/N39qZjRHb/6fplnyks8XQacNlLo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=f/sMlOQGJ4zX286Bs9si8ileOQkWYZ0ho3F8fbPrp7bzlhrACM5z6zpV0nU//Z9+MOdoMlHwmc3y8Wrfi0bx0sg1LzDsphsVpPDNTrdGYX6g1wtJ5N9Nmqc26dg0NkhasDG3MYgB5FfBUo4cB4yWSwmTcbHBLSLh1meA8y4FqLk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VU/aPWIs; arc=none smtp.client-ip=74.125.82.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VU/aPWIs"
-Received: by mail-dy1-f174.google.com with SMTP id 5a478bee46e88-2b6b0500e06so7470279eec.1
-        for <linux-trace-devel@vger.kernel.org>; Mon, 13 Apr 2026 00:58:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1776067136; x=1776671936; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JJk6Zxqkq2OHYbmMgnbvksnaOF6Y7VYH+p2ASP/xX0U=;
-        b=VU/aPWIs6PRayHmYX38UgDujYDV1EL5NntKr/+Ar95b/d2MIF0qSrm3b6EZbgBm2Ja
-         W4hA0x2Tc3PTXCZQ+g0I47hMlFxkzVLNracE0A/sGwZvIIiL5+YfubLYIL9Ts8QNt/cw
-         xlBByzA5ZQcxsELyGmnE+Zj+UENauJMfArrPWB1S/PuNc4yfqguudeMj4Cv+sab1M0jU
-         AZKIAyuLG4y8uipbYjmcWsuHbfW30XZD1//30IafZu8q3shpCIO0WOcYc52vGpN/Qw3w
-         QfsVn4v2cbTa+h51qRXGWbUtVW2mT91qjRY+OvzUNVOcQa6rTz/5gOfRY1H7NfD5/xQq
-         Bo8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776067136; x=1776671936;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JJk6Zxqkq2OHYbmMgnbvksnaOF6Y7VYH+p2ASP/xX0U=;
-        b=iRvx/ZmSDf9QtNrsthR5Pw9YDXNmzbPnUvs9Lp2kg0QtMN9ivn7Y2B94tttlN2axpv
-         S86lqSp6d3eMP3rZNo9Ld68oYpZjtW91njRMvpvEamuoFHZVY44lXpzRVjhgiha/OXvu
-         zDGepIcUBaX4Mux8JlOahTP8S1fbjIdtYT7CrDSZR1UqYyfXyF3tH09cz7Xj8Sgr/E/+
-         n7P94sa1pGNvNlUma7jE1k1zeH1u/zVcyffpByPfwiEwF/O+u7bHmrgcYVYPyoud6qSF
-         sk877IgDTDX/9veSaLqpKrkb+FKcy6UWkmbJFbOv6Rf0GWIu/BYnjkjmpLVvWmqIDCf0
-         xeKw==
-X-Gm-Message-State: AOJu0Yx5OlZEg9QXqfdyq0p4e6+9zGrtg12vENIsz0Iz5ZZ2GjRwCNTJ
-	ag2TDh/0ljFW67uKAmwjpVATeIs6NP83KBn+nE7uRjs+BPbiq64YmHVLvZCFtw==
-X-Gm-Gg: AeBDiesvTXiax+yLlaBp6YX4N1SfaNY4FMxmgKhT7iHW9nzqVUQ1rpjmPWEiMDzdh2q
-	lyuhuS2IXqj0BmmJ7Ajubj0Az1kLlCpTCNZlzT2DfXIf3WNzZsY958839V+pub3/CTGHoC7W/K8
-	44oI+y8N9ot/2tO092cYuNHKRYNbsLmPgfIfmKGEcSoMf61dDaQbDSfDBqsIkSbp7dJtmRVMkzP
-	b/xEUmXAxHTrauSvn7X1beM0DkHLDfdMIKoSMvQpzuuKViIMNXoQ8o8qI3U+poa9NYCFLSJhliB
-	2Bxy9hmdRIPEK3FL8PFhSaIQIeQx+pam82vNc9GvXbKQ3wEYmJO1LCRNzcngvDXMQzW+A9az9TH
-	WfQ/fxwwhfuMfB23h8dNOqJ/A7i6FLaF3zqMotPpdq/iucX4VSFn0M2PFYdXNMMqHRnTMjiWtqh
-	KV5J99xHegy9Zce8b8YIomqSFC3vh89pQHevPJgYE2aELD4VVAGjYU+cE=
-X-Received: by 2002:a05:7301:6788:b0:2d5:3a24:1507 with SMTP id 5a478bee46e88-2d5873b2d13mr6315984eec.7.1776067132224;
-        Mon, 13 Apr 2026 00:58:52 -0700 (PDT)
-Received: from 59989e37b1d1.cs.ucr.edu (colossus.cs.ucr.edu. [169.235.26.233])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2d562db6ac8sm15400824eec.26.2026.04.13.00.58.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Apr 2026 00:58:51 -0700 (PDT)
-From: Zhengchuan Liang <zcliangcn@gmail.com>
-To: linux-trace-devel@vger.kernel.org
-Cc: zzhan461@ucr.edu
-Subject: [PATCH] trace-cmd library: Fix virtual memory leak in tracecmd_close()
-Date: Mon, 13 Apr 2026 00:58:46 -0700
-Message-ID: <20260413075846.1142967-1-zcliangcn@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1776975727; c=relaxed/simple;
+	bh=nSWGrJYEty3jbeuTnSM+muXNX9D6AwVa9XMWiDNqWBU=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=AAHzMo6HvuGdiw1yrxlFLPNIyVWyYf+HngFE1V5Gv/CrjF2PEsvgufR+e6Xy3O32AIRqkGubk76BmMt352rlsf0jomJ9NKpzBKuUZ6eG08omNIOZwrA/UdNV2x2FzYJ7Nu71L9dAXHqaO1WL5l66Vic0NLs3QyWG+IEYzTneOKk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf09.hostedemail.com (lb01b-stub [10.200.18.250])
+	by unirelay05.hostedemail.com (Postfix) with ESMTP id D964C40119;
+	Thu, 23 Apr 2026 20:22:04 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf09.hostedemail.com (Postfix) with ESMTPA id 83F832002A;
+	Thu, 23 Apr 2026 20:22:03 +0000 (UTC)
+Date: Thu, 23 Apr 2026 16:22:07 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Cc: Metin Kaya <metin.kaya@arm.com>
+Subject: [PATCH] tracefs: Add tests for clearing kprobes with 
+ tracefs_dynevent_destroy_all()
+Message-ID: <20260423162207.5a888de0@gandalf.local.home>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Stat-Signature: a76kfs6rpfkhyr7t9an4hg1xo4cci7gn
+X-Rspamd-Server: rspamout08
+X-Rspamd-Queue-Id: 83F832002A
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX1/Z/ApbId4+wZ5+zHMexds9QHKc5tv/LLc=
+X-HE-Tag: 1776975723-821864
+X-HE-Meta: U2FsdGVkX1/PtDzMuG9wVre5hKGKdik+hoFZwjktHrirVPSF5XxoB1qc1DvSRHQ/fGF9Q9BGCJs4A3qHkiS3XXMQil+4B+dR7jOLslrrIlyejmLZFKeYQDgVIdEgW1P0oxapp4pfq0eFrglFeBVFidmk5u7Ne/brsbhMveGkMqLAJOOg7aEBlGLloa5Hrl/Kkq+kZK/OaGt9+R5D25B/n+p8b1e8FRZr8hdbN6U4xui/q9e7yDoHFj468c8jSihdLhLr4l3f5SmLUrMdMPvK4eHLpNUfB00XRBZXSNSH9gO+IRWqzx/LBf9E7xMHsGr9EKPPVlRsTCWTorbS01+4J5mm2rpyuMqoCdZR39GqBLTMjxk1H/IkJu4QoA0jS3PAGLNkehQIHFR49+a8g9PjZUSDDcoZXzqbdREHiJAl+U/ktFeBzPpng4CJ18HqPit6Zz5BA9o6lxY=
 
-tracecmd_close() only released the current cpu page and then freed the
-remaining page_map objects without unmapping them. As a result, cached
-pages and their mmap()ed ranges could survive handle teardown and leak
-virtual memory.
+From: Steven Rostedt <rostedt@goodmis.org>
 
-Release all cached cpu_data->pages[] entries with __free_page() and
-munmap any remaining page_map mappings before freeing them.
+There was a regression with the use of tracefs_dynevent_destroy_all() where
+it wasn't resetting kprobe events. Add testing of that function in the utest
+for kprobe events.
 
-Reported-by: Zhao Zhang <zzhan461@ucr.edu>
-Co-developed-by: Zhao Zhang <zzhan461@ucr.edu>
-Signed-off-by: Zhao Zhang <zzhan461@ucr.edu>
-Signed-off-by: Zhengchuan Liang <zcliangcn@gmail.com>
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=221395
+Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
 ---
- lib/trace-cmd/trace-input.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ utest/tracefs-utest.c | 27 +++++++++++++++++++++++++--
+ 1 file changed, 25 insertions(+), 2 deletions(-)
 
-diff --git a/lib/trace-cmd/trace-input.c b/lib/trace-cmd/trace-input.c
-index 0fa9d956..8e30a8d3 100644
---- a/lib/trace-cmd/trace-input.c
-+++ b/lib/trace-cmd/trace-input.c
-@@ -5237,9 +5237,15 @@ void tracecmd_close(struct tracecmd_input *handle)
- 	for (cpu = 0; cpu < handle->cpus; cpu++) {
- 		/* The tracecmd_peek_data may have cached a record */
- 		free_next(handle, cpu);
--		free_page(handle, cpu);
- 		if (handle->cpu_data) {
- 			cpu_data = &handle->cpu_data[cpu];
-+			if (cpu_data->pages) {
-+				for (i = 0; i < cpu_data->nr_pages; i++) {
-+					if (cpu_data->pages[i])
-+						__free_page(handle, cpu_data->pages[i]);
-+				}
-+			}
-+			cpu_data->page = NULL;
- 			if (cpu_data->kbuf) {
- 				kbuffer_free(cpu_data->kbuf);
- 				if (cpu_data->page_map)
-@@ -5265,6 +5271,7 @@ void tracecmd_close(struct tracecmd_input *handle)
- 			}
- 			free(cpu_data->compress.chunks);
- 			list_for_each_entry_safe(page_map, n, &cpu_data->page_maps, list) {
-+				munmap(page_map->map, page_map->size);
- 				list_del(&page_map->list);
- 				free(page_map);
- 			}
+diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
+index 353b3cbee199..7ec7b42eebb0 100644
+--- a/utest/tracefs-utest.c
++++ b/utest/tracefs-utest.c
+@@ -2330,6 +2330,7 @@ static void test_kprobes_instance(struct tracefs_instance *instance)
+ 	/* kprobes APIs */
+ 	destroy_dynevents(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE);
+ 
++	/* Allocate first */
+ 	for (i = 0; i < kprobe_count; i++) {
+ 		dkprobe[i] = tracefs_kprobe_alloc(ktests[i].system, ktests[i].event,
+ 						  ktests[i].address, ktests[i].format);
+@@ -2348,6 +2349,7 @@ static void test_kprobes_instance(struct tracefs_instance *instance)
+ 	get_dynevents_check(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE, 0);
+ 	CU_TEST(check_probes(kretests, kretprobe_count, dkretprobe, false, instance, tep));
+ 
++	/* Create the kprobes */
+ 	for (i = 0; i < kprobe_count; i++) {
+ 		CU_TEST(tracefs_dynevent_create(dkprobe[i]) == 0);
+ 	}
+@@ -2387,6 +2389,27 @@ static void test_kprobes_instance(struct tracefs_instance *instance)
+ 	tracefs_dynevent_list_free(devents);
+ 	devents = NULL;
+ 
++	/* Recreate both types, and destroy with tracefs_dynevent_destroy_all() */
++	for (i = 0; i < kretprobe_count; i++) {
++		CU_TEST(tracefs_dynevent_create(dkretprobe[i]) == 0);
++	}
++	for (i = 0; i < kprobe_count; i++) {
++		CU_TEST(tracefs_dynevent_create(dkprobe[i]) == 0);
++	}
++	devents = get_dynevents_check(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE,
++				    kprobe_count + kretprobe_count);
++	CU_TEST(check_probes(ktests, kprobe_count, devents, true, instance, tep));
++	CU_TEST(check_probes(kretests, kretprobe_count, dkretprobe, true, instance, tep));
++	tracefs_dynevent_list_free(devents);
++	devents = NULL;
++
++	CU_TEST(tracefs_dynevent_destroy_all(TRACEFS_DYNEVENT_ALL, true) == 0);
++
++	get_dynevents_check(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE, 0);
++	CU_TEST(check_probes(ktests, kprobe_count, dkprobe, false, instance, tep));
++	CU_TEST(check_probes(kretests, kretprobe_count, dkretprobe, false, instance, tep))
++
++	/* Free the dynamic events */
+ 	for (i = 0; i < kprobe_count; i++)
+ 		tracefs_dynevent_free(dkprobe[i]);
+ 	for (i = 0; i < kretprobe_count; i++)
+@@ -3966,7 +3989,8 @@ void test_tracefs_lib(void)
+ 		fprintf(stderr, "Suite \"%s\" cannot be ceated\n", TRACEFS_SUITE);
+ 		return;
+ 	}
+-
++	CU_add_test(suite, "kprobes", test_kprobes);
++	return;
+ 	CU_add_test(suite, "Test tracefs/debugfs mounting", test_mounting);
+ 	CU_add_test(suite, "trace cpu read",
+ 		    test_trace_cpu_read);
+@@ -4032,7 +4056,6 @@ void test_tracefs_lib(void)
+ 		    test_custom_trace_dir);
+ 	CU_add_test(suite, "ftrace marker",
+ 		    test_ftrace_marker);
+-	CU_add_test(suite, "kprobes", test_kprobes);
+ 	CU_add_test(suite, "synthetic events", test_synthetic);
+ 	CU_add_test(suite, "eprobes", test_eprobes);
+ 	CU_add_test(suite, "uprobes", test_uprobes);
 -- 
-2.34.1
+2.53.0
 
