@@ -1,84 +1,136 @@
-Received: from relay.hostedemail.com (smtprelay0017.hostedemail.com [216.40.44.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB75A33439F
-	for <linux-trace-devel@vger.kernel.org>; Thu, 23 Apr 2026 20:29:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.17
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E20CF30E853
+	for <linux-trace-devel@vger.kernel.org>; Fri, 24 Apr 2026 08:04:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776976199; cv=none; b=iiG4Xd6jmVBoAjc/1dl0CPM21ndF2j6MQjDKFW6VnGnk2C1Ul+MvLRg8X2xKZPAaz9DcKuDJLHp4usdWL7oeerJ321555UZtzTaNXxvMvrGUMnr6sQ1TJ0LRR+jfXPeyzuzJU7oU5CpfpxHtHEkXqkmlwlHJQ1PlHQMRsdupc48=
+	t=1777017857; cv=none; b=RHN8Dk7ZArwF14+YU+8y28HgidFbn7UYiADEGU5GRSrGlBoxYMMnfPQQ/qAW3wTE4qvu8m48aOPq7STBANagbVIx869jh+gsCkA14ofdZj8rdH7XoiOHAk1RC8h4Y35cOI5sx0G+ef49/uzdgATbEUk679D46PLdFUhT/IJHDn4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776976199; c=relaxed/simple;
-	bh=lFrSwKP4oVQ8cn2Hv7ufIB1KrgVT/psdHn8/dLqLzpU=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=OprFWTTHXG2l6/dK+83bloPaDQmcgsUDTCH+5j/KR/2NKL6syLvE0GyNF/iJG9iZS3JUEjmRm84vHcH1AJWXx9J/RJEfsYbJOeMCWQmXph7X91Cpv8NYa2Mfpi5NRITYW3C5FGNqo5j90EHI+Ews0uS+wrW32emIE9mOAzHuYyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf17.hostedemail.com (lb01b-stub [10.200.18.250])
-	by unirelay05.hostedemail.com (Postfix) with ESMTP id 428094030A;
-	Thu, 23 Apr 2026 20:20:53 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf17.hostedemail.com (Postfix) with ESMTPA id 8C9A61D;
-	Thu, 23 Apr 2026 20:20:51 +0000 (UTC)
-Date: Thu, 23 Apr 2026 16:20:54 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Cc: Metin Kaya <metin.kaya@arm.com>
-Subject: [PATCH] tracefs: Fix tracefs_dynevent_destroy_all()
-Message-ID: <20260423162054.3fd36a5c@gandalf.local.home>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1777017857; c=relaxed/simple;
+	bh=p1tX26TYYCJZeM3maatpElUbaFjodlIGFvux+zZ2Kg4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=kMQosD3iM1OZRr8ioGrwGSN/cnD9dzlwNT4laJTNxwOKmE5lxStgTarcVEmgyj3IB4A5H5/4s7sncASK20wRGGl36gCP9wVFuGs8zIY+TLsDZMfKni6Vm2iwOt0SX3kWj2AWxVtauaOwdyb19IaS93DkgzS3pdUlSNZboHlpFE8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=Ybxj8IzY; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="Ybxj8IzY"
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6CADD1BC0;
+	Fri, 24 Apr 2026 01:04:08 -0700 (PDT)
+Received: from [10.57.22.222] (unknown [10.57.22.222])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 704C23F641;
+	Fri, 24 Apr 2026 01:04:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
+	t=1777017853; bh=p1tX26TYYCJZeM3maatpElUbaFjodlIGFvux+zZ2Kg4=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=Ybxj8IzYET6lyLd7vn7o60y1EZeTE0T1e4C4gFyVUqj9l31KFHdjrYbaWQ/fsd/N4
+	 cHQ4VIJipHOWUobv6UqEnmx2rxhYS3FbI9wjqLt5GcBNCCbxesING+1DSfEKqw9La3
+	 GQ4i0ynX8plSg1CbKtbEYveggG15poJTcFmBaEFw=
+Message-ID: <4aacf951-c96d-47e5-a4ca-9e0eee8d3928@arm.com>
+Date: Fri, 24 Apr 2026 09:04:10 +0100
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] tracefs: Add tests for clearing kprobes with
+ tracefs_dynevent_destroy_all()
+To: Steven Rostedt <rostedt@goodmis.org>,
+ Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+References: <20260423162207.5a888de0@gandalf.local.home>
+Content-Language: en-US
+From: Metin Kaya <metin.kaya@arm.com>
+In-Reply-To: <20260423162207.5a888de0@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Stat-Signature: 6b4yk8qcbtkj7a614apyoc3wbx1wswoy
-X-Rspamd-Server: rspamout01
-X-Rspamd-Queue-Id: 8C9A61D
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1+xmLVDKD00stRGvOhg9xSgpSk6ejglkgg=
-X-HE-Tag: 1776975651-851204
-X-HE-Meta: U2FsdGVkX1+u80olZtk8Ufi0li7ZD3J8/5aQPvfDHd2FR57pcMXDYa6TJ/zua6KOavNv8BFgAun0CI9znQbfm2nbCYuC3tFp8Q33SM/EeUvuRuR6F57oHJJgosHsR/s/NeN3zjT4P2rWjHSZoTCFU7qm3xjj5KRRX2Ca5lbvOamL0uu0iAIrc28ppR6tOOMz1UMVZ0k6V62pCCdb3FCwRk5KjPqVckTnJmZzPkqcx/O/teGO9HJqIvAr9VYYpuyHTkAwe69mIUVoqb2aKxxz9/UWdEvOBv0Augw+4Axitfi7V0bwn/L4g6fSEs7584+F4t2ii7JowadY7oRpqo4jaVTd85gmmdaFwkqUHUAjVjlGFUFzGaim9e1WsHavrBwHXJdibMM+8RR1+SS4wGzfY76Sq5/9omJwzFyIrtLLFGa9HH1eDSD979dszUFu4R7Wbzfnbxb1bcbTOJGFyMZJKQ==
 
-From: Steven Rostedt <rostedt@goodmis.org>
+On 23/04/2026 9:22 pm, Steven Rostedt wrote:
+> From: Steven Rostedt <rostedt@goodmis.org>
+> 
+> There was a regression with the use of tracefs_dynevent_destroy_all() where
+> it wasn't resetting kprobe events. Add testing of that function in the utest
+> for kprobe events.
+> 
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=221395
+> Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
+> ---
+>   utest/tracefs-utest.c | 27 +++++++++++++++++++++++++--
+>   1 file changed, 25 insertions(+), 2 deletions(-)
+> 
+> diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
+> index 353b3cbee199..7ec7b42eebb0 100644
+> --- a/utest/tracefs-utest.c
+> +++ b/utest/tracefs-utest.c
+> @@ -2330,6 +2330,7 @@ static void test_kprobes_instance(struct tracefs_instance *instance)
+>   	/* kprobes APIs */
+>   	destroy_dynevents(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE);
+>   
+> +	/* Allocate first */
+>   	for (i = 0; i < kprobe_count; i++) {
+>   		dkprobe[i] = tracefs_kprobe_alloc(ktests[i].system, ktests[i].event,
+>   						  ktests[i].address, ktests[i].format);
+> @@ -2348,6 +2349,7 @@ static void test_kprobes_instance(struct tracefs_instance *instance)
+>   	get_dynevents_check(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE, 0);
+>   	CU_TEST(check_probes(kretests, kretprobe_count, dkretprobe, false, instance, tep));
+>   
+> +	/* Create the kprobes */
+>   	for (i = 0; i < kprobe_count; i++) {
+>   		CU_TEST(tracefs_dynevent_create(dkprobe[i]) == 0);
+>   	}
+> @@ -2387,6 +2389,27 @@ static void test_kprobes_instance(struct tracefs_instance *instance)
+>   	tracefs_dynevent_list_free(devents);
+>   	devents = NULL;
+>   
+> +	/* Recreate both types, and destroy with tracefs_dynevent_destroy_all() */
+> +	for (i = 0; i < kretprobe_count; i++) {
+> +		CU_TEST(tracefs_dynevent_create(dkretprobe[i]) == 0);
+> +	}
+> +	for (i = 0; i < kprobe_count; i++) {
+> +		CU_TEST(tracefs_dynevent_create(dkprobe[i]) == 0);
+> +	}
+> +	devents = get_dynevents_check(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE,
+> +				    kprobe_count + kretprobe_count);
+> +	CU_TEST(check_probes(ktests, kprobe_count, devents, true, instance, tep));
+> +	CU_TEST(check_probes(kretests, kretprobe_count, dkretprobe, true, instance, tep));
+> +	tracefs_dynevent_list_free(devents);
+> +	devents = NULL;
+> +
+> +	CU_TEST(tracefs_dynevent_destroy_all(TRACEFS_DYNEVENT_ALL, true) == 0);
+> +
+> +	get_dynevents_check(TRACEFS_DYNEVENT_KPROBE | TRACEFS_DYNEVENT_KRETPROBE, 0);
+> +	CU_TEST(check_probes(ktests, kprobe_count, dkprobe, false, instance, tep));
+> +	CU_TEST(check_probes(kretests, kretprobe_count, dkretprobe, false, instance, tep))
+> +
+> +	/* Free the dynamic events */
+>   	for (i = 0; i < kprobe_count; i++)
+>   		tracefs_dynevent_free(dkprobe[i]);
+>   	for (i = 0; i < kretprobe_count; i++)
+> @@ -3966,7 +3989,8 @@ void test_tracefs_lib(void)
+>   		fprintf(stderr, "Suite \"%s\" cannot be ceated\n", TRACEFS_SUITE);
+>   		return;
+>   	}
+> -
+> +	CU_add_test(suite, "kprobes", test_kprobes);
 
-There was a regression with tracefs_dynevent_destroy_all() where removing
-kprobes (or other dynamic events) if it checks another event that doesn't
-exist, it returns zero and not the current count. Then the "all" clearing
-thinks it didn't find any events and returns without doing anything.
+I think we can keep `kprobes` in its old location to make the patch simpler.
 
-Have get_dynevent() return the current counter if it doesn't find events and
-even if the tested for event file doesn't exist. As that tested file may not
-be the dynamic event we are interested in.
+> +	return;
 
-Reported-by: Metin Kaya <metin.kaya@arm.com>
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=221395
-Fixes: 78d8d2e277af2 ("libtracefs: Have tracefs_dynevent_get_all() find kprobes and uprobes properly")
-Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
----
- src/tracefs-dynevents.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+This line should be left-over from testing I guess :)
 
-diff --git a/src/tracefs-dynevents.c b/src/tracefs-dynevents.c
-index 5fdb723b6825..ad879ecbbc68 100644
---- a/src/tracefs-dynevents.c
-+++ b/src/tracefs-dynevents.c
-@@ -499,12 +499,12 @@ static int get_dynevent(enum tracefs_dynevent_type type, const char *system,
- 		return -1;
- 
- 	if (!tracefs_file_exists(NULL, desc->file))
--		return -1;
-+		return count;
- 
- 	content = tracefs_instance_file_read(NULL, desc->file, NULL);
- 	/* File exists, but may be empty */
- 	if (!content)
--		return 0;
-+		return count;
- 
- 	if (ret_all)
- 		all = *ret_all;
--- 
-2.53.0
+Thanks,
+
+>   	CU_add_test(suite, "Test tracefs/debugfs mounting", test_mounting);
+>   	CU_add_test(suite, "trace cpu read",
+>   		    test_trace_cpu_read);
+> @@ -4032,7 +4056,6 @@ void test_tracefs_lib(void)
+>   		    test_custom_trace_dir);
+>   	CU_add_test(suite, "ftrace marker",
+>   		    test_ftrace_marker);
+> -	CU_add_test(suite, "kprobes", test_kprobes);
+>   	CU_add_test(suite, "synthetic events", test_synthetic);
+>   	CU_add_test(suite, "eprobes", test_eprobes);
+>   	CU_add_test(suite, "uprobes", test_uprobes);
 
