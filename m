@@ -1,94 +1,67 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52B41386440
-	for <linux-trace-devel@vger.kernel.org>; Fri, 24 Apr 2026 08:06:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from relay.hostedemail.com (smtprelay0016.hostedemail.com [216.40.44.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CB133CF66B
+	for <linux-trace-devel@vger.kernel.org>; Fri, 24 Apr 2026 14:57:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777017974; cv=none; b=rZ5ZNkjKSk1wvZZp7JT1T2Vi29YqLtWbC0eaYOqgVB46faZbLyzKyau5V6b60cAtzQNGy7uI8Uq0ltXJpdBR4vivL6g2vZ+GD6lWHPYPDGaE2K1umfIqV3/45cPD6xQcDSFE4i8hvKYuP5DsEFzYO1cExKnrssW0fag9NHIHP6w=
+	t=1777042640; cv=none; b=UYugzrLJIimXXGhf1EdCc3Ry9VfMJSszlSTdrfFf2IbDPRu93YUk7xR9xJwdl5h+tQ3HZK82mzJsiszoydTWeD1MNHz6xrzW6oaxO3Fqky/H70rqlvng+uVWYsZkJjDhUBTSaYV8B1Umc46xYRL/IH5sYsVszUUSXQp7QycENzo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777017974; c=relaxed/simple;
-	bh=KqSXeyhYgZMbK3ruuuvu1Vu92IB/0KLduG+/zwc5UW4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=otQsyIxzcobgPLv6cet+vuhbrYToJ38mFha4fgnT/Ma0rFfq60FdF9CKoQyBtDYd6HpVglFXcTKuxHy55KFhHfl+srsi/eXjNLiMMpP3YywVyCq+nmrMqOL1ChXAsDUPMNnsfJh3kgXusGSgb0XPEJx0ACiU+cLJhkFPhaIVIZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=JlgeXXi0; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="JlgeXXi0"
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DF5B61BC0;
-	Fri, 24 Apr 2026 01:05:58 -0700 (PDT)
-Received: from [10.57.22.222] (unknown [10.57.22.222])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DF5C23F641;
-	Fri, 24 Apr 2026 01:06:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1777017964; bh=KqSXeyhYgZMbK3ruuuvu1Vu92IB/0KLduG+/zwc5UW4=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=JlgeXXi0JeMwGpg79gH960BMnziAnSud7s2bDSSVAVTXhfGpo0tSG2O/AMRUtTbob
-	 0Evan210zymUgoCIvgQ4p19ZYGHpSbx+cJfCQjPOYec0P/xqxqfS5+2BS78bA+lpor
-	 jr19X7RwngFmKTwdyhKYQstBI+DrSkTISN3SNg54=
-Message-ID: <0f12f980-2d76-401d-a88d-6b85bfb11579@arm.com>
-Date: Fri, 24 Apr 2026 09:06:01 +0100
+	s=arc-20240116; t=1777042640; c=relaxed/simple;
+	bh=lQ1Ts3MatlfkTjI0FfeKmlGCubiziClJ3Mm9cvBPVuQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=WkEgu7/RhQaNYc94sY04R2TyN/rlkP1cys9OHjtstjpmobTqB9FL898gRiZsBTs/ibZhDz+sT1Escr6VRzJ6B/ipoiIQGzYJK9qpZy5cTBpnCntS3zKP8OS1vB1/BB/s0OFPxtfjnKujUwRXPJSIrwNbZ7sZ5k00Y648IGtgRfA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf13.hostedemail.com (lb01b-stub [10.200.18.250])
+	by unirelay10.hostedemail.com (Postfix) with ESMTP id 1E101C06B8;
+	Fri, 24 Apr 2026 14:48:55 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf13.hostedemail.com (Postfix) with ESMTPA id A699B20010;
+	Fri, 24 Apr 2026 14:48:53 +0000 (UTC)
+Date: Fri, 24 Apr 2026 10:48:54 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Metin Kaya <metin.kaya@arm.com>
+Cc: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: Re: [PATCH] tracefs: Add tests for clearing kprobes with
+ tracefs_dynevent_destroy_all()
+Message-ID: <20260424104854.56d2ec9c@gandalf.local.home>
+In-Reply-To: <4aacf951-c96d-47e5-a4ca-9e0eee8d3928@arm.com>
+References: <20260423162207.5a888de0@gandalf.local.home>
+	<4aacf951-c96d-47e5-a4ca-9e0eee8d3928@arm.com>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] tracefs: Fix tracefs_dynevent_destroy_all()
-To: Steven Rostedt <rostedt@goodmis.org>,
- Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-References: <20260423162054.3fd36a5c@gandalf.local.home>
-Content-Language: en-US
-From: Metin Kaya <metin.kaya@arm.com>
-In-Reply-To: <20260423162054.3fd36a5c@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Stat-Signature: n5wj3ynb9cjzkyey4j788kaa4jiwfgaa
+X-Rspamd-Server: rspamout08
+X-Rspamd-Queue-Id: A699B20010
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX1+I1/Yl5JQVBm1x6G5cZzTUVGtm2kS2akM=
+X-HE-Tag: 1777042133-493813
+X-HE-Meta: U2FsdGVkX1+T55eOnazzeLhiUpJJkuGXnakvSTG74BqHZvsR/MdQNWbnqEqkg66bSCQoHVZADAXNqXpdspSFW2ne/qONCHyivrNlv020DncgoWsdI974IKNGbJnY6UygGDyEIUUo1t/3zvyhiLPCYnObtO8/s8kpWZVEjrlqIheZlYuINrgT5d4oyuU/StE8qil2t1z7QBxS6vnKbsFE6ejInLBe5WR8oyj7IQvB1NSysBToshHN6ep904JanTl/N7bXzZn0FRbd31TvyEFCGrX8JxcEIp5So4QtfN4ccnYigMHptp+L0HmfXOUjSO1FXeLmtfWNBwajKpQkjV8kJbaECicl+7m4/El9EyZaqoGoBnfeh00PS3XVgRTn6cVq
 
-On 23/04/2026 9:20 pm, Steven Rostedt wrote:
-> From: Steven Rostedt <rostedt@goodmis.org>
-> 
-> There was a regression with tracefs_dynevent_destroy_all() where removing
-> kprobes (or other dynamic events) if it checks another event that doesn't
-> exist, it returns zero and not the current count. Then the "all" clearing
-> thinks it didn't find any events and returns without doing anything.
-> 
-> Have get_dynevent() return the current counter if it doesn't find events and
-> even if the tested for event file doesn't exist. As that tested file may not
-> be the dynamic event we are interested in.
-> 
-> Reported-by: Metin Kaya <metin.kaya@arm.com>
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=221395
-> Fixes: 78d8d2e277af2 ("libtracefs: Have tracefs_dynevent_get_all() find kprobes and uprobes properly")
-> Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
-> ---
->   src/tracefs-dynevents.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/src/tracefs-dynevents.c b/src/tracefs-dynevents.c
-> index 5fdb723b6825..ad879ecbbc68 100644
-> --- a/src/tracefs-dynevents.c
-> +++ b/src/tracefs-dynevents.c
-> @@ -499,12 +499,12 @@ static int get_dynevent(enum tracefs_dynevent_type type, const char *system,
->   		return -1;
->   
->   	if (!tracefs_file_exists(NULL, desc->file))
-> -		return -1;
-> +		return count;
->   
->   	content = tracefs_instance_file_read(NULL, desc->file, NULL);
->   	/* File exists, but may be empty */
->   	if (!content)
-> -		return 0;
-> +		return count;
->   
->   	if (ret_all)
->   		all = *ret_all;
+On Fri, 24 Apr 2026 09:04:10 +0100
+Metin Kaya <metin.kaya@arm.com> wrote:
 
-Hi Steven,
+> > -
+> > +	CU_add_test(suite, "kprobes", test_kprobes);  
+> 
+> I think we can keep `kprobes` in its old location to make the patch simpler.
+> 
+> > +	return;  
+> 
+> This line should be left-over from testing I guess :)
 
-The test cases I mentioned in the Bugzilla pass with this patch.
+Ah crap! Yeah, this hunk was for testing purposes only.
+
+Will send a v2.
 
 Thanks,
 
-Tested-by: Metin Kaya <metin.kaya@arm.com>
+-- Steve
