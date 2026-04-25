@@ -1,149 +1,65 @@
-Received: from relay.hostedemail.com (smtprelay0017.hostedemail.com [216.40.44.17])
+Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7810126A0B9
-	for <linux-trace-devel@vger.kernel.org>; Fri, 24 Apr 2026 19:32:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DCFE282F1A
+	for <linux-trace-devel@vger.kernel.org>; Sat, 25 Apr 2026 10:43:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777059136; cv=none; b=MnTqSwZl8qrtHLqbPW69xWr66/c5tCPqo9tg0zzuzdSwQYyXrdCY11tzWwlOU+76NI6pF8xYGXrk2G2zlBp54JPNFPKWKU4s0mNpqIep+V5ibePBYJm6lvVxmrNRTrC9h9MQWcNgBsuHG3cp1KeoXYiyUfDonNiGFJ0qEEVz/G0=
+	t=1777113789; cv=none; b=d9D10la4nsohVHouZWgEXnOlu//MRHNX0HbzYk96vrewtObZI2i7Q+G+kutmG/ORfIRcBhAigTFVIjlK5tpkkMm15elLXiZnGGqianKA+QRd9qNKIhjlOnynSeINgrn6im2Vvu2GJdY2HYeQKdZhH0j7oU9+VH1sd/6LnEVp0rA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777059136; c=relaxed/simple;
-	bh=HmhKM2UQM5YUH0emXioaTy5SQDXiAFEwZ9xjMp781uY=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=C8yoxsIMgd9T6r2TvQ7gAGZcSyxtkMnfhMoWwaC32hVLjecd05jnx5cxAktbtUdcr0T6cMvVOvSBllVZ3Z8DJnsGB/I7dMTSxpmQwki6tq4Qt9P2JAgNwA+fpUY1ppMg/x9cLzqSksYDpHFUloxWqm7v3cZaJvTwsSkotS5XGEc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf06.hostedemail.com (lb01b-stub [10.200.18.250])
-	by unirelay05.hostedemail.com (Postfix) with ESMTP id 5AB78402E6;
-	Fri, 24 Apr 2026 19:32:13 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf06.hostedemail.com (Postfix) with ESMTPA id EBB7C20014;
-	Fri, 24 Apr 2026 19:32:11 +0000 (UTC)
-Date: Fri, 24 Apr 2026 15:32:17 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Cc: Jann Horn <jannh@google.com>
-Subject: [PATCH] libtracecmd: Fix rb-tree deletion
-Message-ID: <20260424153217.1a0a3aca@gandalf.local.home>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1777113789; c=relaxed/simple;
+	bh=QvTQGcVJZzXO+WW669jSvq9sdMPFamim4OYnu7IZNZI=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:References:
+	 In-Reply-To:Content-Type; b=Zm5605QuDkrM64bapuRe3ZZGNcqPgSRx7q0gHWu/lkOfvz7fNQp96//+II7QtzWY95x+Qhm266lEhvCSoMNcAWwUmkbAtHKC0qkwdmugovM7NjrjYv9PMFaItbLBUqnbFpD/ae6ZI1G8aX+h0qn3t3rpixNChXzfLUq7nPNhB2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=a.krabler.eu; spf=pass smtp.mailfrom=a.krabler.eu; dkim=pass (2048-bit key) header.d=a.krabler.eu header.i=@a.krabler.eu header.b=dKWT61rA; arc=none smtp.client-ip=80.241.56.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=a.krabler.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=a.krabler.eu
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=a.krabler.eu header.i=@a.krabler.eu header.b="dKWT61rA"
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [10.196.197.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4g2md20bDyz9vTl;
+	Sat, 25 Apr 2026 12:43:02 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=a.krabler.eu;
+	s=MBO0001; t=1777113782;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QvTQGcVJZzXO+WW669jSvq9sdMPFamim4OYnu7IZNZI=;
+	b=dKWT61rAjieEZPyYFlNvxKJJj2Qyu4lR0UehkbKkJBphlpjKDjYVwJmu+8zo2o0siCPNGT
+	w0b8gG+ciH/kCNlE5aPDmcCvOzJx1WyftbwrnhRugoSpM12MBEDXc30N26eiHVeKRqPH7n
+	XApHBSSPNg74jK//OPHtySMVZoF1VndCN2K6CFP5V9HV1lD3SQKtVeoomGxUY0CljP6f/b
+	SzEZca1/mJNOt0PlPV61jgDoPf/du7TDNbv8e69culWUIM39WMlzogP3jvRYlQWM8tEJRF
+	VJid30p5KHLsqR0heBAAQu/9y/RTkRMqJiS8QIh/3ctV83WjnbD/dqmae84GBA==
+Message-ID: <92bc5675-6035-4a24-a3af-f511e92b0479@a.krabler.eu>
+Date: Sat, 25 Apr 2026 12:43:00 +0200
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+From: Alexander Krabler <code@a.krabler.eu>
+Subject: Re: [PATCH] trace-cmd: Fix extracting instance in RO directory
+To: Steven Rostedt <rostedt@goodmis.org>,
+ Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+References: <20260424151531.3c9be298@gandalf.local.home>
+Content-Language: en-US
+In-Reply-To: <20260424151531.3c9be298@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Stat-Signature: pzfh3mixwtp96tgcju4h8uqimqwwwcm8
-X-Rspamd-Server: rspamout01
-X-Rspamd-Queue-Id: EBB7C20014
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1+99O5q1XJWSFeTieehMG0rEqr+eEoEqnE=
-X-HE-Tag: 1777059131-416246
-X-HE-Meta: U2FsdGVkX1/Ip4U43dFI+/wY8tQNChhLSzqFslTn7JjKTx1glENbeR1t+gw6yC6Tpdnfe/uQu94K+2QAuK5lHHp9thS2GWikoOFqVP3tgYaakHca9ZCRdwUtyPvYhy053jWOHr/9GfIQ8Ll0W1ccA89YmWo1UzgHvrGdU53TwrRiCjCR7OeDfcmMWRR6le1T+Lq6w/yMpEZ7Bb0LBEKJ3FlavIXbv6AMcvTdltQA7kfTKt/7yi1ai313SMdewHWMyQw4LMJe23pAdFSOhZHq5ZKr/cZysRCQlim63N+54bACx6kukbumJ1u3El477A8WEJxY5TjspHmVVn8KHp7Ythwfz/KNJTs8cgjhth6J7uUe5RSLefPPTpuCkSQN9z9M99SPZJi5lERoh7rM2jSy4WKTnOPo0Lh3M85W0iUtOv4=
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Hi Steven,
 
-The trace_rbtree_delete() does a fix up call if the y node is BLACK. It
-calls the fixup code on the y node's left or right child. But if the y
-node doesn't have any children, it crashes with a NULL pointer
-dereference.
+I build and tested your patch on my machine,
+I can confirm it fixes my issue.
 
-Use a "nil" node for the x child if it y had no children. This makes the
-fixup code work properly.
+Thanks for your quick patch to my report!
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=221171
-Reported-by: Jann Horn <jannh@google.com>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- lib/trace-cmd/trace-rbtree.c | 34 ++++++++++++++++++++++++++--------
- 1 file changed, 26 insertions(+), 8 deletions(-)
+Alexander
 
-diff --git a/lib/trace-cmd/trace-rbtree.c b/lib/trace-cmd/trace-rbtree.c
-index a541399a1b4d..523881699440 100644
---- a/lib/trace-cmd/trace-rbtree.c
-+++ b/lib/trace-cmd/trace-rbtree.c
-@@ -26,6 +26,11 @@ static bool is_left(struct trace_rbtree_node *node)
- 	return node == node->parent->left;
- }
- 
-+static bool is_black(struct trace_rbtree_node *node)
-+{
-+	return !node || node->color == BLACK;
-+}
-+
- static struct trace_rbtree_node **get_parent_ptr(struct trace_rbtree *tree,
- 						 struct trace_rbtree_node *node)
- {
-@@ -261,12 +266,12 @@ static void tree_fixup(struct trace_rbtree *tree, struct trace_rbtree_node *node
- 				rotate_left(tree, node->parent);
- 				old_right = node->parent->right;
- 			}
--			if (old_right->left->color == BLACK &&
--			    old_right->right->color == BLACK) {
-+			if (is_black(old_right->left) &&
-+			    is_black(old_right->right)) {
- 				old_right->color = RED;
- 				node = node->parent;
- 			} else {
--				if (old_right->right->color == BLACK) {
-+				if (is_black(old_right->right)) {
- 					old_right->left->color = BLACK;
- 					old_right->color = RED;
- 					rotate_right(tree, old_right);
-@@ -287,12 +292,12 @@ static void tree_fixup(struct trace_rbtree *tree, struct trace_rbtree_node *node
- 				rotate_right(tree, node->parent);
- 				old_left = node->parent->left;
- 			}
--			if (old_left->right->color == BLACK &&
--			    old_left->left->color == BLACK) {
-+			if (is_black(old_left->right) &&
-+			    is_black(old_left->left)) {
- 				old_left->color = RED;
- 				node = node->parent;
- 			} else {
--				if (old_left->left->color == BLACK) {
-+				if (is_black(old_left->left)) {
- 					old_left->right->color = BLACK;
- 					old_left->color = RED;
- 					rotate_left(tree, old_left);
-@@ -312,6 +317,7 @@ static void tree_fixup(struct trace_rbtree *tree, struct trace_rbtree_node *node
- void trace_rbtree_delete(struct trace_rbtree *tree, struct trace_rbtree_node *node)
- {
- 	struct trace_rbtree_node *x, *y;
-+	struct trace_rbtree_node nil;
- 	bool do_fixup = false;
- 
- 	if (!node->left && !node->right && !node->parent) {
-@@ -329,8 +335,14 @@ void trace_rbtree_delete(struct trace_rbtree *tree, struct trace_rbtree_node *no
- 	else
- 		x = y->right;
- 
--	if (x)
--		x->parent = y->parent;
-+	if (!x) {
-+		x = &nil;
-+		x->color = BLACK;
-+		x->left = NULL;
-+		x->right = NULL;
-+	}
-+
-+	x->parent = y->parent;
- 
- 	if (!y->parent) {
- 		tree->node = x;
-@@ -365,6 +377,12 @@ void trace_rbtree_delete(struct trace_rbtree *tree, struct trace_rbtree_node *no
- 	if (do_fixup)
- 		tree_fixup(tree, x);
- 
-+	if (x == &nil) {
-+		if (is_left(x))
-+			x->parent->left = NULL;
-+		else
-+			x->parent->right = NULL;
-+	}
-  out:
- 	node->parent = node->left = node->right = NULL;
- 	tree->nr_nodes--;
--- 
-2.53.0
+Tested-by: Alexander Krabler <code@a.krabler.eu>
 
