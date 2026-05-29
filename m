@@ -1,105 +1,112 @@
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A4DC3BB661
-	for <linux-trace-devel@vger.kernel.org>; Tue, 26 May 2026 18:42:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFD78276041
+	for <linux-trace-devel@vger.kernel.org>; Fri, 29 May 2026 13:48:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779820976; cv=none; b=X80SZyG/+JjPQTeElunAFlFxBIBa8GCCybWOZ8sAAj0BRRYmZ+/cD/G3Xsn0U4fvMNcGx3dksRW42es/aCrTIXKWpX9bgS0O2cJi1hrd0F5hrzZ84t/RRvj6K78vORS/S0tcCy2Y6nrkxObjZVjKgvTGv59WN1aOoXbQ/LeUgfk=
+	t=1780062536; cv=none; b=QE1dY/GGcsy2oSM7i3OrEG9yEI4mkC+8TaqgQSvElp3cmXdWHcxc0MyDtHhEA2Cen+tD+kHAv2I/MF6c9IrNF6y7fJn5CjMGm0myVoWmSpUqMCC2O0gWlDa+3u2Clbk3dtNutptNEdzv36ZmmgGUo0asr6bTzWIeLwg2xdUO3rY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779820976; c=relaxed/simple;
-	bh=m6/CpBVrOzdhV+Z41xuRoRjSE1o9RrW4xzO98YTUxnU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=eaiYxBRvf4VTXZmS9WtyCIWxroPveWoe2OG9ea1OmT13SlJ95Aitw6IPc9IoR+1HoT+LxB1YzxClq7RNfcewu93Hg9NJ4kesHb7HZTrBWnsvmqP4RMCcOiHyU1BexsLjbSAXsLBUYGsYjkzQPTsFHJfajvoaytyvpdUBQu+7CiQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PikCR9XX; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1780062536; c=relaxed/simple;
+	bh=rtP0gpjz/fBxFa/+jw2dRM5xXO05DzAZcxm3p8aeg1E=;
+	h=Message-ID:Subject:From:To:Date:Content-Type:MIME-Version; b=TXMPAwD29SembctduFLf5DBZSDoCEzANz/rq/Pn85CDRm22srQ9+/F0lB3tEV1mKEl0BLrYiIcxmBwLcVC2K1zbZt4usBw5k8iMlsMoehkPxZOVta7TniM/T1N7Q+N2+Y8RQjkrD57bpxt95rlJtlTRKiP/2jGXGe2C4fYWLbxw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.b=PSh1JOI7; arc=none smtp.client-ip=185.125.188.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PikCR9XX"
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-43d7828221bso1030042f8f.3
-        for <linux-trace-devel@vger.kernel.org>; Tue, 26 May 2026 11:42:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1779820974; x=1780425774; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=KMsfNdzYjVE9sPzRVuBPRuRlLZqnfUh3y41hBwszL5U=;
-        b=PikCR9XXfTFhkUKZTmdVX+0dJ7IlYLw7ftzsJ8mm9T+wt/JFW1z8/uHfmMdYBpteMX
-         UhzWivKXzs+nORLnL6LiRLz1K7gCR2Hllkvv/19DHcN3+TGBiM+GzI8xL4bgCvMZCHOJ
-         ruzUOiNgKtaZSHPA+Sza8GF6zGClc+Qysf8a05zyv2pFDHdDktHkwFZndls7ZeBwCZgA
-         vk8sryC29O6GaWvJOzvClu9gFDVFgpIjeGmjHt2J56egUpIQW6h/Zf8V7mM1ot5R1ovJ
-         o79mY+yv6Zsr5JGNDivWLHUVYrMfKCbCrx9GSNeW7JYH/mPEofycSoxcUSUXZ6+DeEEM
-         qmyQ==
+	dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.b="PSh1JOI7"
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 1B79A3F641
+	for <linux-trace-devel@vger.kernel.org>; Fri, 29 May 2026 13:48:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20251003; t=1780062526;
+	bh=rtP0gpjz/fBxFa/+jw2dRM5xXO05DzAZcxm3p8aeg1E=;
+	h=Message-ID:Subject:From:To:Date:Content-Type:MIME-Version;
+	b=PSh1JOI73QwpFWqqrQRUNhi+4NKHhE8v8CHjgBZs/Y+ejNDUYAAQm7N+eGnA4dW5D
+	 mnySfErcVG+MmH++wpGfbSnle4jWLHReRRCcD8RiF6B+u+MJ3w62XSKQdQukFEpYFv
+	 JZwCU617owQAEPwro5s0HKlJzmJ823gUQvHDtKyFvAk1Lt/I6Wp82udmGNSDSUnIUm
+	 vpDdyWMtJPazvAjwIVYd74kwG697pe83eCt2833Q4yyChwEX/7EjhxBEXNFHC+71Md
+	 cDJPk5buFPDCPK3F+YVATUWQesXxHaoQ9UmQxt2PDGn32BZ/5n5jtrpHPRoianOkPm
+	 8GCPxzuGJdAjSzXpM3muVzh6ewAwW5DdQN0ylDhfzJSjVKi5jj8OXVKzE8Xfu5TR+1
+	 GIRrOfOe9HSWxraFIxyIFCPf/DW1Q+45LZc6kkleMb+C8k7Xve6UqVE7oCZCbbKsGQ
+	 OhbA+x8wfGduAhdaimdRsD0UIhTHvExmk6OYWP/Mp2SbOxaPy4emezZxpvDcMY53jN
+	 9SMZyheTHsk1L+mm5cdkVYP1W611jgOWPIlLKmPrNanHmIFmD6LPApQ3ce947PFCR1
+	 vvaYOiNGI7yzZYg5KURmSyikU7lIJaq3/dAG6hoEqwI0q+/sfym8f28KZB8XxkYJUQ
+	 pwwI3gDvydc1G7XS/XoQPoGI=
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-687157a1739so12194252a12.1
+        for <linux-trace-devel@vger.kernel.org>; Fri, 29 May 2026 06:48:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779820974; x=1780425774;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KMsfNdzYjVE9sPzRVuBPRuRlLZqnfUh3y41hBwszL5U=;
-        b=CIrZ2IzlrRKHKHvPOZI7pyTOPE65Rzp7TZv0luVAMr8i3SB4/uMaKaEVRnPrkWTmGV
-         U39BVbQIRn/3kznXWV9bJo/XldT8BXFlGQfPxwQ8GCWWvIBb5uNvE9PuoZf0Nr8vDMW6
-         hhcYzwNnIzZt5GEYKgBi/LtUSsNjqqyt+H0+Q5rtrZXGBJZNT/YxAQybAhNIrGgrTMPw
-         icesmBDfgqNI/JF0NfDTNq1iactMlN1rEd+m3ke/Nk4h8Ko0mM+766gmoaZy4E38vGz3
-         qQiIjLx25iOi6tmtOh/nK2ZxUGuoG6nsHHJxAYsZj2fhNcZaVFrfHGQcZU0JRiGxaxjY
-         wjUg==
-X-Gm-Message-State: AOJu0YxGzUHdcz5Sp+m9R3dlYFZCMNuZGIddTEmKuwf6OP8Z6K2dKz2I
-	8ohMYPm1UC//98GoKMDzengkxWz5lt0wA551/9cJKaYFJ4gC1uV7KGT9H5YA7A==
-X-Gm-Gg: Acq92OFJ+ujk218dR4kqLSTpTsQuwUaKKW6DI3uAUT8JR5MA69hkPlNf8jrsPLOyYWK
-	f1YuOur4iHXjKJhOXF/1R7Z0GxjkQM68KdUzpxAQ6q9KUBVfdBYVZ8ITQb4G7k/+B1RRHdXq5wC
-	8zEHwD+qXCVtKGXzLrlgY/K8mMnsqwq5aRysbocl0QDTN3fR/+qlvzZuE2OFHPAhDnmgNnX0dPr
-	tebBz0SvEEmUL6YTpDhUPh1LRZ9hRKL/PBn4B5zIbXhJWqLJ8Ol9Hnz0NfMTRHR0nvMKA3Rc8WE
-	M2JPLlx2XJTohpTBminw9Yb/OehHar6lvdQyak+7P7znwFJ+z9OLhP+HxEa9POz6feqm/PML14m
-	8Uaesec5GKJdY0rNdF2DrZboFNYkgp9r9My/pj7xeXm9R4ZNSHV+ULa7a/NhRZDZT0OX/j5cExr
-	DKiP7Xno61c2C860qhHBJA+n7od3J2hkur4g8=
-X-Received: by 2002:a05:600c:6995:b0:48a:797f:24f8 with SMTP id 5b1f17b1804b1-4904224db27mr165130465e9.0.1779820973671;
-        Tue, 26 May 2026 11:42:53 -0700 (PDT)
-Received: from debian.home.arpa ([88.97.179.70])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45edb5584b8sm142068f8f.11.2026.05.26.11.42.51
+        d=1e100.net; s=20251104; t=1780062525; x=1780667325;
+        h=mime-version:user-agent:content-transfer-encoding:date:to:from
+         :subject:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=rtP0gpjz/fBxFa/+jw2dRM5xXO05DzAZcxm3p8aeg1E=;
+        b=HDRLAVZ/boTjGmgO1oIRR4oC5qi6UP6zJ01Z/P+SZwHelbtf/kvLRffrK5mhqZBuOt
+         dDXl0SCsejQFvdSKLyINkolA+2D+B90SS9iYazNRq9/mCo0SJRCtyHYEfPS5bwSXmNXF
+         IUZsPvbK26FfpY9WEw0XWWPEGdUJklxRViaPHD16rKT13wY1ND1G1jt3f+ABUKsYNStx
+         +lBCol5pMo5E5Hnrnk7FZkMXcrnS5ITTn15u1UtxoAkew5t2wZuWg9rKGrBKUPuDo9Fw
+         9IamquvMcVHnzF66SQ3lAQ+J2ZQAr0DfyPV9KYJSm1an+rUEk3nQRkIeSQ1OLd1qtkge
+         iCPQ==
+X-Gm-Message-State: AOJu0Yy2yaj89EwWNiHxPWuxZ0AzzXJb9Dk6fKMW5z/lUXi02QxJzRON
+	+HC9q0dIR0t5Ndg2ZQA8Qs4w0C25IrhXc8k2Qye8+mzI2hBdYo/Yrns5tHDex13fJDfyg32DpnT
+	S/D2HS790tEGV5l6E4U7LDJ2SuGFmRtr3+NUSq60FBiciTvJl5P1ebrZdZCL/aWCHYouKq0qOx8
+	7P38hXdomhxDXCXbumjLbUkLo=
+X-Gm-Gg: Acq92OHIu/DyI3vsw/vw/s69S4ulVYGIssueyx640MWB9v3df8ieZLBhoAKXwTPYaZA
+	of3Xf7JqGV2wOaioytZYH6fosVy8jh0xjw3osPAiWx9dZQe0e2JoS8hZQTceG7PusXd6NEIef2r
+	VSu9Y28c5rWXxxDnv8+Gv5du1YspnK9Hckrn0w6iVZ2lOjUcGvn1KkJ+GlIBF+8Jp0ydnn5KcWA
+	iOSFvIWuNVXwhq5Oo4DAfOdWRWQPoW77shNcy034KJB2/l8zidp+T4v5gAJZFtk1p4UipA2LQTf
+	Xxf9JeOEPKpRPeZEA94nuK5asDwQu9vV9ZurJd/gcgcHqKIr5KkLdkYyp1+QU5LYh0rBtDtPRmO
+	OputBar9oSLOYWsjlW5+oyYoAAGcvl4t1Feku3rmr0igm1WyBFjo9
+X-Received: by 2002:a17:907:9288:b0:be2:9d25:3da0 with SMTP id a640c23a62f3a-be9cbdc746dmr180895066b.25.1780062525568;
+        Fri, 29 May 2026 06:48:45 -0700 (PDT)
+X-Received: by 2002:a17:907:9288:b0:be2:9d25:3da0 with SMTP id a640c23a62f3a-be9cbdc746dmr180893266b.25.1780062525214;
+        Fri, 29 May 2026 06:48:45 -0700 (PDT)
+Received: from curves.fritz.box ([2001:9e8:842b:9100:6d27:d52c:e00f:8518])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-68c1620db76sm617615a12.1.2026.05.29.06.48.44
+        for <linux-trace-devel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 May 2026 11:42:52 -0700 (PDT)
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To: rostedt@goodmis.org
-Cc: linux-trace-devel@vger.kernel.org,
-	Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH] libtraceevent utest: exit test if mmap fails
-Date: Tue, 26 May 2026 19:42:19 +0100
-Message-Id: <20260526184219.408223-1-sudipm.mukherjee@gmail.com>
-X-Mailer: git-send-email 2.39.5
+        Fri, 29 May 2026 06:48:44 -0700 (PDT)
+Message-ID: <711be66181d431d68e4c86bc24e5e394c80466de.camel@canonical.com>
+Subject: [PATCH] libtracefs .gitignore: only ignore patches/ at top level
+From: Benjamin Drung <benjamin.drung@canonical.com>
+To: linux-trace-devel@vger.kernel.org
+Date: Fri, 29 May 2026 15:48:44 +0200
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2-9 
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-CU_TEST() continues execution even if the test fails. It just records
-that the test has failed and moves on.
-So, when libtraceevent is built in a chroot, it can open
-/sys/kernel/btf/vmlinux but fails in mmap stage and since CU_TEST()
-does not stop so we get a segfault when tep_load_btf() tries to use
-the mapped buffer.
+The Debian packaging of libtracefs might carry patches in
+`debian/patches/` but the `.gitignore` file will ignore this directory.
 
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+So tighten the `.gitignore` to only ignore a `patches` directory in the
+top-level of the git repository.
+
+Signed-off-by: Benjamin Drung <benjamin.drung@canonical.com>
 ---
- utest/traceevent-utest.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ .gitignore | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/utest/traceevent-utest.c b/utest/traceevent-utest.c
-index b62411c..547619d 100644
---- a/utest/traceevent-utest.c
-+++ b/utest/traceevent-utest.c
-@@ -397,6 +397,12 @@ static void test_btf_read(void)
- 	CU_TEST(fstat(fd, &st) == 0);
- 
- 	buf = mmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
-+	if (buf == MAP_FAILED) {
-+		printf("kernel has btf, but it might be a chroot and mmap has failed\n");
-+		close(fd);
-+		return;
-+	}
-+
- 	CU_TEST(buf != MAP_FAILED);
- 
- 	CU_TEST(tep_load_btf(test_tep, buf, st.st_size) == 0);
--- 
-2.39.5
-
+diff --git a/.gitignore b/.gitignore
+index 7e61473..125c115 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -6,7 +6,7 @@ TAGS
+ tags
+ lib/
+ bin/
+-patches/
++/patches/
+ build_prefix
+ build_uninstall
+ tfs_version.h
+--=20
+2.53.0
