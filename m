@@ -1,34 +1,28 @@
-Received: from relay.hostedemail.com (smtprelay0014.hostedemail.com [216.40.44.14])
+Received: from relay.hostedemail.com (smtprelay0016.hostedemail.com [216.40.44.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 249593FF1C0
-	for <linux-trace-devel@vger.kernel.org>; Fri, 29 May 2026 18:07:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9214410D0E
+	for <linux-trace-devel@vger.kernel.org>; Fri, 29 May 2026 18:34:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780078058; cv=none; b=dxiedmFxFqNX7ypS0MrSNhHoUYjn9/MkvctDQRj0qcY1w8BnWbZOODTJUU1GDTYqk4CL8FU6Laj0mNgpAXUSncDAQPO7zsdzexmhe4TxcHNLs4gUQVKzW/LtqbQgsqnPPJfgQOmM+S1cEZnzDF497RzMl+vVdBMXOYhMtpTR0MM=
+	t=1780079663; cv=none; b=X9eUkc2Hvcwo3lpa+CsRSHQMYjQK5CSruWRD+2qVgDF5gb8c71K6Br3cUHoLpoCUSAltAIvfsSIFHowuqudUDKIwY8lidZyF5ZWU8spkWolodJSN/ldRWdM5Ja0XT78xFp1pOXFvY0vC4+GYM7fc43wq7kMyXtI0WyoKNhdkLlw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780078058; c=relaxed/simple;
-	bh=kOHC4RbKKh3NAhRgotuOvDzVQ0cxig9pBZRsN807lo0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qnqTGWm/TZxyLA5b7edvIlEWrDLZY0WexBmHHxvR3xQZiG3eprECALHnBHPOj0fKKY2lqUdzTNd02GIsOMJ4c4yFKSXV9KsS9dS0pXvndkQqBLFHXVh31UxC7r51spboXVFc6PW50OUMjk504m7vzEbG6p3hBH9rpFxLPOla+3M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.14
+	s=arc-20240116; t=1780079663; c=relaxed/simple;
+	bh=FG+AlCaPfgxVI3gffyP2+X/Npa6FDQAEFVtuG9n2nqA=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=YLPuQElPqbXxrtU5jIxAerFO+gSUZDINcdrusJr/YDOz0NUAEv1vHZnmYYFCoweh+FAfWRjXHtsNyRPxEI7CZKVs0y1ZeZLQprj/BIahYzQ8BDff0QFROTBqInD+/AX/0XLY/b0gmW9YYAXkQ0c4G/6zSI78C+A/JBi0SeLHFOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.16
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf18.hostedemail.com (lb01a-stub [10.200.18.249])
-	by unirelay08.hostedemail.com (Postfix) with ESMTP id BF30C140254;
-	Fri, 29 May 2026 18:07:33 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf18.hostedemail.com (Postfix) with ESMTPA id 256CC2F;
-	Fri, 29 May 2026 18:07:32 +0000 (UTC)
-Date: Fri, 29 May 2026 14:07:30 -0400
+Received: from omf09.hostedemail.com (lb01a-stub [10.200.18.249])
+	by unirelay10.hostedemail.com (Postfix) with ESMTP id E0D68C013E
+	for <linux-trace-devel@vger.kernel.org>; Fri, 29 May 2026 18:34:13 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf09.hostedemail.com (Postfix) with ESMTPA id AB92B2002E
+	for <linux-trace-devel@vger.kernel.org>; Fri, 29 May 2026 18:34:12 +0000 (UTC)
+Date: Fri, 29 May 2026 14:34:11 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
-To: CaoRuichuang <create0818@163.com>
-Cc: linux-trace-devel@vger.kernel.org, tz.stoyanov@gmail.com
-Subject: Re: [PATCH v2] libtraceevent: avoid racing recursive builds of both
- libraries
-Message-ID: <20260529140730.3ea1859b@fedora>
-In-Reply-To: <20260406062855.58598-1-create0818@163.com>
-References: <20260405222102.9204-1-create0818@163.com>
-	<20260406062855.58598-1-create0818@163.com>
+To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] libtracecmd: Have the rbtree check be more elaborate
+Message-ID: <20260529143411.7ace2f59@fedora>
 X-Mailer: Claws Mail 4.4.0 (GTK 3.24.52; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
@@ -38,69 +32,129 @@ List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Stat-Signature: c6icisnm11wyywz8bqrtmwact1j17gti
-X-Rspamd-Server: rspamout02
-X-Rspamd-Queue-Id: 256CC2F
+X-Stat-Signature: i15izdx7wbg6s8dakh75yj8nyebnypsn
+X-Rspamd-Server: rspamout08
+X-Rspamd-Queue-Id: AB92B2002E
 X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1/t/v4gU11+bPdSq/XKqbi0lHAIU01TjSY=
-X-HE-Tag: 1780078052-843398
-X-HE-Meta: U2FsdGVkX1+akUsvm5+TDb9oItkfdS4nKcmjyhpYt8dVYc/OhzzEBl9Xs1rvTG+OMBp5LsBPpUmQQRgECKnN/CCthU6xWOS4d+mBFlu8ybAS3HL6qLbTPXx1LklLJDOSEHHZd3+moHq7urKyUkh5D5/3UEQmsC7+fHMhxOGpFEbVirK9NmKvCfKyNHACWGTjVOujkArc9mLOmVNWbVP5pwnDsePiNr6rg/zf/8dYikvtXw2x5cQT5PMI9iWSh3Hc4Ce44oJdte51LHRoavwJs3TYcJllONg/HcMYz6Yscfnc+qXJ0tIn43S3aAKpSA5SHnhd1ehxuxZIGaZMVLBKp3WhQMlO1P3FQA4NRDJ39tXAM4Up1xX42g==
+X-Session-ID: U2FsdGVkX1+aU+QBKw9p8/EneP7b/GUXt/aqRxkgDo4=
+X-HE-Tag: 1780079652-604114
+X-HE-Meta: U2FsdGVkX19ToHdkQQD3HXcHmPK77VGRJzeQUk4lHg06DlPpRm5Ba4F6xBT+SQRFg6AYyTg3VknyI8892XcwPho9ZIQ640W40CeOudtloV+09FElR6GJL4gMcGcbpWgCVEsEWMkC9TrsTMLkeq1E+oW/fH/SpA3MoKVgvhAsPvD+rfk0Zl7468xOUvSv+8VBxN5s7CgtvYA7JTDI0+qCDs2uwq1S+v7qQMtZk196dnT5fiD7iPdhlkRv5WWDFEPwHSs4VlNynGK9x15ifJpIp2QcN7xFZpiDXgZSY7ZX4u1vWN2m8HBZO4NH+bwOLx6uZbjz8fx4j8uZ71/Y9ZTYX1/R6d2ylP5/8Mu9j0bVDPsj9AcBF6s9XBDaMA6bbeD/
 
-On Mon,  6 Apr 2026 14:28:55 +0800
-CaoRuichuang <create0818@163.com> wrote:
+From: Steven Rostedt <rostedt@goodmis.org>
 
-Sorry for the late reply, I've been quite busy on the kernel side of things.
+Update the check_tree() that verifies the rbtree (when enabled) to be a
+little more elaborate to find more errors with the tree.
 
-> A top-level parallel build currently starts separate recursive makes for
-> libtraceevent.a and libtraceevent.so. Both sub-makes rebuild the same
-> object files in the same output directory, which can corrupt the .o
-> files and make the final link fail with file format errors.
-> 
-> The src/ Makefile already builds libtraceevent.so as part of the
-> libtraceevent.a target. Reflect that at the top level too by making the
-> shared library target depend on the static library target, so parallel
-> requests for either or both libraries funnel through a single recursive
-> make.
-> 
-> This fixes repeated `make -j8`, `make -j8 libs`, and
-> `make -j8 libtraceevent.a libtraceevent.so` failures in a Linux VM,
-> where the unfixed tree reproduces the race within a few runs.
-> 
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=217428
-> Signed-off-by: CaoRuichuang <create0818@163.com>
-> ---
->  Makefile | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/Makefile b/Makefile
-> index e1a10a0..6649303 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -211,8 +211,7 @@ libs: libtraceevent.a libtraceevent.so
->  $(LIBTRACEEVENT_STATIC): force
->  	$(Q)$(call descend,$(src)/src,$@)
->  
-> -$(LIBTRACEEVENT_SHARED): force
-> -	$(Q)$(call descend,$(src)/src,libtraceevent.so)
-> +$(LIBTRACEEVENT_SHARED): $(LIBTRACEEVENT_STATIC)
+Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
+---
+ lib/trace-cmd/trace-rbtree.c | 76 +++++++++++++++++++-----------------
+ 1 file changed, 41 insertions(+), 35 deletions(-)
 
-As you state in the change log, "Makefile already builds
-libtraceevent.so as part of the libtraceevent.a target", wouldn't that
-mean the above should be:
-
-$(LIBTRACEEVENT_STATIC): $(LIBTRACEEVENT_SHARED)
-
-$(LIBTRACEEVENT_SHARED): force
-	$(Q)$(call descend,$(src)/src,libtraceevent.so)
-
-??
-
-BTW, thanks for working on this. Sorry I couldn't get to it earlier.
-
--- Steve
-
-
->  
->  $(bdir)/libtraceevent.so: $(bdir)/libtraceevent.so.$(EP_VERSION)
->  	@ln -sf $(<F) $@
+diff --git a/lib/trace-cmd/trace-rbtree.c b/lib/trace-cmd/trace-rbtree.c
+index a541399a1b4d..b8360900fcc7 100644
+--- a/lib/trace-cmd/trace-rbtree.c
++++ b/lib/trace-cmd/trace-rbtree.c
+@@ -114,10 +114,48 @@ static int check_node(struct trace_rbtree *tree, struct trace_rbtree_node *node)
+ 				goto fail;
+ 		}
+ 	}
++	if (node->color == RED) {
++		if (node->left && node->left->color == RED)
++			goto fail;
++		if (node->right && node->right->color == RED)
++			goto fail;
++	}
+ 	return 0;
+ fail:
+ 	printf("FAILED ON NODE!");
+-	breakpoint();
++	return -1;
++}
++
++static int check_tree_node(struct trace_rbtree *tree, struct trace_rbtree_node *node,
++			   int black)
++{
++	int this_black = black;
++	int left_black;
++	int right_black;
++
++	if (!node)
++		return 0;
++
++	this_black = node->color == BLACK;
++
++	if (check_node(tree, node) < 0)
++		goto fail;
++
++	if (node == node->left || node == node->right)
++		goto fail;
++
++	left_black = check_tree_node(tree, node->left, this_black);
++	right_black = check_tree_node(tree, node->right, this_black);
++
++	if (left_black < 0 || right_black < 0)
++		return -1;
++
++	if (left_black != right_black)
++		goto fail;
++
++	return this_black + left_black;
++fail:
++	printf("FAILED ON NODE!");
+ 	return -1;
+ }
+ 
+@@ -125,39 +163,7 @@ static void check_tree(struct trace_rbtree *tree)
+ {
+ 	struct trace_rbtree_node *node = tree->node;
+ 
+-	if (node) {
+-		if (check_node(tree, node))
+-			return;
+-		while (node->left) {
+-			node = node->left;
+-			if (check_node(tree, node))
+-				return;
+-		}
+-	}
+-
+-	while (node) {
+-		if (check_node(tree, node))
+-			return;
+-		if (node->right) {
+-			node = node->right;
+-			if (check_node(tree, node))
+-				return;
+-			while (node->left) {
+-				node = node->left;
+-				if (check_node(tree, node))
+-				    return;
+-			}
+-			continue;
+-		}
+-		while (node->parent) {
+-			if (is_left(node))
+-				break;
+-			node = node->parent;
+-			if (check_node(tree, node))
+-				return;
+-		}
+-		node = node->parent;
+-	}
++	check_tree_node(tree, node, 0);
+ }
+ #else
+ static inline void check_tree(struct trace_rbtree *tree) { }
+@@ -211,8 +217,8 @@ int __hidden tcmd_rbtree_insert(struct trace_rbtree *tree,
+ 			}
+ 		}
+ 	}
+-	check_tree(tree);
+ 	tree->node->color = BLACK;
++	check_tree(tree);
+ 	tree->nr_nodes++;
+ 	return 0;
+ }
+-- 
+2.53.0
 
