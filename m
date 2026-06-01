@@ -1,41 +1,42 @@
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.2])
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44A0638A72F
-	for <linux-trace-devel@vger.kernel.org>; Mon,  1 Jun 2026 08:20:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61E5C14A8B
+	for <linux-trace-devel@vger.kernel.org>; Mon,  1 Jun 2026 10:38:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780302050; cv=none; b=O4wDrCHBkUUF2bePiBKGkIoM8d0ZBwODDT9N7OC84Tt57FD+4MyUsifIA2p4FiZfueHbl2iFdd7ugMPA7qzSTFEsQHhr+SVXh5WpnyVtxOHWs5xMVhoyiKQHsqTgYytiedJiAA6SGFHB2/29J5ideVgI5NM7mSNU98BEBDwMvJU=
+	t=1780310296; cv=none; b=IfTek/8yAglTvAlTzOUfe3K5ncreu8vmSSv/2sJVDMmb0OOIZSnlAVSYH3HxY7iMDS3REM37qNkzq1Xl+QWdHOQez7eXP1kHfXVXX3vmopJ/TbSlCgiNkvCaj4anD/8MCdjEDMbskpJCjlVKnvVzeCdYQ0xfgklfOUKl+KPUWjk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780302050; c=relaxed/simple;
-	bh=oBk3Ps9P+UAgjVnsMuJy6p6hOUUbF92vOB8NPm+hR8k=;
+	s=arc-20240116; t=1780310296; c=relaxed/simple;
+	bh=9zTKLOrBaBfb7rXDrouZjbdJh1GWx+t84YmyF01xAak=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Iy2e0Q990ErIVdZzA9o4UeiTjtghiYMEQ5Idj+FPzHzrpJePP0bXAUTz1nVRETsOQNgGF5X+k70QW6wegBAdhGzU3CUVQYoHE6HjoNztVcllTkbOgUbwslEuu/7qb+f70YdpJXEUav8ckKYWEg7ZhBizqo4tMbkZpgUC1PCTYIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=YCNTpxsV; arc=none smtp.client-ip=220.197.31.2
+	 MIME-Version; b=RwGxpR0cWa9COZrsPR+3yrk8jlByAqv1j10oPMpbNGHIjId0unVC35WVpve87u6OWlNJgE+ibSd+AOqxrrkrIUt/YH9rUJ4J3WryoClQTpDeoajcRODsmdt0ffdeaBXqdB9owDEUmsObUhGVlskawsYnimnYaBrpY55zwOzdlWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=DuSpsJXY; arc=none smtp.client-ip=117.135.210.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="YCNTpxsV"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="DuSpsJXY"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=WQ
-	8CVfFtcBWu7NAkfg1paT7jqHOErBJ+1CZDaPXkGKw=; b=YCNTpxsV4nBwgNbBfG
-	aBRKpnx2A618JrCCSfnrcj9eJ9HdX/mDvR7/glNSUJwSCLtVMan1nnJHYoasn/eP
-	XRh3KgwlvkqejTb0lS7tV4lMs8lc3yV/IoXY5Oophjx6SUUtclkvFxhXlDorBQJp
-	/XemsBuDCqzJiarC10M5wnr38=
+	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=Qk
+	zF3FH14JuFuqxvp4oNTnJ+JC7maDG1wh1WF8cGG5M=; b=DuSpsJXYr9aupMtUpT
+	Ottl3whOzNmHk16wXLLtPDVwL0Uo9qi8QkN8gazMggilVeaPLCRxFtydFf8bOue9
+	FM8+7Dc/EaNvCvdRehC43+0YEQTSpk8N3TOtEWo5jYvsshH5dZDpkOPIkLvplMzn
+	BpHTgvefSKlxrcHTYj7YY2vvY=
 Received: from localhost.localdomain (unknown [])
-	by gzga-smtp-mtada-g1-2 (Coremail) with SMTP id _____wCXXZPKQB1qAUIdAw--.56782S2;
-	Mon, 01 Jun 2026 16:20:29 +0800 (CST)
+	by gzsmtp2 (Coremail) with SMTP id PSgvCgDnb0EAYR1qVFYYHQ--.59767S4;
+	Mon, 01 Jun 2026 18:37:55 +0800 (CST)
 From: Cao Ruichuang <create0818@163.com>
 To: Steven Rostedt <rostedt@goodmis.org>
 Cc: linux-trace-devel@vger.kernel.org,
 	Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
+	Emil Thorsoe <ethorsoe@tuxera.com>,
 	Cao Ruichuang <create0818@163.com>
-Subject: [PATCH v3] libtraceevent: avoid racing recursive builds of both libraries
-Date: Mon,  1 Jun 2026 16:20:24 +0800
-Message-Id: <20260601082024.12269-1-create0818@163.com>
+Subject: [PATCH 2/2] libtraceevent utest: Avoid host-specific getname_flags output
+Date: Mon,  1 Jun 2026 18:37:50 +0800
+Message-Id: <20260601103750.68805-3-create0818@163.com>
 X-Mailer: git-send-email 2.39.5 (Apple Git-154)
-In-Reply-To: <20260529140730.3ea1859b@fedora>
-References: <20260405222102.9204-1-create0818@163.com> <20260406062855.58598-1-create0818@163.com> <20260529140730.3ea1859b@fedora>
+In-Reply-To: <20260601103750.68805-1-create0818@163.com>
+References: <20260601103750.68805-1-create0818@163.com>
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
@@ -43,65 +44,84 @@ List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wCXXZPKQB1qAUIdAw--.56782S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7tF18CrWUXw1xtF1fZw4xWFg_yoW8uF18pr
-	W3Gr4akan7JrW8Aas7ZayxGry293ZFq3yfA3WjgF1F9w1rXF1rXFWfKrWkKF17A3yktFy7
-	AwsY9wnrWFyDZ37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pRn2-nUUUUU=
-X-CM-SenderInfo: pfuht3jhqyimi6rwjhhfrp/xtbCwA8lXmodQM8dpAAA31
+X-CM-TRANSID:PSgvCgDnb0EAYR1qVFYYHQ--.59767S4
+X-Coremail-Antispam: 1Uf129KBjvJXoW7AFWrXFyDWw13XrW3ZryDAwb_yoW5JFWfpF
+	navF13KF4DJF43Xw43Cr1akr4ay3yvyFy2y3s3XayF9FWYgry7trs5uFyYvr4rGFZ5uasx
+	Aa4j9r4rCF1xXFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zMFApUUUUUU=
+X-CM-SenderInfo: pfuht3jhqyimi6rwjhhfrp/xtbC5wM6c2odYQMTFAAA3-
 
-A top-level parallel build currently starts separate recursive makes for
-libtraceevent.a and libtraceevent.so. Both sub-makes rebuild the same
-object files in the same output directory, which can corrupt the .o files
-and make the final link fail with file format errors.
+test_btf_read() loads /sys/kernel/btf/vmlinux and expects
+getname_flags() to print exactly two arguments:
 
-The src/Makefile already has the static library depend on the shared
-library before running objcopy. Reflect that dependency at the top level
-too by also making the static library target depend on the shared library
-target. This serializes parallel top-level requests for both libraries
-while preserving the shared-before-static build order and the existing
-forced static-library recursive make.
+  getname_flags(filename=0x7ffe7d33f3d0, flags=0)
 
-This fixes the object-file race seen when top-level parallel builds
-request both libraries, for example via `make -j8 libs` or
-`make -j8 libtraceevent.a libtraceevent.so`.
+That prototype is not stable across kernels. On a Rocky Linux 9.7
+system, the kernel BTF for getname_flags() has a third parameter named
+empty, and tep_btf_print_args() correctly prints it.
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=217428
+Keep the exact output check for hosts that match the expected prototype.
+For hosts that append extra getname_flags() BTF parameters after the
+expected arguments, treat that host-specific suffix as an acceptable
+variant only if the output still has the expected argument prefix and a
+complete closing suffix.
+
+Fixes: 0294b73f17e9 ("libtraceevent utest: Add simple test to test BTF parsing")
 Assisted-by: Codex:gpt-5.5
 Signed-off-by: Cao Ruichuang <create0818@163.com>
 ---
-Changes in v3:
-- Follow Steven's review and make the top-level static library target
-  depend on the shared library target, matching src/Makefile's dependency
-  direction.
-- Preserve the existing forced static-library recursive make while
-  serializing parallel top-level requests shared-before-static.
+ utest/traceevent-utest.c | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
 
-Tested on x86_64 Linux with GNU Make 4.3, GCC 11.5.0, and GNU objcopy
-2.35.2:
-- make -j8 libs
-- make -j8 libtraceevent.a libtraceevent.so
-- 20 iterations of: make clean && make -j8 libs
-- 10 iterations of: make clean && make -j8 libtraceevent.a libtraceevent.so
-- make -j8
-- make -j8 test
-
- Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Makefile b/Makefile
-index e1a10a0..d1ceaee 100644
---- a/Makefile
-+++ b/Makefile
-@@ -208,7 +208,7 @@ libtraceevent.so: $(bdir) $(LIBTRACEEVENT_SHARED)
+diff --git a/utest/traceevent-utest.c b/utest/traceevent-utest.c
+index b93d686..04f6726 100644
+--- a/utest/traceevent-utest.c
++++ b/utest/traceevent-utest.c
+@@ -16,6 +16,7 @@
+ #include <time.h>
+ #include <dirent.h>
+ #include <ftw.h>
++#include <string.h>
  
- libs: libtraceevent.a libtraceevent.so
+ #include <sys/mman.h>
+ #include <stdint.h>
+@@ -529,10 +530,21 @@ static int read_full(int fd, void *buf, size_t size)
+ 	return 0;
+ }
  
--$(LIBTRACEEVENT_STATIC): force
-+$(LIBTRACEEVENT_STATIC): force $(LIBTRACEEVENT_SHARED)
- 	$(Q)$(call descend,$(src)/src,$@)
++static bool output_has_extra_args(const char *output, const char *prefix)
++{
++	size_t len = strlen(output);
++	size_t plen = strlen(prefix);
++
++	return len > plen + 3 && strncmp(output, prefix, plen) == 0 &&
++	       output[plen] == ',' && strcmp(output + len - 2, ")\n") == 0;
++}
++
+ static void test_btf_read(void)
+ {
+ 	uint64_t args[] = {0x7ffe7d33f3d0, 0, 0, 0, 0, 0};
+ 	const char *func = "getname_flags";
++	const char *expected = "getname_flags(filename=0x7ffe7d33f3d0, flags=0)\n";
++	const char *expected_prefix = "getname_flags(filename=0x7ffe7d33f3d0, flags=0";
+ 	struct trace_seq *s = test_seq;
+ 	struct stat st;
+ 	void *buf;
+@@ -582,7 +594,13 @@ static void test_btf_read(void)
+ 	trace_seq_puts(s, ")\n");
+ 	trace_seq_terminate(s);
  
- $(LIBTRACEEVENT_SHARED): force
+-	CU_TEST(strcmp(s->buffer, "getname_flags(filename=0x7ffe7d33f3d0, flags=0)\n") == 0);
++	if (strcmp(s->buffer, expected) != 0 &&
++	    output_has_extra_args(s->buffer, expected_prefix)) {
++		printf("[KERNEL BTF HAS EXTRA getname_flags ARGS] ...");
++		return;
++	}
++
++	CU_TEST(strcmp(s->buffer, expected) == 0);
+ }
+ 
+ static int test_suite_destroy(void)
 -- 
 2.39.5 (Apple Git-154)
 
