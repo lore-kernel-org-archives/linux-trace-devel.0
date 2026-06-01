@@ -1,160 +1,484 @@
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.2])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA2193911C9
-	for <linux-trace-devel@vger.kernel.org>; Sun, 31 May 2026 17:10:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 673961DFF0
+	for <linux-trace-devel@vger.kernel.org>; Mon,  1 Jun 2026 08:18:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780247420; cv=none; b=Fj6RBWqXPvqaiC6obn2Q76dfvUaI+AFnjyLO3uY562zRzdlth4GJceHolRk8Y7o+wfWlt+uttPGb0Ro3juB7muGXfKObMCd+ohKM+ZPuAY49/iLuTkeGvyN0WvLkYD0Chog8kfrbmo0aeIzm6ETRwpbyJpF01y1jse5w5Rcksfc=
+	t=1780301897; cv=none; b=OVUxFV6SJGjpaTPnLxYw1UCUpLyyKjHYR8QH6rxNczfWXw6MDfdSKNjKOeuM9rXYFjCd7Z3Q6xAE7gkOT15MQ4Erxy82pKn1lYT+Zyp8/5AN4MiwJ/sJUG30hT1TC5+YXBgHw5ZPwDHNJFaOrVfW0yS3leO5ezsxvpuSPAaeKOo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780247420; c=relaxed/simple;
-	bh=Q3eqBlZVrsTQsWiPXY/tj/lae5lI7oFVxls9Ev1VlLI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=q1o3PTyh9nbQZDtMC5tVhSId/0QnlIlyFlaMKruM0EFSoAIjEtCASe76BoVjXYnWgpokE9hlE6zh1uWilVxeJbCLAmRslCQghJbcHXZMnLQa77iiyPCBxyxlHxl7hJZI6zg0N/O1qj1HYAVvOGMNuD7IfAv7jux710SNx9uGcsg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LviN2vFW; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1780301897; c=relaxed/simple;
+	bh=ijbJYzL00rRDM/PdwnqaxGqQtaEI00rXyD8cp1f3rgY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=IZSAy/4K2ql+C+peBoD8/SlfP4pV7bnriW4yazZLZ+x2NeFEaAbnFBOF326DKahswdRyRiJk8IHwMh7uImG5t3huesBQl9UohICNXAxhbrMbV7Isks0aT8A2D5OyI/3yinYmYJO4qfXyeiqYTSfns57nFBorPNFf7BnS3I5LSlU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=Q8FQglEs; arc=none smtp.client-ip=117.135.210.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LviN2vFW"
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2bf20f6be6bso12802455ad.3
-        for <linux-trace-devel@vger.kernel.org>; Sun, 31 May 2026 10:10:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1780247419; x=1780852219; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=CqJpbwtossSFW5neyJ87RipB4IcgiOFbuX2fMHVoKDA=;
-        b=LviN2vFW0Vh2IdPSp86etBiNYRD3Jj8gfHQ+acMZCqBCpsm3rArijYf1hYtQ8s8l9y
-         18/4qKLtKR8jndY+q+1jo0OzaouaiwdxXLg6CgsVeGLz1xrotle78b1ApyS5p4RJMpwK
-         nvSKLNTBUQ2t2WCkdNpIx9Az3IPuA5dY9/tSYBVTQ3k47PIj76jh+W40czuYW5EflzzJ
-         pDOhSci1kFbwWk/M+u+2YCUYVbpJgV70qJFT3KMzLAO0BLKVroQFyTGcFRecG6jXoRUc
-         bDZa4FZ9eZQtE/O/3GAg4TYuvPXV7mrOyrWA7TtA+yL+IX3gbkln1TIEqJfstSrw7fzz
-         SFuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1780247419; x=1780852219;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CqJpbwtossSFW5neyJ87RipB4IcgiOFbuX2fMHVoKDA=;
-        b=iKiwHGkhUUlM7nbqHWTunhWZj7ItfjLgHFurvnHA4JCGLJHAc1/9HZaeLjR4pDpoIL
-         SjVr0NDXbeEV6r/VvIzQD/ddjx9sgUNHQ5B34n6PIV7Fz5xljStXqPv30SSf3c0SVo0F
-         +X0EJu67T1EesLR2yWvtDBcVR9XNH8/PNLvvaU7CiQtpAMIetH7Evs6nOhsO9e4lTeg5
-         oD+F5c0fdpwNfisInmtycgkM//OQouiHlpitWnFnb2G0WeYoIJHdu7p3OeudCdt/9imd
-         a3YwOcAZ7IcovD6G8dM4ian+mSyvl46roTaoXrbrcpysX4XM0xyXv2dMLyvPQM4yFw10
-         1MyA==
-X-Forwarded-Encrypted: i=1; AFNElJ9diM3zBM7WzMWzUNt52NUl1f4iDn17whQWTqh16UyK2SnUnfa7QvsZu6evocIFiLD3fDMsKRpiJIKVKeLPvpRC0w==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzEmY9rrM0grxk83N+eKfB4hh62W1BC3wkS/WQTtKShufvPt3O8
-	6InuvdriNeMwHnn709FjPYsWmk9BT2SRC08W9DbtVTJFcKtBv7YUYu5IQyr5Zny43fA=
-X-Gm-Gg: Acq92OE6Mj3UAbK7up2TtpEWx3xpGrwbEZU9Vwa2fQ63o4WaXoUEhbPJ9CENG5sX3RH
-	m5DyoNEhYtm4vke4MHHYRpu4ubtRcyMjuaXA7QircyxF+K4n1c8hyxMiYva59tj0t7CPScibDPA
-	l2RLzgA+DdvrTVz0HNV9KYFUJ59OwX6qBiYVWRM3QYLOfqzsgmhCQD/QnXOR4idg5uisgTzwGiN
-	VOUfIcNaEnOu1X4pN0mqyoD2BJ1DasYVT2x3ks3S5yhsMGcI8DEPEbVXdF6B9rn+QUu/r8eeWwf
-	1Yi1kMIpNi3Q3l7OgDlhA69QM19oeqCMifzSC+TxXTwu1460Erq/g2QIDRdptJtuO3bp1y5ANPM
-	Wy8ig6BSqAhwKSCk1V6XJa9O2lFE9ZscPF/uiUjETYSXNs+eVjpFgt+rpxN7zPbDW659qPsBbed
-	KdWm0dCr9TOFeFnq30mal3t4sBqSJqBgWedqQo3JhXCVo=
-X-Received: by 2002:a17:903:986:b0:2b4:59bf:5728 with SMTP id d9443c01a7336-2bf3682a21bmr82919535ad.25.1780247418899;
-        Sun, 31 May 2026 10:10:18 -0700 (PDT)
-Received: from ubuntu24.lan ([14.219.52.32])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2bf239e71cbsm78487495ad.15.2026.05.31.10.10.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 May 2026 10:10:18 -0700 (PDT)
-From: Yiyang Chen <cyyzero16@gmail.com>
-To: linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-trace-devel@vger.kernel.org
-Cc: Christian Brauner <brauner@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Matthew Wilcox <willy@infradead.org>
-Subject: tracepoints expose s_dev of kernel-internal superblocks -- no generic resolution interface
-Date: Mon,  1 Jun 2026 01:10:13 +0800
-Message-ID: <20260531171013.289131-1-cyyzero16@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="Q8FQglEs"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:To:Subject:Date:Message-ID:Content-Type:
+	MIME-Version; bh=s5/b24k2HDiT+Jq7MBE+zIt8kPEZcoJZt3pAG8zyLBA=;
+	b=Q8FQglEsO02uU2VdCnZMhCI5BdJCnjOXb/Ot58GTY/T9InuIsyJWdHot6YeVY0
+	bLbvolTwV6foQOVsSa8Mg1rR+pyhuuYsNig/U6OGXrxRkAuJFiBqwnAowepskZD1
+	R1FquVTDYBtRBjGlguFbSsSSB9S6oKl88hj7Oa1tdcygw=
+Received: from [127.0.0.1] (unknown [])
+	by gzga-smtp-mtada-g0-0 (Coremail) with SMTP id _____wCntlc2QB1qbNvYAg--.53455S2;
+	Mon, 01 Jun 2026 16:17:59 +0800 (CST)
+From: Cao Ruichuang <create0818@163.com>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-trace-devel@vger.kernel.org, tz.stoyanov@gmail.com
+Subject: [PATCH v2] libtraceevent: Reject non-text symbol arithmetic
+Date: Mon, 01 Jun 2026 16:14:30 +0800
+Message-ID: <178030167078.481.3342175703420798099.libtraceevent-reject-non-text-symbol-arithmetic-v2@163.com>
+In-Reply-To: <20260529151126.392e2a70@fedora>
+References: <20260406123017.10928-1-create0818@163.com> <20260529151126.392e2a70@fedora>
+X-Mailer: git-send-email compatible draft
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Subscribe: <mailto:linux-trace-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wCntlc2QB1qbNvYAg--.53455S2
+X-Coremail-Antispam: 1Uf129KBjvAXoW3KrykWFWxJFy3Gw43tr15CFg_yoW8Gr4UAo
+	WfZFs3X3y8Kw1xC3yDXF1fXFW5Xr1q934rK3Wa9wn8W3W3K39IgryI9ws8JrWUXF45GrW3
+	X3Z0q34fJr4fCFn5n29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+	AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvj4REq2MDUUUU
+X-CM-SenderInfo: pfuht3jhqyimi6rwjhhfrp/xtbC5xgAOWodQDhxTwAA33
 
-Hi all,
+The print fmt parser currently treats any kallsyms entry as a function
+symbol and will substitute its address into numeric expressions.
 
-While tracing page cache activity via mm_filemap_add_to_page_cache, I
-noticed s_dev values that do not appear in /proc/*/mountinfo:
+That works for _stext based offsets, but it also turns runtime globals
+like jiffies into kernel virtual addresses. Events such as
+writeback_single_inode_start then report a huge bogus age value instead
+of something meaningful.
 
-  mm_filemap_add_to_page_cache: dev 0:18 ino dea89 pfn=0x13ba00 ofs=0 order=9
+Only text symbols should be loaded into the function map from
+/proc/kallsyms. When the affected numeric or pointer print paths later
+see an unresolved bare identifier in symbol arithmetic, print INVALID
+instead of fabricating a number.
 
-Using a kernel module to enumerate all active superblocks, I confirmed
-this is the hugetlbfs internal mount created by hugetlbfs_init() ->
-kern_mount().  The actual s_dev value is dynamically allocated via
-get_anon_bdev() and varies across systems (0:18 on my test machine).
-Because kern_mount() attaches the mount to MNT_NS_INTERNAL, it is
-invisible to all mount namespaces.
+This keeps _stext style symbol arithmetic working while making the
+writeback age output fail in a local and explicit way.
 
-Each internal filesystem requires its own trick to discover the
-s_dev -> fs_type mapping:
+Add unit tests for both the preserved _stext case and the rejected
+jiffies arithmetic case.
 
-  - shmem:      create a memfd, call fstatfs() -> TMPFS_MAGIC
-  - bdev:       open a block device, call fstatfs()
-  - hugetlbfs: memfd_create(MFD_HUGETLB) creates a file
-    on the internal mount itself, so fstat() gives s_dev and
-    fstatfs() returns HUGETLBFS_MAGIC
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=219839
+Assisted-by: Codex:gpt-5.5
+Signed-off-by: Cao Ruichuang <create0818@163.com>
+---
+Changes since v1:
+- Rename the patch subject to:
 
-None of these are a general, authoritative interface -- each requires
-filesystem-specific knowledge of which object to create and which
-syscall to call.
+    libtraceevent: Reject non-text symbol arithmetic
 
-The question is: should there be a single stable interface that exposes
-the s_dev -> fs_type mapping for all active superblocks, including
-internal ones? Here are some options:
+- Move is_kernel_text_symbol() before tep_parse_kallsyms() and drop the
+  forward declaration.
+- Add the Assisted-by trailer following
+  Documentation/process/coding-assistants.rst. GPT-5.5 was used as a
+  coding assistant while preparing this revision. I reviewed the final
+  diff myself and the Signed-off-by remains mine.
+- Built on Rocky Linux 9.7 with:
 
-  - Add fs_type to the affected tracepoints.
-  - Provide a generic interface (BPF iterator, /proc, /sys) that
-    exposes s_dev + fs_type for all active superblocks including
-    internal ones.
+    make -j$(nproc)
+    make test
 
+  In this tree make test builds the utest binary. I then ran the
+  traceevent unit test binary directly. The two tests added by this
+  patch passed:
 
-Reproduce steps:
+    Test: parse symbol arithmetic ...caller=do_work+0x0passed
+    Test: reject non-text symbol arithmetic ...age=INVALIDpassed
 
-s_dev is dynamically allocated via get_anon_bdev(), values vary.
+  The direct unit-test run still reports one failure in the pre-existing
+  "read BTF" test on that machine. I checked the unmodified baseline on
+  the same system and it fails in the same BTF test as well, so that is
+  not a regression from this patch.
 
---- test_hugetlb_sdev.c ---
-#include <sys/mman.h>
-#include <string.h>
-int main(void) {
-    void *p = mmap(NULL, 2<<20, PROT_READ|PROT_WRITE,
-                   MAP_SHARED|MAP_ANONYMOUS|MAP_HUGETLB, -1, 0);
-    if (p == MAP_FAILED) return 1;
-    memset(p, 0, 2<<20);
-    munmap(p, 2<<20);
-    return 0;
-}
+ src/event-parse.c        | 108 +++++++++++++++++++++++++++++++++++++------
+ utest/traceevent-utest.c | 117 +++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 211 insertions(+), 14 deletions(-)
+diff --git a/src/event-parse.c b/src/event-parse.c
+index 4bd5c1b..128a1cb 100644
+--- a/src/event-parse.c
++++ b/src/event-parse.c
+@@ -1017,6 +1017,19 @@ int tep_load_modules(struct tep_handle *tep, char *modules, size_t size)
+ 	return ret;
+ }
+ 
++static bool is_kernel_text_symbol(char ch)
++{
++	switch (ch) {
++	case 'T':
++	case 't':
++	case 'W':
++	case 'w':
++		return true;
++	default:
++		return false;
++	}
++}
++
+ /**
+  * tep_parse_kallsyms - load functions from a read of /proc/kallsyms
+  * @tep: a handle to the trace event parser
+@@ -1070,6 +1083,10 @@ int tep_parse_kallsyms(struct tep_handle *tep, const char *kallsyms)
+ 		 *  - x86-64 that reports per-cpu variable offsets as absolute
+ 		 */
+ 		if (func[0] != '$' && ch != 'A' && ch != 'a') {
++			if (!is_kernel_text_symbol(ch)) {
++				line = strtok_r(NULL, "\n", &next);
++				continue;
++			}
+ 			line[func_end] = 0;
+ 			if (mod_end) {
+ 				mod = line + mod_start;
+@@ -4580,13 +4597,16 @@ tep_find_event_by_name(struct tep_handle *tep,
+ }
+ 
+ static unsigned long long test_for_symbol(struct tep_handle *tep,
+-					  struct tep_print_arg *arg)
++					  struct tep_print_arg *arg,
++					  bool *found)
+ {
+ 	unsigned long long val = 0;
+ 	struct func_list *item = tep->funclist;
+ 	char *func;
+ 	int i;
+ 
++	*found = false;
++
+ 	if (isdigit(arg->atom.atom[0]))
+ 		return 0;
+ 
+@@ -4607,10 +4627,14 @@ static unsigned long long test_for_symbol(struct tep_handle *tep,
+ 
+ 		if (strcmp(arg->atom.atom, name) == 0) {
+ 			val = addr;
++			*found = true;
+ 			break;
+ 		}
+ 	}
+ 
++	if (!*found)
++		return 0;
++
+ 	/*
+ 	 * This modifies the arg to hardcode the value
+ 	 * and will not loop again.
+@@ -4686,13 +4710,17 @@ static bool check_data_offset_size(struct tep_event *event, const char *field_na
+ }
+ 
+ static unsigned long long
+-eval_num_arg(void *data, int size, struct tep_event *event, struct tep_print_arg *arg)
++eval_num_arg_stat(void *data, int size, struct tep_event *event,
++		  struct tep_print_arg *arg, bool *valid)
+ {
+ 	struct tep_handle *tep = event->tep;
+ 	unsigned long long val = 0;
+ 	unsigned long long left, right;
+ 	struct tep_print_arg *typearg = NULL;
+ 	struct tep_print_arg *larg;
++	bool found = false;
++	bool left_valid = true;
++	bool right_valid = true;
+ 	unsigned int offset;
+ 	unsigned int field_size;
+ 
+@@ -4702,8 +4730,11 @@ eval_num_arg(void *data, int size, struct tep_event *event, struct tep_print_arg
+ 		return 0;
+ 	case TEP_PRINT_ATOM:
+ 		val = strtoull(arg->atom.atom, NULL, 0);
+-		if (!val)
+-			val = test_for_symbol(tep, arg);
++		if (!val && !isdigit(arg->atom.atom[0])) {
++			val = test_for_symbol(tep, arg, &found);
++			if (!found)
++				*valid = false;
++		}
+ 		return val;
+ 	case TEP_PRINT_FIELD:
+ 		if (!arg->field.field) {
+@@ -4728,7 +4759,10 @@ eval_num_arg(void *data, int size, struct tep_event *event, struct tep_print_arg
+ 	case TEP_PRINT_HEX_STR:
+ 		break;
+ 	case TEP_PRINT_TYPE:
+-		val = eval_num_arg(data, size, event, arg->typecast.item);
++		val = eval_num_arg_stat(data, size, event, arg->typecast.item,
++					valid);
++		if (!*valid)
++			return 0;
+ 		return eval_type(val, arg, 0);
+ 	case TEP_PRINT_STRING:
+ 	case TEP_PRINT_BSTRING:
+@@ -4749,7 +4783,12 @@ eval_num_arg(void *data, int size, struct tep_event *event, struct tep_print_arg
+ 			 * Arrays are special, since we don't want
+ 			 * to read the arg as is.
+ 			 */
+-			right = eval_num_arg(data, size, event, arg->op.right);
++			right = eval_num_arg_stat(data, size, event,
++						 arg->op.right, &right_valid);
++			if (!right_valid) {
++				*valid = false;
++				return 0;
++			}
+ 
+ 			/* handle typecasts */
+ 			larg = arg->op.left;
+@@ -4797,17 +4836,34 @@ eval_num_arg(void *data, int size, struct tep_event *event, struct tep_print_arg
+ 				val = eval_type(val, typearg, 1);
+ 			break;
+ 		} else if (strcmp(arg->op.op, "?") == 0) {
+-			left = eval_num_arg(data, size, event, arg->op.left);
++			left = eval_num_arg_stat(data, size, event, arg->op.left,
++						&left_valid);
++			if (!left_valid) {
++				*valid = false;
++				return 0;
++			}
+ 			arg = arg->op.right;
+ 			if (left)
+-				val = eval_num_arg(data, size, event, arg->op.left);
++				val = eval_num_arg_stat(data, size, event,
++							arg->op.left, &left_valid);
+ 			else
+-				val = eval_num_arg(data, size, event, arg->op.right);
++				val = eval_num_arg_stat(data, size, event,
++							arg->op.right, &right_valid);
++			if ((left && !left_valid) || (!left && !right_valid)) {
++				*valid = false;
++				return 0;
++			}
+ 			break;
+ 		}
+  default_op:
+-		left = eval_num_arg(data, size, event, arg->op.left);
+-		right = eval_num_arg(data, size, event, arg->op.right);
++		left = eval_num_arg_stat(data, size, event, arg->op.left,
++					 &left_valid);
++		right = eval_num_arg_stat(data, size, event, arg->op.right,
++					  &right_valid);
++		if (!left_valid || !right_valid) {
++			*valid = false;
++			return 0;
++		}
+ 		switch (arg->op.op[0]) {
+ 		case '!':
+ 			switch (arg->op.op[1]) {
+@@ -4922,6 +4978,15 @@ out_warning_field:
+ 	return 0;
+ }
+ 
++static unsigned long long
++eval_num_arg(void *data, int size, struct tep_event *event,
++	     struct tep_print_arg *arg)
++{
++	bool valid = true;
++
++	return eval_num_arg_stat(data, size, event, arg, &valid);
++}
++
+ struct flag {
+ 	const char *name;
+ 	unsigned long long value;
+@@ -6607,9 +6672,14 @@ static int print_function(struct trace_seq *s, const char *format,
+ 			  struct tep_print_arg *arg, bool raw)
+ {
+ 	struct func_map *func;
++	bool valid = true;
+ 	unsigned long long val;
+ 
+-	val = eval_num_arg(data, size, event, arg);
++	val = eval_num_arg_stat(data, size, event, arg, &valid);
++	if (!valid) {
++		trace_seq_puts(s, "INVALID");
++		return 0;
++	}
+ 	func = find_func(event->tep, val);
+ 	if (func) {
+ 		trace_seq_puts(s, func->func);
+@@ -6708,6 +6778,7 @@ static int print_arg_pointer(struct trace_seq *s, const char *format, int plen,
+ 			     struct tep_event *event, struct tep_print_arg *arg,
+ 			     bool raw)
+ {
++	bool valid = true;
+ 	unsigned long long val;
+ 	int ret = 1;
+ 
+@@ -6752,7 +6823,11 @@ static int print_arg_pointer(struct trace_seq *s, const char *format, int plen,
+ 		break;
+ 	default:
+ 		ret = 0;
+-		val = eval_num_arg(data, size, event, arg);
++		val = eval_num_arg_stat(data, size, event, arg, &valid);
++		if (!valid) {
++			trace_seq_puts(s, "INVALID");
++			break;
++		}
+ 		trace_seq_printf(s, "%p", (void *)(intptr_t)val);
+ 		break;
+ 	}
+@@ -6765,9 +6840,14 @@ static int print_arg_number(struct trace_seq *s, const char *format, int plen,
+ 			    void *data, int size, int ls,
+ 			    struct tep_event *event, struct tep_print_arg *arg)
+ {
++	bool valid = true;
+ 	unsigned long long val;
+ 
+-	val = eval_num_arg(data, size, event, arg);
++	val = eval_num_arg_stat(data, size, event, arg, &valid);
++	if (!valid) {
++		trace_seq_puts(s, "INVALID");
++		return 0;
++	}
+ 
+ 	switch (ls) {
+ 	case -2:
+diff --git a/utest/traceevent-utest.c b/utest/traceevent-utest.c
+index 1c3a4c2..7d27211 100644
+--- a/utest/traceevent-utest.c
++++ b/utest/traceevent-utest.c
+@@ -184,6 +184,74 @@ static char sizeof_data[] = {
+ };
+ static void *sizeof_event_data = (void *)sizeof_data;
+ 
++static const char symbol_kallsyms[] =
++	"0000000000001000 T _stext\n"
++	"0000000000001020 T do_work\n"
++	"0000000000001100 T end_text\n"
++	"0000000000002000 D jiffies\n";
++
++#define SYMBOL_ARITH_FMT "caller=do_work+0x0"
++static const char symbol_arith_event[] =
++	"name: symbol_arith\n"
++	"ID: 24\n"
++	"format:\n"
++	"\tfield:unsigned short common_type;\toffset:0;\tsize:2;\tsigned:0;\n"
++	"\tfield:unsigned char common_flags;\toffset:2;\tsize:1;\tsigned:0;\n"
++	"\tfield:unsigned char common_preempt_count;\toffset:3;\tsize:1;\tsigned:0;\n"
++	"\tfield:int common_pid;\toffset:4;\tsize:4;\tsigned:1;\n"
++	"\n"
++	"\tfield:unsigned int caller_off;\toffset:8;\tsize:4;\tsigned:0;\n"
++	"\n"
++	"print fmt: \"caller=%pS\", REC->caller_off + _stext\n";
++
++static char symbol_arith_data[] = {
++#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
++	/* common type */		24, 0x00,
++#else
++	/* common type */		0x00, 24,
++#endif
++	/* common flags */		0x00,
++	/* common_preempt_count */	0x00,
++	/* common_pid */		0x00, 0x00, 0x00, 0x00,
++#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
++	/* caller_off */		0x20, 0x00, 0x00, 0x00,
++#else
++	/* caller_off */		0x00, 0x00, 0x00, 0x20,
++#endif
++};
++
++#define JIFFIES_ARITH_FMT "age=INVALID"
++static const char jiffies_arith_event[] =
++	"name: jiffies_arith\n"
++	"ID: 25\n"
++	"format:\n"
++	"\tfield:unsigned short common_type;\toffset:0;\tsize:2;\tsigned:0;\n"
++	"\tfield:unsigned char common_flags;\toffset:2;\tsize:1;\tsigned:0;\n"
++	"\tfield:unsigned char common_preempt_count;\toffset:3;\tsize:1;\tsigned:0;\n"
++	"\tfield:int common_pid;\toffset:4;\tsize:4;\tsigned:1;\n"
++	"\n"
++	"\tfield:unsigned long dirtied_when;\toffset:8;\tsize:8;\tsigned:0;\n"
++	"\n"
++	"print fmt: \"age=%lu\", (jiffies - REC->dirtied_when) / 250\n";
++
++static char jiffies_arith_data[] = {
++#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
++	/* common type */		25, 0x00,
++#else
++	/* common type */		0x00, 25,
++#endif
++	/* common flags */		0x00,
++	/* common_preempt_count */	0x00,
++	/* common_pid */		0x00, 0x00, 0x00, 0x00,
++#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
++	/* dirtied_when */		0xf4, 0x01, 0x00, 0x00,
++					0x00, 0x00, 0x00, 0x00,
++#else
++	/* dirtied_when */		0x00, 0x00, 0x00, 0x00,
++					0x00, 0x00, 0x01, 0xf4,
++#endif
++};
++
+ static const char pointer_backtrace_event[] =
+ 	"name: pointer_backtrace_event\n"
+ 	"ID: 40\n"
+@@ -434,6 +502,51 @@ static void test_parse_sizeof_undef(void)
+ 	test_parse_sizeof(0, 5, "sizeof_undef", SIZEOF_LONG0_FMT);
+ }
+ 
++static void parse_symbol_event(const char *format, const char *system,
++			       void *data, int size, const char *expected)
++{
++	struct tep_handle *tep;
++	struct tep_event *event;
++	struct tep_record record;
++
++	tep = tep_alloc();
++	CU_TEST(tep != NULL);
++	if (!tep)
++		return;
++
++#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
++	tep_set_file_bigendian(tep, TEP_BIG_ENDIAN);
++#endif
++
++	record.data = data;
++	record.size = size;
++
++	CU_TEST(tep_parse_kallsyms(tep, symbol_kallsyms) == 0);
++	CU_TEST(tep_parse_format(tep, &event, format, strlen(format),
++				 system) == TEP_ERRNO__SUCCESS);
++
++	trace_seq_reset(test_seq);
++	tep_print_event(tep, test_seq, &record, "%s", TEP_PRINT_INFO);
++	trace_seq_do_printf(test_seq);
++	CU_TEST(strcmp(test_seq->buffer, expected) == 0);
++
++	tep_free(tep);
++}
++
++static void test_parse_symbol_arith(void)
++{
++	parse_symbol_event(symbol_arith_event, "symbol_arith",
++			   symbol_arith_data, sizeof(symbol_arith_data),
++			   SYMBOL_ARITH_FMT);
++}
++
++static void test_parse_jiffies_arith(void)
++{
++	parse_symbol_event(jiffies_arith_event, "jiffies_arith",
++			   jiffies_arith_data, sizeof(jiffies_arith_data),
++			   JIFFIES_ARITH_FMT);
++}
++
+ static void parse_pointer_event(const char *format, const char *system,
+ 				void *data, int size, const char *expected)
+ {
+@@ -609,6 +722,10 @@ void test_traceevent_lib(void)
+ 		    test_parse_sizeof4);
+ 	CU_add_test(suite, "parse sizeof() no long size defined",
+ 		    test_parse_sizeof_undef);
++	CU_add_test(suite, "parse symbol arithmetic",
++		    test_parse_symbol_arith);
++	CU_add_test(suite, "reject non-text symbol arithmetic",
++		    test_parse_jiffies_arith);
+ 	CU_add_test(suite, "parse %pB pointer format",
+ 		    test_parse_pointer_backtrace);
+ 	CU_add_test(suite, "parse %pap pointer format",
 
-  gcc -o test_hugetlb_sdev test_hugetlb_sdev.c
-  # precondition:
-  cat /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages   # must be > 0
-
---- trace script (run with sudo) ---
-  TP=/sys/kernel/tracing
-  DEVS=$(awk '{print $3}' /proc/self/mountinfo | sort -u)
-
-  echo 1 > $TP/events/filemap/mm_filemap_add_to_page_cache/enable
-  echo 1 > $TP/events/hugetlbfs/hugetlbfs_alloc_inode/enable
-  echo > $TP/trace
-
-  ./test_hugetlb_sdev
-  sleep 1
-
-  echo "=== s_dev from tracepoint, NOT in mountinfo ==="
-  # filemap uses "dev X:Y", hugetlbfs uses "dev X,Y"
-  grep -v '^#' $TP/trace | grep -oP 'dev[= ]\K\d+[:,]\d+' | tr ',' ':' | sort -u \
-      | while read d; do echo "$DEVS" | grep -qx "$d" || echo "  $d"; done
-
-  echo 0 > $TP/events/filemap/enable
-  echo 0 > $TP/events/hugetlbfs/enable
-  echo > $TP/trace
-
-
-You will see hugetlbfs s_dev which is not present in any mountinfo.
-
-
-Thanks.
