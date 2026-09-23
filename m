@@ -1,83 +1,81 @@
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E83F4358375
-	for <linux-trace-devel@vger.kernel.org>; Wed, 23 Sep 2026 20:57:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0193232C8B
+	for <linux-trace-devel@vger.kernel.org>; Wed, 23 Sep 2026 20:57:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790197053; cv=none; b=ZHq+2ub56U2Y+hB0cYPFHIu0Vmpvf4a1j8uQKTYMX9ShZKz+uNhfBhAbHQWoiU4vOMgN5CGnYGmfWA/a9vQL5Bt9AQwugYt/wO1LbZjSvGFGCJHTKjQrPYSynWGkFw87XSvabnrXqT1kN9HiE7eX3cK2VItq5y1EFv652/99rbg=
+	t=1790197054; cv=none; b=pS9vKfDle1Qa5EUgZA2gmM4DyKebWRnKVKwXSJ/ToeGDore7WAhxCKAF7Zf2eYFls2A7WwcFCJZw4UGNGEKOQDmg2ZAGXSBjBzH2Fz3ozpM9XZZci5o65z8td1yL2/8OTWxpbDMxzjiq21z6qYsCjcD2guuf5eIXnbffYlN1Mh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790197053; c=relaxed/simple;
-	bh=3JR+ZTnSHKnHnP52//eDrJigATnBHjFRfGxWcz3Mtyw=;
+	s=arc-20240116; t=1790197054; c=relaxed/simple;
+	bh=8JPrCiWVPu4MorXc8770Bil+NvbdfnEDgCghO8uuTfw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=c2m6qAqZD4Cfb/hlyolEFsKiOZleJ81dnziYxk+Trch8rrVKXAXW0eFri7pCy7pgN//6UxowpSbpQohkGk6XPwExewyN1pzQ2qiuFfl7NKL8woYKw5QJDiwKcTkXWHQ5x134LUBD83WRNZJZ9lJMI3MBKEyjnFNmDwgmqqYJPQc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.b=UYyyndh4; arc=none smtp.client-ip=185.125.188.123
+	 MIME-Version; b=XeI2b2O4P47+o5JvqT6AQ/5rTmjHaJ479WyS5nalaQ84A+fs2M/9XSc1aEnxrF/n2UsqxQYokC7wh+693SQFc4gKmUdHv99ZVidQ03pPfk6IGVSrZOszr5+5UiHcAKZxusANd9GGR5Cu59bVcp8EYvAjbspptIDq28lZDblWqrY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.b=GvbJsv+9; arc=none smtp.client-ip=185.125.188.122
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=canonical.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.b="UYyyndh4"
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com [209.85.128.71])
+	dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.b="GvbJsv+9"
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com [209.85.128.70])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 99ECA3F32D
-	for <linux-trace-devel@vger.kernel.org>; Wed, 23 Sep 2026 20:57:28 +0000 (UTC)
+	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 5ECC13F5D4
+	for <linux-trace-devel@vger.kernel.org>; Wed, 23 Sep 2026 20:57:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20251003; t=1790197048;
-	bh=YjNWR4abRGMYpRi6/sMj2hi4kmpQOF4F/nqROjvuwB0=;
+	s=20251003; t=1790197050;
+	bh=mE/BW7OrGvgoMrIowJYsSFwSikbCgKNrPuNRiE7yQyI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
 	 MIME-Version;
-	b=UYyyndh43MCRXRNNcDl6H/elLFnAN35Hf6+Hw5oOAmGwCdCbnpXGf1PNTxgAwm7lx
-	 YIHwZooQcr7rtsnfR1vk9eCaP5ePtLu4zkctasjD2u/ret1F+UaXrFfI+rmgubxOKV
-	 8qRb/dtBmZhnrum128hBW+M7XBrJOpa+gNyYw4m1l4DAYUulCvPj1UjhC0UQPFvdqG
-	 Mug3s4htAZiHAGzuq9iVa6BX3OndwDg2hP3Htn6qf39Y9QR3+fi5PRertoxnDpRHgk
-	 pyQQGjcfky5W2jWvaB8lYw8jZSPH6cforKU2Nl2Br4Zwj/a7e8g+Gw1ktoH/2CMIjO
-	 LXDrtZqDSjHdGSQtg+DMMVonQedVsqezyE3NdK/+9/wAaWsOHhPYLml6Z8FGsO+xoz
-	 7kHpn1hKWwhrjQFvgcxpQ54IWjEDXGDkrS4duwG8KkVXQWYwaD2aicsJ0C1HrrBxdN
-	 0FFrKDQ50LfkMEt7PZqhliJU2WYT+dixLmATaOHGEeFbI4xemiQxU/8oYUnEbuKK7B
-	 1gcogpCWQ8N31TPFw6Q2OOVXS5WD2lMtS0ytGm86znRocy+BwhM1CM63L8k6x9RHtb
-	 Hzc9GT4RplNNIXXNlCD0V3oyFeSKBJIzjgVvdqeVrgAhq9kAJta3tzV7NAS2xZz6jM
-	 Pw+4Q0yZa5aImK7zv/Cpq2OQ=
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-495689bfcc8so9407145e9.1
-        for <linux-trace-devel@vger.kernel.org>; Wed, 23 Sep 2026 13:57:28 -0700 (PDT)
+	b=GvbJsv+9TXYZESZjQOfcsuHV1m0OCNEkd60cy6I0hKEjNziihLaeiQmyfXTtNPgfI
+	 efVvBq45/9v6rny+SKQp271iNHyua2Zgbsxv/0wzxPmcNMMTxJ8D/ps6VKbyVM4n2C
+	 YrfB8BJrpgtFHamet1T3eva9TLO3JpyzGvItqhMtSdMWNHDNkv9NuDh8BG4qDt7vBJ
+	 7Yn3WUm+aDulOW+fSc5tiZ79Qvq0tLWBJFz+qk4cnI41Srm8K6qlwJinLPygwOfgXy
+	 qgcuxubUfF0S9aRnBTVFl80+Ev4YJvp86P4vftCNrntGu1XfcAc7i8420EIR0OVR4X
+	 uzbTLnBkniXtC9Y3dw3Xf9/ca+zChC2mi6iHip6RQgOTksptWeevbBotwM8Wn0PJc5
+	 b1GoC0I8fpfXga0CcJx0QzNBzMHwp40aOY8QQ/x4P3TJ5MT4qP9WJ2GLfT6FO7FrG2
+	 OHSUGjae/m0wNdoHJe372f1pRMxZV9dlzwUu4CrR2auXp4xJ9A8NKqIQgT4oevDKlM
+	 XxybmImvMtEYbnrOjPQn+rODtbnejOjb8lejdIU5al58hX8QuZI7JdJk4JJTu5hOV1
+	 JUEcuJiosD4wnSPYgJNa0LqqgctivL6SoYyoJjdIKSG+uBOOEiz+xsTr/YOrvjdJJc
+	 46Yy8HFKmsMrTs2+wmqx4G1Q=
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-490a767b782so10463995e9.2
+        for <linux-trace-devel@vger.kernel.org>; Wed, 23 Sep 2026 13:57:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790197048; x=1790801848;
+        d=1e100.net; s=20260707; t=1790197050; x=1790801850;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=YjNWR4abRGMYpRi6/sMj2hi4kmpQOF4F/nqROjvuwB0=;
-        b=GErlgapufq8v0sb0M/EKVr7CxWli96m4U1zXdQ98Vn6fVe2uo3wqzsFVN4/ClDg07k
-         T+Lv+Sbpo3fwReJVMnEb7qVSpdkoPMMn3j6sEvX3rAorI3wDgDXyfEvPha0DUXWSU/jA
-         hf+27aWkd30rFceGvG8xg+7BWgYFfoMZkguxRyrG6TjkBiMNRTgKXqFwP0P5kZMkX4sQ
-         KNUCCPAUZWK/R3HVR9j8H4hjcS3k7vt4f2AQTGMg0tvkAaaPm03q7dy9CAC4lysUtIDD
-         UfeXuNaTZ/UVKnnLNNPOh1TgUqpj3XU3ISdQ0c59v4uHDiP66qCpTZZEbIPE3hyb36wM
-         VK8A==
-X-Gm-Message-State: AFuF++lapSYRZHOaQj4vDs+enInJwr5uytf2pvfl7NdhBss0m1VBfz1X
-	4Tx8qqTuJvyblpr4vOQPWFd7IUycDZ0j3skJY2wjt6YPhkTeSPmaibjfkf95nSqgwUmli9oUCcy
-	D87N7u18foKmgLUssycMHTcixgJbDECTiD5wFJ2cSUYJ4h7lNDbFUUZrwo0l8HSQz2fKXeM6/4z
-	xLTswmmL932qecwSkAAe1DxlE=
-X-Gm-Gg: AYBFou3up6xs7sNv2UFSCtUZ9I6vCKGAqx78VQPFvwA7jCJ1NaTZ1tE3wl7w9LjsaHX
-	9I3eFJHvsk88AYj3Xc43De2HWlEdQMmVweqAF4WzGQD3YRGGyOOODl4hSf8H65LRSzbck0YBxu5
-	NPHXZiWeWOtvF1oEuvkhOr0fggPmloBGvo2GlORUqCXmxNA+49/6ZbLO4TS7OmPGD4WJTQeOgaN
-	Ict7me0625zCO3Ok1mgP20tMk5moPBgUMBADh8W5La0WQslCbzfZLtCIaRDsCaiqh50nJRFbIEH
-	P85zKepp0XR5VYupN3SHDZDFGU++Tr9ARtRa3PUuYdPuawn6nnz9HQtTXTbPl/othQTWr3zZ0/p
-	h1+FsLONbwOBOecRT2RYljLrLwcI3EPPAMqXx3Mgj1s+R57FR5ZtaDv2/fqYnf5aNatJWa0jaIn
-	MRTgnF6kU=
-X-Received: by 2002:a05:600c:3b1b:b0:49c:de80:b833 with SMTP id 5b1f17b1804b1-49fe66c8a1emr6410415e9.2.1790197048306;
-        Wed, 23 Sep 2026 13:57:28 -0700 (PDT)
-X-Received: by 2002:a05:600c:3b1b:b0:49c:de80:b833 with SMTP id 5b1f17b1804b1-49fe66c8a1emr6410335e9.2.1790197048015;
-        Wed, 23 Sep 2026 13:57:28 -0700 (PDT)
+        bh=mE/BW7OrGvgoMrIowJYsSFwSikbCgKNrPuNRiE7yQyI=;
+        b=2v+q7ZmvUXNC9cpNyQ4XzQhKCah6xcsCVzksdnJX0mfPfjMgq+rVa1fc8labaFP3xQ
+         zgMCYxNEV1R4wJcVPSbM55kdzOfZfNuOhl0ZmqXViLLElA+CmYvTgw7SZFpv/bD2dcRS
+         FWPRBimLEizrzy6iD+hJNOB/axlBvbprK5jJkujErncRDLsqk2nanxDGauEkcIH/rCiq
+         ydnMsibpLr9GhVbctpB9nQO4FdtQBmnddkuYpGHMM7o3j6cOWmgDopYnwsqVMD9AQASH
+         1WRy0KQj9ZQbF6KH7XJT9Q6xzP9Fr1QRhvBsfTQPo0BDim1UYKsa/0I969rzK8Vgh4oQ
+         Jppg==
+X-Gm-Message-State: AFuF++mRKaKivp8M79pUMCElZSFgV761NxJBTgsgb4YC4ykZ3LH9QYLj
+	VQqA1Dkfu4Fi6cTC7fch0EuPUS9oCyIBUMOF/fNYAg9QN5C1OT/Kd2R83E2YcH5zfE0L6SDSlLX
+	mxiU7nFB29IUdKfWxgbmQmDhZz25YT+lHx9oK/6CZg6Ou5Xkg5gyEYpHuTD7gWrebneVsoe+PyY
+	+4k16VKINveDTqgV2cgnxRpkU=
+X-Gm-Gg: AYBFou1ySL/hthnBAddMs152RKoTX5luYtDHrxuut4Xry9xUznEkMqm49lTDDxyHePK
+	luBN4+386MSB7AP3BOAVbL5HweksJwH6ZmEQZ5Q3wZ1dYcLzmhUDYaxvFxeGE24qI8I0mywIs8o
+	lBwx6w0R5/wMk9omSq5A00GsCOwnTmhRG5Vu353K1NL0zG7a3MYM/KeuWhuZkTa3Q1UQi+bx6vV
+	IsKj7hBbNmkNAxAAHiO5v6a/jf3ctxNHdzNG9ZdAmTCgbiIr7jnQEdRQjngMR5FoRacKlbPOI/G
+	VXP5YCsalcb39IAyO3jM8E27SiejjIpKdvGmkZTzwsvX03Tx/zm8T2jmuyP3LkAgB9g2nfyiqJC
+	JPMctcmH5Co23ve9/IwF5M9sjNjuLx4xqlPstyYcRsjyZ2LHxqusBMIYBsp8quLz3QvegM/yl
+X-Received: by 2002:a05:600c:1546:b0:49e:7a00:b9a5 with SMTP id 5b1f17b1804b1-49fe66bdee6mr7882345e9.4.1790197050073;
+        Wed, 23 Sep 2026 13:57:30 -0700 (PDT)
+X-Received: by 2002:a05:600c:1546:b0:49e:7a00:b9a5 with SMTP id 5b1f17b1804b1-49fe66bdee6mr7882235e9.4.1790197049793;
+        Wed, 23 Sep 2026 13:57:29 -0700 (PDT)
 Received: from deep-thought.gnur.de (ip-095-089-205-015.vkd78.pools.vodafone-ip.de. [95.89.205.15])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49fe0c5b646sm35538545e9.4.2026.09.23.13.57.26
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49fe0c5b646sm35538545e9.4.2026.09.23.13.57.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2026 13:57:26 -0700 (PDT)
+        Wed, 23 Sep 2026 13:57:29 -0700 (PDT)
 From: Benjamin Drung <benjamin.drung@canonical.com>
 To: linux-trace-devel@vger.kernel.org
-Cc: Adrien Nader <adrien.nader@canonical.com>,
-	Benjamin Drung <benjamin.drung@canonical.com>
-Subject: [PATCH v2 1/3] libtracefs utest: Only use online CPUs during tests
-Date: Wed, 23 Sep 2026 22:56:30 +0200
-Message-ID: <20260923205650.2638166-2-benjamin.drung@canonical.com>
+Cc: Benjamin Drung <benjamin.drung@canonical.com>
+Subject: [PATCH v2 2/3] libtracefs: Use LIBTRACEFS_STATIC for utest
+Date: Wed, 23 Sep 2026 22:56:31 +0200
+Message-ID: <20260923205650.2638166-3-benjamin.drung@canonical.com>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260923205650.2638166-1-benjamin.drung@canonical.com>
 References: <20260826163726.1fe4677a@gandalf.local.home>
@@ -90,71 +88,41 @@ List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Adrien Nader <adrien.nader@canonical.com>
+The top-level Makefile already sets `LIBTRACEFS_STATIC`. To allow
+overriding the static libtracefs library using just this variable, use
+`LIBTRACEFS_STATIC` in the utest Makefile as well.
 
-We cannot do operations over offline cores. Virtual machines can
-routinely announce the presence of all of the host's cores and only make
-some of them online.
-
-This change assumes that all the online CPUs are continuously numbered
-and start at 0. While this is not perfect, it is still an improvement
-and might be enough, especially considering this touches tests only.
-
-Signed-off-by: Adrien Nader <adrien.nader@canonical.com>
 Signed-off-by: Benjamin Drung <benjamin.drung@canonical.com>
 ---
- utest/tracefs-utest.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ utest/Makefile | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
-index e3ff215..665c7d9 100644
---- a/utest/tracefs-utest.c
-+++ b/utest/tracefs-utest.c
-@@ -181,7 +181,7 @@ static void save_affinity(void)
- {
- 	int cpus;
+diff --git a/utest/Makefile b/utest/Makefile
+index f10b709..9bd3dea 100644
+--- a/utest/Makefile
++++ b/utest/Makefile
+@@ -10,9 +10,11 @@ OBJS =
+ OBJS += trace-utest.o
+ OBJS += tracefs-utest.o
  
--	cpus = sysconf(_SC_NPROCESSORS_CONF);
-+	cpus = sysconf(_SC_NPROCESSORS_ONLN);
- 	cpuset_save = CPU_ALLOC(cpus);
- 	cpuset = CPU_ALLOC(cpus);
- 	cpu_size = CPU_ALLOC_SIZE(cpus);
-@@ -216,7 +216,7 @@ static void test_iter_write(struct tracefs_instance *instance)
- 	int cpus;
- 	int ret;
++LIBTRACEFS_STATIC ?= $(obj)/lib/libtracefs.a
++
+ LIBS += -lcunit				\
+ 	-ldl				\
+-	$(obj)/lib/libtracefs.a
++	$(LIBTRACEFS_STATIC)
  
--	cpus = sysconf(_SC_NPROCESSORS_CONF);
-+	cpus = sysconf(_SC_NPROCESSORS_ONLN);
- 	save_affinity();
+ OBJS := $(OBJS:%.o=$(bdir)/%.o)
  
- 	path = tracefs_instance_get_file(instance, "trace_marker");
-@@ -243,7 +243,7 @@ static void test_iter_write(struct tracefs_instance *instance)
+@@ -21,7 +23,7 @@ $(bdir):
  
- static void iter_raw_events_on_cpu(struct tracefs_instance *instance, int cpu, bool snapshot)
- {
--	int cpus = sysconf(_SC_NPROCESSORS_CONF);
-+	int cpus = sysconf(_SC_NPROCESSORS_ONLN);
- 	cpu_set_t *cpuset = NULL;
- 	int cpu_size = 0;
- 	int check = 0;
-@@ -292,7 +292,7 @@ static void iter_raw_events_on_cpu(struct tracefs_instance *instance, int cpu, b
+ $(OBJS): | $(bdir)
  
- static void test_instance_iter_raw_events(struct tracefs_instance *instance)
- {
--	int cpus = sysconf(_SC_NPROCESSORS_CONF);
-+	int cpus = sysconf(_SC_NPROCESSORS_ONLN);
- 	int ret;
- 	int i;
+-$(bdir)/trace-utest: $(OBJS) $(obj)/lib/libtracefs.a
++$(bdir)/trace-utest: $(OBJS) $(LIBTRACEFS_STATIC)
+ 	$(Q)$(do_app_build)
  
-@@ -317,7 +317,7 @@ static void test_iter_raw_events(void)
- 
- static void test_instance_iter_snapshot_events(struct tracefs_instance *instance)
- {
--	int cpus = sysconf(_SC_NPROCESSORS_CONF);
-+	int cpus = sysconf(_SC_NPROCESSORS_ONLN);
- 	int i;
- 
- 	iter_raw_events_on_cpu(instance, -1, true);
+ $(bdir)/%.o: %.c
 -- 
 2.53.0
 
