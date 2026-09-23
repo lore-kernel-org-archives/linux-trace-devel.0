@@ -1,81 +1,82 @@
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0193232C8B
-	for <linux-trace-devel@vger.kernel.org>; Wed, 23 Sep 2026 20:57:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 946B057C719
+	for <linux-trace-devel@vger.kernel.org>; Wed, 23 Sep 2026 20:57:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790197054; cv=none; b=pS9vKfDle1Qa5EUgZA2gmM4DyKebWRnKVKwXSJ/ToeGDore7WAhxCKAF7Zf2eYFls2A7WwcFCJZw4UGNGEKOQDmg2ZAGXSBjBzH2Fz3ozpM9XZZci5o65z8td1yL2/8OTWxpbDMxzjiq21z6qYsCjcD2guuf5eIXnbffYlN1Mh0=
+	t=1790197055; cv=none; b=JzBfpCR76fDhKu7EAFrwdUBjfJabCfHSRGeuugT4LnaCW5UDQ/4PZWRd1BVyCgc3kqTM4JZpp2pD82UVD+XKur9RU21BuuGVzejHr82Gl7lTDxEYvAyVAn3zwbvAFrXf/sKVF0JcVoNqcNrE1JH7lRjQw+SyXt4XshTB/hMn6j0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790197054; c=relaxed/simple;
-	bh=8JPrCiWVPu4MorXc8770Bil+NvbdfnEDgCghO8uuTfw=;
+	s=arc-20240116; t=1790197055; c=relaxed/simple;
+	bh=Bn8LFUHmD2a4J3zwi4WbNidlMqKJpJftqcgfm1qEziA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XeI2b2O4P47+o5JvqT6AQ/5rTmjHaJ479WyS5nalaQ84A+fs2M/9XSc1aEnxrF/n2UsqxQYokC7wh+693SQFc4gKmUdHv99ZVidQ03pPfk6IGVSrZOszr5+5UiHcAKZxusANd9GGR5Cu59bVcp8EYvAjbspptIDq28lZDblWqrY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.b=GvbJsv+9; arc=none smtp.client-ip=185.125.188.122
+	 MIME-Version; b=NY0yZMxTCXvvhKSjsPXhTkTUgXwAFGRo6p4S0CDSIEP4B8YAUxyrXMhOrpg/wL9KaJwgtro6kgV6v6819o1XOl3u+41c737bCauKdmGNjdqiSliQvAT0efPhMsEgh7AQiRCCGFSGfDtW8MbhQL+EVQ9HIKJVdB5AdF/kCEYEnRQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.b=GBZgBOrA; arc=none smtp.client-ip=185.125.188.123
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=canonical.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.b="GvbJsv+9"
+	dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.b="GBZgBOrA"
 Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com [209.85.128.70])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 5ECC13F5D4
-	for <linux-trace-devel@vger.kernel.org>; Wed, 23 Sep 2026 20:57:30 +0000 (UTC)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id E390E3F4BE
+	for <linux-trace-devel@vger.kernel.org>; Wed, 23 Sep 2026 20:57:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20251003; t=1790197050;
-	bh=mE/BW7OrGvgoMrIowJYsSFwSikbCgKNrPuNRiE7yQyI=;
+	s=20251003; t=1790197051;
+	bh=/0NsjyvOIdRXg4hir2QHmnaw5Ls+xli2mMYzp/utBBk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
 	 MIME-Version;
-	b=GvbJsv+9TXYZESZjQOfcsuHV1m0OCNEkd60cy6I0hKEjNziihLaeiQmyfXTtNPgfI
-	 efVvBq45/9v6rny+SKQp271iNHyua2Zgbsxv/0wzxPmcNMMTxJ8D/ps6VKbyVM4n2C
-	 YrfB8BJrpgtFHamet1T3eva9TLO3JpyzGvItqhMtSdMWNHDNkv9NuDh8BG4qDt7vBJ
-	 7Yn3WUm+aDulOW+fSc5tiZ79Qvq0tLWBJFz+qk4cnI41Srm8K6qlwJinLPygwOfgXy
-	 qgcuxubUfF0S9aRnBTVFl80+Ev4YJvp86P4vftCNrntGu1XfcAc7i8420EIR0OVR4X
-	 uzbTLnBkniXtC9Y3dw3Xf9/ca+zChC2mi6iHip6RQgOTksptWeevbBotwM8Wn0PJc5
-	 b1GoC0I8fpfXga0CcJx0QzNBzMHwp40aOY8QQ/x4P3TJ5MT4qP9WJ2GLfT6FO7FrG2
-	 OHSUGjae/m0wNdoHJe372f1pRMxZV9dlzwUu4CrR2auXp4xJ9A8NKqIQgT4oevDKlM
-	 XxybmImvMtEYbnrOjPQn+rODtbnejOjb8lejdIU5al58hX8QuZI7JdJk4JJTu5hOV1
-	 JUEcuJiosD4wnSPYgJNa0LqqgctivL6SoYyoJjdIKSG+uBOOEiz+xsTr/YOrvjdJJc
-	 46Yy8HFKmsMrTs2+wmqx4G1Q=
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-490a767b782so10463995e9.2
-        for <linux-trace-devel@vger.kernel.org>; Wed, 23 Sep 2026 13:57:30 -0700 (PDT)
+	b=GBZgBOrAMvyypBGKrmbwyHa08rpcXbLQKXH00QRMgciry+Np4f+BT9KmxEM9I/9Pw
+	 CgfTVkDkXHJMxBKfsp6C5Lokiv1upJHWOlH5T5eJW3UtJdWTz2JWL2MPaKDBIqGj84
+	 F0gaLfQASdenGpOdapDjyN+CVj/ToZy2HYB691eTN4NWI6v/owDm/HgSaRAI9uSfc7
+	 USElYyHbADf7WiYXUrlIRirtRKNHTJtoOQL+1y1v1I8yuU2a9b56veA7kBCszYmF85
+	 NfCTeB5YRNvi6h6ZYQZLNmwrFPl2jNfybZVDwl1TVBQ6kTXxuA4z3+tRka5WrBUXVo
+	 aX9XxbMuhgdFOgVH++UizSzJYkv13Wb5Yri9GnsBp3gHM4vlRjtJolKAPpdS+dzYOp
+	 yd6+TVJUjNPXJkR8fQvEPtuXPcdiHYuSu7LsUm2cES4HN2mkMANBExbhCWN3k1FalF
+	 j3YUOLccsT/DBLrbWsOKozkEk2qnieJ8qbWkpQUJF8lBiBZHDn8WZby/XY7rUyuVvI
+	 KKFyR0CRsqh6S8xEuxn4374DdQe27WpgakpvUYfZxyeRLdopO65w1X2I5rWpPaXlZt
+	 PDJnGbfR3rl+Dd3dQmjDoYrkZ3qaogvWLZFIeHIQrdH/uQh0wpG9z4b6pZlDZmDsKu
+	 0zAnp1O82briK5nmoOzzzesI=
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-49e73659ac5so19337235e9.2
+        for <linux-trace-devel@vger.kernel.org>; Wed, 23 Sep 2026 13:57:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790197050; x=1790801850;
+        d=1e100.net; s=20260707; t=1790197051; x=1790801851;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=mE/BW7OrGvgoMrIowJYsSFwSikbCgKNrPuNRiE7yQyI=;
-        b=2v+q7ZmvUXNC9cpNyQ4XzQhKCah6xcsCVzksdnJX0mfPfjMgq+rVa1fc8labaFP3xQ
-         zgMCYxNEV1R4wJcVPSbM55kdzOfZfNuOhl0ZmqXViLLElA+CmYvTgw7SZFpv/bD2dcRS
-         FWPRBimLEizrzy6iD+hJNOB/axlBvbprK5jJkujErncRDLsqk2nanxDGauEkcIH/rCiq
-         ydnMsibpLr9GhVbctpB9nQO4FdtQBmnddkuYpGHMM7o3j6cOWmgDopYnwsqVMD9AQASH
-         1WRy0KQj9ZQbF6KH7XJT9Q6xzP9Fr1QRhvBsfTQPo0BDim1UYKsa/0I969rzK8Vgh4oQ
-         Jppg==
-X-Gm-Message-State: AFuF++mRKaKivp8M79pUMCElZSFgV761NxJBTgsgb4YC4ykZ3LH9QYLj
-	VQqA1Dkfu4Fi6cTC7fch0EuPUS9oCyIBUMOF/fNYAg9QN5C1OT/Kd2R83E2YcH5zfE0L6SDSlLX
-	mxiU7nFB29IUdKfWxgbmQmDhZz25YT+lHx9oK/6CZg6Ou5Xkg5gyEYpHuTD7gWrebneVsoe+PyY
-	+4k16VKINveDTqgV2cgnxRpkU=
-X-Gm-Gg: AYBFou1ySL/hthnBAddMs152RKoTX5luYtDHrxuut4Xry9xUznEkMqm49lTDDxyHePK
-	luBN4+386MSB7AP3BOAVbL5HweksJwH6ZmEQZ5Q3wZ1dYcLzmhUDYaxvFxeGE24qI8I0mywIs8o
-	lBwx6w0R5/wMk9omSq5A00GsCOwnTmhRG5Vu353K1NL0zG7a3MYM/KeuWhuZkTa3Q1UQi+bx6vV
-	IsKj7hBbNmkNAxAAHiO5v6a/jf3ctxNHdzNG9ZdAmTCgbiIr7jnQEdRQjngMR5FoRacKlbPOI/G
-	VXP5YCsalcb39IAyO3jM8E27SiejjIpKdvGmkZTzwsvX03Tx/zm8T2jmuyP3LkAgB9g2nfyiqJC
-	JPMctcmH5Co23ve9/IwF5M9sjNjuLx4xqlPstyYcRsjyZ2LHxqusBMIYBsp8quLz3QvegM/yl
-X-Received: by 2002:a05:600c:1546:b0:49e:7a00:b9a5 with SMTP id 5b1f17b1804b1-49fe66bdee6mr7882345e9.4.1790197050073;
-        Wed, 23 Sep 2026 13:57:30 -0700 (PDT)
-X-Received: by 2002:a05:600c:1546:b0:49e:7a00:b9a5 with SMTP id 5b1f17b1804b1-49fe66bdee6mr7882235e9.4.1790197049793;
-        Wed, 23 Sep 2026 13:57:29 -0700 (PDT)
+        bh=/0NsjyvOIdRXg4hir2QHmnaw5Ls+xli2mMYzp/utBBk=;
+        b=XOEWvSQDfNG8fzfjUPDhZvqU4tFGjJVqQ4qu9oLBWIKvdceLaaPhjjTb4PS9voYUyt
+         m0uyU7Y2XwXUR7hAHGsP5p/SpeP+gvu1ppS4Ukz6RbNNrwM5D8+Xp9hzAwyXtTqLXvpX
+         2H81eRte9MpBaGfqory9bjeW0IzgZKVxX4t5jMQk7ku4ZkH4oQv8iiCYdajp5yG+9DXM
+         lGHPO8B0CqneagSJJYB3BBBQvwq+n1+NEPUG0SgPOdUFZJ7H4g466F5c9a2gqHR6uVDT
+         OV72thT/c8eZTCbZl9n3xzvBH7xQtwh4o8hbsv0DhPHDWhmx9iZuDS8zSya0wWspFWqR
+         8yBg==
+X-Gm-Message-State: AFuF++lYyfomUZN6HVs6yrrOI0KASgYyVRTiu1rZABVyZZMn/V/YwX0f
+	wdJ1ImKdA9mFj50t/Tlix5a6IVCoiZgUjPC4XWp/Gktt3foaIFinOsEDCXD38mNN9TNFw2s15Bd
+	Rx3TivYb8n71ekGJi19tAsNIVWwW34qV/C4XIy1P6JvRvRv1ihqtNZjlDgEfcUZgQxY54RT/Qwx
+	IZZly+VLIpDdfQ40RLy2LAke4=
+X-Gm-Gg: AYBFou0yFcb4EoGmgngcC+v79qJt2QC9oCPgYws4QOOZiZ3z2Q7AuO6lMp43kcayb90
+	oe5tGziLaeSrcL+QkgcrY1INTXvkO9Qd+eM1uH3l6WfT+WSqGIKSOIjceKyt3yu4moikqy5IynD
+	qi/zjcBObj7wt1SpP0KeEtfFVl4sqEsJ6s+iL/4m3PsnFJWsSkAyPiBur5LOtwBgc8bp7FlvHoy
+	/S2aL8uldcF4JQZBtlhilOAb4MhYYelj9vVOjYRxlN1f8FT7SoqTCV445Iqb2gGmdgt0HOpV5TP
+	Uj7m5WIaTah3X9Xk35gZV0aI864oi/W9WzJ70qs5KCwbjcLZFS/0RVB/kVE3mv7l86+B35u+++2
+	7yVfb3ZnG51qmnYrOLAMd3NnbR9u9Df2MXEEGTRAGeTq6Ox8NF/A3yAdSIVO3rXjHtChgqAnNmU
+	G/LD9IEVI=
+X-Received: by 2002:a05:600c:1991:b0:49f:d6b2:4dfa with SMTP id 5b1f17b1804b1-49fe66c5281mr6848785e9.4.1790197051593;
+        Wed, 23 Sep 2026 13:57:31 -0700 (PDT)
+X-Received: by 2002:a05:600c:1991:b0:49f:d6b2:4dfa with SMTP id 5b1f17b1804b1-49fe66c5281mr6848625e9.4.1790197051261;
+        Wed, 23 Sep 2026 13:57:31 -0700 (PDT)
 Received: from deep-thought.gnur.de (ip-095-089-205-015.vkd78.pools.vodafone-ip.de. [95.89.205.15])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49fe0c5b646sm35538545e9.4.2026.09.23.13.57.28
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49fe0c5b646sm35538545e9.4.2026.09.23.13.57.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2026 13:57:29 -0700 (PDT)
+        Wed, 23 Sep 2026 13:57:30 -0700 (PDT)
 From: Benjamin Drung <benjamin.drung@canonical.com>
 To: linux-trace-devel@vger.kernel.org
 Cc: Benjamin Drung <benjamin.drung@canonical.com>
-Subject: [PATCH v2 2/3] libtracefs: Use LIBTRACEFS_STATIC for utest
-Date: Wed, 23 Sep 2026 22:56:31 +0200
-Message-ID: <20260923205650.2638166-3-benjamin.drung@canonical.com>
+Subject: [PATCH v2 3/3] libtracefs: Support EXTRA_LIBS for utest
+Date: Wed, 23 Sep 2026 22:56:32 +0200
+Message-ID: <20260923205650.2638166-4-benjamin.drung@canonical.com>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260923205650.2638166-1-benjamin.drung@canonical.com>
 References: <20260826163726.1fe4677a@gandalf.local.home>
@@ -88,41 +89,34 @@ List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The top-level Makefile already sets `LIBTRACEFS_STATIC`. To allow
-overriding the static libtracefs library using just this variable, use
-`LIBTRACEFS_STATIC` in the utest Makefile as well.
+Allow building the utest against the system installed libtracefs library
+by tweaking the make variables:
+
+```
+make LIBTRACEFS_STATIC= EXTRA_LIBS=-ltracefs test
+```
+
+Note: This still requires making `tfs_find_debug_tracing_dir` available.
 
 Signed-off-by: Benjamin Drung <benjamin.drung@canonical.com>
 ---
- utest/Makefile | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ utest/Makefile | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/utest/Makefile b/utest/Makefile
-index f10b709..9bd3dea 100644
+index 9bd3dea..bcb87b6 100644
 --- a/utest/Makefile
 +++ b/utest/Makefile
-@@ -10,9 +10,11 @@ OBJS =
- OBJS += trace-utest.o
- OBJS += tracefs-utest.o
+@@ -14,7 +14,8 @@ LIBTRACEFS_STATIC ?= $(obj)/lib/libtracefs.a
  
-+LIBTRACEFS_STATIC ?= $(obj)/lib/libtracefs.a
-+
  LIBS += -lcunit				\
  	-ldl				\
--	$(obj)/lib/libtracefs.a
-+	$(LIBTRACEFS_STATIC)
+-	$(LIBTRACEFS_STATIC)
++	$(LIBTRACEFS_STATIC)		\
++	$(EXTRA_LIBS)
  
  OBJS := $(OBJS:%.o=$(bdir)/%.o)
  
-@@ -21,7 +23,7 @@ $(bdir):
- 
- $(OBJS): | $(bdir)
- 
--$(bdir)/trace-utest: $(OBJS) $(obj)/lib/libtracefs.a
-+$(bdir)/trace-utest: $(OBJS) $(LIBTRACEFS_STATIC)
- 	$(Q)$(do_app_build)
- 
- $(bdir)/%.o: %.c
 -- 
 2.53.0
 
