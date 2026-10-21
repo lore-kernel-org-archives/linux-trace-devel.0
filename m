@@ -1,50 +1,51 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=216.40.44.15
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=216.40.44.11
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792606284;
-	b=w6APywxcqaSwGHx+e4wDMFp3de//f81pi21ss8HJfrZv/2qhNJif0Bsl6D0EPY8+29QF
-	 KDAhYKSf7pShdsY+N3MQR686QhHHJwuncSvxmG/TiQZ+8dHk823NJE0y0OjcI8R5Xintc
-	 Gc0xS+51WpbbHhtVVFLTGrCWECZt0D/jGSnXAYiWJInV5WRz4jsEQiH/iJz7zrf74QnP4
-	 +Rk7iPJ+otaJXa541r+gLQR0iptrMVzrWKQePOycINyioR7BKWzDBaanmd4cX+twh+bBU
-	 QH5wGx/7uDrpeUyDzlZmar1b94s/FX5mmkWk6pUOssvezYwJn8+DogveqZmk+9A6FBg==
+	t=1792614014;
+	b=t/NowFHqf8Rk3S+fluMoRTpyjCtc15g4isEcKoGzjJ4d/8NzvYonEeBgj6tYBf5Aec69
+	 JPv1f6JJ6et2Zxxplc5HzGxSo8bVScnNdItGzLMTUbCFG/xg+/HU0A/quMTxzsOSeIaqF
+	 Hq4TgjM9uTqzmSNsatK0s5u9t/E9IfNP2kLZfiSHQw+Or6EsYrgKQ9N9Ux8plH6+Etj6i
+	 W/1DQXIskgmpTGqCp6SAA/z1Zv52fPHzvoNvHydwaNgIhlAs5EjdbuFPix2g2YhUHAdPk
+	 0d3Zt041HEJbM+uSSCiljOTMwQ4ESzr9rVF3zxzxS9tFHSZ9BTrNBlLTG3yurCCzLfA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792606284;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792614014;
 	h=DMARC-Filter:Received:Received:Date:From:To:Cc:Subject:Message-ID:
 	 X-Mailer:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	 X-Rspamd-Server:X-Rspamd-Queue-Id:X-Stat-Signature:X-Spam-Status:
+	 X-Stat-Signature:X-Rspamd-Server:X-Rspamd-Queue-Id:X-Spam-Status:
 	 X-Session-Marker:X-Session-ID:DKIM-Signature:X-HE-Tag:X-HE-Meta;
-	bh=Slaes3mB6HmGuNZccQ/viuj4L4LfDWz8+CdcXdNjCBI=;
-	b=JQk4JWAGWtZsKbh3SlOwZiQ00nFNUxCjVMY8P+beYi6wdByuXR5YWDGZlRDVaitZmIfP
-	 1FtcsKkAMW2GHWPHY60k9UIRpbc7vwm3YVSfvojmOmi+P3TkjnoWnGj0UcpG3vMOo4/vj
-	 88Ot+ConyMn4KR9Nu6QHOyodco16Ua/IT+xBUKgZaINn2Wm24GhBGCouWKS2RxqcxOSpB
-	 WDk6RK/KQZvgWzf26JTXFKaD/NMbgbhg7il60X2qZrFd5zyVfG0b+BsUrYkO3cur1Wz0W
-	 oWp1mJ8IOZ8SUkkdXJ+Qo0GDq4d6KMZDSgv8nYtHZ+OKRtH97JN2PK5/kCn5Ib/2h4Q==
+	bh=eJFWf5oJqTYq5ffIEqMpp5EZix5/zXDXffN2uWkRiWc=;
+	b=5XT+EhzW/Tg4Bet7cf3i0LkglpAasR50YhG7PvQXQkkh5tIcln1/+qRuPVOI0QqOzEEk
+	 21VrtaweKteRhxeykoCJifJFp8lLkIl4ERy0GfKevRLC4sGiBpUik2pHKWmPyTQv7TNnf
+	 XVAExm1eR2HgCly/1Vm+X9I97vgMA3Omk4pn80+rbBZTOYDjHdLvKPIFE1bSy6kVwXi4O
+	 80kR6Mm6pPlSmeHr7Gm4mmaedGFFECx9MIww/fHxUI1ctk9i3r3MmIJVDZJ3oxab6QSjh
+	 nLja7HyoMRWMz/MBaqvl3J9MUXeMmVCJ+cXa4HuXGwzGcs4imK/dSJo7AJL4BURyBPg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=goodmis.org;
 	spf=pass smtp.mailfrom=goodmis.org;
-	dkim=pass header.d=goodmis.org header.i=@goodmis.org header.a=rsa-sha256 header.s=dkim1 header.b=Mk3tPclF;
-	arc=none smtp.remote-ip=216.40.44.15
-Received: from relay.hostedemail.com (smtprelay0015.hostedemail.com [216.40.44.15])
+	dkim=pass header.d=goodmis.org header.i=@goodmis.org header.a=rsa-sha256 header.s=dkim1 header.b=k3PLzp2k;
+	arc=none smtp.remote-ip=216.40.44.11
+Received: from relay.hostedemail.com (smtprelay0011.hostedemail.com [216.40.44.11])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAF51606A324
-	for <linux-trace-devel@vger.kernel.org>; Wed, 21 Oct 2026 18:11:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org BAF51606A324
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68E56606A31A
+	for <linux-trace-devel@vger.kernel.org>; Wed, 21 Oct 2026 20:20:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 68E56606A31A
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=goodmis.org header.i=@goodmis.org header.a=rsa-sha256 header.s=dkim1 header.b=Mk3tPclF
-Received: from omf10.hostedemail.com (lb01a-stub [10.200.18.249])
-	by unirelay09.hostedemail.com (Postfix) with ESMTP id B07E08061B;
-	Wed, 21 Oct 2026 18:11:22 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf10.hostedemail.com (Postfix) with ESMTPA id 416B435;
-	Wed, 21 Oct 2026 18:11:21 +0000 (UTC)
-Date: Wed, 21 Oct 2026 14:11:20 -0400
+	dkim=pass (1024-bit key, unprotected) header.d=goodmis.org header.i=@goodmis.org header.a=rsa-sha256 header.s=dkim1 header.b=k3PLzp2k
+Received: from omf07.hostedemail.com (lb01a-stub [10.200.18.249])
+	by unirelay02.hostedemail.com (Postfix) with ESMTP id 44CB3120698;
+	Wed, 21 Oct 2026 20:20:12 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf07.hostedemail.com (Postfix) with ESMTPA id E16E220030;
+	Wed, 21 Oct 2026 20:20:10 +0000 (UTC)
+Date: Wed, 21 Oct 2026 16:20:08 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Cc: Johannes Berg <johannes@sipsolutions.net>, Tejun Heo <tj@kernel.org>
-Subject: [PATCH] trace-cmd: python: Update to handle python 3 functions
-Message-ID: <20261021141120.62daabd1@gandalf.local.home>
+Cc: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH] trace-cmd record: Check allocation of creating path
+ variable
+Message-ID: <20261021162008.3696574a@gandalf.local.home>
 X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
@@ -57,43 +58,39 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Rspamd-Server: rspamout07
-X-Rspamd-Queue-Id: 416B435
-X-Stat-Signature: 5b6hmhp6ro948utfpfgmiarzc9ck178s
+X-Stat-Signature: zcoc6irhrprsn1x35q5hgezmqsbxfj3m
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: E16E220030
 X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1/QuNH9uEhn4gXqHpwVd6CxIjP2WADip34=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=goodmis.org; h=date:from:to:cc:subject:message-id:mime-version:content-type:content-transfer-encoding; s=dkim1; bh=Slaes3mB6HmGuNZccQ/viuj4L4LfDWz8+CdcXdNjCBI=; b=Mk3tPclF8Jm5HxXpBwUNb2+rj6q/b5IRH+/ydYEKH8MYhW7TGtI0MSRuBwVX0bLuNHyiQyDn2oA4WRU33jDsFb1S7tNs8TsHWK7UwE56DXzk5OVTOaw7C/XDxOlQAtA00oJjRDmy6fHUBnEvCZzn6Z0+RZABPFLwl4S3Ad77+Y0=
-X-HE-Tag: 1792606281-279401
-X-HE-Meta: U2FsdGVkX1+leO9nZUC7aBwWJs72ox/Q98Ptypp9PJx1MqsDZkWSZy7vssNYALyrNkCWAduhfFj5I+cD1gobxw8ffIKtScfQTyk0p3blz73BmmDCZK2M2jyXHP9tMHLft85J9j2Ia4bNQSg+tNW/taCima0+eMAftPAz7jtj7XKYRWmFNAsIYRTUdOPmK4YSYrA+6Q+kuLPwv8mXObfv4mWHwaxIm2T7139+pHHiETuzqLPYvOnt5VOaFksIrmUc5qoibzFbc6msZ+gwENt3L/+vgJvGCFEYLjBuXcv01k+9PKtxxHFXAhqZfrYoqTde6tIAIls9dVo9isz0421OVULfbTU/nOMom4GIquPpPjO+mEYcgnH282Rv7zP7TK/B
+X-Session-ID: U2FsdGVkX18NX+NSMh+3k1BGuCmcmtwlCj4pWzpGFJY=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=goodmis.org; h=date:from:to:cc:subject:message-id:mime-version:content-type:content-transfer-encoding; s=dkim1; bh=eJFWf5oJqTYq5ffIEqMpp5EZix5/zXDXffN2uWkRiWc=; b=k3PLzp2k7Pt+Ra/aAgPb9yhKZU3N6KHYtGLJ36t7bGneEug/wK8KTbFDpcdb0RYoH+nndhe2Y646EG2m+pl7SCvv8liRrx2/lWTzq4bR4cSTHEb9s21Dx7ygMdpG5uA+JH7dXgyh/DoT42wD/cteAk85xXnRa5L9IBMIYw0ZNVw=
+X-HE-Tag: 1792614010-697468
+X-HE-Meta: U2FsdGVkX19eZZrgjhwnD+2KufYVfQQiDxCxoOTrXYa7CBgHbThdLfSPZPAZ+GwSxBIN8xAQ9gDrUJTFhJlsJNb/nWxahJjtlbaSSEXeeCbMJfZRNE/j6nb7IimXi6vU04Z18dFs59XD/Z08Mjt3XFAXbQ8gYQmznNw9306ttaGJV3UoM8coUTwk6WR2ALPqjyyLgqDlw4BbOeRI4YggTDp226ZtTqd9uyMQYVhcxFxGffzfAFByx3cs4t57ffXHjaIuWC4VoBEZfF9oXXZtotqSGqqiQKFYacqt7MNUNzvOhfItkGrWUkKW9yOf9s8TGBMTSlGNEC0LpduUutYkDtLDbnFqNKo3aXQtNwpMp1rOG28psseWpbRme53pqdvZ+6bnhku4Hp8Iqf1ML485eQ==
 
 From: Steven Rostedt <rostedt@goodmis.org>
 
-Python 3 merged PyInt into PyLong. Add a C pre processor to change the
-PyInt functions to use the PyLong ones for Python 3.
+The reset->path = strdup(file) should check if the allocation fails.
 
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=217126
+Reported-by: Markus Elfring <Markus.Elfring@web.de>
 Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
 ---
- python/ctracecmd.i | 7 +++++++
- 1 file changed, 7 insertions(+)
+ tracecmd/trace-record.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/python/ctracecmd.i b/python/ctracecmd.i
-index 385646019819..52515e301f0c 100644
---- a/python/ctracecmd.i
-+++ b/python/ctracecmd.i
-@@ -19,6 +19,13 @@
- #include "event-parse.h"
- #include "event-utils.h"
- #include <Python.h>
-+/* Compatibility macros for Python 3 */
-+#if PY_VERSION_HEX >= 0x03000000
-+#define PyInt_Check(x) PyLong_Check(x)
-+#define PyInt_AsLong(x) PyLong_AsLong(x)
-+#define PyInt_FromLong(x) PyLong_FromLong(x)
-+#define PyString_Format(fmt, args)  PyUnicode_Format(fmt, args)
-+#endif
- %}
+diff --git a/tracecmd/trace-record.c b/tracecmd/trace-record.c
+index 1ee3effca114..3a6e4759aed2 100644
+--- a/tracecmd/trace-record.c
++++ b/tracecmd/trace-record.c
+@@ -262,6 +262,8 @@ static void add_reset_trigger(const char *file)
+ 	if (!reset)
+ 		die("Failed to allocate reset");
+ 	reset->path = strdup(file);
++	if (!reset->path)
++		die("Failed to allocate path");
  
- 
+ 	reset->next = reset_triggers;
+ 	reset_triggers = reset;
 -- 
 2.53.0
 
