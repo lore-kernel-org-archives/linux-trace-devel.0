@@ -1,100 +1,103 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.125.188.122
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792709638;
-	b=D6Ub5IJiIM2HuBfmEGq29vzRG8uwrQ6iqRHMj8HVrsMfrMXtWN4VOGDObLfu6xxycpro
-	 GAi9lc4OunPdFBd5yIOSznKsvDsosJrzMfy/kQ/XMmVNyvQ3+98v/IAmCwThJFWCRSvdZ
-	 wS/TIf7+qDGisq0MQC+BEM/rXbbVvTQIFX0Iutu//gkSOPHvk3f2d38N4fapdZVphqlhA
-	 QMOVaS9MHOnQVxaqjC55dO3GzeG7bj4i3CypUtM1J+BwjQOaWUqOlIabO06cEvExv+BFC
-	 j3/gEqo2NyffGj40i0C65WrS3sXLHVUn3+FrC8dppH2evBakUM+BjoKyr3zI4DBpwsw==
+	t=1792709644;
+	b=14SlLt6AHoYeV5hHN9NuP8BdIustfc/5Ukt9CIqEM7RDWey85beahC0d0rxjRGxHr87e
+	 0Dcu2RRqQ9xKCzmGN2A97UdNMwuec7UZMWeq5jxlTGAMaoVrtELhyeTMc6LGbrIjZRtk5
+	 v5cMx45Ig+sYanC2fXIDXwPN5c8Hi5LDIZq5uXVY8JPniOR6f4i9UgJ+/qzbaSnMMYjl+
+	 xVL8ldEuQO75BeJITmbW/RllBLyNcxinvvqPGhhjfPumm34dT1FdRGdVIj+SfA4jyKG3F
+	 ZcAHLfjN0WaLtUEeoRHMxM7rU3R36ZFg8YMgjfQ1SfkyQPjl7eqUAYuS7r9k0FOEaGg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792709638;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792709644;
 	h=DMARC-Filter:Received:DKIM-Signature:Received:
 	 X-Google-DKIM-Signature:X-Gm-Message-State:X-Gm-Gg:X-Received:
 	 X-Received:Received:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
-	 MIME-Version:Content-Transfer-Encoding;
-	bh=WQuqrUg74/iBvmRH4oieNHzq/FjwgG47Pp144KlY4FA=;
-	b=YWOVEStGpvcpQmy10ciToER2VQPaLt+I/qA1M6z0W/GM27mvuMQ9+iO5sufhbs56Scj+
-	 mwQSmz1yO9C6ikzqSj2fQ615PPcKYCKdQYZXza9qv4VR/VI2YEvllbXH4IbET4Ark8uRK
-	 /0peO/2MFxo7vieAh+Fl9jZYmfn1WVGR9AhLQp4zAtkXf61F3rmhhnXU5uU5nqi/CND06
-	 PQQC+U8/DDBuppuGxjw85unVmnXOppvEKjs49G8JhKK9+rTMFOuGQyLaQy3bf2pW8KYZv
-	 7kKfb6NX80vfoFKv3Yo/HF+lf+YU/j0Nt3bupX2/4Mv6UUopOa4mC5WYajyBUTRxJxA==
+	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
+	bh=rWnDOrvFM67oW7t1tpHwWv+WgOV46aNJbOg6qwnKcxE=;
+	b=WTr+bMpyjisFQliyeUhccn534JO6cZqWJRiAyfmxkQ8s8yrCuhNb88UGTaDBttzSdubi
+	 oZcBwzkLCTI9GegM5HsoIc4kgTzgQYzOezzwjjC1vqnV1v22I11ymvEBTrAcplgVjlLIJ
+	 zLb2LfAlsLWIIdzVEfw4VCyrWJC0FA0H1JWL4QdzlcOBUPrsGy/tl7N92WyDsqk5JDAXo
+	 RTyEU0/iIQs5UrhemS00/w6hE0I4PFf6V8oo7JOfKtQWoiQfoI+0p1tLwAhOs1tsh9heB
+	 imrelC/PykKBZDzJO6ew8vE69uW27Sl7k8XNKM5k4mTHdqY2m1eDtek4ZkVRKhlZDEg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=canonical.com;
 	spf=pass smtp.mailfrom=canonical.com;
-	dkim=pass header.d=canonical.com header.i=@canonical.com header.a=rsa-sha256 header.s=20251003 header.b=GodUyAfu;
+	dkim=pass header.d=canonical.com header.i=@canonical.com header.a=rsa-sha256 header.s=20251003 header.b=fzHgcI4j;
 	arc=none smtp.remote-ip=185.125.188.122
 Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8893D606A319
-	for <linux-trace-devel@vger.kernel.org>; Thu, 22 Oct 2026 22:53:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 8893D606A319
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2358606A31B
+	for <linux-trace-devel@vger.kernel.org>; Thu, 22 Oct 2026 22:54:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E2358606A31B
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=canonical.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key, unprotected) header.d=canonical.com header.i=@canonical.com header.a=rsa-sha256 header.s=20251003 header.b=GodUyAfu
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com [209.85.221.70])
+	dkim=pass (4096-bit key, unprotected) header.d=canonical.com header.i=@canonical.com header.a=rsa-sha256 header.s=20251003 header.b=fzHgcI4j
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com [209.85.128.70])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 9B68C3FE99
-	for <linux-trace-devel@vger.kernel.org>; Thu, 22 Oct 2026 22:53:54 +0000 (UTC)
+	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 6A65B3FE99
+	for <linux-trace-devel@vger.kernel.org>; Thu, 22 Oct 2026 22:54:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20251003; t=1792709634;
-	bh=WQuqrUg74/iBvmRH4oieNHzq/FjwgG47Pp144KlY4FA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version;
-	b=GodUyAfupkzf8C/04lAeGdwTIrZ7D7kFxuEjVcI33lrIhFGUFdgfX0jZQrPZb4L+c
-	 5JdBzmoX5O5+LZNEEq3LiwnnaoPzABoQgBgcBNJaziXUzYQhCFYgFMLebvpL23iXz1
-	 70sGzhE1kVq0AseNBfaEGjuAKucANSQMLRClAFRpAY+CdesjfgFCEvH1Ap5Y9CoOVB
-	 F1wm2YNNypKUMkmngE/kBMqW/gmV3zRSHxsMKeWDdPKykhhkr+YX0jlOo7iv9+/HB9
-	 bxR7+ZTLELh7LvlOFacsFYsMk6DZF3GshO6HHEWz08IcWRcZ5XokhbUtfc8TuRr0zE
-	 /ZgSbre5oLe+lJ6WU9oX+pyqeprwUrIQe8UBuNYZ4mi2AQrivGs/bKnAl7ByaBMNxy
-	 /UuExosTjct9QKBhwQmE7wQAwd/LXVnE6rLzlIUVE0OxJO1mbocKnJRBfpgqskal6R
-	 yPs/KliOnzWJu2UizeoSUJOaSkUBWxhB+nIrbYCdQkNGnz7JAIah0ATXUfiyideXU1
-	 e9xFkszh7gXdauQCiDd7xQL5h+c+dTHAl9EUeVFFdZVGheEuiDBM5Aa2pHPEvx7BKq
-	 OhshmCiaqZo1hPnALJ68+p4MjwfnSEReCaKLKxEd4lUZi+ToCWOkSohyfpXnkdBh1Y
-	 tJ8Gp16o7yjbe7bwawn/qnQA=
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-48df5b058ddso148524f8f.0
-        for <linux-trace-devel@vger.kernel.org>; Thu, 22 Oct 2026 15:53:54 -0700 (PDT)
+	s=20251003; t=1792709640;
+	bh=rWnDOrvFM67oW7t1tpHwWv+WgOV46aNJbOg6qwnKcxE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version;
+	b=fzHgcI4j31/1owuxf2sMzllf7dAeYZ1eRCuvVwYTVfyURJbF0N+o3m/Bdv/fFt8iR
+	 PYiURa/4HNzoh4Kb6E08YcIuFFDwI3VJWtBmBm0UZp1eI2wm2NUJ2qcTwUtKh5O8BY
+	 7VsRk+dF/ANUecEuhAaOImcD1Caz5J9pflEViJ6/l/sQTYh7Bwzmjr3vDKra0ATTQt
+	 Js1686gJ6Bk8PleRL9/tG4pYj+T1p9thBnciEI1aY7R/ZoiTDLqG0R3nJ0aQ16w0/I
+	 jV91r1R+0YXSzt5xfdFZdeFSYrJmxgn9dpmyFaAmJM5oDv/2Zo1Jg/2tQFqZJzGfaP
+	 uYYoCzNguDAMl5UU8wS3aZebr7BqhNbrJxIQmvelRmXlLvuJFvbHvNJSWnKJrYuf4U
+	 Jiul9H7t3N2uQ1yJJNTNrLoLPAQ2YHovcd2DyTgqVTfb+RaYvpCSwwM5ME6Vpm3fvX
+	 bjrzB7xacidtomnfzfMRApyqP7BHteyRBfdgNnxXU+m2Sm6NdQaNC0E0c+ZsrehjsP
+	 NQ6BC/hWfPZRTDw+3QAdA3ztgA1oz7He4pBqPlSC7iSuq2KRsmOEjEjwiBHVjqfi8m
+	 A87yNJ/S+kgNLAId6/chRatmfg7ab5khYfwIXr/dOENtp9BhLbQgvjAyg+KbTgcPuQ
+	 /yiQIh8iLumEQqlyQxWw3a00=
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4a21053899aso1599595e9.3
+        for <linux-trace-devel@vger.kernel.org>; Thu, 22 Oct 2026 15:54:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792709634; x=1793314434;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=WQuqrUg74/iBvmRH4oieNHzq/FjwgG47Pp144KlY4FA=;
-        b=Y7a0P92X/qVws281NOVE+6l2aTy9ZqUph1hh6HQlsNwww9GR+d4tmDXWvzZC0W/Tvg
-         z2zLnKKj4fSVGT9DjMDowX6EiUhaXn/LSYFWwHZTQ8vWzUhhZMfqulFobqx5lfEYZZwT
-         EHzcMM7/5xtDHFx15B6/7aijUzx5Dxbdg1ew3L1qX7mdNev430I4Q48IJ9ogJxR8w9FG
-         m6iGH8jNlU5p/fY8Czorm9qqV+2SjpYRfvfkYf6be4+j/kGErNY33HHy8nhopu9v/ANW
-         URMqFk1UpSsad7DhNbvgmAkkAS9suQnaUsZdDvNqXEaSxMRddp2FKEccxfS6hGi1Uebw
-         CYFQ==
-X-Gm-Message-State: AFq9FYLlhxY3cB3idncbvNsD/5fGJ0YjaFGhOn7o1VYlXxH4AQe92/Ew
-	R7kETUoWNwqWrflaB5CskGAcvFS790dTaf+KEHOZJxGPDPEFtQHMiXvzfTlpdnCA1Jsl/fZVVBj
-	DVtHaMG2d4lLux/yT5iVj+uRJg0QNibtvMp6L6LPDfEysLSh+JzjJBPinhvmxQ6lYG0dB33XlA9
-	WhHTkYt+gOm4N6siJVxlGK
-X-Gm-Gg: AYBFou14DMMNI6IRr6nskhJ+3QUj6jMprUJ6r04F6bTTpKyxPSk/0d4VByiybznlIav
-	l51A8SnxQe3A1+D3Jix1oL4nVM7vD1DsMsaOEGPs5nwg5XoJafd87YIkKiuHJCOTo+hV/p+mHGo
-	2Nq8w86I2ZBwBsCCbZM8FKXxFrLOEply1UPJlRieOgZTSiYIoe30duiVCSRpECEeLPHgd0lWJe/
-	tKCuPlvOOHuewG8Gcv1dX4jTIgK3ypdwOWM1AxCLpzD3uBy7W/YfQSSiHtmlYNgY8vaiQIqqd4E
-	KQo9GsM3epWT/xO/leb3FPZg7FjDlMoT3q7kC6AjZubUngeYElqp8aQyTyNF3XOPQblpItDoxNO
-	z+mwISXo4UzrrGECCkZJOHHU5Oxe81C11tAKkQXSafKI2s5C3kEiqBv0zrnttlKjIPZHCirBa5y
-	RrHg0=
-X-Received: by 2002:a05:6000:238a:b0:48a:ef5c:fc2c with SMTP id ffacd0b85a97d-48e385adbe7mr353667f8f.48.1792709634008;
-        Thu, 22 Oct 2026 15:53:54 -0700 (PDT)
-X-Received: by 2002:a05:6000:238a:b0:48a:ef5c:fc2c with SMTP id ffacd0b85a97d-48e385adbe7mr353648f8f.48.1792709633537;
-        Thu, 22 Oct 2026 15:53:53 -0700 (PDT)
+        d=1e100.net; s=20260707; t=1792709640; x=1793314440;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=rWnDOrvFM67oW7t1tpHwWv+WgOV46aNJbOg6qwnKcxE=;
+        b=S7Y3X+MVnWjW+2zSp5rWeDZyP+tp+jmScNmu6J7DfoVvTQCjgyhxcM212s1834ko/J
+         ki0ozNdyg630QIr/AkDY2Pg8ulXQoepv3FACCj6vjFi88CkcPGWgMJzElhlOe6+mlShN
+         vfEA7Wp0KfJlMEZZWkv6/JewLLCYNVtrdwGemxtnPT/6tEr/RM84AmFQm+wSuoclFfug
+         L58Iph4UC/TUC5+z/Sm0aaPZFRGZGL2lG4MAkIujqTTJVM3F3O4jo8ylNI+fkzyLeC2X
+         UYSWbqbMiHNRQbm71Q/L0iO2KR/uPjtO+d4Bj+rOgb8AZDHe5Z9Rwdx5Ey8X3lX+d6Yt
+         sjZw==
+X-Gm-Message-State: AFq9FYL2s1ocW458K+WfLyqELceyohAy78lGYXD10AIwHwqAWh+5uoqE
+	WuIPIhscB5U/j+YRxhOGrUd8oVDFI9Vy+d9aOCeN8foxNVN1bcB9jDBasaFbHb8PinohkQMgZbo
+	44/VcnXUXCbFuYQDxA3CbmS0YcvN3sLGCuVxW2F1y1woJ35TWk8HKnaat5oI0Y4dwT69rzp9Aqt
+	q0niS+s5bTynLs6Y1qlZ6M
+X-Gm-Gg: AYBFou3CSQqZ9FYSKfD40MK+hEcMiDTUbpgf/9HGdGu3TKI4LJYWqwkIIBkktHRPFRK
+	eYayC7lb8MVQ+hZb7XMRAohezXZOT4w5jW6cTuoy9sdJtX4+D2s/UtYVZ8FPAZdznx06PH3LbmC
+	xXZNEtZgiOXgxxt2ogHruP0Krd/2HFB55pKub7NGpdML4q/PMwiGESWZPRWpwpRmpkLUW+jL7B5
+	vbu50fXXA0W3aNFlnGUVOtc8cYTZb+yZ+Q7eX8fCyRWNnqI3Us9X5DG3uOml3mu3FriFAESsmjw
+	4rnD6F9QfHDMQo35M+T5QW9NC+F0BO40cNoNelTJT/+5p/9D5lNX9r1d+pM2eClYsN4CvsHa1/p
+	5Lo9iyhnsbjMLl5GXtI8FNXotfDQeHlQpx3gvVVu24bwhKi4S8IttdwuvgZ1fxhySuKhzCerj8Y
+	UXqvo=
+X-Received: by 2002:a05:600c:8b41:b0:4a1:e9c2:6c84 with SMTP id 5b1f17b1804b1-4a211efe1f2mr5856745e9.18.1792709639831;
+        Thu, 22 Oct 2026 15:53:59 -0700 (PDT)
+X-Received: by 2002:a05:600c:8b41:b0:4a1:e9c2:6c84 with SMTP id 5b1f17b1804b1-4a211efe1f2mr5856605e9.18.1792709639397;
+        Thu, 22 Oct 2026 15:53:59 -0700 (PDT)
 Received: from curves.ddrung.de (2a00-12d0-b0ea-16f0-e90a-519c-7703-6c41.ip.tng.de. [2a00:12d0:b0ea:16f0:e90a:519c:7703:6c41])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48e38063d63sm813449f8f.56.2026.10.22.15.53.51
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48e38063d63sm813449f8f.56.2026.10.22.15.53.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2026 15:53:52 -0700 (PDT)
+        Thu, 22 Oct 2026 15:53:57 -0700 (PDT)
 From: Benjamin Drung <benjamin.drung@canonical.com>
 To: linux-trace-devel@vger.kernel.org
 Cc: Benjamin Drung <benjamin.drung@canonical.com>
-Subject: [PATCH 1/2] libtracefs Documentation: correct name of GPL
-Date: Fri, 23 Oct 2026 00:53:11 +0200
-Message-ID: <20261022225313.1953932-1-benjamin.drung@canonical.com>
+Subject: [PATCH 2/2] libtracefs Documentation: fix various spelling mistakes
+Date: Fri, 23 Oct 2026 00:53:12 +0200
+Message-ID: <20261022225313.1953932-2-benjamin.drung@canonical.com>
 X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20261022225313.1953932-1-benjamin.drung@canonical.com>
+References: <20261022225313.1953932-1-benjamin.drung@canonical.com>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Post: <mailto:linux-trace-devel@vger.kernel.org>
@@ -106,508 +109,255 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-GPL stands for "General Public License".
+lintian found following spelling mistakes:
+
+```
+I: libtracefs-doc: typo-in-manual-page "allows to" "allows one to" [usr/share/man/man3/tracefs_hist_add_sort_key.3.gz:76]
+I: libtracefs-doc: typo-in-manual-page "allows to" "allows one to" [usr/share/man/man3/tracefs_hist_alloc.3.gz:91]
+I: libtracefs-doc: typo-in-manual-page "allows to" "allows one to" [usr/share/man/man3/tracefs_options_get_supported.3.gz:58]
+I: libtracefs-doc: typo-in-manual-page attemp attempt [usr/share/man/man3/tracefs_function_filter.3.gz:60]
+I: libtracefs-doc: typo-in-manual-page destory destroy [usr/share/man/man3/tracefs_kprobe_alloc.3.gz:67]
+I: libtracefs-doc: typo-in-manual-page exluding excluding [usr/share/man/man3/tracefs_dynevent_create.3.gz:65]
+I: libtracefs-doc: typo-in-manual-page formated formatted [usr/share/man/man3/tracefs_print_init.3.gz:31]
+I: libtracefs-doc: typo-in-manual-page formated formatted [usr/share/man/man3/tracefs_print_init.3.gz:44]
+I: libtracefs-doc: typo-in-manual-page gloabl global [usr/share/man/man3/tracefs_file_exists.3.gz:94]
+I: libtracefs-doc: typo-in-manual-page gloabl global [usr/share/man/man3/tracefs_instance_file_open.3.gz:113]
+I: libtracefs-doc: typo-in-manual-page hexidecimal hexadecimal [usr/share/man/man3/tracefs_instance_set_affinity.3.gz:57]
+I: libtracefs-doc: typo-in-manual-page intead instead [usr/share/man/man3/tracefs_iterate_raw_events.3.gz:74]
+I: libtracefs-doc: typo-in-manual-page specifing specifying [usr/share/man/man3/tracefs_hist_alloc.3.gz:91]
+I: libtracefs-doc: typo-in-manual-page subsitute substitute [usr/share/man/man1/sqlhist.1.gz:375]
+I: libtracefs-doc: typo-in-manual-page succesfully successfully [usr/share/man/man3/tracefs_get_tracing_file.3.gz:58]
+I: libtracefs-doc: typo-in-manual-page sytem system [usr/share/man/man3/tracefs_event_get_file.3.gz:99]
+I: libtracefs-doc: typo-in-manual-page transfered transferred [usr/share/man/man3/tracefs_trace_pipe_stream.3.gz:52]
+```
 
 Signed-off-by: Benjamin Drung <benjamin.drung@canonical.com>
 ---
- Documentation/libtracefs-cpu-buf.txt              | 2 +-
- Documentation/libtracefs-cpu-map.txt              | 2 +-
- Documentation/libtracefs-cpu-open.txt             | 2 +-
- Documentation/libtracefs-cpu.txt                  | 2 +-
  Documentation/libtracefs-dynevents.txt            | 2 +-
- Documentation/libtracefs-eprobes.txt              | 2 +-
- Documentation/libtracefs-error.txt                | 2 +-
  Documentation/libtracefs-events-file.txt          | 2 +-
- Documentation/libtracefs-events-tep.txt           | 2 +-
- Documentation/libtracefs-events.txt               | 2 +-
  Documentation/libtracefs-files.txt                | 2 +-
- Documentation/libtracefs-filter-pid.txt           | 2 +-
- Documentation/libtracefs-filter.txt               | 2 +-
  Documentation/libtracefs-function-filter.txt      | 2 +-
- Documentation/libtracefs-guest.txt                | 2 +-
- Documentation/libtracefs-hist-cont.txt            | 2 +-
  Documentation/libtracefs-hist-mod.txt             | 2 +-
- Documentation/libtracefs-hist.txt                 | 2 +-
+ Documentation/libtracefs-hist.txt                 | 4 ++--
  Documentation/libtracefs-instances-affinity.txt   | 2 +-
  Documentation/libtracefs-instances-file-manip.txt | 2 +-
  Documentation/libtracefs-instances-files.txt      | 2 +-
- Documentation/libtracefs-instances-manage.txt     | 2 +-
- Documentation/libtracefs-instances-stat.txt       | 2 +-
- Documentation/libtracefs-instances-subbuf.txt     | 2 +-
- Documentation/libtracefs-instances-utils.txt      | 2 +-
  Documentation/libtracefs-iterator.txt             | 2 +-
  Documentation/libtracefs-kprobes.txt              | 2 +-
- Documentation/libtracefs-log.txt                  | 2 +-
- Documentation/libtracefs-marker.txt               | 2 +-
- Documentation/libtracefs-marker_raw.txt           | 2 +-
+ Documentation/libtracefs-marker.txt               | 4 ++--
  Documentation/libtracefs-option-get.txt           | 2 +-
- Documentation/libtracefs-option-misc.txt          | 2 +-
- Documentation/libtracefs-options.txt              | 2 +-
- Documentation/libtracefs-snapshot.txt             | 2 +-
- Documentation/libtracefs-sql.txt                  | 2 +-
  Documentation/libtracefs-sqlhist.txt.1            | 2 +-
  Documentation/libtracefs-stream.txt               | 2 +-
- Documentation/libtracefs-synth-info.txt           | 2 +-
- Documentation/libtracefs-synth.txt                | 2 +-
- Documentation/libtracefs-synth2.txt               | 2 +-
- Documentation/libtracefs-traceon.txt              | 2 +-
- Documentation/libtracefs-tracer.txt               | 2 +-
- Documentation/libtracefs-uprobes.txt              | 2 +-
- Documentation/libtracefs-utils.txt                | 2 +-
- Documentation/libtracefs.txt                      | 2 +-
- 45 files changed, 45 insertions(+), 45 deletions(-)
+ 15 files changed, 17 insertions(+), 17 deletions(-)
 
-diff --git a/Documentation/libtracefs-cpu-buf.txt b/Documentation/libtracefs-cpu-buf.txt
-index 943cb1f..d591932 100644
---- a/Documentation/libtracefs-cpu-buf.txt
-+++ b/Documentation/libtracefs-cpu-buf.txt
-@@ -168,4 +168,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2022 Google, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
-diff --git a/Documentation/libtracefs-cpu-map.txt b/Documentation/libtracefs-cpu-map.txt
-index d961123..8a9f14f 100644
---- a/Documentation/libtracefs-cpu-map.txt
-+++ b/Documentation/libtracefs-cpu-map.txt
-@@ -215,4 +215,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2022 Google, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
-diff --git a/Documentation/libtracefs-cpu-open.txt b/Documentation/libtracefs-cpu-open.txt
-index 613a71d..a17daf2 100644
---- a/Documentation/libtracefs-cpu-open.txt
-+++ b/Documentation/libtracefs-cpu-open.txt
-@@ -107,4 +107,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2022 Google, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
-diff --git a/Documentation/libtracefs-cpu.txt b/Documentation/libtracefs-cpu.txt
-index 6fb6524..eba316b 100644
---- a/Documentation/libtracefs-cpu.txt
-+++ b/Documentation/libtracefs-cpu.txt
-@@ -240,4 +240,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2022 Google, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
 diff --git a/Documentation/libtracefs-dynevents.txt b/Documentation/libtracefs-dynevents.txt
-index 2c6db47..bd5fbfd 100644
+index bd5fbfd..60cbea2 100644
 --- a/Documentation/libtracefs-dynevents.txt
 +++ b/Documentation/libtracefs-dynevents.txt
-@@ -280,4 +280,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2021 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
-diff --git a/Documentation/libtracefs-eprobes.txt b/Documentation/libtracefs-eprobes.txt
-index a96ad1b..0ef267b 100644
---- a/Documentation/libtracefs-eprobes.txt
-+++ b/Documentation/libtracefs-eprobes.txt
-@@ -184,4 +184,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2021 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
-diff --git a/Documentation/libtracefs-error.txt b/Documentation/libtracefs-error.txt
-index a45332d..44155a4 100644
---- a/Documentation/libtracefs-error.txt
-+++ b/Documentation/libtracefs-error.txt
-@@ -134,4 +134,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
+@@ -63,7 +63,7 @@ The *tracefs_dynevent_info*() function returns the type and information of a giv
+ _dynevent_. If any of the _system_, _event_, _prefix_, _addr_ or _format_ arguments are not NULL,
+ then strings are allocated and returned back via these arguments. The _system_ and _event_ holds the
+ system and the name of the dynamic event. If _prefix_ is non NULL, then it will hold an allocated
+-string that holds the prefix portion of the dynamic event (the content up to the ":", exluding it).
++string that holds the prefix portion of the dynamic event (the content up to the ":", excluding it).
+ If _addr_ is non NULL, it will hold the address or function that the dynamic event is attached to,
+ if relevant for this event type. If _format_ is non NULL, it will hold the format string of the
+ dynamic event. Note, that the content in _group_, _event_, _prefix_, _addr_, and _format_ must be
 diff --git a/Documentation/libtracefs-events-file.txt b/Documentation/libtracefs-events-file.txt
-index 1a298b3..4a56cf3 100644
+index 4a56cf3..9458f73 100644
 --- a/Documentation/libtracefs-events-file.txt
 +++ b/Documentation/libtracefs-events-file.txt
-@@ -213,4 +213,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2022 Google, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
-diff --git a/Documentation/libtracefs-events-tep.txt b/Documentation/libtracefs-events-tep.txt
-index ba46532..365e225 100644
---- a/Documentation/libtracefs-events-tep.txt
-+++ b/Documentation/libtracefs-events-tep.txt
-@@ -150,4 +150,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
-diff --git a/Documentation/libtracefs-events.txt b/Documentation/libtracefs-events.txt
-index 90c54b8..c8286d5 100644
---- a/Documentation/libtracefs-events.txt
-+++ b/Documentation/libtracefs-events.txt
-@@ -192,4 +192,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
+@@ -108,7 +108,7 @@ int main(int argc, char **argv)
+ 	int size;
+ 
+ 	if (argc < 4) {
+-		printf("usage: %s sytem event file [(-a|-w) write | -c]\n"
++		printf("usage: %s system event file [(-a|-w) write | -c]\n"
+ 		       "   reads the system/event file or writes if [write is supplied]\n",
+ 		       argv[0]);
+ 		exit(0);
 diff --git a/Documentation/libtracefs-files.txt b/Documentation/libtracefs-files.txt
-index d22e759..f77af46 100644
+index f77af46..f6408e4 100644
 --- a/Documentation/libtracefs-files.txt
 +++ b/Documentation/libtracefs-files.txt
-@@ -128,4 +128,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
-diff --git a/Documentation/libtracefs-filter-pid.txt b/Documentation/libtracefs-filter-pid.txt
-index fa56b02..68236c2 100644
---- a/Documentation/libtracefs-filter-pid.txt
-+++ b/Documentation/libtracefs-filter-pid.txt
-@@ -178,4 +178,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2023 Google, LLC. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
-diff --git a/Documentation/libtracefs-filter.txt b/Documentation/libtracefs-filter.txt
-index 12726b9..9d0ccc3 100644
---- a/Documentation/libtracefs-filter.txt
-+++ b/Documentation/libtracefs-filter.txt
-@@ -342,4 +342,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
+@@ -55,7 +55,7 @@ be freed.
+ 
+ *tracefs_tracing_dir_is_mounted()* returns 1 if the tracing directory is
+ already mounted and 0 if it is not. If _mount_ is true, it will try to
+-mount it if it is not, and returns 0 if it succesfully mounted it and -1
++mount it if it is not, and returns 0 if it successfully mounted it and -1
+ if it did not. If _path_ is set, it will be assigned to the path where it
+ mounted it. _path_ is internal and should not be freed.
+ 
 diff --git a/Documentation/libtracefs-function-filter.txt b/Documentation/libtracefs-function-filter.txt
-index 2a141fd..88d5d06 100644
+index 88d5d06..125790e 100644
 --- a/Documentation/libtracefs-function-filter.txt
 +++ b/Documentation/libtracefs-function-filter.txt
-@@ -234,4 +234,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
-diff --git a/Documentation/libtracefs-guest.txt b/Documentation/libtracefs-guest.txt
-index 16ce020..b9d6418 100644
---- a/Documentation/libtracefs-guest.txt
-+++ b/Documentation/libtracefs-guest.txt
-@@ -185,4 +185,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
-diff --git a/Documentation/libtracefs-hist-cont.txt b/Documentation/libtracefs-hist-cont.txt
-index 7159e27..86fb980 100644
---- a/Documentation/libtracefs-hist-cont.txt
-+++ b/Documentation/libtracefs-hist-cont.txt
-@@ -219,4 +219,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
+@@ -83,7 +83,7 @@ first filter to be added before committing.
+ 
+ *TRACEFS_FL_FUTURE* :
+ If _flags_ contains *TRACEFS_FL_FUTURE* and _module_ holds a string of a module,
+-then if the module is not loaded it will attemp to write the filter with the module
++then if the module is not loaded it will attempt to write the filter with the module
+ in the filter file. Starting in Linux v4.13 module functions could be added to the
+ filter before they are loaded. The filter will be cached, and when the module is
+ loaded, the filter will be set before the module executes, allowing to trace
 diff --git a/Documentation/libtracefs-hist-mod.txt b/Documentation/libtracefs-hist-mod.txt
-index b308c7e..e51c823 100644
+index e51c823..155813b 100644
 --- a/Documentation/libtracefs-hist-mod.txt
 +++ b/Documentation/libtracefs-hist-mod.txt
-@@ -537,4 +537,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
+@@ -67,7 +67,7 @@ and so on, but all sort keys must match an existing key or value, or be
+ TRACEFS_HIST_HITCOUNT. The last parameter of *tracefs_hist_add_sort_key*() must
+ be NULL.
+ 
+-*tracefs_hist_sort_key_direction*() allows to change the direction of an
++*tracefs_hist_sort_key_direction*() allows changing the direction of an
+ existing sort key of _hist_. The _sort_key_ is the sort key to change, and
+ _dir_ can be either TRACEFS_HIST_SORT_ASCENDING or TRACEFS_HIST_SORT_DESCENDING,
+ to make the direction of the sort key either ascending or descending respectively.
 diff --git a/Documentation/libtracefs-hist.txt b/Documentation/libtracefs-hist.txt
-index 7503fd0..dba88ea 100644
+index dba88ea..98d6f26 100644
 --- a/Documentation/libtracefs-hist.txt
 +++ b/Documentation/libtracefs-hist.txt
-@@ -528,4 +528,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
+@@ -102,10 +102,10 @@ histogram descriptor to add the _key_ to. The _type_ is the type of key to add
+ (See KEY TYPES below).
+ 
+ The *tracefs_hist_add_key_cnt*() is the same as *tracefs_hist_add_key*() except
+-that it allows to add a counter for the given type. Currently, there's only
++that it allows adding a counter for the given type. Currently, there's only
+ the *buckets* type that requires a counter. When adding a key with the buckets
+ type, *tracefs_hist_add_key*() is not sufficient, as the *buckets* type requires
+-a counter or bucket size. Use *tracefs_hist_add_key_cnt*() when specifing
++a counter or bucket size. Use *tracefs_hist_add_key_cnt*() when specifying
+ a key that is broken up into  buckets, and pass in the size of those buckets
+ into _cnt_.
+ 
 diff --git a/Documentation/libtracefs-instances-affinity.txt b/Documentation/libtracefs-instances-affinity.txt
-index 39dd44c..2283ae5 100644
+index 2283ae5..2e04f32 100644
 --- a/Documentation/libtracefs-instances-affinity.txt
 +++ b/Documentation/libtracefs-instances-affinity.txt
-@@ -197,4 +197,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
+@@ -44,7 +44,7 @@ _set_. If _set_ is NULL then all the CPUs on the system will be set, and _set_si
+ is ignored.
+ 
+ The *tracefs_instance_set_affinity_raw()* function takes a string that holds
+-a hexidecimal bitmask, where each 32 bits is separated by a comma. For a
++a hexadecimal bitmask, where each 32 bits is separated by a comma. For a
+ machine with more that 32 CPUs, to set CPUS 1-10 and CPU 40:
+ 
+  "100,000007fe"
 diff --git a/Documentation/libtracefs-instances-file-manip.txt b/Documentation/libtracefs-instances-file-manip.txt
-index bb1b36e..5dca8f3 100644
+index 5dca8f3..efece12 100644
 --- a/Documentation/libtracefs-instances-file-manip.txt
 +++ b/Documentation/libtracefs-instances-file-manip.txt
-@@ -203,4 +203,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
+@@ -114,7 +114,7 @@ struct tracefs_instance *inst = tracefs_instance_create("foo");
+ 		free(clock);
+ 
+ 		if (tracefs_instance_file_write(inst, "trace_clock", "global") != strlen("global")) {
+-			/* Failed to set gloabl trace clock in instance foo */
++			/* Failed to set global trace clock in instance foo */
+ 			...
+ 		}
+ 	} else {
 diff --git a/Documentation/libtracefs-instances-files.txt b/Documentation/libtracefs-instances-files.txt
-index e298557..0f91f01 100644
+index 0f91f01..852ffb2 100644
 --- a/Documentation/libtracefs-instances-files.txt
 +++ b/Documentation/libtracefs-instances-files.txt
-@@ -170,4 +170,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
-diff --git a/Documentation/libtracefs-instances-manage.txt b/Documentation/libtracefs-instances-manage.txt
-index 72f177a..8b4f598 100644
---- a/Documentation/libtracefs-instances-manage.txt
-+++ b/Documentation/libtracefs-instances-manage.txt
-@@ -157,4 +157,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
-diff --git a/Documentation/libtracefs-instances-stat.txt b/Documentation/libtracefs-instances-stat.txt
-index d3bb3c9..fce55c3 100644
---- a/Documentation/libtracefs-instances-stat.txt
-+++ b/Documentation/libtracefs-instances-stat.txt
-@@ -180,4 +180,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
-diff --git a/Documentation/libtracefs-instances-subbuf.txt b/Documentation/libtracefs-instances-subbuf.txt
-index 8d5c3e0..d18b64e 100644
---- a/Documentation/libtracefs-instances-subbuf.txt
-+++ b/Documentation/libtracefs-instances-subbuf.txt
-@@ -149,4 +149,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
-diff --git a/Documentation/libtracefs-instances-utils.txt b/Documentation/libtracefs-instances-utils.txt
-index d2c4f16..c2ee9ad 100644
---- a/Documentation/libtracefs-instances-utils.txt
-+++ b/Documentation/libtracefs-instances-utils.txt
-@@ -164,4 +164,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
+@@ -81,7 +81,7 @@ struct tracefs_instance *inst = tracefs_instance_create("foo");
+ 		free(clock);
+ 
+ 		if (tracefs_instance_file_write(inst, "trace_clock", "global") != strlen("global")) {
+-			/* Failed to set gloabl trace clock in instance foo */
++			/* Failed to set global trace clock in instance foo */
+ 			...
+ 		}
+ 	} else {
 diff --git a/Documentation/libtracefs-iterator.txt b/Documentation/libtracefs-iterator.txt
-index b62f66a..d2e24dd 100644
+index d2e24dd..48984a7 100644
 --- a/Documentation/libtracefs-iterator.txt
 +++ b/Documentation/libtracefs-iterator.txt
-@@ -262,4 +262,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
+@@ -68,7 +68,7 @@ the iterator (even though a return of non-zero will stop it), or from another
+ thread.
+ 
+ The *tracefs_follow_event()* is used with *tracefs_iterate_raw_events()* but
+-intead of the callback being called for every event, it is only called for the
++instead of the callback being called for every event, it is only called for the
+ specified _system_ / _event_name_ given to the function. The _callback_ is the
+ same as for *tracefs_iterate_raw_events()*, and the passed in _callback_context_
+ will be passed to the _callback_ as well. Note, if it returns something other
 diff --git a/Documentation/libtracefs-kprobes.txt b/Documentation/libtracefs-kprobes.txt
-index 199379a..dc4c611 100644
+index dc4c611..4288955 100644
 --- a/Documentation/libtracefs-kprobes.txt
 +++ b/Documentation/libtracefs-kprobes.txt
-@@ -282,4 +282,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2021 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
-diff --git a/Documentation/libtracefs-log.txt b/Documentation/libtracefs-log.txt
-index 4b72df1..7bbda0d 100644
---- a/Documentation/libtracefs-log.txt
-+++ b/Documentation/libtracefs-log.txt
-@@ -73,4 +73,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2021 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
+@@ -70,7 +70,7 @@ tracefs_dynevent structure, describing the probe. This pointer must be freed by
+ not modify the running system.
+ 
+ The *tracefs_kprobe_destroy*() returns 0 on success or -1 on error if it was not able to
+-successful destory (or find) the kprobe or kretprobe.
++successful destroy (or find) the kprobe or kretprobe.
+ 
+ 
+ ERRORS
 diff --git a/Documentation/libtracefs-marker.txt b/Documentation/libtracefs-marker.txt
-index adc5419..201312a 100644
+index 201312a..b5dfc8e 100644
 --- a/Documentation/libtracefs-marker.txt
 +++ b/Documentation/libtracefs-marker.txt
-@@ -113,4 +113,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2021 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
-diff --git a/Documentation/libtracefs-marker_raw.txt b/Documentation/libtracefs-marker_raw.txt
-index 9682f20..6d802dd 100644
---- a/Documentation/libtracefs-marker_raw.txt
-+++ b/Documentation/libtracefs-marker_raw.txt
-@@ -99,4 +99,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2021 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
+@@ -4,7 +4,7 @@ libtracefs(3)
+ NAME
+ ----
+ tracefs_print_init, tracefs_print_close, tracefs_printf, tracefs_vprintf -
+-Open, close and write formated strings in the trace buffer.
++Open, close and write formatted strings in the trace buffer.
+ 
+ SYNOPSIS
+ --------
+@@ -21,7 +21,7 @@ void *tracefs_print_close*(struct tracefs_instance pass:[*]_instance_);
+ 
+ DESCRIPTION
+ -----------
+-Set of functions to write formated strings in the trace buffer.
++Set of functions to write formatted strings in the trace buffer.
+ See Documentation/trace/ftrace.rst from the Linux kernel tree for more information about writing
+ data from user space in the trace buffer. All these APIs have _instance_ as a first argument. If
+ NULL is passed as _instance_, the top trace instance is used.
 diff --git a/Documentation/libtracefs-option-get.txt b/Documentation/libtracefs-option-get.txt
-index 8a688a7..ca48b20 100644
+index ca48b20..cac914f 100644
 --- a/Documentation/libtracefs-option-get.txt
 +++ b/Documentation/libtracefs-option-get.txt
-@@ -138,4 +138,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
-diff --git a/Documentation/libtracefs-option-misc.txt b/Documentation/libtracefs-option-misc.txt
-index c690bfd..2070d27 100644
---- a/Documentation/libtracefs-option-misc.txt
-+++ b/Documentation/libtracefs-option-misc.txt
-@@ -97,4 +97,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
-diff --git a/Documentation/libtracefs-options.txt b/Documentation/libtracefs-options.txt
-index 2c720f2..ec93471 100644
---- a/Documentation/libtracefs-options.txt
-+++ b/Documentation/libtracefs-options.txt
-@@ -156,4 +156,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2021 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
-diff --git a/Documentation/libtracefs-snapshot.txt b/Documentation/libtracefs-snapshot.txt
-index 896705c..04477af 100644
---- a/Documentation/libtracefs-snapshot.txt
-+++ b/Documentation/libtracefs-snapshot.txt
-@@ -179,4 +179,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2023 Google, LLC. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
-diff --git a/Documentation/libtracefs-sql.txt b/Documentation/libtracefs-sql.txt
-index 806fbe4..a7e7e8f 100644
---- a/Documentation/libtracefs-sql.txt
-+++ b/Documentation/libtracefs-sql.txt
-@@ -654,4 +654,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
+@@ -45,7 +45,7 @@ The *tracefs_option_mask_is_set()* function checks if the bit, corresponding to
+ set in the _options_ bitmask returned from *tracefs_option_get_enabled()* and *tracefs_option_is_supported()*.
+ 
+ The *tracefs_option_id()* converts an option _name_ into its corresponding id, if it is found.
+-This allows to find the option _id_ to use in the other functions if only the _name_ is known.
++This allows finding the option _id_ to use in the other functions if only the _name_ is known.
+ 
+ RETURN VALUE
+ ------------
 diff --git a/Documentation/libtracefs-sqlhist.txt.1 b/Documentation/libtracefs-sqlhist.txt.1
-index 875b250..75e93e1 100644
+index 75e93e1..fcfac03 100644
 --- a/Documentation/libtracefs-sqlhist.txt.1
 +++ b/Documentation/libtracefs-sqlhist.txt.1
-@@ -352,5 +352,5 @@ https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/
- COPYING
- -------
- Copyright \(C) 2021 , Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
+@@ -252,7 +252,7 @@ Now a breakdown of the SQL statement:
+    Create the synthetic event by joining _sched_waking_ to _sched_switch_, matching
+    the _sched_waking_ 'pid' field with the _sched_switch_ 'next_pid' field.
+    Also make *start* an alias for _sched_waking_ and *end* an alias for _sched_switch_
+-   which then an use *start* and *end* as a subsitute for _sched_waking_ and _sched_switch_
++   which then an use *start* and *end* as a substitute for _sched_waking_ and _sched_switch_
+    respectively through out the rest of the SQL statement.
  
+  *WHERE end.next_prio < 100 && end.next_comm == "cyclictest"*::
 diff --git a/Documentation/libtracefs-stream.txt b/Documentation/libtracefs-stream.txt
-index 7f1ff6a..e88c0b0 100644
+index e88c0b0..c299c76 100644
 --- a/Documentation/libtracefs-stream.txt
 +++ b/Documentation/libtracefs-stream.txt
-@@ -124,4 +124,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
+@@ -42,7 +42,7 @@ the stream of trace data is redirected to stdout.
+ RETURN VALUE
+ ------------
+ The *tracefs_trace_pipe_stream()*, and *tracefs_trace_pipe_print()* functions return the
+-number of bytes transfered if the operation is successful, or -1 in case of an error.
++number of bytes transferred if the operation is successful, or -1 in case of an error.
+ 
+ EXAMPLE
  -------
- Copyright \(C) 2021 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
-diff --git a/Documentation/libtracefs-synth-info.txt b/Documentation/libtracefs-synth-info.txt
-index 6ee0320..ba962ba 100644
---- a/Documentation/libtracefs-synth-info.txt
-+++ b/Documentation/libtracefs-synth-info.txt
-@@ -295,4 +295,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
-diff --git a/Documentation/libtracefs-synth.txt b/Documentation/libtracefs-synth.txt
-index c57725d..997de8a 100644
---- a/Documentation/libtracefs-synth.txt
-+++ b/Documentation/libtracefs-synth.txt
-@@ -365,4 +365,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
-diff --git a/Documentation/libtracefs-synth2.txt b/Documentation/libtracefs-synth2.txt
-index 77cdd01..f976c93 100644
---- a/Documentation/libtracefs-synth2.txt
-+++ b/Documentation/libtracefs-synth2.txt
-@@ -293,4 +293,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
-diff --git a/Documentation/libtracefs-traceon.txt b/Documentation/libtracefs-traceon.txt
-index 28c79ed..1e2f832 100644
---- a/Documentation/libtracefs-traceon.txt
-+++ b/Documentation/libtracefs-traceon.txt
-@@ -148,4 +148,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2021 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
-diff --git a/Documentation/libtracefs-tracer.txt b/Documentation/libtracefs-tracer.txt
-index 8f90552..a77ab5c 100644
---- a/Documentation/libtracefs-tracer.txt
-+++ b/Documentation/libtracefs-tracer.txt
-@@ -234,4 +234,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
-diff --git a/Documentation/libtracefs-uprobes.txt b/Documentation/libtracefs-uprobes.txt
-index 1ca80da..47d0333 100644
---- a/Documentation/libtracefs-uprobes.txt
-+++ b/Documentation/libtracefs-uprobes.txt
-@@ -186,4 +186,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2022 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
-diff --git a/Documentation/libtracefs-utils.txt b/Documentation/libtracefs-utils.txt
-index ab16cc6..751e3f3 100644
---- a/Documentation/libtracefs-utils.txt
-+++ b/Documentation/libtracefs-utils.txt
-@@ -136,4 +136,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
-diff --git a/Documentation/libtracefs.txt b/Documentation/libtracefs.txt
-index 860e2be..78dc2a5 100644
---- a/Documentation/libtracefs.txt
-+++ b/Documentation/libtracefs.txt
-@@ -405,4 +405,4 @@ https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
- COPYING
- -------
- Copyright \(C) 2020 VMware, Inc. Free use of this software is granted under
--the terms of the GNU Public License (GPL).
-+the terms of the GNU General Public License (GPL).
 -- 
 2.53.0
 
