@@ -1,57 +1,53 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=216.40.44.15
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=216.40.44.16
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794086445;
-	b=h6eFYF8/bshcErK7Ai4IKRZx1c5uuwZR5qp3KcW90LxzdeWC/cIj1G0KxkbHnwoOnCEu
-	 VgIkC4TR2NgrzZ3cbHPUwKfVWesNqb+BV973JJg3KyinHP6Zo0NVAgRUIlyyOWY6jZGbw
-	 DsnCLBkfQtM2SUMDb0kWNUgiRAM2SKnwK5IIri+H0kPGgUVDcDZhgORbrpz7/KA/sOpzL
-	 vJQYT0IBCnI4ILRHiwGnLKN2oj/SCtLCZs5hTMUNcwLtSVuESUT9b/XhxMNXUTondZYoj
-	 JmqSv2t7myfadGSi9UZ3Ff+Kd8oxTSqPTueZpgF5HnESsxw7ZC6keiX5Av1hU9ak/jw==
+	t=1794087019;
+	b=oCTCjKMa97Ar42fBzx5Po9JUv539yIoae4m8QUnWgP1EfsQlKjHiALNsJO1p0fvACqZB
+	 sWVw2Uss7vkNZfVcYdUmH5MJ0lJtXgl5IuFyLlw2CN4be8MJze8pUxfOt1FHkjIAJ99aX
+	 E9AzfcfQPtk5+ySabTiVmmBJQ4RpeavcFS7lsIPGeSggDBQH8mJRuaFNe6iqQi0dxO1v+
+	 SRT6Ql9s5CRyhf37EzktmEVaUae0TenFUpHxTMnGzKf8VZJgiOCC5DjrzcVcXFJVfCG30
+	 Pkoye1BO2fi4QfNM6TQ4ykv9diE0kGNomby3gWOUZvB1hJKT75oU7Oa2KgmeL5KBtXQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794086445;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794087019;
 	h=DMARC-Filter:Received:Received:Date:From:To:Cc:Subject:Message-ID:
 	 In-Reply-To:References:X-Mailer:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding:X-Rspamd-Server:X-Rspamd-Queue-Id:
+	 Content-Transfer-Encoding:X-Rspamd-Queue-Id:X-Rspamd-Server:
 	 X-Stat-Signature:X-Spam-Status:X-Session-Marker:X-Session-ID:
 	 DKIM-Signature:X-HE-Tag:X-HE-Meta;
-	bh=ceiIsG5iyS6gI40nVB8jTbDrcWZnF3MSRt8y4/R0OgU=;
-	b=jNPSVmGXBvDEnHYUDD9rReRQZCB4XjmvfKkKkdJoIvOoI/OSxyUXc6j4EJ953Roz867e
-	 w80G7/Ke/P8I1Plb6BcXg1RTwbmlM6NKCf15u1zEUbjs3YfsOoLYOBpXffHo3b8TKiAlT
-	 arqqCmZ+5/uY0kct/CSuyLQ4+7CHYfGUnkxkyePSYlUztov/GhvpBlDQjS2hIJb5Y7n9x
-	 xDwXOVvcnzOJR4ky5JMMhWjRf9Q9cOHaoEAHOke1gBqYHWnw1/0H8/x/MXFz6w8BBx/61
-	 Xo0i4isFBalp1HjNK1mdSc6Sm9TIya4LxO4y9XwDqOs+dFxkadPEjNbNfRMBieG+V/A==
+	bh=g0JUvVWVscMAiuRuQ6Vk8GEr4mBcQucOqy/d/BaHVhc=;
+	b=LUoKzLXRH26uWhHU6W49SzgPBTlWjlST2BpRUoQW9bKQaOixVgvPIlKTuCjnOk7TGJAd
+	 oWNGgQuAtzB5kVoP1E4OvkJOV9RIqle7dzkGf1HuOd/+byPb8KQup6hPoJ0j3YeYisSRn
+	 xDx1RytY1Ttl+nkLXIVedFlZvf1nOQCObPbGFH3BcT055vJTaaf7hRvVQs8sNYJ6Q1ziQ
+	 MnX/U4+/m8Kp2AG/HostSRqjGCHGi7iFPFm4oLj3PX7FT6FH22qFEZPQrlJ8zGPdWUI/0
+	 kGUyWfwZrceZ3oJkVJ5hCiqYJuX5NaccWNtwgKTCWkYdoWKSnRGaEDDm04rCZ9L3weA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=goodmis.org;
 	spf=pass smtp.mailfrom=goodmis.org;
-	dkim=pass header.d=goodmis.org header.i=@goodmis.org header.a=rsa-sha256 header.s=dkim1 header.b=zq03zXOe;
-	arc=none smtp.remote-ip=216.40.44.15
-Received: from relay.hostedemail.com (smtprelay0015.hostedemail.com [216.40.44.15])
+	dkim=pass header.d=goodmis.org header.i=@goodmis.org header.a=rsa-sha256 header.s=dkim1 header.b=0k4Pg1Eh;
+	arc=none smtp.remote-ip=216.40.44.16
+Received: from relay.hostedemail.com (smtprelay0016.hostedemail.com [216.40.44.16])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE6AB606A326
-	for <linux-trace-devel@vger.kernel.org>; Sat,  7 Nov 2026 21:20:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org AE6AB606A326
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE03F606A326
+	for <linux-trace-devel@vger.kernel.org>; Sat,  7 Nov 2026 21:30:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org DE03F606A326
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=goodmis.org header.i=@goodmis.org header.a=rsa-sha256 header.s=dkim1 header.b=zq03zXOe
-Received: from omf01.hostedemail.com (lb01a-stub [10.200.18.249])
-	by unirelay09.hostedemail.com (Postfix) with ESMTP id 2EBC980280;
-	Sat,  7 Nov 2026 21:20:43 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf01.hostedemail.com (Postfix) with ESMTPA id 414D46000F;
-	Sat,  7 Nov 2026 21:20:37 +0000 (UTC)
-Date: Sat, 7 Nov 2026 16:20:22 -0500
+	dkim=pass (1024-bit key, unprotected) header.d=goodmis.org header.i=@goodmis.org header.a=rsa-sha256 header.s=dkim1 header.b=0k4Pg1Eh
+Received: from omf20.hostedemail.com (lb01a-stub [10.200.18.249])
+	by unirelay10.hostedemail.com (Postfix) with ESMTP id A9EC1C02CF;
+	Sat,  7 Nov 2026 21:30:15 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf20.hostedemail.com (Postfix) with ESMTPA id 9239B20026;
+	Sat,  7 Nov 2026 21:30:10 +0000 (UTC)
+Date: Sat, 7 Nov 2026 16:29:56 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
-To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc: linux-trace-devel@vger.kernel.org, Emil Thorsoe <ethorsoe@tuxera.com>
-Subject: Re: [PATCH] libtraceevent utest: exit test if mmap fails
-Message-ID: <20261107162022.65256a9d@fedora>
-In-Reply-To: <au9QwCTKOwBCZ7f-@debian>
-References: <20260526184219.408223-1-sudipm.mukherjee@gmail.com>
-	<20260529144124.14954a5f@fedora>
-	<CADVatmMUERxEkbURZuZfTw+UYB2YCMVxK9nvc-z-u5kKNHxM=g@mail.gmail.com>
-	<20260616164812.5ecda840@fedora>
-	<au9QwCTKOwBCZ7f-@debian>
+To: Giulio Benetti <giulio.benetti@benettiengineering.com>
+Cc: linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH v3] Fix build failure due to btf on Linux < 6.0
+Message-ID: <20261107162956.3304797b@fedora>
+In-Reply-To: <20261026162417.646303-1-giulio.benetti@benettiengineering.com>
+References: <20261026162417.646303-1-giulio.benetti@benettiengineering.com>
 X-Mailer: Claws Mail 4.4.0 (GTK 3.24.52; x86_64-redhat-linux-gnu)
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
@@ -64,68 +60,181 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Rspamd-Server: rspamout03
-X-Rspamd-Queue-Id: 414D46000F
-X-Stat-Signature: ukghteeedqk4yupb18se1wozcuckn7ho
+X-Rspamd-Queue-Id: 9239B20026
+X-Rspamd-Server: rspamout08
+X-Stat-Signature: odxowm4amj9pwyt1q6c6zf15ybpr6z4z
 X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1+fAkiOzNBBoVtKya9i6JsU0jEhX0y9mMk=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=goodmis.org; h=date:from:to:cc:subject:message-id:in-reply-to:references:mime-version:content-type:content-transfer-encoding; s=dkim1; bh=ceiIsG5iyS6gI40nVB8jTbDrcWZnF3MSRt8y4/R0OgU=; b=zq03zXOeEnJVIL4yRQXYeERcsWJyCRspqrfTx3hKP4czT9NvkNZxpqv6UzmC4mea0mH7gVDmnU64+ksiNJQZugCe3Z27+1Rr2k0ffZUpArNaYGbYGIJqMwWBAe1war4rXt0FiAYAywQJw5xLDpj+hqEQASAdKJmKksYiPezL5hs=
-X-HE-Tag: 1794086437-356524
-X-HE-Meta: U2FsdGVkX18gKZdj02tmflM655mHFwcR9cru0+L2/1Q0k5K6EmUWcwGUEvS9kO1Tib+62M2KPpvHtaxp/jPq1Rd3nY6xiugxtFceX37ON33TJJiIktEaZCK659BwvnaWuJZpOcv7NtNhZSEbsx0tNB9gyojfUNdyn0C37CS/5gud2BGE849oToz/e/aQQD/eBuTVe8UgQTP4rOsR7vAq2gTPVXaYvDNDy8OUHxlRoY1r3WLZ6A6QRVHPiVTCC1onBX5uBqmS9DyNZTRmp+soch5Cev4133mnggPCw1mPz2cCdqkTTf7TMKNU1N0btFEHLtfVX5MtHJRuFZXewK08DK2Q3+aWc1EIOo9xFJEWYHhUr6b/olwCfv7HmDqW54ZsZoSPDlNDnV6QMyQq9Qq8PHudSYdrY2Be29oQWSM+lzTA1p2CQEGcP+EdjxzPL5Y8+7arinw7/BSGHD7fawTZr5h3n2iuJZUD8mc5ERxseyU=
+X-Session-ID: U2FsdGVkX1+eaO5HwzUkXyC3AdFljCkoukW8YyGWOzY=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=goodmis.org; h=date:from:to:cc:subject:message-id:in-reply-to:references:mime-version:content-type:content-transfer-encoding; s=dkim1; bh=g0JUvVWVscMAiuRuQ6Vk8GEr4mBcQucOqy/d/BaHVhc=; b=0k4Pg1EhDhVFuNP5ukTnLV1vmbUeyWlJlFSc+8Ko7hjSC6GyVNnBqzJNHZ2q75ZitJ5ls/xA+PY5X2pkBFIgmePqHWO4XWv42eQEnvNrdH+5IzD5vJq0R3DQmcTgmIVzp+6J3NRTtTv1bsHYU5oC2kVNqA/EotBtvBtDvlozjDs=
+X-HE-Tag: 1794087010-486890
+X-HE-Meta: U2FsdGVkX1+vD5ZXenmfvLQWAZ/IcKcuXn6LvmP8Vap8VZ58o9ToPjN/5kdiiZaZC73iqaOO3HXMYl6qcf8wgferXcBcIdW4KH0ROAW2u8w5TR5/OP4bb3U09/diWlTDlUHUyoun3NoLTMYa9yORFj5ATgCRiGhnQSLQ57rSmJE/qXr3UTOOh2pSwv7HB/CrdDKIZwQNY444X9vqrXKbl5GfzYdCF3vjpm5ACCEBDlS3Ow+3u6newrsJg2ZVeksLYFG6Bdi55MQcMJWFKUx5JFjOnH87c+L1V/qwFBtadx9kyQYiG6FCL92Kmcr3xuCv47cMMdr+DA5j1fVNEJwjvK1miphn+7NZfnJEs9Q1NKfrwHUMwR5Kn20lcNXwx4+u5XUdCuPym+w8GglnMTyDvc9yCqB/bjKo2Q+QN02cZUT28hZf42lTyrVqcFf+aoMQ0C6QTtD0aCmnbksmB48/bQ==
 
-On Sat, 7 Nov 2026 16:24:32 +0000
-Sudip Mukherjee <sudipm.mukherjee@gmail.com> wrote:
+On Mon, 26 Oct 2026 17:24:17 +0100
+Giulio Benetti <giulio.benetti@benettiengineering.com> wrote:
 
-> Hi Steve,
+Hi Giulio,
+
+Thanks for the patch.
+
+To make it easy to know which patch is for which library in patchwork,
+can you add "libtraceevent" the subject line:
+
+  libtraceevent: Fix build failure due to btf on linux < 6.0
+
+As I work on a repo, I filter out by the subjects and without having it
+there the patch may be missed.
+
+> With commit:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6089fb325cf737eeb2c4d236c94697112ca860da
+> enum BTF_KIND_ENUM64 has been firstly introduced and this is the latest
+> BTF_KIND_* enumaration to be added to libtraceevent. So let's check
+> in runtime, both in Makefile and meson, if BTF_KIND_ENUM64 does exist
+> as well as struct btf_enum64 members name_off, val_lo32, val_hi32 to
+> make sure the entire enum64 facility is defined and guard for NO_BTF
+> selectively in trace-btf.c.
+> If it's not there let's disable btf support.
 > 
-> On Tue, Jun 16, 2026 at 04:48:12PM -0400, Steven Rostedt wrote:
-> > On Mon, 15 Jun 2026 20:25:08 +0100
-> > Sudip Mukherjee <sudipm.mukherjee@gmail.com> wrote:
-> >   
-> > > Hi Steve,
-> > > 
-> > > On Fri, 29 May 2026 at 19:41, Steven Rostedt <rostedt@goodmis.org> wrote:  
-> > > >
-> > > > On Tue, 26 May 2026 19:42:19 +0100
-> > > > Sudip Mukherjee <sudipm.mukherjee@gmail.com> wrote:
-> > > >    
-> > > > > CU_TEST() continues execution even if the test fails. It just records
-> > > > > that the test has failed and moves on.
-> > > > > So, when libtraceevent is built in a chroot, it can open
-> > > > > /sys/kernel/btf/vmlinux but fails in mmap stage and since CU_TEST()
-> > > > > does not stop so we get a segfault when tep_load_btf() tries to use
-> > > > > the mapped buffer.
-> > > > >
-> > > > > Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>    
-> > > >
-> > > > Thanks, but the real fix is here and I'm applying that one:
-> > > >
-> > > >   https://lore.kernel.org/all/d6e07cd6-cb78-4119-a048-920ca58b4830@tuxera.com/    
-> > > 
-> > > Tried it today, and the test still fails for me.  
-> > 
-> > Thanks for letting me know. I currently just started a new job and I'm
-> > a bit overwhelmed. It may be a couple more weeks before I get to this.  
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> Co-authored-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
+> Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
+> ---
+> V1->V2:
+> * fixed meson check and all bft C source
+> V2->V3:
+> * check struct parameters other than only BTF_KIND_ENUM64
+> ---
+>  Makefile        | 30 +++++++++++++++++++++++-------
+>  src/meson.build | 14 ++++++++++++++
+>  src/trace-btf.c |  7 +++++++
+>  3 files changed, 44 insertions(+), 7 deletions(-)
 > 
-> Not sure if you had a chance to look at it. I was looking at it now while
-> updating the Debian package. It seems like btf_init() is failing when its
-> doing if (btf->hdr->hdr_len < sizeof(*btf->hdr)). Adding a debug there shows,
-> btf->hdr->hdr_len is 24 whereas sizeof(*btf->hdr) is 32.
-> 
-> Tried on a chroot and also on a VM, both shows the same problem in Debian.
-> 
+> diff --git a/Makefile b/Makefile
+> index 8a7a1dd..4b291c0 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -27,6 +27,13 @@ $(call allow-override,PKG_CONFIG,pkg-config)
+>  $(call allow-override,LD_SO_CONF_PATH,/etc/ld.so.conf.d/)
+>  $(call allow-override,LDCONFIG,ldconfig)
+>  
+> +# Set compile option CFLAGS
+> +ifdef EXTRA_CFLAGS
+> +  CFLAGS ?= $(EXTRA_CFLAGS)
+> +else
+> +  CFLAGS ?= -g -Wall
+> +endif
+> +
+>  EXT = -std=gnu99
+>  INSTALL = install
+>  
+> @@ -37,6 +44,22 @@ INSTALL = install
+>  DESTDIR ?=
+>  DESTDIR_SQ = '$(subst ','\'',$(DESTDIR))'
+>  
+> +test-build = $(if $(shell sh -c 'echo "$(1)" | tee /tmp/t.c| \
+> +	$(CC) -o /dev/null -x c - > /dev/null 2>&1 && echo y'), $2)
+> +
+> +define BTF_LATEST_SOURCE
+> +#include <linux/btf.h>
+> +int main(void) { struct btf_enum64 e = {}; \
+> +		 return e.name_off + e.val_lo32 + e.val_hi32 + \
+> +			BTF_KIND_ENUM64; }
+> +endef
+> +
+> +BTF_OK := $(call test-build,$(BTF_LATEST_SOURCE),y)
+> +
+> +ifneq ($(strip $(BTF_OK)), y)
+> +CFLAGS += -DNO_BTF
+> +endif
+> +
+>  LP64 := $(shell echo __LP64__ | ${CC} ${CFLAGS} -E -x c - | tail -n 1)
+>  ifeq ($(LP64), 1)
+>    libdir_relative_temp = lib64
+> @@ -123,13 +146,6 @@ INCLUDES = -I. -I $(srctree)/include -I $(EP_HEADERS_DIR) $(CONFIG_INCLUDES)
+>  
+>  export LIBTRACEEVENT_STATIC LIBTRACEEVENT_SHARED EP_HEADERS_DIR
+>  
+> -# Set compile option CFLAGS
+> -ifdef EXTRA_CFLAGS
+> -  CFLAGS := $(EXTRA_CFLAGS)
+> -else
+> -  CFLAGS := -g -Wall
+> -endif
+> -
+>  LIBS ?= -ldl
+>  export LIBS
+>  
+> diff --git a/src/meson.build b/src/meson.build
+> index 3a7a082..0fa5a5f 100644
+> --- a/src/meson.build
+> +++ b/src/meson.build
+> @@ -17,6 +17,20 @@ sources= [
+>  cc = meson.get_compiler('c')
+>  dl_dep = cc.find_library('dl')
+>  
+> +btf_enum64_test_code = '''
+> +#include <linux/btf.h>
+> +int main(void) {
+> +    struct btf_enum64 e = {};
+> +
+> +    return e.name_off + e.val_lo32 + e.val_hi32 +
+> +           BTF_KIND_ENUM64;
+> +}
+> +'''
+> +
+> +if not cc.compiles(btf_enum64_test_code, name : 'BTF_KIND_ENUM64 check')
+> +    add_project_arguments('-DNO_BTF', language : 'c')
+> +endif
+> +
+>  libtraceevent = library(
+>      'traceevent',
+>      sources,
+> diff --git a/src/trace-btf.c b/src/trace-btf.c
+> index 2d66e01..f980d58 100644
+> --- a/src/trace-btf.c
+> +++ b/src/trace-btf.c
+> @@ -8,7 +8,9 @@
+>  #include <stdlib.h>
+>  #include <stdbool.h>
+>  
+> +#ifndef NO_BTF
+>  #include <linux/btf.h>
+> +#endif
 
-Bah, because I thought the fix was elsewhere I marked it as
-"superseded" and forgot I did that. When you said it was different, I
-was traveling and didn't bother to check patchwork to reset it back to
-New.
+Instead of adding the #if wrapper above...
 
-   https://patchwork.kernel.org/project/linux-trace-devel/patch/20260526184219.408223-1-sudipm.mukherjee@gmail.com/
+>  
+>  #include "event-parse.h"
+>  #include "event-utils.h"
+> @@ -29,6 +31,9 @@ struct tep_btf {
+>  	void			*raw_data;
+>  };
+>  
+> +#ifdef NO_BTF
+> +void btf_free(struct tep_btf *btf) {}
+> +#else
 
-If it's not visible in patchwork, it's not visible to me :-/
+Can you just move the header here?
 
-I'll go and set it now to New. Thanks for keeping up on it.
+#include <linux/btf.h>
+
+Thanks!
 
 -- Steve
 
+>  #define REALLOC_SIZE (1 << 10)
+>  #define REALLOC_MASK (REALLOC_SIZE - 1)
+>  
+> @@ -111,6 +116,7 @@ static int add_func(struct tep_btf *btf, struct btf_type *type)
+>  
+>  static int btf_type_size(struct btf_type *type)
+>  {
+> +	return -1;
+>  	int kind = BTF_INFO_KIND(type->info);
+>  	int size = sizeof(*type);
+>  
+> @@ -665,3 +671,4 @@ int tep_btf_print_args(struct tep_handle *tep, struct trace_seq *s, void *args,
+>  	}
+>  	return 0;
+>  }
+> +#endif
 
