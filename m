@@ -1,93 +1,50 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.182
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=216.40.44.11
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794116731;
-	b=R5C3YIovfjkUsstsuQ+hg0IctivbYnVY9vMahmJhBhghKdezopDaEj/y3kosOif5T6Ie
-	 VJWCSNIgqqFK0mNoyVNAUGc08ezXFlXaC6BHJBlUZ5yM98czZZgPoDB8Gv81ywC2GidVe
-	 GXDMH1UD343VSOrZe2iIvLyzPqzkjW1o5RaliONj3YCz/oxGYHN5dliyg1n/DsVtxJwJ1
-	 A307+KsCIL2Q8RziuokIfpPr1wRC9n0+4zkXohw4mQk8BHrvbPNtMW4u9r0fubtXDY+rv
-	 t4vAZJD72RAfpMtq/Nc94sip4VKGOLLpXO3zVczx2sYnkN4E/x3/CyEstqif4C8bjsQ==
+	t=1794127706;
+	b=U5bQGn8840hxKxilFpMsLwyVPn6CRRJP8mmZd0uNLey4LV+S0M2Hev10+DzxbMazuHII
+	 EG086x9KTlZojO+hKiG2YJTB2BjzrS0/JUR3tkDNtbjHBua3k9mxBruo5bay2RMuijurM
+	 RBmTZsM/3FNx7bW+m1dvzXu5qWk2AT9nAiOotzqLZPf/QPpeORXIBwMblpOBduJDNKLHX
+	 2WRJ7gcpLK3AYhJjdNgbJ65A7akXZAGmww9seWe46VDxD0kOb2uw2Hqhv7xr3tRkn9JqZ
+	 0l3pA+HGV/tUeuCtJcnQsdBOx8xpPPzz/8uiaY4C0TWii7mRhPBfPTZIRsIRGJxY29w==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794116731;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:From:
-	 X-Google-Original-From:To:Cc:Subject:Date:Message-Id:X-Mailer:
-	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
-	bh=jJH3uNGiTDgilkiFsYO1bUnEGRo9NE9Iz1hfBpFFnpo=;
-	b=E8jMrV9U/gB48ukGad+BWPR1bbnVgdzHo3Df0AwOEgOnUErzR7r7DPQpeWX7bUp2Z4Bz
-	 lSaxOFgyW5tu+eZtLRwTNSFdVTunESdsgiy7w30kPBgxryOJvgn7Q3wYpk3Da3U+hKTRl
-	 gwM+CeviUc62Ka75pGEFisYJDk5sNtTjTobhSK8n1SK/DHz6yTE+Ag8Rfr98x3A7pYOLn
-	 5E6BBNy0q6kI4sq9L7eohEmJVScjfKiOJxPnj2vX4XuiBmbbAJspgS4rz6QS4KTiQ51/1
-	 Qbxj8Lz/1lOHzCTkOxYw+wlcScx2ohBnrfGtGfJyaK6GBgVIACC68L/auMJYYMwA5QQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794127706;
+	h=DMARC-Filter:Received:Received:Date:From:To:Subject:Message-ID:
+	 X-Mailer:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	 X-Rspamd-Server:X-Rspamd-Queue-Id:X-Stat-Signature:X-Spam-Status:
+	 X-Session-Marker:X-Session-ID:DKIM-Signature:X-HE-Tag:X-HE-Meta;
+	bh=zm7GMQ8aQ9/WtTyBbRmIPcjwtbX3tI2UBnbDS4M5/XQ=;
+	b=FOizrQA21deMlH0pLAnyiE2XmgpbuYZjUGPnUdwqEPR2d/CvCE7C1RGRbjWDYFtV7Hd2
+	 9TvikVTokhJNGnjixo1Nb4f7I+4QGVT/y6wW+JEhzReBy+tJ+V5JxNyK5clBk/I8QzwD/
+	 CX8WYuyeZKgfSz2yMqc8dAOMG/5u00+fYwzeVMbGSrV2JbFC9hkaSU7uLd1basxs3aLxg
+	 756l8Rm68PnLHLrCzd5h7EEUvK4RdfZTqSQVIXYG/TR5/4MX/V8W8TcLSZd4LVPuNum+v
+	 NPZWe8yRkLZWToe66pQDt3fH+XviRmkomTRPB6nOO5PHBnPay07+hsY/OoBd5WUXLUg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=x9LFJHtX;
-	arc=none smtp.remote-ip=74.125.82.182
-Received: from mail-dy1-f182.google.com (mail-dy1-f182.google.com [74.125.82.182])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	dmarc=pass header.from=goodmis.org;
+	spf=pass smtp.mailfrom=goodmis.org;
+	dkim=pass header.d=goodmis.org header.i=@goodmis.org header.a=rsa-sha256 header.s=dkim1 header.b=FYmSjMML;
+	arc=none smtp.remote-ip=216.40.44.11
+Received: from relay.hostedemail.com (smtprelay0011.hostedemail.com [216.40.44.11])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEE24606A31A
-	for <linux-trace-devel@vger.kernel.org>; Sun,  8 Nov 2026 05:45:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org CEE24606A31A
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC11C606A31C
+	for <linux-trace-devel@vger.kernel.org>; Sun,  8 Nov 2026 08:48:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org DC11C606A31C
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=x9LFJHtX
-Received: by mail-dy1-f182.google.com with SMTP id 5a478bee46e88-36e795af1d4so164693eec.1
-        for <linux-trace-devel@vger.kernel.org>; Sat, 07 Nov 2026 21:45:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794116730; x=1794721530; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=jJH3uNGiTDgilkiFsYO1bUnEGRo9NE9Iz1hfBpFFnpo=;
-        b=x9LFJHtXsxmM5bZP7ElpAHjDRkaN/3Oret28i5xvLzAxBGbdPqJjRIxEq4XGvyFxhv
-         6SAXHmm+KMPakALyKunH/d/1pO6LrHsMvyCU2SxgswkKoa7js2RT4mxzD4YZc9ixjHQQ
-         ytuy1cFk/Ut5DsosfXKcESKxMPTmRDQhuZedRokkqFOPDdKDoOle0Dg03PONFlahaO7r
-         VdZJMcU9iE4dIEhLdGk2btNQPyc1gQaKNC8fjix3nv47QpYPBkWNCrgCrYU2Cs/Gfb9O
-         998eKXDPzWpi7gIYqtsd+q7ol0llNWmfDjeceCTot7SieNZ/4dgXV75WXtiFUuallH+3
-         4tSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794116730; x=1794721530;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=jJH3uNGiTDgilkiFsYO1bUnEGRo9NE9Iz1hfBpFFnpo=;
-        b=hphKJlAEITVUg5+dK0eQy5vz308aW+nyjXd2C7C4Gbg6avL52itOFUrAAjUANom/lI
-         MXAZGBZe0QPvEzkdOK7cT9jJEHJhKrDHLOVp6yXpzpDmuowBnyoypJuT8XLcgXB/Wz6i
-         xUC4XdJ4+qmGKE6Yw//7pDtG/ss/1kfOlJNtCitaDkmdZNvf+11B0/EdliRYeDMbewrs
-         RMhsRIxSRO+kN64YiyLr8XwnT6cDMf3nCk51e2q4KIypOnqLecgBDaNVbbIbOgc7Z7hN
-         H99f1apAPHHyFBZOekECSMOoGHZ26C8tTuyJixnlJV/CWW3HfzdUuIssJC1nvxAEiA24
-         U6NQ==
-X-Gm-Message-State: APuU4Z8s8FfY8HUxZnQQMvSMqHLlEwdXzaXg7rhhvdd8e49yUOxBeYcQ
-	8gRZ5c6hs8mXxHMcw5IGcw5jvUwDaUFR9bODs7oJ0UMMXpbzfRU8BaXdM55N8Q==
-X-Gm-Gg: AYBFou18rGnXzD0wHIojprUlkDxfhEUBMrllZVR4kmm+pSwJyZCsX4KHonMrNs+L6ZA
-	uFLduk027r0OctmPeqHIUuZ44Ib7FDZq64KE7cREmKsBWqSUvsMT1t8gWf72itcAcaVtxJTxSIu
-	UPBBtSBIOHhjo4AXO6rWhitFfvBqOGQYk17VQ06lhTZ1EOExX0U4Wuy88PU55zuLHmJWeaQ9QU8
-	SRFHSf4aVqEcVmADullWRF/8eiN3ArBsXZbXejfuf0V25LeMYStYsclW3w0tlWgrwsYfUCnKHrk
-	6vcTRB5YaRRAEBcybVqxiqk43k/mUlC9jR9tfPgZ1vlNjov1bUtxYVBqDb3V3XzN6g/o6rPjgw6
-	UvomKrF90kyB2eBSZxz1hbE3XaCicy5+rrfWEQk42dg+OcKsmdsT7KbYq/+Uz48tys5dNOmxYF8
-	+cXSqKdDkvJ4JqwNQY+FgJ/QJGb2fNOJfRl4bW+wTixInWkzqzn4WQoLV9HQv5p0in3L0K7cCfP
-	rLlN+LmQhO4VjgJR0s1mA6gtiSxivhJe2oQyV7WSO9qYdMBG/RrIOeDQn8G3dXUWJnX1mB0r6OP
-	8vIIw0YrgvvAyS9UTB9r1Od0sqpQfxYQf7zCVfpHmeyZiTOkfskCqXAm6qsQu/NFY4eGBBpHs5Q
-	tbSr22FXoOSNQVTM=
-X-Received: by 2002:a05:7300:cc9e:b0:369:f1ca:5b24 with SMTP id 5a478bee46e88-37256134b34mr1597704eec.6.1794116729572;
-        Sat, 07 Nov 2026 21:45:29 -0800 (PST)
-Received: from lipengfei28-ThinkStation-P368.mioffice.cn ([2408:8607:1b00:8:5213:762b:b24:1be1])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-37265a16f9csm2885301eec.12.2026.11.07.21.45.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Nov 2026 21:45:28 -0800 (PST)
-From: Li Pengfei <ljdlns1987@gmail.com>
-X-Google-Original-From: Li Pengfei <lipengfei28@xiaomi.com>
-To: rostedt@goodmis.org
-Cc: linux-trace-devel@vger.kernel.org
-Subject: [PATCH v2] libtracefs: Pass the pipe size by value to F_SETPIPE_SZ
-Date: Sun,  8 Nov 2026 13:44:58 +0800
-Message-Id: <20261108054458.217842-1-lipengfei28@xiaomi.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20261107174208.6400402e@fedora>
-References: <20261107174208.6400402e@fedora>
+	dkim=pass (1024-bit key, unprotected) header.d=goodmis.org header.i=@goodmis.org header.a=rsa-sha256 header.s=dkim1 header.b=FYmSjMML
+Received: from omf20.hostedemail.com (lb01a-stub [10.200.18.249])
+	by unirelay02.hostedemail.com (Postfix) with ESMTP id 819FE120437
+	for <linux-trace-devel@vger.kernel.org>; Sun,  8 Nov 2026 08:48:18 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf20.hostedemail.com (Postfix) with ESMTPA id B248F20025
+	for <linux-trace-devel@vger.kernel.org>; Sun,  8 Nov 2026 08:48:16 +0000 (UTC)
+Date: Sun, 8 Nov 2026 03:48:11 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [PATCH] libtracefs: Do not discard const ename for updating it
+Message-ID: <20261108034811.70c1681c@fedora>
+X-Mailer: Claws Mail 4.4.0 (GTK 3.24.52; x86_64-redhat-linux-gnu)
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Post: <mailto:linux-trace-devel@vger.kernel.org>
@@ -97,64 +54,74 @@ List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-trace-devel+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Server: rspamout03
+X-Rspamd-Queue-Id: B248F20025
+X-Stat-Signature: sde7qtsxs3ops9i6ecf4xsye5fkh33po
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX1+44/FI4N5ML7P07prVzJq1loEQbHKXwOM=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=goodmis.org; h=date:from:to:subject:message-id:mime-version:content-type:content-transfer-encoding; s=dkim1; bh=zm7GMQ8aQ9/WtTyBbRmIPcjwtbX3tI2UBnbDS4M5/XQ=; b=FYmSjMMLgS8C/lSekV7AbYM3u5zKLdBNEeVGBAaX5wkTetJd+U4LagTMIfltDMx/N71zrlkWQLSnZ7T5kn8Z2ItFYH4TJ3st9a0QZPQrv4DVrib0ypOwmuMsxDkWAkjH8/zpFR+bY4aFzK4Vn5Zbl5HSizQZGILjBitPGV0TDFw=
+X-HE-Tag: 1794127696-19932
+X-HE-Meta: U2FsdGVkX1/JzzXqUtZznBHLWf9nOhyLxwS9NJUcPmiHgPDJOSCTX96AMfHFjlrqFIkkL9weKR2uSA+/U0pgC6+8YaeNG4Hyo12lKsy6I5PalFC9dnh4/DMOU2uyeVTNBEMwvAUA44Egz6ev7vB1MmvGS6klRi24lmuN/XoCXAN20IsOGbdpQ4Ug05oJbNOHOXJdOam2TWqJukx3T7x6vaGFBdnJ7CYmHHiruqrDtbPprOeFMaC6fudSYP94c78kz+C7fAB289E4keJp31zSAl3Sb5cjW5fhxdcxfSpUPCOBWpuvU30w1HWBTGaEbvsXOuRG8+4Ni6u8Lslsw8SwX5kPc2IkPkVsNv5OVIkT7UV8jTSaZEfwwG3YuzNq1zao
 
-F_SETPIPE_SZ takes the new size as the argument itself, but init_splice()
-passes a pointer to it.  The kernel takes that argument as an unsigned int,
-so the pointer is truncated to its low 32 bits and used as the size.  That
-usually fails, leaving the pipe at the default 64K, so a sub buffer larger
-than that no longer fits in one splice() and the recorders lose data.  It
-can also succeed at an unrelated size with no error to notice.
+From: Steven Rostedt <rostedt@goodmis.org>
 
-Failing here stays non fatal, as an unprivileged caller cannot raise a pipe
-above /proc/sys/fs/pipe-max-size and the default size still records.
+The const char *ename is set as the event name that is passed into
+kprobe_alloc(). If the event isn't defined, then it uses the address
+instead. It creates a copy of the addr and zeros out a ':' if it exists.
+Currently, this is done by pointing ename at the newly allocated addr copy
+and it is modified by a temp variable. But the compiler complains that the
+temp variable discards the const (which it does).
 
-While here, drop the third argument from the F_GETPIPE_SZ call next to it.
-That command takes no argument and returns the size, so the pointer was
-never read and the return value was already being used.  The branch it fed
-was unreachable: F_GETPIPE_SZ never returns zero on success.
+Instead of playing games with the const ename, use a new char *aname
+variable to copy the addr with and do the updates. Then set ename to point
+to this variable when the event name doesn't exist.
 
-Fixes: e34cbd83f6d3 ("libtracefs: Increase splice to use pipe max size")
-Signed-off-by: Li Pengfei <lipengfei28@xiaomi.com>
+By initializing aname to NULL it can always be freed without having to
+test if event is defined or not. This removes having to typecast ename to
+free it too.
+
+Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
 ---
-Changes since v1:
-- Drop both comments.  They described what the fix changed rather than
-  anything the code needs explained afterwards.
-- Add the Fixes tag, which v1 was missing.
+ src/tracefs-kprobes.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
- src/tracefs-record.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
-
-diff --git a/src/tracefs-record.c b/src/tracefs-record.c
-index 21a2f6b..f5197c4 100644
---- a/src/tracefs-record.c
-+++ b/src/tracefs-record.c
-@@ -554,20 +554,19 @@ static int init_splice(struct tracefs_cpu *tcpu)
+diff --git a/src/tracefs-kprobes.c b/src/tracefs-kprobes.c
+index 09b09d7ace04..2297d078b330 100644
+--- a/src/tracefs-kprobes.c
++++ b/src/tracefs-kprobes.c
+@@ -27,6 +27,7 @@ kprobe_alloc(enum tracefs_dynevent_type type, const char *system, const char *ev
+ 	struct tracefs_dynevent *kp;
+ 	const char *sys = system;
+ 	const char *ename = event;
++	char *aname = NULL;
+ 	char *tmp;
  
- 	if (tfs_str_read_file("/proc/sys/fs/pipe-max-size", &buf, false) > 0) {
- 		int size = atoi(buf);
--		fcntl(tcpu->splice_pipe[0], F_SETPIPE_SZ, &size);
-+		fcntl(tcpu->splice_pipe[0], F_SETPIPE_SZ, size);
- 		free(buf);
+ 	if (!addr) {
+@@ -37,17 +38,17 @@ kprobe_alloc(enum tracefs_dynevent_type type, const char *system, const char *ev
+ 		sys = KPROBE_DEFAULT_GROUP;
+ 
+ 	if (!event) {
+-		ename = strdup(addr);
+-		if (!ename)
++		aname = strdup(addr);
++		if (!aname)
+ 			return NULL;
+-		tmp = strchr(ename, ':');
++		tmp = strchr(aname, ':');
+ 		if (tmp)
+ 			*tmp = '\0';
++		ename = aname;
  	}
  
--	ret = fcntl(tcpu->splice_pipe[0], F_GETPIPE_SZ, &tcpu->pipe_size);
-+	ret = fcntl(tcpu->splice_pipe[0], F_GETPIPE_SZ);
- 	/*
- 	 * F_GETPIPE_SZ was introduced in 2.6.35, ftrace was introduced
- 	 * in 2.6.31. If we are running on an older kernel, just fall
--	 * back to using subbuf_size for splice(). It could also return
--	 * the size of the pipe and not set pipe_size.
-+	 * back to using subbuf_size for splice().
- 	 */
--	if (ret > 0 && !tcpu->pipe_size)
-+	if (ret > 0)
- 		tcpu->pipe_size = ret;
--	else if (ret < 0)
-+	else
- 		tcpu->pipe_size = tcpu->subbuf_size;
+ 	kp = tfs_dynevent_alloc(type, sys, ename, addr, format);
+-	if (!event)
+-		free((char *)ename);
++	free(aname);
  
- 	tcpu->splice_read_flags = SPLICE_F_MOVE;
+ 	return kp;
+ }
 -- 
-2.34.1
+2.53.0
 
