@@ -1,98 +1,60 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=74.125.224.52
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794135780;
-	b=oChORGjIK6Z5QRNiIfcPZ6N1WrxffwpRm2zA/bzeGwkW62UMd54R1ukEl26x6fzRqQYJ
-	 0jipkHXnLjJR8KeofPIsgiw2AAi7DjoFJ/mIpC9fQzDQ0TobcO54QCuypWZ3cBiuHOvHS
-	 WUHRUhPgW8+R1GOWlznUwe64rb1gx4Lrl6dCDVtixAfnYn1lClVoofUSha9T443ZquCRd
-	 Kz1vBqs2RzC8ZdfKs4SkD/6XdmnJ08kQC3TN3bkoLiUyDRO0CQeo2KMEfqIxocVsgd2wh
-	 waawN0W3WetXiQUb63IUSMynqaeWIvSVzYRf3RSwr7mHdn2t1nD2OxMAP8g5xSM+IlQ==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794135780;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Gm-Gg:X-Received:MIME-Version:References:
-	 In-Reply-To:From:Date:X-Gm-Features:Message-ID:Subject:To:Cc:
-	 Content-Type;
-	bh=5KoAx1FxhlqEIzMjLSzsW7Qwnu8VWqxD4lLfZukB4/g=;
-	b=X73bZM47AdZvV9hfqLraO3av/cpyk6FtE76aJ/rvXAWg6xtPE3+cne4GnfJrba/V5z3c
-	 WntIEZv1VvKDWyVNqwTKaIyQyxp2xwYGIZzSiGr8i+NsCEhwq+QX7w/vNovDX+nTM76cY
-	 kS1PdIsX/M2jHmJPaxqqz9cawKRrtTZxfJqMZ7N3G6pNJHeluKHrv9HBPsbdCkSMlIz2i
-	 QvCsxOJ/ZdX09OOFk8NVuWzHm8iAqWxCEw96dhqbVRS1FXPUl3CPngN4HvkM2cn1veELn
-	 WVOUHVAug8qNvj9yA4nGZ/SrTI2tnsOHH409j951Ia+g4FZJ3ME0cOb2iEBcvCbzKfQ==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=m+JuBnHs;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=74.125.224.52
-Received: from mail-yx1-f52.google.com (mail-yx1-f52.google.com [74.125.224.52])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=62.149.158.147
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1794220018;
+	b=gtL4yUpcqqXyUtmdSs4sgGhtdVMuvBHtrU7/COQxMRxRhlRobu58jzuTVP1XM2Pg9HtW
+	 vJFWaLO0upJSOr4nhaX7tYzGTjRltFgqcyvcANg0FvYT0l0ebDe2zx4m98+fAdCIWxlUd
+	 19c1P7YnoMUnerXB0VREI4QTYrMLsJR+eR6qJDVGyrx8v+rK0zi/qot16Ovbj+dHILrhn
+	 KV9XaDisO2nlvuDuBRh0nhof4LmSeE5PMvpz3tJLI5qikEHUvPx69lBQsRK7/evGxlh9j
+	 KY7qRx+Bm+20H5dvxA5BqGKlnpq9Yb5dUWQziJm9ClYiJPvqbzMKKAvEHMHI+8UbV2A==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794220018;
+	h=DMARC-Filter:Received:DKIM-Signature:From:To:Cc:Subject:Date:
+	 Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
+	 Content-Transfer-Encoding:X-CMAE-Envelope;
+	bh=ML7PQQ94orp3PdX1iko+Fg7ycaqrATyxcY+8hmFtLo8=;
+	b=V6QhEEYtLM7GFVaN69Huxto1ZO2MotifOi94E0DArs+zQUE8zJ3ccz2FWK83I2LLoJ+b
+	 IP+KF4IRCRMgbi8/jmrSvRjYZTplkPt0jl4peVNDlW/LHXdXtQ0lNsqtezYx4VO/2tbRf
+	 VNpTyF5kI9iOQj8l/9sZ0z+U7mP790gzYBp6TffnqbbBVBnIGUMsr4hD63/BlzA5tavDC
+	 vw6+j5IJG6QzVmGmElN6yft9kqz/azxOVHsbwQfu+X347o9ZwrX86jDyO8do164THy+XP
+	 sU8Z6yb6AV1LKiSE+kBjtFhIDYRF5uva1+mldLCB8M5GbjhVcTvAhboVazzBgwvlxOA==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=benettiengineering.com;
+	spf=pass smtp.mailfrom=benettiengineering.com;
+	dkim=pass header.d=aruba.it header.i=@aruba.it header.a=rsa-sha256 header.s=a1 header.b=hBC6lR5J;
+	arc=none smtp.remote-ip=62.149.158.147
+Received: from smtpweb147.aruba.it (smtpweb147.aruba.it [62.149.158.147])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC532606A31C
-	for <linux-trace-devel@vger.kernel.org>; Sun,  8 Nov 2026 11:02:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org CC532606A31C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1616D606A321
+	for <linux-trace-devel@vger.kernel.org>; Mon,  9 Nov 2026 10:26:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 1616D606A321
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=benettiengineering.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=benettiengineering.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=m+JuBnHs
-Received: by mail-yx1-f52.google.com with SMTP id 956f58d0204a3-66fc7e0ab25so166d50.0
-        for <linux-trace-devel@vger.kernel.org>; Sun, 08 Nov 2026 03:02:59 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1794135779; cv=none;
-        d=google.com; s=arc-20260327;
-        b=qhu8us2ynAg+GoCE+TWltnjf9DDYliB9z9wSsNy5aPDi1KxdITbEX+xQaJE9ni2tQg
-         NQaFQUV+mdKWaxFzkOB2Ery547hHDt1wVr6XkI+o1wwXZ/nLNEx2aTQm2kREVGU+baH8
-         vIAhxLFZSeLtHV0+dRtrsb60Y6EqCUz97qfvhMzxJs7Gsc9JGfqqP7J8NpN7RcnPRWft
-         fZP/QSTrwnyD4TGNeVk1v5fuOm9FLGruid0Wb60eRnB+8rBbwqe2P6zUpBvNtk86usW9
-         SfBjZcO92dzVQr2AdQojG1DZkZCgUUzLT7vw2JOz/RV5fwU3QqRpAtketClWlnugVFUN
-         pwUg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature;
-        bh=5KoAx1FxhlqEIzMjLSzsW7Qwnu8VWqxD4lLfZukB4/g=;
-        fh=jXNTMpgLrQ+IoSG+YU+ClMKPuQbYdElqaX/erLz3aOM=;
-        b=ZjUOUjtxOPqykVCBtQKSEUtaZVIZ89+SFu6l+xpGktRuDLKnXipyFMl8+JmVv9T7up
-         n6TYImx+mXKhNySW9KeGY5L8HyCmRQm8tmoAT0EsfZyUqUcxKGCBxkOMfOdMj5+jK3Jp
-         Z+ZKJg2XLoxAO/yR9q5qN5FVOe2tBg0m83+IydrGTPea9Hwyy2BwAUv+u0f3YMd+juu3
-         7/SoJMZQUFTT8Ugkpq0EcECTvTbHUkzRv+/En2Ch4+/Qq+mItGMYSrUGqw+VJ6/Tn4LB
-         eqJ/3gJvFvXPDcgxenbuAPsVG+LSzMr2clNcKr0T4mI2SOkliWYeSRM3jHfBIyWnC5hD
-         tnDg==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794135779; x=1794740579; darn=vger.kernel.org;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=5KoAx1FxhlqEIzMjLSzsW7Qwnu8VWqxD4lLfZukB4/g=;
-        b=m+JuBnHsAl2MgOAG2S5wiPeHYjQsm+2lwXSWoGZwihVEW+NDR2142aoXjAEvOi95oY
-         WpwcNljwhVfUQxbuqxZIXUpS0zL/6Rsi4g4wEYXFI53o3RY7iYyeRJIYp69iAUTa2oBn
-         e/URzlybjEPDQKJqTXXNT5L6t6RoLI9OxeUbOjPgTRc6T05UonAlNVM/eS+gel/UVYck
-         OyyzTvKnDL2tfG0sE6bNZ6UcYCUebiC3OUBcIhxwy3samN3xwB2ZRAV4HabTHqHKxUfX
-         z0Zp7E1/n4HCkVRHirFJgwo+6fxO1NfPKQzPG7OmTels8L05y9ajEn4NyrJ3GWUSHNJm
-         kyVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794135779; x=1794740579;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=5KoAx1FxhlqEIzMjLSzsW7Qwnu8VWqxD4lLfZukB4/g=;
-        b=v5lgeknOhAWMvovUhxK5aTOOPoNzJ0LH887RmFTZ+6IaldmMvk/UcorsyTdyYtUF2u
-         PIoHaDX5LUlg7OMCAzRULk+AiG/8Ip/6CBYOpsOkdLu4nORJuUYQPNUQyzj2rujGPIg2
-         rZ4S1q86irwn5ccyhOuWTGx5o9hBqqzrdRQnH2FupBzFvQQk3fPgsSLI9VCQU9rFbP3k
-         /pnrlag4OW7+5vo5hGkBJSvgnk7BmYUVCX/3TpYa4wEV15PTkFFUYmG+0W75xz40kCMJ
-         xp6OMlPOtyha423HEJBgMppqaWYx+4hwaY5pgjDh8jgwVdaf6AKcyTCkE8szs8YI0nOe
-         6VqA==
-X-Gm-Message-State: APuU4Z/HSdWc+xlrUvmJ/EnWmD09r8+h1JTLKvmifPYDfxVHt6qbgLhz
-	ShpCTO2Hq9WUOjkAdVzY+fqkDEbq6l7Uqkn1eHlUh8wNamIh7QeDAJ1OLtxHFbixv13BaIlN1Tu
-	XEO45gwOg/HCca9S83U6K1bZlKbBDsNA=
-X-Gm-Gg: AYBFou1TQhWMJdXe2hcwlbo3bGU4TudIlMRrRfM5/foFzpXte/MtVLB/8L77g3HUIUf
-	NrMOs0M4guaFsGKqKRgDcGjqbd9NBGs00Q5rlQvj7lXbYGjJthvwBSI0kTfPulBKn/sBL5GaXV3
-	ey5zaXAp6UiYYEkHUDQ4JG/LZWVBoSIOzAklNm755GssMohwvzez93MOc+Orx99H614Cv/lz8XR
-	ynoQsaC0dHGYRwuTeAlT88JqDZPOaGtBbYCKENN1tvTwvnIjtuZmgcJbT3O48sGq6+PTWZJQxmK
-	yCPRmk0ZWgdM3sYBOLyfzjUxTKCIZdhZjs4gvw0mJXCr5oIjsHifh/IWiL0Y9zuoXnV0kRjTGq6
-	mUJmJPe/1ruj+XTpBr2m6on8vy0tVCWDpuOKlMHJKHwO/MyRbpWN2E/gKPQQ=
-X-Received: by 2002:a05:690c:4d8a:b0:8ab:3f98:28d2 with SMTP id
- 00721157ae682-8b36c6971dcmr13286967b3.0.1794135778757; Sun, 08 Nov 2026
- 03:02:58 -0800 (PST)
+	dkim=pass (2048-bit key, unprotected) header.d=aruba.it header.i=@aruba.it header.a=rsa-sha256 header.s=a1 header.b=hBC6lR5J
+Received: from localhost.localdomain ([151.95.84.63])
+	by Aruba SMTP with ESMTPSA
+	id QMaNxr6BsyeI3QMaOxL0CK; Mon, 09 Nov 2026 11:26:48 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+	t=1794220008; bh=3fkpiJsPXqeIFVQatgS2XXzGpGTe37Rde9XGBD3/LIs=;
+	h=From:To:Subject:Date:MIME-Version;
+	b=hBC6lR5JLmrv6kW4T7TnHAfQ6N9Brrm0PbmW6QgmYjOTpZtYRPpJLPMBxtUquM/Il
+	 GjYIJr48V2s1DQuHQT40YT9C31/0NAGvBh8HBVkQK2XOxoZqDsGOAVhnXiDmgr/eLF
+	 VjsuhQ6UY3dIot9O298zpDXElUtG6pW58pAgQRm1smNM73aUeA0q/CLM5LVFw12l/o
+	 zCT7AnlUeXeHS2yrrZLi6vJOSn3pn0FcYFisXUaiMzU4zVrnJmF9QmDOdHly7ZOp8s
+	 Ersf02bmI0KGRZszSQLmSO1nWrqSJJ+RojIIpK0WcPQ4lJwyzqABUkfPlZcyv7/lk0
+	 01L1pFKLrZwMg==
+From: Giulio Benetti <giulio.benetti@benettiengineering.com>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-trace-devel@vger.kernel.org,
+	Giulio Benetti <giulio.benetti@benettiengineering.com>
+Subject: [PATCH v4] libtraceevent: Fix build failure due to btf on Linux < 6.0
+Date: Mon,  9 Nov 2026 11:26:47 +0100
+Message-ID: <20261109102647.331565-1-giulio.benetti@benettiengineering.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20261107162956.3304797b@fedora>
+References: <20261107162956.3304797b@fedora>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Post: <mailto:linux-trace-devel@vger.kernel.org>
@@ -102,76 +64,149 @@ List-Unsubscribe: <mailto:linux-trace-devel+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-trace-devel+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <20260526184219.408223-1-sudipm.mukherjee@gmail.com>
- <20260529144124.14954a5f@fedora> <CADVatmMUERxEkbURZuZfTw+UYB2YCMVxK9nvc-z-u5kKNHxM=g@mail.gmail.com>
- <20260616164812.5ecda840@fedora> <au9QwCTKOwBCZ7f-@debian> <20261107162022.65256a9d@fedora>
-In-Reply-To: <20261107162022.65256a9d@fedora>
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Date: Sun, 8 Nov 2026 11:02:21 +0000
-X-Gm-Features: AclHuK8MqkS3xBw4wBWFB1SI3oVaP8yu33wU3GsW4eKqbOfEA1aF4_iCgPk0cO4
-Message-ID: <CADVatmP=VDpyw89GUPaoJ94+4roHQxwvENvj3fwSNnczK_9sJQ@mail.gmail.com>
-Subject: Re: [PATCH] libtraceevent utest: exit test if mmap fails
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-trace-devel@vger.kernel.org, Emil Thorsoe <ethorsoe@tuxera.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfN/JsH3qHobtI+pgipLFxNI5PX7SsSSvcQJncWrbJ1zPklFKcdlM24EWPqxW3Z2CdYKqZTm4rnzm0V6toEiuozUn4XsQnnMmvuCDPkkhU2jCh81wDg1C
+ FjT+puai43gZZ9kDrmBOxNQrbt+BOGer5lc0VfmIf0y0qvzn9w0OaLqbmkUtgCsK+46ukcVPO5dmWemMjWuUyTxhSiYk0PMd3bjF067QPIDTxtuscQUN6D1S
+ e1aWVliGbga85sVmhOKNa67zKETAPy28G6ce1TFtP+LBTLQqi6gQrbTyQL9Q/DZn4Wo0/s0uNd3ADdSOI4maXa0Q9IpcDXli56bquBzy2rU=
 
-On Sat, 7 Nov 2026 at 21:20, Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Sat, 7 Nov 2026 16:24:32 +0000
-> Sudip Mukherjee <sudipm.mukherjee@gmail.com> wrote:
->
-> > Hi Steve,
-> >
-> > On Tue, Jun 16, 2026 at 04:48:12PM -0400, Steven Rostedt wrote:
-> > > On Mon, 15 Jun 2026 20:25:08 +0100
-> > > Sudip Mukherjee <sudipm.mukherjee@gmail.com> wrote:
-> > >
-> > > > Hi Steve,
-> > > >
-> > > > On Fri, 29 May 2026 at 19:41, Steven Rostedt <rostedt@goodmis.org> wrote:
-> > > > >
-> > > > > On Tue, 26 May 2026 19:42:19 +0100
-> > > > > Sudip Mukherjee <sudipm.mukherjee@gmail.com> wrote:
-> > > > >
-> > > > > > CU_TEST() continues execution even if the test fails. It just records
-> > > > > > that the test has failed and moves on.
-> > > > > > So, when libtraceevent is built in a chroot, it can open
-> > > > > > /sys/kernel/btf/vmlinux but fails in mmap stage and since CU_TEST()
-> > > > > > does not stop so we get a segfault when tep_load_btf() tries to use
-> > > > > > the mapped buffer.
-> > > > > >
-> > > > > > Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-> > > > >
-> > > > > Thanks, but the real fix is here and I'm applying that one:
-> > > > >
-> > > > >   https://lore.kernel.org/all/d6e07cd6-cb78-4119-a048-920ca58b4830@tuxera.com/
-> > > >
-> > > > Tried it today, and the test still fails for me.
-> > >
-> > > Thanks for letting me know. I currently just started a new job and I'm
-> > > a bit overwhelmed. It may be a couple more weeks before I get to this.
-> >
-> > Not sure if you had a chance to look at it. I was looking at it now while
-> > updating the Debian package. It seems like btf_init() is failing when its
-> > doing if (btf->hdr->hdr_len < sizeof(*btf->hdr)). Adding a debug there shows,
-> > btf->hdr->hdr_len is 24 whereas sizeof(*btf->hdr) is 32.
-> >
-> > Tried on a chroot and also on a VM, both shows the same problem in Debian.
-> >
->
-> Bah, because I thought the fix was elsewhere I marked it as
-> "superseded" and forgot I did that. When you said it was different, I
-> was traveling and didn't bother to check patchwork to reset it back to
-> New.
->
->    https://patchwork.kernel.org/project/linux-trace-devel/patch/20260526184219.408223-1-sudipm.mukherjee@gmail.com/
+With commit:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6089fb325cf737eeb2c4d236c94697112ca860da
+enum BTF_KIND_ENUM64 has been firstly introduced and this is the latest
+BTF_KIND_* enumaration to be added to libtraceevent. So let's check
+in runtime, both in Makefile and meson, if BTF_KIND_ENUM64 does exist
+as well as struct btf_enum64 members name_off, val_lo32, val_hi32 to
+make sure the entire enum64 facility is defined and guard for NO_BTF
+selectively in trace-btf.c.
+If it's not there let's disable btf support.
 
-The  patch which superseded it seems to be correct, mmap fails and it
-copies the content to a buffer and uses that buffer.
-But for some reason the len and size does not match. So decided to
-flag it to you instead of disabling the test in Debian package. So, it
-should ideally be a new issue.
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Co-authored-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
+Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
+---
+V1->V2:
+* fixed meson check and all bft C source
+V2->V3:
+* check struct parameters other than only BTF_KIND_ENUM64
+V3->V4:
+* add "libtraceevent:" prefix to subject
+* move #include <linux/btf.h> into the #else branch of #ifdef NO_BTF
+* drop leftover debug code (tee /tmp/t.c and early return -1 in btf_type_size())
+---
+ Makefile        | 30 +++++++++++++++++++++++-------
+ src/meson.build | 14 ++++++++++++++
+ src/trace-btf.c |  8 ++++++--
+ 3 files changed, 43 insertions(+), 9 deletions(-)
 
+diff --git a/Makefile b/Makefile
+index 8a7a1dd..b7d9b25 100644
+--- a/Makefile
++++ b/Makefile
+@@ -27,6 +27,13 @@ $(call allow-override,PKG_CONFIG,pkg-config)
+ $(call allow-override,LD_SO_CONF_PATH,/etc/ld.so.conf.d/)
+ $(call allow-override,LDCONFIG,ldconfig)
+ 
++# Set compile option CFLAGS
++ifdef EXTRA_CFLAGS
++  CFLAGS ?= $(EXTRA_CFLAGS)
++else
++  CFLAGS ?= -g -Wall
++endif
++
+ EXT = -std=gnu99
+ INSTALL = install
+ 
+@@ -37,6 +44,22 @@ INSTALL = install
+ DESTDIR ?=
+ DESTDIR_SQ = '$(subst ','\'',$(DESTDIR))'
+ 
++test-build = $(if $(shell sh -c 'echo "$(1)" | \
++	$(CC) -o /dev/null -x c - > /dev/null 2>&1 && echo y'), $2)
++
++define BTF_LATEST_SOURCE
++#include <linux/btf.h>
++int main(void) { struct btf_enum64 e = {}; \
++		 return e.name_off + e.val_lo32 + e.val_hi32 + \
++			BTF_KIND_ENUM64; }
++endef
++
++BTF_OK := $(call test-build,$(BTF_LATEST_SOURCE),y)
++
++ifneq ($(strip $(BTF_OK)), y)
++CFLAGS += -DNO_BTF
++endif
++
+ LP64 := $(shell echo __LP64__ | ${CC} ${CFLAGS} -E -x c - | tail -n 1)
+ ifeq ($(LP64), 1)
+   libdir_relative_temp = lib64
+@@ -123,13 +146,6 @@ INCLUDES = -I. -I $(srctree)/include -I $(EP_HEADERS_DIR) $(CONFIG_INCLUDES)
+ 
+ export LIBTRACEEVENT_STATIC LIBTRACEEVENT_SHARED EP_HEADERS_DIR
+ 
+-# Set compile option CFLAGS
+-ifdef EXTRA_CFLAGS
+-  CFLAGS := $(EXTRA_CFLAGS)
+-else
+-  CFLAGS := -g -Wall
+-endif
+-
+ LIBS ?= -ldl
+ export LIBS
+ 
+diff --git a/src/meson.build b/src/meson.build
+index 3a7a082..0fa5a5f 100644
+--- a/src/meson.build
++++ b/src/meson.build
+@@ -17,6 +17,20 @@ sources= [
+ cc = meson.get_compiler('c')
+ dl_dep = cc.find_library('dl')
+ 
++btf_enum64_test_code = '''
++#include <linux/btf.h>
++int main(void) {
++    struct btf_enum64 e = {};
++
++    return e.name_off + e.val_lo32 + e.val_hi32 +
++           BTF_KIND_ENUM64;
++}
++'''
++
++if not cc.compiles(btf_enum64_test_code, name : 'BTF_KIND_ENUM64 check')
++    add_project_arguments('-DNO_BTF', language : 'c')
++endif
++
+ libtraceevent = library(
+     'traceevent',
+     sources,
+diff --git a/src/trace-btf.c b/src/trace-btf.c
+index 2d66e01..2152f4c 100644
+--- a/src/trace-btf.c
++++ b/src/trace-btf.c
+@@ -8,8 +8,6 @@
+ #include <stdlib.h>
+ #include <stdbool.h>
+ 
+-#include <linux/btf.h>
+-
+ #include "event-parse.h"
+ #include "event-utils.h"
+ #include "event-parse-local.h"
+@@ -29,6 +27,11 @@ struct tep_btf {
+ 	void			*raw_data;
+ };
+ 
++#ifdef NO_BTF
++void btf_free(struct tep_btf *btf) {}
++#else
++#include <linux/btf.h>
++
+ #define REALLOC_SIZE (1 << 10)
+ #define REALLOC_MASK (REALLOC_SIZE - 1)
+ 
+@@ -665,3 +668,4 @@ int tep_btf_print_args(struct tep_handle *tep, struct trace_seq *s, void *args,
+ 	}
+ 	return 0;
+ }
++#endif
 -- 
-Regards
-Sudip
+2.47.3
+
