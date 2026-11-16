@@ -1,60 +1,87 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=62.149.158.147
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=148.163.156.1
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794220018;
-	b=gtL4yUpcqqXyUtmdSs4sgGhtdVMuvBHtrU7/COQxMRxRhlRobu58jzuTVP1XM2Pg9HtW
-	 vJFWaLO0upJSOr4nhaX7tYzGTjRltFgqcyvcANg0FvYT0l0ebDe2zx4m98+fAdCIWxlUd
-	 19c1P7YnoMUnerXB0VREI4QTYrMLsJR+eR6qJDVGyrx8v+rK0zi/qot16Ovbj+dHILrhn
-	 KV9XaDisO2nlvuDuBRh0nhof4LmSeE5PMvpz3tJLI5qikEHUvPx69lBQsRK7/evGxlh9j
-	 KY7qRx+Bm+20H5dvxA5BqGKlnpq9Yb5dUWQziJm9ClYiJPvqbzMKKAvEHMHI+8UbV2A==
+	t=1794873433;
+	b=RU8DJqOBYKHkzpMHBpG/3W8JDrrD9KfL2cZ5JI59ixMOpMzBd4unT5eTsSqMxDGIxKll
+	 g2BqcCoqZsQO8Fpv7p28eNUGLMWlDZBNdaTpyxaoO+4QgiKlWTViJ+u6lA+YKP1edmGl+
+	 MyubiKH8e2CiDS08BpvcdDM62kTaUipmvasIQBXDdsvs4LVTONSVAOlZbToXwGISskkAy
+	 x9oqvyWLtKZu/FdubHEvfQ5s3zioH5hXgcW1y2/j03vpHXzdjqzzL12SqBCGt2B4sntR7
+	 Ct3TNaVYnqm89x2D/yw4vXxwcus2py80gyR12I6X59eVMatkicrl8yKocSEqvWyVctw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794220018;
-	h=DMARC-Filter:Received:DKIM-Signature:From:To:Cc:Subject:Date:
+	a=rsa-sha256; c=relaxed/relaxed; t=1794873433;
+	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:Received:
+	 Received:Received:Received:Received:From:To:Cc:Subject:Date:
 	 Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding:X-CMAE-Envelope;
-	bh=ML7PQQ94orp3PdX1iko+Fg7ycaqrATyxcY+8hmFtLo8=;
-	b=V6QhEEYtLM7GFVaN69Huxto1ZO2MotifOi94E0DArs+zQUE8zJ3ccz2FWK83I2LLoJ+b
-	 IP+KF4IRCRMgbi8/jmrSvRjYZTplkPt0jl4peVNDlW/LHXdXtQ0lNsqtezYx4VO/2tbRf
-	 VNpTyF5kI9iOQj8l/9sZ0z+U7mP790gzYBp6TffnqbbBVBnIGUMsr4hD63/BlzA5tavDC
-	 vw6+j5IJG6QzVmGmElN6yft9kqz/azxOVHsbwQfu+X347o9ZwrX86jDyO8do164THy+XP
-	 sU8Z6yb6AV1LKiSE+kBjtFhIDYRF5uva1+mldLCB8M5GbjhVcTvAhboVazzBgwvlxOA==
+	 Content-Transfer-Encoding:X-TM-AS-GCONF:X-Proofpoint-Spam-Info:
+	 X-Authority-Analysis:X-Proofpoint-Spam-Details-Enc:X-Proofpoint-GUID:
+	 X-Proofpoint-ORIG-GUID:X-Proofpoint-Virus-Version:
+	 X-Proofpoint-Spam-Details;
+	bh=yWwL6CRocQOXkP/YF1HJOwUZtgxlc1fXafseNapHPqo=;
+	b=r8KaNmAfi/7wbngb5EdW25Ybs3lBsrm9TCmyRS7YhhnmSmsBTPtwhUlRCguD164TcKHo
+	 4njQu75CaWhfsYDKLwA22jvthPxUyQkFwAGUs8jg9NAT5bZA82EeWh2WLFdcG6M3a+n5/
+	 hVZQJopaKePJxxVBPqGr0XzJIA8POdQ/qPgjR7HJD9byQrOV/rzgELNVNdh5qd0NV8HaW
+	 LPA90oP8pjzrmJCgLCitzLEcPfmN1yIQ9CCUa3/jZVxHsu2vPgNfmDkyfI54NtxjdKCSf
+	 x2pFvLLO2pk/6nONGDYRE86e4OrZtPsvp9AFLeZ/TtJ4P5qgWJsm09XZ6oC0pLbHhfw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=benettiengineering.com;
-	spf=pass smtp.mailfrom=benettiengineering.com;
-	dkim=pass header.d=aruba.it header.i=@aruba.it header.a=rsa-sha256 header.s=a1 header.b=hBC6lR5J;
-	arc=none smtp.remote-ip=62.149.158.147
-Received: from smtpweb147.aruba.it (smtpweb147.aruba.it [62.149.158.147])
+	dmarc=pass header.from=us.ibm.com;
+	spf=pass smtp.mailfrom=us.ibm.com;
+	dkim=pass header.d=ibm.com header.i=@ibm.com header.a=rsa-sha256 header.s=pp1 header.b=GkIgI43y;
+	arc=none smtp.remote-ip=148.163.156.1
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1616D606A321
-	for <linux-trace-devel@vger.kernel.org>; Mon,  9 Nov 2026 10:26:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 1616D606A321
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=benettiengineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=benettiengineering.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0B3D606A31C
+	for <linux-trace-devel@vger.kernel.org>; Mon, 16 Nov 2026 23:57:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C0B3D606A31C
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=us.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=us.ibm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=aruba.it header.i=@aruba.it header.a=rsa-sha256 header.s=a1 header.b=hBC6lR5J
-Received: from localhost.localdomain ([151.95.84.63])
-	by Aruba SMTP with ESMTPSA
-	id QMaNxr6BsyeI3QMaOxL0CK; Mon, 09 Nov 2026 11:26:48 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-	t=1794220008; bh=3fkpiJsPXqeIFVQatgS2XXzGpGTe37Rde9XGBD3/LIs=;
-	h=From:To:Subject:Date:MIME-Version;
-	b=hBC6lR5JLmrv6kW4T7TnHAfQ6N9Brrm0PbmW6QgmYjOTpZtYRPpJLPMBxtUquM/Il
-	 GjYIJr48V2s1DQuHQT40YT9C31/0NAGvBh8HBVkQK2XOxoZqDsGOAVhnXiDmgr/eLF
-	 VjsuhQ6UY3dIot9O298zpDXElUtG6pW58pAgQRm1smNM73aUeA0q/CLM5LVFw12l/o
-	 zCT7AnlUeXeHS2yrrZLi6vJOSn3pn0FcYFisXUaiMzU4zVrnJmF9QmDOdHly7ZOp8s
-	 Ersf02bmI0KGRZszSQLmSO1nWrqSJJ+RojIIpK0WcPQ4lJwyzqABUkfPlZcyv7/lk0
-	 01L1pFKLrZwMg==
-From: Giulio Benetti <giulio.benetti@benettiengineering.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-trace-devel@vger.kernel.org,
-	Giulio Benetti <giulio.benetti@benettiengineering.com>
-Subject: [PATCH v4] libtraceevent: Fix build failure due to btf on Linux < 6.0
-Date: Mon,  9 Nov 2026 11:26:47 +0100
-Message-ID: <20261109102647.331565-1-giulio.benetti@benettiengineering.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20261107162956.3304797b@fedora>
-References: <20261107162956.3304797b@fedora>
+	dkim=pass (2048-bit key, unprotected) header.d=ibm.com header.i=@ibm.com header.a=rsa-sha256 header.s=pp1 header.b=GkIgI43y
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 6AGNQ5mA581991
+	for <linux-trace-devel@vger.kernel.org>; Mon, 16 Nov 2026 23:57:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:date:from:in-reply-to:message-id
+	:mime-version:references:subject:to; s=pp1; bh=yWwL6CRocQOXkP/YF
+	1HJOwUZtgxlc1fXafseNapHPqo=; b=GkIgI43yEb2ag4cWrypAXB5/lZejny/jI
+	nyDEy62BPDPaGfL7380+rzYH53VGUw6sETc5aAX4iCGSHaSaWfCpR3JVWtINvhM0
+	8tGYwrRIUM3tDtKxIQTo8ufcYP/dETLg61XPImofFUN90QT/glb+vE7QEe6VE99y
+	ubxNrfxKzqgoHAqKofiVvOyc3qZP/TiXoClDXNTBFFD5q4UFj/byiJ09QuTW3owZ
+	/UL5/Y6FDyMh6V/X/+IyeCV9Z3kw9fLHC9hO3iToXsCa2jk0Yl9rMZut4uXK6yrw
+	CYkeRY9X7c0zgSrxe98BT56wn+QnE8YRGZWbecuAyz3OXjD/EeRjg==
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4hxfc50cuf-1
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT)
+	for <linux-trace-devel@vger.kernel.org>; Mon, 16 Nov 2026 23:57:11 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.18.1.11/8.18.1.11) with ESMTP id 6AGNYrF72684511
+	for <linux-trace-devel@vger.kernel.org>; Mon, 16 Nov 2026 23:57:11 GMT
+Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4j067n99fa-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+	for <linux-trace-devel@vger.kernel.org>; Mon, 16 Nov 2026 23:57:10 +0000 (GMT)
+Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
+	by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 6AGNv8W228246764
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 16 Nov 2026 23:57:08 GMT
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 6957D58061;
+	Mon, 16 Nov 2026 23:57:08 +0000 (GMT)
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 4FF4558060;
+	Mon, 16 Nov 2026 23:57:08 +0000 (GMT)
+Received: from ubuntu-server.ibm.com (unknown [9.61.151.57])
+	by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 16 Nov 2026 23:57:08 +0000 (GMT)
+From: Jamie Dolan <jldolan@us.ibm.com>
+To: linux-trace-devel@vger.kernel.org
+Cc: Jamie Dolan <jldolan@us.ibm.com>
+Subject: [PATCH] libtracefs utest: Fix buffer size in follow events clear test
+Date: Mon, 16 Nov 2026 17:53:49 -0600
+Message-ID: <20261116235650.21314-1-jldolan@us.ibm.com>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <39efe87bec205b7f809b8aa49db635b6465ee530.camel@canonical.com>
+References: <39efe87bec205b7f809b8aa49db635b6465ee530.camel@canonical.com>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Post: <mailto:linux-trace-devel@vger.kernel.org>
@@ -65,148 +92,68 @@ List-Owner: <mailto:linux-trace-devel+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfN/JsH3qHobtI+pgipLFxNI5PX7SsSSvcQJncWrbJ1zPklFKcdlM24EWPqxW3Z2CdYKqZTm4rnzm0V6toEiuozUn4XsQnnMmvuCDPkkhU2jCh81wDg1C
- FjT+puai43gZZ9kDrmBOxNQrbt+BOGer5lc0VfmIf0y0qvzn9w0OaLqbmkUtgCsK+46ukcVPO5dmWemMjWuUyTxhSiYk0PMd3bjF067QPIDTxtuscQUN6D1S
- e1aWVliGbga85sVmhOKNa67zKETAPy28G6ce1TFtP+LBTLQqi6gQrbTyQL9Q/DZn4Wo0/s0uNd3ADdSOI4maXa0Q9IpcDXli56bquBzy2rU=
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Info: AW1haW4tMjYxMTE2MDA5NSBTYWx0ZWRfXyvW7eKPE/gMz
+ LYcpzYlP9sKGjM1B4atIuH/FhX0V5u3BZ9dZXe+vimghbkJqpc5Cj2EepWKaA3NsRVl5c4kKuvu
+ RUcj3KqKD+2ioH3ewL/iKa/B2enuiqo=
+X-Authority-Analysis: v=2.4 cv=Fu6QbGrq c=1 sm=1 tr=0 ts=6afb9857 cx=c_pps
+ a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
+ a=zJRp6_cAMcgA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
+ a=U7nrCbtTmkRpXpFmAIza:22 a=danhDmx_AAAA:8 a=VnNF1IyMAAAA:8
+ a=sSvmSXybxLCSEcB7nqQA:9
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMTE2MDA5NSBTYWx0ZWRfX3ClhW2fhpWpK
+ xYHu7ri+tuidVckTMzmTmz6tv9JLJyEZrW+oLgr8JiS+Vm1FZsbtu24WVZNTFyjSMCBNYKCj8Up
+ TrS+Z/VYycwHJQv1DzwQ1qTDwMk5b1L4YV7ZdGFI4z1ya0gjH1/tCKmiIzB7e9M2cEj+bJ434+f
+ +XqEVEmIt9RHkowimpCuJQgjS5/CyD8l1OKxcAVV7h4pSDkS1tFql3P9ZCkdThDVst4k/gIetiF
+ DjuzfPkkawz3SlyhQaTYZEGT8QNYI5GLwZTaac64ioj5pRYsxBVTZH0dWgHczlUmLzNk2bJWuMr
+ yeisvIc/dUIMuMz7UXBoD+5baaZRkt4NqrCAS6Hptnl16ODJj8mHEz4BQUZnDiSizjh+uwiiWmq
+ 7dH64EgBn2vuR3ojf37imYDbOIwSRUne/QOjc3+TuhQnDWOTyjCUcJK4nrrfse2IAPLQ6J6/QDS
+ JEcOa3TzfOGPbHcqdfQ==
+X-Proofpoint-GUID: CFbf6icHwqyIoXDbDzBgjcxhIfwdKYiJ
+X-Proofpoint-ORIG-GUID: CFbf6icHwqyIoXDbDzBgjcxhIfwdKYiJ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.138,FMLib:17.12.100.49
+ definitions=2026-11-16_07,2026-11-16_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501 malwarescore=0 lowpriorityscore=0 adultscore=0 bulkscore=0
+ impostorscore=0 spamscore=0 suspectscore=0 phishscore=0 clxscore=1011
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2611040001 definitions=main-2611160095
 
-With commit:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6089fb325cf737eeb2c4d236c94697112ca860da
-enum BTF_KIND_ENUM64 has been firstly introduced and this is the latest
-BTF_KIND_* enumaration to be added to libtraceevent. So let's check
-in runtime, both in Makefile and meson, if BTF_KIND_ENUM64 does exist
-as well as struct btf_enum64 members name_off, val_lo32, val_hi32 to
-make sure the entire enum64 facility is defined and guard for NO_BTF
-selectively in trace-btf.c.
-If it's not there let's disable btf support.
+Commit 310b796 (libtracefs utest: Add better logic to cause
+missed events) reduced the buffer size to make missed
+events more likely during the follow events clear test.
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-Co-authored-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
-Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
+However, getpagesize() returns the page size in bytes, while
+tracefs_instance_set_buffer_size() expects the buffer size in
+kilobytes. This causes the buffer to be set 1024 times larger
+than intended, making it less likely to overflow and trigger
+missed events.
+
+Convert the buffer size from bytes to kilobytes to ensure
+the intended buffer size of 4 pages is used.
+
+Fixes: 310b7964c41f ("libtracefs utest: Add better logic to cause missed events")
+Bug: https://bugs.launchpad.net/ubuntu/+source/libtracefs/+bug/2172071
+
+Signed-off-by: Jamie Dolan <jldolan@us.ibm.com>
 ---
-V1->V2:
-* fixed meson check and all bft C source
-V2->V3:
-* check struct parameters other than only BTF_KIND_ENUM64
-V3->V4:
-* add "libtraceevent:" prefix to subject
-* move #include <linux/btf.h> into the #else branch of #ifdef NO_BTF
-* drop leftover debug code (tee /tmp/t.c and early return -1 in btf_type_size())
----
- Makefile        | 30 +++++++++++++++++++++++-------
- src/meson.build | 14 ++++++++++++++
- src/trace-btf.c |  8 ++++++--
- 3 files changed, 43 insertions(+), 9 deletions(-)
+ utest/tracefs-utest.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Makefile b/Makefile
-index 8a7a1dd..b7d9b25 100644
---- a/Makefile
-+++ b/Makefile
-@@ -27,6 +27,13 @@ $(call allow-override,PKG_CONFIG,pkg-config)
- $(call allow-override,LD_SO_CONF_PATH,/etc/ld.so.conf.d/)
- $(call allow-override,LDCONFIG,ldconfig)
+diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
+index e48232c..bbbcc84 100644
+--- a/utest/tracefs-utest.c
++++ b/utest/tracefs-utest.c
+@@ -1721,7 +1721,7 @@ static void test_instance_follow_events_clear(struct tracefs_instance *instance)
+ 	/* Shrink the buffer to make sure we have missed events */
+ 	page_size = getpagesize();
+ 	save_size = tracefs_instance_get_buffer_size(instance, 0);
+-	ret = tracefs_instance_set_buffer_size(instance, page_size * 4, 0);
++	ret = tracefs_instance_set_buffer_size(instance, (page_size * 4) / 1024, 0);
+ 	CU_TEST(ret == 0);
  
-+# Set compile option CFLAGS
-+ifdef EXTRA_CFLAGS
-+  CFLAGS ?= $(EXTRA_CFLAGS)
-+else
-+  CFLAGS ?= -g -Wall
-+endif
-+
- EXT = -std=gnu99
- INSTALL = install
- 
-@@ -37,6 +44,22 @@ INSTALL = install
- DESTDIR ?=
- DESTDIR_SQ = '$(subst ','\'',$(DESTDIR))'
- 
-+test-build = $(if $(shell sh -c 'echo "$(1)" | \
-+	$(CC) -o /dev/null -x c - > /dev/null 2>&1 && echo y'), $2)
-+
-+define BTF_LATEST_SOURCE
-+#include <linux/btf.h>
-+int main(void) { struct btf_enum64 e = {}; \
-+		 return e.name_off + e.val_lo32 + e.val_hi32 + \
-+			BTF_KIND_ENUM64; }
-+endef
-+
-+BTF_OK := $(call test-build,$(BTF_LATEST_SOURCE),y)
-+
-+ifneq ($(strip $(BTF_OK)), y)
-+CFLAGS += -DNO_BTF
-+endif
-+
- LP64 := $(shell echo __LP64__ | ${CC} ${CFLAGS} -E -x c - | tail -n 1)
- ifeq ($(LP64), 1)
-   libdir_relative_temp = lib64
-@@ -123,13 +146,6 @@ INCLUDES = -I. -I $(srctree)/include -I $(EP_HEADERS_DIR) $(CONFIG_INCLUDES)
- 
- export LIBTRACEEVENT_STATIC LIBTRACEEVENT_SHARED EP_HEADERS_DIR
- 
--# Set compile option CFLAGS
--ifdef EXTRA_CFLAGS
--  CFLAGS := $(EXTRA_CFLAGS)
--else
--  CFLAGS := -g -Wall
--endif
--
- LIBS ?= -ldl
- export LIBS
- 
-diff --git a/src/meson.build b/src/meson.build
-index 3a7a082..0fa5a5f 100644
---- a/src/meson.build
-+++ b/src/meson.build
-@@ -17,6 +17,20 @@ sources= [
- cc = meson.get_compiler('c')
- dl_dep = cc.find_library('dl')
- 
-+btf_enum64_test_code = '''
-+#include <linux/btf.h>
-+int main(void) {
-+    struct btf_enum64 e = {};
-+
-+    return e.name_off + e.val_lo32 + e.val_hi32 +
-+           BTF_KIND_ENUM64;
-+}
-+'''
-+
-+if not cc.compiles(btf_enum64_test_code, name : 'BTF_KIND_ENUM64 check')
-+    add_project_arguments('-DNO_BTF', language : 'c')
-+endif
-+
- libtraceevent = library(
-     'traceevent',
-     sources,
-diff --git a/src/trace-btf.c b/src/trace-btf.c
-index 2d66e01..2152f4c 100644
---- a/src/trace-btf.c
-+++ b/src/trace-btf.c
-@@ -8,8 +8,6 @@
- #include <stdlib.h>
- #include <stdbool.h>
- 
--#include <linux/btf.h>
--
- #include "event-parse.h"
- #include "event-utils.h"
- #include "event-parse-local.h"
-@@ -29,6 +27,11 @@ struct tep_btf {
- 	void			*raw_data;
- };
- 
-+#ifdef NO_BTF
-+void btf_free(struct tep_btf *btf) {}
-+#else
-+#include <linux/btf.h>
-+
- #define REALLOC_SIZE (1 << 10)
- #define REALLOC_MASK (REALLOC_SIZE - 1)
- 
-@@ -665,3 +668,4 @@ int tep_btf_print_args(struct tep_handle *tep, struct trace_seq *s, void *args,
- 	}
- 	return 0;
- }
-+#endif
+ 	tracefs_trace_on(instance);
 -- 
-2.47.3
+2.53.0
 
