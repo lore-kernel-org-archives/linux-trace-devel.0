@@ -1,68 +1,68 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.125.188.120
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794991230;
-	b=2E+pd4a9scpz9Huo1qnAxqSYMWdN82O3grhqsjMltOY3FBsutQ8BjHg85SRZZszAZVPk
-	 8w0ZDPtdBPDgbwbQMTJXZIBvXZB9zL3YlYoJPhk4tyOvbGicKCkp2kZlD/sNO4hRNB0eT
-	 eCy1Qf11ZjgaCnDG+vxz1hiJzSvJHKjIuAQQRFZvzWzutF1P2M2TkVD2B8+ITAKQ29tYd
-	 +GeRPCFuV1hcTL6ClNcHVkG+5BTywtsB93GYWLvjjTidwj/MZdf7FfIW7pF7/+y2m/N1f
-	 /DR95Kc3M+2iliuBZO+QwpFRpGDilFLpIv1v1OwygBeR+9yvg5OLbloA9DXN8vhwhVA==
+	t=1794991231;
+	b=vhE41OM04UDT+tPCjzOUS06nGVf4fLDR5H7Q/tWW9YmQ2cXgN9gTwaEypzDjKg3YPglV
+	 IRswkeCeTRtf2NnYFn8Ut6oiO32xd0ppq985UlajKoRdoWZmOyXoYR+fyFGv9jKKvRNE9
+	 Oa2zWMgZanwSdFfioqzFQk5a9lCrqL++vGTZo35lo/wCChWHf+2KHpZr0hJL1wkHaxeLs
+	 oHHDDSM5eqILaphPMlYY39HCSxUktyLWK4F+ZrV9hnlqxgDn4f+mPCy39cRi8sar2jumO
+	 7MVJH0mbkP1/hjWpVjFPI4IrMXj467shtpZCIBHlykJEBYu8wk/CsNgNmlxKwMZmJ1w==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794991230;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794991231;
 	h=DMARC-Filter:Received:DKIM-Signature:From:To:Cc:Subject:Date:
 	 Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=/SfLTcNIgEG9LMPzEIvqSJ8sQFaEThlTV5m+IPzEi8o=;
-	b=BT7R36lefsGYGhLXBCDUNX4K004t4A4jEx4mASnb9bPaSDaHCtmKZghH17BLmuyBkfh5
-	 YCiQpAgYKv75SCVl7OSd6YMN5gClXUutQin+t8drs2Fby0Ruwh/KwvWNsLw7cGl8eiMI9
-	 AUp+1ZRHHYrcb6GvYgARVZJ4JQQtstLM0NsHKasVl+EyGC/Lqv1/hZp9KkMX3pujMGPyZ
-	 QNgu25ArgAreet9kzvpZ2ZadEdNgwgglNdW25X9Vj/7+46NhFLupmyNF7RW02KiBiqzmk
-	 UUMfNTvSgfvIkdrUMLTlKcOpa0ZuW1atZ7RL+PFLGpJTyeton73CzW43t6KvTuURd6A==
+	bh=W/ou3KaESXVGvHX3LOzj8eece+EDQkorEz0rHXxOXpE=;
+	b=5YJpg/QaO25BfK871yiqd/x1e8jb/8Tkrvqq7apkt98JfQuac1tuKXbIIX3l+3EGn5m/
+	 ASJANCcfUXTiSHK59BVYUJlVoAV3gqwH8G4zEd6QaWmK76Nb2Bm2mt7V+60F5XoTCwdUI
+	 BjrCL9F7GFU27j7SCxbcZMWgZjw41ce3rHaBWIw2BQIfYIQN75fQb4LpbvoIvBpURuaY2
+	 LwzrizrGUkOwPgLCzFhbfKhyZQe0AN8Az8bo6B4a+/7d8fq+weu4NK1JiYvTiovygsDSk
+	 tp6Xu2jNlzM2BUoxRPnS4Ou2ZVMU5EHO33gjmo8ulRkqFOyEbA6BzChm/i5v+7AkgfA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=canonical.com;
 	spf=pass smtp.mailfrom=canonical.com;
-	dkim=pass header.d=canonical.com header.i=@canonical.com header.a=rsa-sha256 header.s=20251003 header.b=rvez40xm;
+	dkim=pass header.d=canonical.com header.i=@canonical.com header.a=rsa-sha256 header.s=20251003 header.b="MM7k/U7g";
 	arc=none smtp.remote-ip=185.125.188.120
 Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11FCF606A325
-	for <linux-trace-devel@vger.kernel.org>; Wed, 18 Nov 2026 08:40:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 11FCF606A325
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 612E8606A331
+	for <linux-trace-devel@vger.kernel.org>; Wed, 18 Nov 2026 08:40:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 612E8606A331
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=canonical.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.a=rsa-sha256 header.s=20251003 header.b=rvez40xm
+	dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.a=rsa-sha256 header.s=20251003 header.b=MM7k/U7g
 Received: from openrouter-r.lxd (2.general.fheimes.us.vpn [10.172.66.67])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id B5E1C4294A;
-	Wed, 18 Nov 2026 08:40:27 +0000 (UTC)
+	by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 1259142CD4;
+	Wed, 18 Nov 2026 08:40:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20251003; t=1794991228;
-	bh=/SfLTcNIgEG9LMPzEIvqSJ8sQFaEThlTV5m+IPzEi8o=;
+	s=20251003; t=1794991230;
+	bh=W/ou3KaESXVGvHX3LOzj8eece+EDQkorEz0rHXxOXpE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
 	 MIME-Version;
-	b=rvez40xmSUanzkgbxUNfb6gEtNXdI9KuLbilJ9jVmB6djtTwyJcguDY5qtxHGpCGu
-	 VeH3wTONLc7Np/ymVHuyjqT3k+EwBIGqAytc/4ywq7L7Z/sWU0t8EhcMAZYOtIPbrN
-	 qMgVd44akeujqKq0JcvHgCR7L3pMZNe2XiTijob/w2RKIlhtGSWwC4Ic5XvpCQNXyw
-	 RCixTCynNZqZ+U9zd6wCbf9RY9ZPuuIVktU8ON9QwvnN8MYNp4QCLUeUu/baY7Dj3q
-	 cyo9gyuvoBN/nwnLI9U4wkhwQo057imPr4Pwuzf/xNbgZOvguK3nA3gV43ID9FpyJ2
-	 JBKsK4b8yuT5ldx/UEXvuxi85vmFLSFDT0Bt9NNZfDKt7y3ngli5jB7rWCcpkd6Y++
-	 /H8k19bNQhQ/ax2rfbEiXZFjPBTA64or51Q9k/xT5tc/jBq92symSh0+5xkc4WrcsR
-	 BixViK8uoaTgAy/ESdPsOT48uc3PCc2ToNVbQ7UZ/MQ2S2b0sdo1VZNRx5nGTk4Rrg
-	 CdqPt6sRqRRtwvqsfAH9tvQaT275lnT/HAjfSv4vadBfyZpPCNi2EXFNbjgjFMHVFN
-	 +ery/sAcRnu6EKTHGtDjBKJ5/KlvZukWp9Rzo3FIENFnlume+SDr4ObEf+807E//Bw
-	 fnhFnWsy+QEW61MTEx2EG8+U=
+	b=MM7k/U7gxqJhaOO+WbXhyA++Mzj0VUinqVdE/GivUdyl9x06f7U003YeSPz3XyQQS
+	 JizOMlqISjYeP7Obq5DXWb5eUGour+73Xf0OJfAE45lya4qnz8i7ccZ8FPF+lz1aQq
+	 vPbILcq4yZn6B0hjGnx54EKNDaUsA52hsHC3Pk7ORC6uT7rNCtO8b+iLPl7r9WQCq2
+	 227B2BXCQ/dvcyrP8PnzSN8U0PAnEsaVolp91BKaSdVv4m7UskU3Xdycp+ziJel9rD
+	 D/4KNlgKbiSrlGZxzKTQ6e8ZKgJresoZ5UtI5k2b8Mn8L+HnjGfRH54zlo0U2dotyJ
+	 hDyXVx+iqQOWnAVApo0idIgwktQw/0tcYfXuXtJodQB0PQ+riUsJf2YKdA8odn9PRX
+	 l+i93MVEu3eImQ8BVB08DCYo9maYs/s4VO5Q3L58DN9ntWr6dgS55KlrF3OMJ710E9
+	 L21FE5w8sAet2qIfHOo30Sq/JmLxyKfghXL2HYg3UbjZhOHXcMumVLcce7DAEVj4Mc
+	 6eyC74SKyGNCLZDtUkaBxDIXzlrEtwCDvouDtblgbK+gBB8lZc+/PMJgMI/j1/3H0G
+	 UD4I/kPJhgTkKOF9jU1UmMLCEhWdLzh44xCWuVu3o1k+aNf7Lmb/9oEM29nMpbfYD9
+	 V4T0r6lKKy6C7b0QDlaNv55Q=
 From: Frank Heimes <frank.heimes@canonical.com>
 To: linux-trace-devel@vger.kernel.org
 Cc: Steven Rostedt <rostedt@goodmis.org>,
 	Benjamin Drung <benjamin.drung@canonical.com>,
 	Jamie Dolan <jldolan@us.ibm.com>
-Subject: [PATCH 1/2] kbuffer: Fix out-of-bounds write of missed events in kbuffer_read_buffer()
-Date: Wed, 18 Nov 2026 08:40:23 +0000
-Message-ID: <f9679ddfe2224258445c592e53d605b3a317d31f.1794988946.git.frank.heimes@canonical.com>
+Subject: [PATCH 2/2] libtraceevent utest: Add tests for kbuffer_read_buffer() with missed events
+Date: Wed, 18 Nov 2026 08:40:24 +0000
+Message-ID: <f7eba80f155db02863a6fdd8814cd200b9155d2e.1794988946.git.frank.heimes@canonical.com>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <cover.1794988946.git.frank.heimes@canonical.com>
 References: <cover.1794988946.git.frank.heimes@canonical.com>
@@ -77,100 +77,147 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-kbuffer_read_buffer() stores the number of missed events after the
-copied events, if the buffer has room for it. But the check for the
-room is wrong:
+Add tests that copy a sub-buffer with missed events with
+kbuffer_read_buffer() into a buffer of the sub-buffer size:
 
-	if (len + kbuf->start <= word_size + buf_len)
+ - for a full sub-buffer, where there is no room to store the missed
+   events count, nothing must be written past the end of the buffer
+   and MISSING_STORED must not be set.
 
-It is true whenever the copied sub-buffer header and events fit into
-the buffer, which is always the case at this point. If the events fill
-up the buffer (which is common, as callers pass a buffer of the
-sub-buffer size), the missed events count is written up to 8 bytes
-beyond the end of the buffer, and the MISSING_STORED flag is set,
-which makes kbuffer_load_subbuffer() read the count beyond the end of
-the buffer as well.
+ - for a sub-buffer with room left, the missed events count must be
+   stored and be read back by kbuffer_load_subbuffer().
 
-For example, libtracefs tracefs_cpu_read() and tracefs_cpu_write()
-use kbuffer_read_buffer() for memory mapped ring buffers with a buffer
-of the sub-buffer size (in tracefs_cpu_write() on the stack). Running
-the libtracefs unit tests under valgrind shows:
-
-  Test: trace cpu pipe ...missed events -1
-  ==6341== Invalid read of size 8
-  ==6341==    at 0x48A5F34: ??? (in /usr/lib/x86_64-linux-gnu/libtraceevent.so.1.9.0)
-  ==6341==    by 0x48A9177: kbuffer_load_subbuffer (in /usr/lib/x86_64-linux-gnu/libtraceevent.so.1.9.0)
-  ==6341==    by 0x400D82C: read_trace_cpu_file (tracefs-utest.c:2015)
-  [..]
-  ==6341==  Address 0x8676a90 is 0 bytes after a block of size 4,096 alloc'd
-  missed events 796093548
-
-Fix the check to only store the count when the header, the events and
-the count fit into the buffer.
-
-In addition, the flags were OR'ed into the int "len". As MISSING_EVENTS
-is bit 31, this makes len negative and sets the upper 32 bits of the
-8 byte commit field due to the sign extension. Use an unsigned long
-long for the commit value instead.
-
-Fixes: b3f5849527ae ("libtraceevent: Save missed events in kbuffer_read_buffer()")
-Link: https://bugs.launchpad.net/bugs/2172071
 Signed-off-by: Frank Heimes <frank.heimes@canonical.com>
 ---
- src/kbuffer-parse.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+ utest/traceevent-utest.c | 104 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 104 insertions(+)
 
-diff --git a/src/kbuffer-parse.c b/src/kbuffer-parse.c
-index 4a38408..f5d3c38 100644
---- a/src/kbuffer-parse.c
-+++ b/src/kbuffer-parse.c
-@@ -955,6 +955,7 @@ kbuffer_raw_get(struct kbuffer *kbuf, void *subbuf, struct kbuffer_raw_info *inf
-  */
- int kbuffer_read_buffer(struct kbuffer *kbuf, void *buffer, int len)
- {
-+	unsigned long long commit;
- 	unsigned long long ts;
- 	unsigned int type_len_ts;
- 	bool do_swap = false;
-@@ -1010,6 +1011,8 @@ int kbuffer_read_buffer(struct kbuffer *kbuf, void *buffer, int len)
+diff --git a/utest/traceevent-utest.c b/utest/traceevent-utest.c
+index 25dceb5..f181ff9 100644
+--- a/utest/traceevent-utest.c
++++ b/utest/traceevent-utest.c
+@@ -26,6 +26,7 @@
  
- 	write_4(do_swap, buffer + kbuf->start, type_len_ts);
+ #include "event-parse.h"
+ #include "trace-seq.h"
++#include "kbuffer.h"
  
-+	commit = len;
+ #define TRACEEVENT_SUITE	"traceevent library"
+ 
+@@ -715,6 +716,105 @@ static void test_btf_read(void)
+ 	CU_TEST(strcmp(s->buffer, expected) == 0);
+ }
+ 
++#define KBUF_SUBBUF_SIZE	4096
++#define KBUF_HDR_SIZE		16	/* 8 byte timestamp + 8 byte commit */
++#define KBUF_MISSING_EVENTS	(1ULL << 31)
++#define KBUF_MISSING_STORED	(1ULL << 30)
++#define KBUF_COMMIT_MASK	((1ULL << 27) - 1)
++#define KBUF_GUARD		0xdeadbeefdeadbeefULL
 +
- 	/*
- 	 * If reading the first event and there are lost events, add it
- 	 * to the buffer.
-@@ -1024,7 +1027,8 @@ int kbuffer_read_buffer(struct kbuffer *kbuf, void *buffer, int len)
- 		else
- 			word_size = sizeof(cnt_4);
- 
--		if (len + kbuf->start <= word_size + buf_len) {
-+		/* Only store the count if there's room for it */
-+		if (kbuf->start + len + word_size <= buf_len) {
- 			if (word_size == sizeof(cnt_8)) {
- 				cnt_8 = kbuf->lost_events;
- 				write_8(do_swap, buffer + len + kbuf->start, cnt_8);
-@@ -1032,16 +1036,16 @@ int kbuffer_read_buffer(struct kbuffer *kbuf, void *buffer, int len)
- 				cnt_4 = kbuf->lost_events;
- 				write_4(do_swap, buffer + len + kbuf->start, cnt_4);
- 			}
--			len |= MISSING_STORED;
-+			commit |= MISSING_STORED;
- 		}
--		len |= MISSING_EVENTS;
-+		commit |= MISSING_EVENTS;
- 	}
- 
- 	/* Update the size */
- 	if (kbuf->read_long == __read_long_8)
--		write_8(do_swap, buffer + 8, len);
-+		write_8(do_swap, buffer + 8, commit);
- 	else
--		write_4(do_swap, buffer + 8, len);
-+		write_4(do_swap, buffer + 8, commit);
- 
- 	return last_next;
++/*
++ * Create a sub-buffer with @data_size bytes of 8 byte events, and the
++ * missed events flag set. If @lost is non-negative, it is stored after
++ * the events.
++ */
++static void kbuf_fill_subbuf(void *subbuf, unsigned int data_size, long long lost)
++{
++	uint64_t commit = data_size | KBUF_MISSING_EVENTS;
++	uint32_t one = 1;
++	bool big_endian = *(uint8_t *)&one == 0;
++	unsigned int i;
++
++	memset(subbuf, 0, KBUF_SUBBUF_SIZE);
++	*(uint64_t *)subbuf = 1000;
++
++	for (i = 0; i < data_size; i += 8) {
++		/* type_len = 1 (4 bytes of data), time delta = 1 */
++		uint32_t type_len_ts = big_endian ? (1 << 27) | 1 : (1 << 5) | 1;
++		uint32_t payload = i;
++
++		memcpy(subbuf + KBUF_HDR_SIZE + i, &type_len_ts, 4);
++		memcpy(subbuf + KBUF_HDR_SIZE + i + 4, &payload, 4);
++	}
++
++	if (lost >= 0) {
++		*(uint64_t *)(subbuf + KBUF_HDR_SIZE + data_size) = lost;
++		commit |= KBUF_MISSING_STORED;
++	}
++	*(uint64_t *)(subbuf + 8) = commit;
++}
++
++static void test_kbuffer_read_buffer_missed(unsigned int data_size, long long lost,
++					    bool expect_stored)
++{
++	struct kbuffer *kbuf;
++	uint64_t commit;
++	void *src, *dst;
++	int ret;
++
++	kbuf = kbuffer_alloc(KBUFFER_LSIZE_8, KBUFFER_ENDIAN_SAME_AS_HOST);
++	CU_TEST(kbuf != NULL);
++	src = malloc(KBUF_SUBBUF_SIZE);
++	/* Add a guard after the sub-buffer to detect writes beyond it */
++	dst = malloc(KBUF_SUBBUF_SIZE + sizeof(uint64_t));
++	CU_TEST(src != NULL && dst != NULL);
++	if (!kbuf || !src || !dst)
++		goto out;
++
++	kbuf_fill_subbuf(src, data_size, lost);
++	memset(dst, 0, KBUF_SUBBUF_SIZE);
++	*(uint64_t *)(dst + KBUF_SUBBUF_SIZE) = KBUF_GUARD;
++
++	ret = kbuffer_load_subbuffer(kbuf, src);
++	CU_TEST(ret == 0);
++	CU_TEST(kbuffer_missed_events(kbuf) == (lost >= 0 ? lost : -1));
++
++	ret = kbuffer_read_buffer(kbuf, dst, KBUF_SUBBUF_SIZE);
++	CU_TEST(ret == (int)data_size);
++
++	/* Nothing may be written past the end of the buffer */
++	CU_TEST(*(uint64_t *)(dst + KBUF_SUBBUF_SIZE) == KBUF_GUARD);
++
++	commit = *(uint64_t *)(dst + 8);
++	CU_TEST((commit & KBUF_COMMIT_MASK) == data_size);
++	CU_TEST((commit & KBUF_MISSING_EVENTS) != 0);
++	CU_TEST(!!(commit & KBUF_MISSING_STORED) == expect_stored);
++	/* Only the commit size and flags may be set */
++	CU_TEST((commit & ~(KBUF_COMMIT_MASK | KBUF_MISSING_EVENTS |
++			    KBUF_MISSING_STORED)) == 0);
++
++	/* The copy must be loadable and keep the missed events */
++	ret = kbuffer_load_subbuffer(kbuf, dst);
++	CU_TEST(ret == 0);
++	CU_TEST(kbuffer_missed_events(kbuf) == (expect_stored ? lost : -1));
++ out:
++	kbuffer_free(kbuf);
++	free(src);
++	free(dst);
++}
++
++static void test_kbuffer_read_buffer_missed_full(void)
++{
++	/* A full sub-buffer has no room to store the missed events count */
++	test_kbuffer_read_buffer_missed(KBUF_SUBBUF_SIZE - KBUF_HDR_SIZE, -1, false);
++}
++
++static void test_kbuffer_read_buffer_missed_stored(void)
++{
++	/* With enough room, the missed events count is stored */
++	test_kbuffer_read_buffer_missed(KBUF_SUBBUF_SIZE - KBUF_HDR_SIZE - 80, 42, true);
++}
++
+ static int test_suite_destroy(void)
+ {
+ 	tep_free(test_tep);
+@@ -784,4 +884,8 @@ void test_traceevent_lib(void)
+ 		    test_parse_dma_addr);
+ 	CU_add_test(suite, "read BTF",
+ 		    test_btf_read);
++	CU_add_test(suite, "kbuffer read buffer with missed events, full",
++		    test_kbuffer_read_buffer_missed_full);
++	CU_add_test(suite, "kbuffer read buffer with missed events, stored",
++		    test_kbuffer_read_buffer_missed_stored);
  }
 -- 
 2.53.0
