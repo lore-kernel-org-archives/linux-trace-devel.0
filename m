@@ -1,71 +1,67 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.125.188.120
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794991231;
-	b=vhE41OM04UDT+tPCjzOUS06nGVf4fLDR5H7Q/tWW9YmQ2cXgN9gTwaEypzDjKg3YPglV
-	 IRswkeCeTRtf2NnYFn8Ut6oiO32xd0ppq985UlajKoRdoWZmOyXoYR+fyFGv9jKKvRNE9
-	 Oa2zWMgZanwSdFfioqzFQk5a9lCrqL++vGTZo35lo/wCChWHf+2KHpZr0hJL1wkHaxeLs
-	 oHHDDSM5eqILaphPMlYY39HCSxUktyLWK4F+ZrV9hnlqxgDn4f+mPCy39cRi8sar2jumO
-	 7MVJH0mbkP1/hjWpVjFPI4IrMXj467shtpZCIBHlykJEBYu8wk/CsNgNmlxKwMZmJ1w==
+	t=1794997611;
+	b=vSR8oGLXDJDp2zl0+ukIMoEnJFunPepgQk2hmQ9BH2SETiKndQ5Y8dh6SlOhN2foMB10
+	 KRqyXfjHgQnFg91huBtvgk6aU+7cx3ee8GLq7Iwe31sOGPJRkUDoIQxHxkXbZnciyz7O+
+	 MeL4B/M4xRI/jXNgIqnkD3yxNekkCIucRqNIX0E40ZV4HS8Gdti917a6WbBs/lB9BnJNV
+	 3gNLfcOzWj+T1rjcFaShogVe7yfbnTv4BqapNb9PaZkoZFrtPygiTmh1eKIC8Ra0XiD3y
+	 4kGN/SGbYWOkq22Y4uqtcMZaKoUyFYpm1YIF3KHOeDjwNRiQizD5XwYOAktZFRxdOOA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794991231;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794997611;
 	h=DMARC-Filter:Received:DKIM-Signature:From:To:Cc:Subject:Date:
-	 Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding;
-	bh=W/ou3KaESXVGvHX3LOzj8eece+EDQkorEz0rHXxOXpE=;
-	b=5YJpg/QaO25BfK871yiqd/x1e8jb/8Tkrvqq7apkt98JfQuac1tuKXbIIX3l+3EGn5m/
-	 ASJANCcfUXTiSHK59BVYUJlVoAV3gqwH8G4zEd6QaWmK76Nb2Bm2mt7V+60F5XoTCwdUI
-	 BjrCL9F7GFU27j7SCxbcZMWgZjw41ce3rHaBWIw2BQIfYIQN75fQb4LpbvoIvBpURuaY2
-	 LwzrizrGUkOwPgLCzFhbfKhyZQe0AN8Az8bo6B4a+/7d8fq+weu4NK1JiYvTiovygsDSk
-	 tp6Xu2jNlzM2BUoxRPnS4Ou2ZVMU5EHO33gjmo8ulRkqFOyEbA6BzChm/i5v+7AkgfA==
+	 Message-ID:X-Mailer:MIME-Version:Content-Transfer-Encoding;
+	bh=h682x+PORbOc+0SyWsUsKzzjdbNhO7OC4YDOv6dQXq0=;
+	b=yC0DsrwhAw4xrJi+dOhTMfLvP3GRcB9T7Rk1GpSKOlgoDDnrWQIjZeaqU3i/at6pgHPg
+	 Klyo2b05OWS9G1tnvfkJdgHbi20A8xslpsfF+9BmUGxJs4UjfMuODlihw+jMRrlaEzKJi
+	 notV2IH5eyWDLwa8S3K7vI5LJ+hcAtOz2OmpyDgVq3q5GsRmsdhOtzSdsQkvz4l5QB+tX
+	 B/UN7EGMg/FYi2Ig6CAnTN37i14aP4L4ouEXrx24zaGHiJyq3/q3AByro5r1lLnA7op+0
+	 vN+1CG2eU71xrIYCyhkIIVahut9hvCWinBwv/z8YE1m+8pCkXoON9uShfb401vL0beA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=canonical.com;
 	spf=pass smtp.mailfrom=canonical.com;
-	dkim=pass header.d=canonical.com header.i=@canonical.com header.a=rsa-sha256 header.s=20251003 header.b="MM7k/U7g";
+	dkim=pass header.d=canonical.com header.i=@canonical.com header.a=rsa-sha256 header.s=20251003 header.b=TrYxsU26;
 	arc=none smtp.remote-ip=185.125.188.120
 Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 612E8606A331
-	for <linux-trace-devel@vger.kernel.org>; Wed, 18 Nov 2026 08:40:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 612E8606A331
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0EB0606A325
+	for <linux-trace-devel@vger.kernel.org>; Wed, 18 Nov 2026 10:26:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B0EB0606A325
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=canonical.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.a=rsa-sha256 header.s=20251003 header.b=MM7k/U7g
+	dkim=pass (4096-bit key, unprotected) header.d=canonical.com header.i=@canonical.com header.a=rsa-sha256 header.s=20251003 header.b=TrYxsU26
 Received: from openrouter-r.lxd (2.general.fheimes.us.vpn [10.172.66.67])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 1259142CD4;
-	Wed, 18 Nov 2026 08:40:28 +0000 (UTC)
+	by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id C61CB42276;
+	Wed, 18 Nov 2026 10:26:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20251003; t=1794991230;
-	bh=W/ou3KaESXVGvHX3LOzj8eece+EDQkorEz0rHXxOXpE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version;
-	b=MM7k/U7gxqJhaOO+WbXhyA++Mzj0VUinqVdE/GivUdyl9x06f7U003YeSPz3XyQQS
-	 JizOMlqISjYeP7Obq5DXWb5eUGour+73Xf0OJfAE45lya4qnz8i7ccZ8FPF+lz1aQq
-	 vPbILcq4yZn6B0hjGnx54EKNDaUsA52hsHC3Pk7ORC6uT7rNCtO8b+iLPl7r9WQCq2
-	 227B2BXCQ/dvcyrP8PnzSN8U0PAnEsaVolp91BKaSdVv4m7UskU3Xdycp+ziJel9rD
-	 D/4KNlgKbiSrlGZxzKTQ6e8ZKgJresoZ5UtI5k2b8Mn8L+HnjGfRH54zlo0U2dotyJ
-	 hDyXVx+iqQOWnAVApo0idIgwktQw/0tcYfXuXtJodQB0PQ+riUsJf2YKdA8odn9PRX
-	 l+i93MVEu3eImQ8BVB08DCYo9maYs/s4VO5Q3L58DN9ntWr6dgS55KlrF3OMJ710E9
-	 L21FE5w8sAet2qIfHOo30Sq/JmLxyKfghXL2HYg3UbjZhOHXcMumVLcce7DAEVj4Mc
-	 6eyC74SKyGNCLZDtUkaBxDIXzlrEtwCDvouDtblgbK+gBB8lZc+/PMJgMI/j1/3H0G
-	 UD4I/kPJhgTkKOF9jU1UmMLCEhWdLzh44xCWuVu3o1k+aNf7Lmb/9oEM29nMpbfYD9
-	 V4T0r6lKKy6C7b0QDlaNv55Q=
+	s=20251003; t=1794997607;
+	bh=h682x+PORbOc+0SyWsUsKzzjdbNhO7OC4YDOv6dQXq0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version;
+	b=TrYxsU26j+z4oRaYHTpKTADL3SRQcHtOiyGi+F5VI18nQYF5BewJTk1UCVz/V2Y6O
+	 +iVN3TQi5ba4R7E1qLeTcdiEapOhOwO7WVKPKyzbOUqYazqe2Zt4xdorVjB5h5uu7K
+	 qIucZ7G6iC1taWNni7aa6+mDe8sUy1IcZ4QuwVEO9GJgWoh9YGnGzg1Q2/DS5aBl5A
+	 acHukHr0x6MqDjFWyx/EJxaYemRJHXNxJFPVM3d1PrMGt8ZqaDLwmCnEPrhcRm57d+
+	 nv2F7bV+LQsMZjiQKcLqV8arB+YZQaIFHC9Gn0Sj156WllpuK4PCVPsmPzSMusJje7
+	 p7C7sF5CwwYZZMHL5AbnPKv3DGJ6POYzWda8jOi66ko6qIhEMrsxsADW9jxrtyCWAe
+	 HCQSJsMkUw7bQH+q4UNriAcg96fRiWPzYMgEm3nSV0uzXDVvlGLt8IySqhnLGh5yLe
+	 wYxVu5XFc0Be3Dt2jytQKi7DkVNIgASZH9stFAOTMD/NdkYFiJ22OAXEgQearK8U30
+	 e3vDJ/lT1R8t7VFeumj1kRQZ0rjRBeBGz0CQc58YjlTCEbiPq6+XJSSBts1uMT220q
+	 YjvjOAGGk5XFTtSj8YVFz1FHLT+lWMDfwYlyjCkVTPloJX912B6BuCb4Vx13j+pUaG
+	 cW830+D8qW5LkezUh2ORRtrA=
 From: Frank Heimes <frank.heimes@canonical.com>
 To: linux-trace-devel@vger.kernel.org
 Cc: Steven Rostedt <rostedt@goodmis.org>,
 	Benjamin Drung <benjamin.drung@canonical.com>,
 	Jamie Dolan <jldolan@us.ibm.com>
-Subject: [PATCH 2/2] libtraceevent utest: Add tests for kbuffer_read_buffer() with missed events
-Date: Wed, 18 Nov 2026 08:40:24 +0000
-Message-ID: <f7eba80f155db02863a6fdd8814cd200b9155d2e.1794988946.git.frank.heimes@canonical.com>
+Subject: [PATCH] libtracefs: Do not miss sub-buffers when reading a memory mapped buffer
+Date: Wed, 18 Nov 2026 10:26:44 +0000
+Message-ID: <20261118102644.3392133-1-frank.heimes@canonical.com>
 X-Mailer: git-send-email 2.53.0
-In-Reply-To: <cover.1794988946.git.frank.heimes@canonical.com>
-References: <cover.1794988946.git.frank.heimes@canonical.com>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Post: <mailto:linux-trace-devel@vger.kernel.org>
@@ -77,148 +73,119 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add tests that copy a sub-buffer with missed events with
-kbuffer_read_buffer() into a buffer of the sub-buffer size:
+When the reader sub-buffer of a memory mapped ring buffer has no more
+events, tfs_mmap_load_subbuf() calls TRACE_MMAP_IOCTL_GET_READER to get
+the next sub-buffer, and if the reader sub-buffer did not change, it
+assumes that there are no more events to read.
 
- - for a full sub-buffer, where there is no room to store the missed
-   events count, nothing must be written past the end of the buffer
-   and MISSING_STORED must not be set.
+But the kernel only swaps in a new reader sub-buffer if it accounted all
+the events of the current one as read. Otherwise it only moves its read
+position to the end of the current sub-buffer and returns without
+swapping. This happens if events were added to the reader sub-buffer
+after it was swapped in (as the reader can swap in the sub-buffer that
+is being written to): ring_buffer_map_get_reader() marks the events of
+the sub-buffer at the time of the swap as read, but user space reads
+all the events that are on the sub-buffer when it loads it.
 
- - for a sub-buffer with room left, the missed events count must be
-   stored and be read back by kbuffer_load_subbuffer().
+In that case tfs_mmap_load_subbuf() returns 0, although the next
+sub-buffer may have events. For tracefs_cpu_read() and
+tracefs_cpu_write() this is only a delay until the next call, but
+tracefs_cpu_flush() and tracefs_cpu_flush_write() stop on 0, so the
+last events of a trace are lost.
 
+This makes the "trace cpu pipe" unit test fail now and then for memory
+mapped buffers, in particular under valgrind, which widens the race
+window. For example on ppc64el, 1 of 3277 events stayed in the ring
+buffer. Tracing tfs_mmap_load_subbuf() shows:
+
+  GET_READER: id 20 -> 19, read 0 -> 51340, 65520 bytes loaded
+  GET_READER: id 19 -> 19, read 51340 -> 65520, returns 0
+
+If the reader sub-buffer did not change but the kernel moved its read
+position, check the current sub-buffer for new events, and if there
+are none, call TRACE_MMAP_IOCTL_GET_READER again.
+
+Fixes: 4ede86e9a48d ("libtracefs: Enable mmapped ring buffer")
+Link: https://bugs.launchpad.net/bugs/2172071
 Signed-off-by: Frank Heimes <frank.heimes@canonical.com>
 ---
- utest/traceevent-utest.c | 104 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 104 insertions(+)
 
-diff --git a/utest/traceevent-utest.c b/utest/traceevent-utest.c
-index 25dceb5..f181ff9 100644
---- a/utest/traceevent-utest.c
-+++ b/utest/traceevent-utest.c
-@@ -26,6 +26,7 @@
+Notes:
+    This was found while looking into the libtracefs unit test failures
+    reported here:
+    
+      https://lore.kernel.org/linux-trace-devel/39efe87bec205b7f809b8aa49db635b6465ee530.camel@canonical.com/
+    
+    The kernel side is ring_buffer_map_get_reader(): if
+    cpu_buffer->reader_page->read < reader_size it only advances the reader
+    to the end of the page and does not call rb_get_reader_page().
+    
+    Tested on ppc64el (POWER9, 64K pages, kernel 7.3) with 20 runs of the
+    "trace cpu pipe" test under valgrind: without this patch 4 of 20 runs
+    lost an event (cnt=3276 expect=3277, 1 entry left in the ring buffer),
+    with it 0 of 20. With this patch, the kbuffer_read_buffer() fix in
+    libtraceevent [1] and the unit test fixes that I'll post separately,
+    "make test" and "make test_mem" pass (37/37) on top of master.
+    
+    [1] https://lore.kernel.org/linux-trace-devel/cover.1794988946.git.frank.heimes@canonical.com/T/#u
+
+ src/tracefs-mmap.c | 43 +++++++++++++++++++++++++++++++------------
+ 1 file changed, 31 insertions(+), 12 deletions(-)
+
+diff --git a/src/tracefs-mmap.c b/src/tracefs-mmap.c
+index 7530805..39dad4c 100644
+--- a/src/tracefs-mmap.c
++++ b/src/tracefs-mmap.c
+@@ -205,18 +205,37 @@ __hidden int tfs_mmap_load_subbuf(void *mapping, struct kbuffer *kbuf)
+ 		return 1;
+ 	}
  
- #include "event-parse.h"
- #include "trace-seq.h"
-+#include "kbuffer.h"
- 
- #define TRACEEVENT_SUITE	"traceevent library"
- 
-@@ -715,6 +716,105 @@ static void test_btf_read(void)
- 	CU_TEST(strcmp(s->buffer, expected) == 0);
- }
- 
-+#define KBUF_SUBBUF_SIZE	4096
-+#define KBUF_HDR_SIZE		16	/* 8 byte timestamp + 8 byte commit */
-+#define KBUF_MISSING_EVENTS	(1ULL << 31)
-+#define KBUF_MISSING_STORED	(1ULL << 30)
-+#define KBUF_COMMIT_MASK	((1ULL << 27) - 1)
-+#define KBUF_GUARD		0xdeadbeefdeadbeefULL
+-	/* See if a new page is ready? */
+-	if (get_reader(tmap) < 0)
+-		return -1;
+-	id = tmap->map->reader.id;
+-	data = tmap->data + tmap->map->subbuf_size * id;
+-
+-	/*
+-	 * If the sub-buffer hasn't changed, then there's no more
+-	 * events to read.
+-	 */
+-	if (data == kbuffer_subbuffer(kbuf))
+-		return 0;
++	for (;;) {
++		__u32 read = tmap->map->reader.read;
 +
-+/*
-+ * Create a sub-buffer with @data_size bytes of 8 byte events, and the
-+ * missed events flag set. If @lost is non-negative, it is stored after
-+ * the events.
-+ */
-+static void kbuf_fill_subbuf(void *subbuf, unsigned int data_size, long long lost)
-+{
-+	uint64_t commit = data_size | KBUF_MISSING_EVENTS;
-+	uint32_t one = 1;
-+	bool big_endian = *(uint8_t *)&one == 0;
-+	unsigned int i;
++		/* See if a new page is ready? */
++		if (get_reader(tmap) < 0)
++			return -1;
++		id = tmap->map->reader.id;
++		data = tmap->data + tmap->map->subbuf_size * id;
 +
-+	memset(subbuf, 0, KBUF_SUBBUF_SIZE);
-+	*(uint64_t *)subbuf = 1000;
++		if (data != kbuffer_subbuffer(kbuf))
++			break;
 +
-+	for (i = 0; i < data_size; i += 8) {
-+		/* type_len = 1 (4 bytes of data), time delta = 1 */
-+		uint32_t type_len_ts = big_endian ? (1 << 27) | 1 : (1 << 5) | 1;
-+		uint32_t payload = i;
++		/*
++		 * If the sub-buffer hasn't changed and the kernel did not
++		 * move its read position, then there's no more events to read.
++		 */
++		if (tmap->map->reader.read == read)
++			return 0;
 +
-+		memcpy(subbuf + KBUF_HDR_SIZE + i, &type_len_ts, 4);
-+		memcpy(subbuf + KBUF_HDR_SIZE + i + 4, &payload, 4);
++		/*
++		 * Events were added to the reader sub-buffer after it was
++		 * swapped in. In that case the kernel only moves its read
++		 * position forward to the end of the sub-buffer, and does
++		 * not swap in a new one. Check for new events on the
++		 * current sub-buffer, and if there are none, ask again
++		 * for the next sub-buffer.
++		 */
++		kbuffer_refresh(kbuf);
++		if (kbuffer_curr_size(kbuf))
++			return 1;
 +	}
-+
-+	if (lost >= 0) {
-+		*(uint64_t *)(subbuf + KBUF_HDR_SIZE + data_size) = lost;
-+		commit |= KBUF_MISSING_STORED;
-+	}
-+	*(uint64_t *)(subbuf + 8) = commit;
-+}
-+
-+static void test_kbuffer_read_buffer_missed(unsigned int data_size, long long lost,
-+					    bool expect_stored)
-+{
-+	struct kbuffer *kbuf;
-+	uint64_t commit;
-+	void *src, *dst;
-+	int ret;
-+
-+	kbuf = kbuffer_alloc(KBUFFER_LSIZE_8, KBUFFER_ENDIAN_SAME_AS_HOST);
-+	CU_TEST(kbuf != NULL);
-+	src = malloc(KBUF_SUBBUF_SIZE);
-+	/* Add a guard after the sub-buffer to detect writes beyond it */
-+	dst = malloc(KBUF_SUBBUF_SIZE + sizeof(uint64_t));
-+	CU_TEST(src != NULL && dst != NULL);
-+	if (!kbuf || !src || !dst)
-+		goto out;
-+
-+	kbuf_fill_subbuf(src, data_size, lost);
-+	memset(dst, 0, KBUF_SUBBUF_SIZE);
-+	*(uint64_t *)(dst + KBUF_SUBBUF_SIZE) = KBUF_GUARD;
-+
-+	ret = kbuffer_load_subbuffer(kbuf, src);
-+	CU_TEST(ret == 0);
-+	CU_TEST(kbuffer_missed_events(kbuf) == (lost >= 0 ? lost : -1));
-+
-+	ret = kbuffer_read_buffer(kbuf, dst, KBUF_SUBBUF_SIZE);
-+	CU_TEST(ret == (int)data_size);
-+
-+	/* Nothing may be written past the end of the buffer */
-+	CU_TEST(*(uint64_t *)(dst + KBUF_SUBBUF_SIZE) == KBUF_GUARD);
-+
-+	commit = *(uint64_t *)(dst + 8);
-+	CU_TEST((commit & KBUF_COMMIT_MASK) == data_size);
-+	CU_TEST((commit & KBUF_MISSING_EVENTS) != 0);
-+	CU_TEST(!!(commit & KBUF_MISSING_STORED) == expect_stored);
-+	/* Only the commit size and flags may be set */
-+	CU_TEST((commit & ~(KBUF_COMMIT_MASK | KBUF_MISSING_EVENTS |
-+			    KBUF_MISSING_STORED)) == 0);
-+
-+	/* The copy must be loadable and keep the missed events */
-+	ret = kbuffer_load_subbuffer(kbuf, dst);
-+	CU_TEST(ret == 0);
-+	CU_TEST(kbuffer_missed_events(kbuf) == (expect_stored ? lost : -1));
-+ out:
-+	kbuffer_free(kbuf);
-+	free(src);
-+	free(dst);
-+}
-+
-+static void test_kbuffer_read_buffer_missed_full(void)
-+{
-+	/* A full sub-buffer has no room to store the missed events count */
-+	test_kbuffer_read_buffer_missed(KBUF_SUBBUF_SIZE - KBUF_HDR_SIZE, -1, false);
-+}
-+
-+static void test_kbuffer_read_buffer_missed_stored(void)
-+{
-+	/* With enough room, the missed events count is stored */
-+	test_kbuffer_read_buffer_missed(KBUF_SUBBUF_SIZE - KBUF_HDR_SIZE - 80, 42, true);
-+}
-+
- static int test_suite_destroy(void)
- {
- 	tep_free(test_tep);
-@@ -784,4 +884,8 @@ void test_traceevent_lib(void)
- 		    test_parse_dma_addr);
- 	CU_add_test(suite, "read BTF",
- 		    test_btf_read);
-+	CU_add_test(suite, "kbuffer read buffer with missed events, full",
-+		    test_kbuffer_read_buffer_missed_full);
-+	CU_add_test(suite, "kbuffer read buffer with missed events, stored",
-+		    test_kbuffer_read_buffer_missed_stored);
- }
+ 
+ 	kbuffer_load_subbuffer(kbuf, data);
+ 	return 1;
 -- 
 2.53.0
 
