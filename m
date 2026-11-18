@@ -1,67 +1,71 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.125.188.121
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795008664;
-	b=bmmfeVkamsqhFq9Te4FtFrUE3oPlZxQVS77iL5lmM3AKbDqpdL6hf8G99zYQ76sOXlzH
-	 l5InBgD4unVW7RNnbFIsQ8kt0v7K2VMwopjADIGD7u2T5TZs6tppmdAG8CovGqqzMCm4m
-	 ElBTYSwNw52aBB5vQ9slGdEBTzVvcDm/9J4cajjTaL2fczwqDhORX9V0fZnlf1F4+k45/
-	 8fTjj+8tpJj/Jk4B7oZt4edzyl6SNEsiNuKpZFQiNs1IesrEymOMVq+yZIE+4qgtN3msG
-	 s8/e/8O0J3kVjXmnobLXn16NKE9b4KEptTF9ioGur8lNThVXLNUwrISFZi7llXXoUNA==
+	t=1795008665;
+	b=lnLPhWdlKPWDrMXeZFqnGKE0Y6rgh5gKnbuVMPv5o24KVFdWaagPVZ9dzEOGhmrwByf0
+	 tz4YCwwAz0zQ2JlA0fKbMnSHTBu/T6PKn3vPCwJK+qnl8Fw/gYTBSZ7yr/FRnWPM/LF6d
+	 BEX38gTZGwV1ZaFPiFWVxnMJXRSy7vQwHk8prRgPMItLVfGEEah3Vy1mxmW5Q0SU2axWP
+	 gRrXnFzKmhxzAy5kW4H666L2ef36FSjWwQQUZnwakUTCEqWkwI3qkOSkauyjHEoH1Eu9Q
+	 h9jw8S6McWXTrJJ8QG06/ceb0B2k0lPot+qnvs80saK/QAgy2dtK1Y9U6da9JXE7hag==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795008664;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795008665;
 	h=DMARC-Filter:Received:DKIM-Signature:From:To:Cc:Subject:Date:
-	 Message-ID:X-Mailer:MIME-Version:Content-Transfer-Encoding;
-	bh=poQ1YG/iQmvTl3cN8cTA/VWHiQUF+/munM2IpZQMC5M=;
-	b=Fo4p685xUJKsi2hOaacGZjYxgu8MROdGmdkhW7DumtzxycKk8XV3v76161kXpX3Pq2e3
-	 nbfLNWMA172+JBHkuZQ3uER2UEtKgSRIxrx3ZTcaT4hUostCKyvjMGAHOH9MZxhoApaT8
-	 iCa6bD/XHlWSpE+lPFe7sUrR87MHLWwN8n8Y10tQ2jbUUb9uOdqD6nc/UPCUebOO4O1kr
-	 W9cz7K9hBlfkEVK7/N2qEF2rG5d4DdHTLNREJHmC875TNe8z4L3/FKE/4MU3dT+M1XjXz
-	 8ZdNxDnFdgLpU5YWt2S1QVRi5IVvL07wUGd+xlYPh5nkbOcs4tPA5UPgNR1abqrbpmQ==
+	 Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
+	 Content-Transfer-Encoding;
+	bh=6RwcTgwkv90PO6u6mE0zsGFrk9vXRGh7GUpdPk4sGlk=;
+	b=bQfUBOKDUVrwVmr3viVRVDBG1JYmZ4XcK1YlOez+JRii0XlcefjiBxEG3J7gJRrJ74NJ
+	 LyP7VblaiTa3PwDrMPhgLJpSl0AqLET53zTDOanJG+oWXEFf7uIixeNXVcphoRHJhmSU9
+	 RNXWcsH82WZpfmpOXOD7YkUJ4ddhBXxTEbJNq3xaf9SA8/kww8MFnWjY2igX0+aC46h3B
+	 QQlpnSRCNGGVsuz/uZj6tuDeRdsZZ7B1TShonuJmjdWvgBrQBvGJqxrsAF9yb1gJFMuyN
+	 Aa4D8613DkKbuH5q1dDZivqe6dw0KAfiguVICuyNYAKBa0Q+3TVZdf4uw694oo5Rcng==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=canonical.com;
 	spf=pass smtp.mailfrom=canonical.com;
-	dkim=pass header.d=canonical.com header.i=@canonical.com header.a=rsa-sha256 header.s=20251003 header.b=HwNdlCFv;
+	dkim=pass header.d=canonical.com header.i=@canonical.com header.a=rsa-sha256 header.s=20251003 header.b=GOhDO9Oy;
 	arc=none smtp.remote-ip=185.125.188.121
 Received: from smtp-relay-canonical-1.canonical.com (smtp-relay-canonical-1.canonical.com [185.125.188.121])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E282606A325
-	for <linux-trace-devel@vger.kernel.org>; Wed, 18 Nov 2026 13:31:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4E282606A325
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10EA1606A325
+	for <linux-trace-devel@vger.kernel.org>; Wed, 18 Nov 2026 13:31:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 10EA1606A325
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=canonical.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key, unprotected) header.d=canonical.com header.i=@canonical.com header.a=rsa-sha256 header.s=20251003 header.b=HwNdlCFv
+	dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.a=rsa-sha256 header.s=20251003 header.b=GOhDO9Oy
 Received: from openrouter-r.lxd (2.general.fheimes.us.vpn [10.172.66.67])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 354203F144;
-	Wed, 18 Nov 2026 13:30:55 +0000 (UTC)
+	by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id B81793FC2D;
+	Wed, 18 Nov 2026 13:30:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20251003; t=1795008656;
-	bh=poQ1YG/iQmvTl3cN8cTA/VWHiQUF+/munM2IpZQMC5M=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version;
-	b=HwNdlCFvmwOn6Zr1qXzMHjorqt49lw4/wOhUO7/sTnfuMe4xiF14oK1H39+sJN1bb
-	 d511U3Tt2AqE5+lUBZoEyLiofe3fAg3anFTM1F/IhTosnYjhrrl/WanN49uR/JbikN
-	 BWGGIPnlVr64b/Q39/r7vHiyY8aNG7sTFXrRxOAecs/wviEOgvUGyJw6pytwLottBl
-	 aDpaiqthgrRZTh30uImRUWVZ0u70ueSD9g93fR98nWYg/Wo3kUanibhB8dvoHqh0jD
-	 +oyqqOqPukP8hc2JdruasjVxFJgZ49LMckTg/UuezyZUiA0ShZCEmp+0G3xuNWNEr1
-	 iIBngzXIi4rcwENEVKPGnOAcKFw0X0HOb4mCzEVsXAwPGM26iGImd0bZZuFclIngU1
-	 jlrVQ5vlxGHL4I30VyTcErktenNkSY00eDZS4rEN6/jqHu/xpTeMoAeUb47Zb9qCjE
-	 3vW/p8+G0KtTSzyFEjVVkObK+FvYO0tTqP6pwsvl0zoioV9/Csyh4jskICjZAn3SCh
-	 29LFPfERr7RWG4Mp4CkXx/8lRSI65IfZVxq4jqxMN5BpMVH9QzB3nDDw83bqGoUOFf
-	 6hgipBbE30S0EtbnItv9zl7HDsYz5k0tPxLiaxPEbWkfbHu6ngKfnXMSYPZt15Nc80
-	 +xqREiO2mMLV/0DqKa4fEzyw=
+	s=20251003; t=1795008657;
+	bh=6RwcTgwkv90PO6u6mE0zsGFrk9vXRGh7GUpdPk4sGlk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version;
+	b=GOhDO9OyunOw17zKM6lg6ui+g8C+S7OH2i+n87d1IQ/V+YHN6af7KbLumGYQW9oBo
+	 kuKjSsJJtFV3diy8bUbbEpeyLfOTynVgLlPtY4brg7OSGJ8ZsxM3OIGY8Lvo28q3jS
+	 z78sJq3TYSpZdgDvKMtLmVorulCR74hP53OwhgmvAIo7TiMLnNFcDuo6aIeH7/vrdB
+	 QiPXxiN7QJH7hNnkHj66E8Wjg+BZZ60ghCs9D0yvxP0QYQborq+LVDdgsmO8qSG0hJ
+	 bgv4QikKglB4nMpFn+kCm+AmcOjTt9H5hPt8B9LggOWb/RFg/wvnqRiNamHANtlLcU
+	 sod5zSeSRFxlPNBd+GhcC9Ynjq0RleMsH78o4kR/MtKurW9Upbq7/A9kVQV8xGBwYN
+	 lJyBaeDgy41E3czpg1aosAC0tZFN5x4OxtQnKw2DRp0mweE2Wa+V4E7jrzPeY39BnV
+	 w/U0UCiPcwEPO2Jjr8qUthwrJLQ8UDq4Wm+/S6+sVv032+PZq1xyePG/KQabxb+i8H
+	 af5DgYz7YuWZF4ge4rKAhZdLoAmdrtrbARgu85fHVcJ/JGs96XeSWBXVUNly1X1Hrv
+	 OAdOvZTgQRA50xITBBhwA2QZfEzlKSBXUgs79uqyddDopZfrgpSh01qifEyy4N7Css
+	 fE6ois0FAw8jnm8FzbXXTNsc=
 From: Frank Heimes <frank.heimes@canonical.com>
 To: linux-trace-devel@vger.kernel.org
 Cc: Steven Rostedt <rostedt@goodmis.org>,
 	Benjamin Drung <benjamin.drung@canonical.com>,
 	Jamie Dolan <jldolan@us.ibm.com>
-Subject: [PATCH 0/3] libtracefs utest: Fix trace cpu pipe and test_mem failures
-Date: Wed, 18 Nov 2026 13:30:50 +0000
-Message-ID: <cover.1795008446.git.frank.heimes@canonical.com>
+Subject: [PATCH 1/3] libtracefs utest: Scale trace cpu pipe test to the sub-buffer size
+Date: Wed, 18 Nov 2026 13:30:51 +0000
+Message-ID: <cc284a8f0a3d10df83b053214da53d7d9915255a.1795008447.git.frank.heimes@canonical.com>
 X-Mailer: git-send-email 2.53.0
+In-Reply-To: <cover.1795008446.git.frank.heimes@canonical.com>
+References: <cover.1795008446.git.frank.heimes@canonical.com>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Post: <mailto:linux-trace-devel@vger.kernel.org>
@@ -73,45 +77,73 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-These fix unit test failures reported here:
+The last step of the "trace cpu pipe" test writes events_per_buf * 1000
+events, i.e. the equivalent of 1000 sub-buffers, while a reader thread
+copies the ring buffer with tracefs_cpu_write() into a temporary file
+in /tmp.
 
-  https://lore.kernel.org/linux-trace-devel/39efe87bec205b7f809b8aa49db635b6465ee530.camel@canonical.com/
+When the ring buffer is memory mapped, tracefs_cpu_write() writes a full
+sub-buffer, padded with zeros, for every read that returns data. As the
+reader thread polls continuously, most reads only return a few events,
+so the amount of data written is roughly the number of reads times the
+sub-buffer size.
 
- - Patch 1: on architectures with 64K pages (ppc64el), the large step of
-   "trace cpu pipe" writes more than 13 GB into /tmp with the memory
-   mapped buffer, which fails with ENOSPC on a tmpfs /tmp.
+On architectures with a 64K PAGE_SIZE like ppc64el the sub-buffers are
+16 times larger than on x86 and events_per_buf is about 3276 instead of
+about 200, so the test generates 3.3 million events and writes more
+than 13 GB into the temporary file. With /tmp being a tmpfs (as on several
+distributions) this fails with ENOSPC:
 
- - Patch 2: "make test_mem" hangs in "trace pid events filter", as the
-   spinning threads starve the main thread under valgrind.
+  Test: trace cpu pipe ...FAILED
+    1. tracefs-utest.c:1966  - ret >= 0
+    2. tracefs-utest.c:1970  - cnt == expect
+    3. tracefs-utest.c:1966  - ret >= 0
+    4. tracefs-utest.c:1970  - cnt == expect
 
- - Patch 3: "trace cpu pipe" fails under valgrind when the memory mapped
-   reader can not keep up and the kernel overwrites events.
+Scale the number of sub-buffers to the sub-buffer size, using 1000
+sub-buffers of 4K as reference. This keeps the test unchanged for 4K
+sub-buffers (1000) and uses 62 sub-buffers for 64K sub-buffers, which
+still is a multiple of the ring buffer size.
 
-The patches are independent of each other. I can also send them
-separately, if that's preferred.
+Link: https://bugs.launchpad.net/bugs/2062119
+Signed-off-by: Frank Heimes <frank.heimes@canonical.com>
+---
+ utest/tracefs-utest.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-Related fixes for the same report:
-
- - kbuffer: Fix out-of-bounds write in kbuffer_read_buffer()
-   https://lore.kernel.org/linux-trace-devel/cover.1794988946.git.frank.heimes@canonical.com/T/#u
- - libtracefs: Do not miss sub-buffers when reading a memory mapped buffer
-   https://lore.kernel.org/linux-trace-devel/20261118102644.3392133-1-frank.heimes@canonical.com/T/#u
- - libtracefs utest: Fix buffer size in follow events clear test
-   https://lore.kernel.org/linux-trace-devel/20261116235650.21314-1-jldolan@us.ibm.com/
-
-Tested on ppc64el (POWER9, 64K pages, kernel 7.3) on top of master,
-together with the related fixes above: "trace cpu pipe" passes in "make
-test" and "make test_mem", and "make test_mem" no longer hangs.
-
-Frank Heimes (3):
-  libtracefs utest: Scale trace cpu pipe test to the sub-buffer size
-  libtracefs utest: Run valgrind memory test with fair scheduling
-  libtracefs utest: Account for overruns in the trace cpu pipe test
-
- Makefile              |  1 +
- utest/tracefs-utest.c | 42 ++++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 41 insertions(+), 2 deletions(-)
-
+diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
+index e48232c..44e8fb4 100644
+--- a/utest/tracefs-utest.c
++++ b/utest/tracefs-utest.c
+@@ -1973,15 +1973,27 @@ static void test_cpu_pipe(struct test_cpu_data *data, int expect)
+ static void test_instance_trace_cpu_pipe(struct tracefs_instance *instance, bool map)
+ {
+ 	struct test_cpu_data data;
++	int big_num;
+ 
+ 	if (setup_trace_cpu(instance, &data, true, map))
+ 		return;
+ 
++	/*
++	 * Scale the number of sub-buffers to write to the sub-buffer size,
++	 * using 1000 sub-buffers of 4K as reference. With the memory mapped
++	 * buffer every read writes a full (zero padded) sub-buffer, which on
++	 * architectures with large sub-buffers (64K PAGE_SIZE) can easily
++	 * fill the file system holding the temporary file.
++	 */
++	big_num = 1000 * 4096 / data.bufsize;
++	if (big_num < 1)
++		big_num = 1;
++
+ 	test_cpu_pipe(&data, 1);
+ 	test_cpu_pipe(&data, data.events_per_buf / 2);
+ 	test_cpu_pipe(&data, data.events_per_buf);
+ 	test_cpu_pipe(&data, data.events_per_buf + 1);
+-	test_cpu_pipe(&data, data.events_per_buf * 1000);
++	test_cpu_pipe(&data, data.events_per_buf * big_num);
+ 
+ 	shutdown_trace_cpu(&data);
+ }
 -- 
 2.53.0
 
