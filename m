@@ -1,67 +1,71 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.125.188.120
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
 	t=1794991230;
-	b=roFJUWEfruo1q7vHypNOMZu+zDYNj59gHv6TlZrCyUKt8COeUGiiZnvvwqcFJx4yL5LV
-	 BneWtlNL0p4RQcka/3tdU3LnuunGAqItn0J53hcYePgUdCV+qQHDviMnBzn/8Em20F981
-	 Gle73s3f5fAAX6h6dSnxhgcinhZdR/Y6crBw/VITcrc1fRZS44k13pY+NWjvaCVuWkWmJ
-	 sk6Bm6BTk9p/o3vpnXlIIMHccCWTVQPtSKYTWp+5Cj+lA28+AI6oMEh1AWeTzerCVRPbq
-	 pApWXWKkZgD3LAja0VbcrVebCSOcuERv7fiNeiLOgdQm8aeZAWSGPE/ET2bbpmFQ4xQ==
+	b=2E+pd4a9scpz9Huo1qnAxqSYMWdN82O3grhqsjMltOY3FBsutQ8BjHg85SRZZszAZVPk
+	 8w0ZDPtdBPDgbwbQMTJXZIBvXZB9zL3YlYoJPhk4tyOvbGicKCkp2kZlD/sNO4hRNB0eT
+	 eCy1Qf11ZjgaCnDG+vxz1hiJzSvJHKjIuAQQRFZvzWzutF1P2M2TkVD2B8+ITAKQ29tYd
+	 +GeRPCFuV1hcTL6ClNcHVkG+5BTywtsB93GYWLvjjTidwj/MZdf7FfIW7pF7/+y2m/N1f
+	 /DR95Kc3M+2iliuBZO+QwpFRpGDilFLpIv1v1OwygBeR+9yvg5OLbloA9DXN8vhwhVA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1794991230;
 	h=DMARC-Filter:Received:DKIM-Signature:From:To:Cc:Subject:Date:
-	 Message-ID:X-Mailer:MIME-Version:Content-Transfer-Encoding;
-	bh=waxPwfcRiJ6HHDrLqrLOycq45Qv8UB/2XJ6vzawZvD4=;
-	b=F3dm3+0HIUw/MUnRctNwrow8rtN0zXs98yHk6NG2xZO0VdE+1ek79cwdpcIL2liP0wHd
-	 MTvPwBU9I3NbQf54JkM29OzMLqpNbMwDwRWBFx71PEMMd7MUhIcyaZAMydCBJEP4yT6ur
-	 snWO5HLxjcyKJQOgIKFF+bwAAyWd6z/k474llE1gZzIn4wqjJQWVcli6Kv1MYiFaMpYzU
-	 6JYP5B0hfLi4MjL1yTRntVL3x5VzGemqeGa5QTWOygvkUSPaNku/RJpBmOtvdVNPT7y9c
-	 9M20G9/sgH6Gncp9bAo7PY0LTrxrWZ4DIoijNGh1eQS5uxC8KKkdkx2VjRh7wxDogmA==
+	 Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
+	 Content-Transfer-Encoding;
+	bh=/SfLTcNIgEG9LMPzEIvqSJ8sQFaEThlTV5m+IPzEi8o=;
+	b=BT7R36lefsGYGhLXBCDUNX4K004t4A4jEx4mASnb9bPaSDaHCtmKZghH17BLmuyBkfh5
+	 YCiQpAgYKv75SCVl7OSd6YMN5gClXUutQin+t8drs2Fby0Ruwh/KwvWNsLw7cGl8eiMI9
+	 AUp+1ZRHHYrcb6GvYgARVZJ4JQQtstLM0NsHKasVl+EyGC/Lqv1/hZp9KkMX3pujMGPyZ
+	 QNgu25ArgAreet9kzvpZ2ZadEdNgwgglNdW25X9Vj/7+46NhFLupmyNF7RW02KiBiqzmk
+	 UUMfNTvSgfvIkdrUMLTlKcOpa0ZuW1atZ7RL+PFLGpJTyeton73CzW43t6KvTuURd6A==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=canonical.com;
 	spf=pass smtp.mailfrom=canonical.com;
-	dkim=pass header.d=canonical.com header.i=@canonical.com header.a=rsa-sha256 header.s=20251003 header.b=bGI1C9JQ;
+	dkim=pass header.d=canonical.com header.i=@canonical.com header.a=rsa-sha256 header.s=20251003 header.b=rvez40xm;
 	arc=none smtp.remote-ip=185.125.188.120
 Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32555606A31C
-	for <linux-trace-devel@vger.kernel.org>; Wed, 18 Nov 2026 08:40:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 32555606A31C
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11FCF606A325
+	for <linux-trace-devel@vger.kernel.org>; Wed, 18 Nov 2026 08:40:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 11FCF606A325
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=canonical.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key, unprotected) header.d=canonical.com header.i=@canonical.com header.a=rsa-sha256 header.s=20251003 header.b=bGI1C9JQ
+	dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.a=rsa-sha256 header.s=20251003 header.b=rvez40xm
 Received: from openrouter-r.lxd (2.general.fheimes.us.vpn [10.172.66.67])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 4A2CC3F9E2;
-	Wed, 18 Nov 2026 08:40:26 +0000 (UTC)
+	by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id B5E1C4294A;
+	Wed, 18 Nov 2026 08:40:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20251003; t=1794991227;
-	bh=waxPwfcRiJ6HHDrLqrLOycq45Qv8UB/2XJ6vzawZvD4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version;
-	b=bGI1C9JQkMIgmXoR0nPwYK1MqDkwF3bKIhkos/t21nkJLhI8pwfg6HHipXvkvjI4y
-	 s9R4X9qIFMxUtsOyE1bpEiI14wn99auKSKGHfb7lNSO70DObeijRQb0MG25n0rrsIw
-	 tVWKXOqc+6K+ukFxpjkvOiRGaCW0IR+IsHTMM/JlO+o01u1xfsaDr07Ly2P5gtsRlq
-	 X2fqmVMbeL1Q0ZiibM5bvpidOH89+GozQm7VDCZb3D1Q/BynF4rmLoJ08o58JQcvBr
-	 K0hRmr9sZuC9uXtrvzEqMFU64Xq15SVb3CenxXTG7yFhqUftbaHm28PtZV2YLEgTIq
-	 SaTWNbV7oYWIdlKHmSgJ6MZdd942tmM1Y/ScUHoL1Q/Al8czPMwJuxOhRvMbObezXN
-	 l0n1K4zvIY8XFVL6D4S9XMpTU3H9H8FicxzZVQ2+UcrfuLR60RW256olaL2TYN6LKm
-	 pePnZD3rt2J95Fj27wEPSVlgiLw8sLr1SPxx0fQt5uNcvxaCVkWBlbBvLbb4neof0V
-	 56afKadEb+IewYEvn9m7snhVxJeEUf3shYyXje3SJ99l3WvRq4mJIhnd+/TnwxeVED
-	 thdWYfkcuXxBgNua4CwxTycopF4dnXUYzhuUdakpbtw54sl34tnwB3J82kBiHAaB4q
-	 Z+VRIDUiRnf21NQk9XUzJas4=
+	s=20251003; t=1794991228;
+	bh=/SfLTcNIgEG9LMPzEIvqSJ8sQFaEThlTV5m+IPzEi8o=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version;
+	b=rvez40xmSUanzkgbxUNfb6gEtNXdI9KuLbilJ9jVmB6djtTwyJcguDY5qtxHGpCGu
+	 VeH3wTONLc7Np/ymVHuyjqT3k+EwBIGqAytc/4ywq7L7Z/sWU0t8EhcMAZYOtIPbrN
+	 qMgVd44akeujqKq0JcvHgCR7L3pMZNe2XiTijob/w2RKIlhtGSWwC4Ic5XvpCQNXyw
+	 RCixTCynNZqZ+U9zd6wCbf9RY9ZPuuIVktU8ON9QwvnN8MYNp4QCLUeUu/baY7Dj3q
+	 cyo9gyuvoBN/nwnLI9U4wkhwQo057imPr4Pwuzf/xNbgZOvguK3nA3gV43ID9FpyJ2
+	 JBKsK4b8yuT5ldx/UEXvuxi85vmFLSFDT0Bt9NNZfDKt7y3ngli5jB7rWCcpkd6Y++
+	 /H8k19bNQhQ/ax2rfbEiXZFjPBTA64or51Q9k/xT5tc/jBq92symSh0+5xkc4WrcsR
+	 BixViK8uoaTgAy/ESdPsOT48uc3PCc2ToNVbQ7UZ/MQ2S2b0sdo1VZNRx5nGTk4Rrg
+	 CdqPt6sRqRRtwvqsfAH9tvQaT275lnT/HAjfSv4vadBfyZpPCNi2EXFNbjgjFMHVFN
+	 +ery/sAcRnu6EKTHGtDjBKJ5/KlvZukWp9Rzo3FIENFnlume+SDr4ObEf+807E//Bw
+	 fnhFnWsy+QEW61MTEx2EG8+U=
 From: Frank Heimes <frank.heimes@canonical.com>
 To: linux-trace-devel@vger.kernel.org
 Cc: Steven Rostedt <rostedt@goodmis.org>,
 	Benjamin Drung <benjamin.drung@canonical.com>,
 	Jamie Dolan <jldolan@us.ibm.com>
-Subject: [PATCH 0/2] kbuffer: Fix out-of-bounds write in kbuffer_read_buffer()
-Date: Wed, 18 Nov 2026 08:40:22 +0000
-Message-ID: <cover.1794988946.git.frank.heimes@canonical.com>
+Subject: [PATCH 1/2] kbuffer: Fix out-of-bounds write of missed events in kbuffer_read_buffer()
+Date: Wed, 18 Nov 2026 08:40:23 +0000
+Message-ID: <f9679ddfe2224258445c592e53d605b3a317d31f.1794988946.git.frank.heimes@canonical.com>
 X-Mailer: git-send-email 2.53.0
+In-Reply-To: <cover.1794988946.git.frank.heimes@canonical.com>
+References: <cover.1794988946.git.frank.heimes@canonical.com>
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
 List-Post: <mailto:linux-trace-devel@vger.kernel.org>
@@ -73,62 +77,101 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-kbuffer_read_buffer() stores the missed events count after the copied
-events, but the check whether there is room for it is wrong. If the
-events fill up the destination buffer (which is the normal case, as
-callers pass a buffer of the sub-buffer size), the count is written up
-to 8 bytes beyond the end of the buffer, and MISSING_STORED is set
-although there is no room for the count.
+kbuffer_read_buffer() stores the number of missed events after the
+copied events, if the buffer has room for it. But the check for the
+room is wrong:
 
-This was found while looking into the libtracefs unit test failures
-reported here:
+	if (len + kbuf->start <= word_size + buf_len)
 
-  https://lore.kernel.org/linux-trace-devel/39efe87bec205b7f809b8aa49db635b6465ee530.camel@canonical.com/
+It is true whenever the copied sub-buffer header and events fit into
+the buffer, which is always the case at this point. If the events fill
+up the buffer (which is common, as callers pass a buffer of the
+sub-buffer size), the missed events count is written up to 8 bytes
+beyond the end of the buffer, and the MISSING_STORED flag is set,
+which makes kbuffer_load_subbuffer() read the count beyond the end of
+the buffer as well.
 
-libtracefs uses kbuffer_read_buffer() for memory mapped ring buffers
-(tracefs_cpu_read()/tracefs_cpu_write(), the latter with a buffer on
-the stack). That's what makes the "trace cpu pipe" test show an
-"Invalid read of size 8" in kbuffer_load_subbuffer() and random
-"missed events" values under valgrind ("make test_mem").
+For example, libtracefs tracefs_cpu_read() and tracefs_cpu_write()
+use kbuffer_read_buffer() for memory mapped ring buffers with a buffer
+of the sub-buffer size (in tracefs_cpu_write() on the stack). Running
+the libtracefs unit tests under valgrind shows:
 
-It can be reproduced without tracing by copying a full sub-buffer with
-missed events with kbuffer_read_buffer() into a malloc()ed buffer of
-the sub-buffer size. Under valgrind (amd64, libtraceevent 1.9.0):
+  Test: trace cpu pipe ...missed events -1
+  ==6341== Invalid read of size 8
+  ==6341==    at 0x48A5F34: ??? (in /usr/lib/x86_64-linux-gnu/libtraceevent.so.1.9.0)
+  ==6341==    by 0x48A9177: kbuffer_load_subbuffer (in /usr/lib/x86_64-linux-gnu/libtraceevent.so.1.9.0)
+  ==6341==    by 0x400D82C: read_trace_cpu_file (tracefs-utest.c:2015)
+  [..]
+  ==6341==  Address 0x8676a90 is 0 bytes after a block of size 4,096 alloc'd
+  missed events 796093548
 
-  ==2504915== Invalid write of size 8
-  ==2504915==    at 0x48820FA: write_8 (kbuffer-parse.c:114)
-  ==2504915==    by 0x48834A0: kbuffer_read_buffer (kbuffer-parse.c:1030)
-  ==2504915==    by 0x40013F7: main (kbuf-repro.c:61)
-  ==2504915==  Address 0x4ac3120 is 0 bytes after a block of size 4,096 alloc'd
+Fix the check to only store the count when the header, the events and
+the count fit into the buffer.
 
-and the commit field of the copy is 0xffffffffc0000ff0. With the fix
-it is 0x80000ff0 and valgrind reports no errors.
+In addition, the flags were OR'ed into the int "len". As MISSING_EVENTS
+is bit 31, this makes len negative and sets the upper 32 bits of the
+8 byte commit field due to the sign extension. Use an unsigned long
+long for the commit value instead.
 
-Patch 1 fixes the check (and the sign extension of the flags into the
-upper 32 bits of the 8 byte commit field), patch 2 adds unit tests,
-which fail without patch 1:
+Fixes: b3f5849527ae ("libtraceevent: Save missed events in kbuffer_read_buffer()")
+Link: https://bugs.launchpad.net/bugs/2172071
+Signed-off-by: Frank Heimes <frank.heimes@canonical.com>
+---
+ src/kbuffer-parse.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-  Test: kbuffer read buffer with missed events, full ...FAILED
-    1. traceevent-utest.c:786  - *(uint64_t *)(dst + KBUF_SUBBUF_SIZE) == KBUF_GUARD
-    2. traceevent-utest.c:791  - !!(commit & KBUF_MISSING_STORED) == expect_stored
-    3. traceevent-utest.c:793  - (commit & ~(KBUF_COMMIT_MASK | KBUF_MISSING_EVENTS | KBUF_MISSING_STORED)) == 0
-  Test: kbuffer read buffer with missed events, stored ...FAILED
-    1. traceevent-utest.c:793  - (commit & ~(KBUF_COMMIT_MASK | KBUF_MISSING_EVENTS | KBUF_MISSING_STORED)) == 0
-
-Tested on amd64 and ppc64el with the reproducer and the unit tests, and
-on ppc64el with the libtracefs unit tests ("make test_mem" no longer
-shows the invalid read).
-
-Frank Heimes (2):
-  kbuffer: Fix out-of-bounds write of missed events in
-    kbuffer_read_buffer()
-  libtraceevent utest: Add tests for kbuffer_read_buffer() with missed
-    events
-
- src/kbuffer-parse.c      |  14 ++++--
- utest/traceevent-utest.c | 104 +++++++++++++++++++++++++++++++++++++++
- 2 files changed, 113 insertions(+), 5 deletions(-)
-
+diff --git a/src/kbuffer-parse.c b/src/kbuffer-parse.c
+index 4a38408..f5d3c38 100644
+--- a/src/kbuffer-parse.c
++++ b/src/kbuffer-parse.c
+@@ -955,6 +955,7 @@ kbuffer_raw_get(struct kbuffer *kbuf, void *subbuf, struct kbuffer_raw_info *inf
+  */
+ int kbuffer_read_buffer(struct kbuffer *kbuf, void *buffer, int len)
+ {
++	unsigned long long commit;
+ 	unsigned long long ts;
+ 	unsigned int type_len_ts;
+ 	bool do_swap = false;
+@@ -1010,6 +1011,8 @@ int kbuffer_read_buffer(struct kbuffer *kbuf, void *buffer, int len)
+ 
+ 	write_4(do_swap, buffer + kbuf->start, type_len_ts);
+ 
++	commit = len;
++
+ 	/*
+ 	 * If reading the first event and there are lost events, add it
+ 	 * to the buffer.
+@@ -1024,7 +1027,8 @@ int kbuffer_read_buffer(struct kbuffer *kbuf, void *buffer, int len)
+ 		else
+ 			word_size = sizeof(cnt_4);
+ 
+-		if (len + kbuf->start <= word_size + buf_len) {
++		/* Only store the count if there's room for it */
++		if (kbuf->start + len + word_size <= buf_len) {
+ 			if (word_size == sizeof(cnt_8)) {
+ 				cnt_8 = kbuf->lost_events;
+ 				write_8(do_swap, buffer + len + kbuf->start, cnt_8);
+@@ -1032,16 +1036,16 @@ int kbuffer_read_buffer(struct kbuffer *kbuf, void *buffer, int len)
+ 				cnt_4 = kbuf->lost_events;
+ 				write_4(do_swap, buffer + len + kbuf->start, cnt_4);
+ 			}
+-			len |= MISSING_STORED;
++			commit |= MISSING_STORED;
+ 		}
+-		len |= MISSING_EVENTS;
++		commit |= MISSING_EVENTS;
+ 	}
+ 
+ 	/* Update the size */
+ 	if (kbuf->read_long == __read_long_8)
+-		write_8(do_swap, buffer + 8, len);
++		write_8(do_swap, buffer + 8, commit);
+ 	else
+-		write_4(do_swap, buffer + 8, len);
++		write_4(do_swap, buffer + 8, commit);
+ 
+ 	return last_next;
+ }
 -- 
 2.53.0
 
