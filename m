@@ -1,66 +1,66 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.125.188.120
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.125.188.121
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794997611;
-	b=vSR8oGLXDJDp2zl0+ukIMoEnJFunPepgQk2hmQ9BH2SETiKndQ5Y8dh6SlOhN2foMB10
-	 KRqyXfjHgQnFg91huBtvgk6aU+7cx3ee8GLq7Iwe31sOGPJRkUDoIQxHxkXbZnciyz7O+
-	 MeL4B/M4xRI/jXNgIqnkD3yxNekkCIucRqNIX0E40ZV4HS8Gdti917a6WbBs/lB9BnJNV
-	 3gNLfcOzWj+T1rjcFaShogVe7yfbnTv4BqapNb9PaZkoZFrtPygiTmh1eKIC8Ra0XiD3y
-	 4kGN/SGbYWOkq22Y4uqtcMZaKoUyFYpm1YIF3KHOeDjwNRiQizD5XwYOAktZFRxdOOA==
+	t=1795008664;
+	b=bmmfeVkamsqhFq9Te4FtFrUE3oPlZxQVS77iL5lmM3AKbDqpdL6hf8G99zYQ76sOXlzH
+	 l5InBgD4unVW7RNnbFIsQ8kt0v7K2VMwopjADIGD7u2T5TZs6tppmdAG8CovGqqzMCm4m
+	 ElBTYSwNw52aBB5vQ9slGdEBTzVvcDm/9J4cajjTaL2fczwqDhORX9V0fZnlf1F4+k45/
+	 8fTjj+8tpJj/Jk4B7oZt4edzyl6SNEsiNuKpZFQiNs1IesrEymOMVq+yZIE+4qgtN3msG
+	 s8/e/8O0J3kVjXmnobLXn16NKE9b4KEptTF9ioGur8lNThVXLNUwrISFZi7llXXoUNA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794997611;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795008664;
 	h=DMARC-Filter:Received:DKIM-Signature:From:To:Cc:Subject:Date:
 	 Message-ID:X-Mailer:MIME-Version:Content-Transfer-Encoding;
-	bh=h682x+PORbOc+0SyWsUsKzzjdbNhO7OC4YDOv6dQXq0=;
-	b=yC0DsrwhAw4xrJi+dOhTMfLvP3GRcB9T7Rk1GpSKOlgoDDnrWQIjZeaqU3i/at6pgHPg
-	 Klyo2b05OWS9G1tnvfkJdgHbi20A8xslpsfF+9BmUGxJs4UjfMuODlihw+jMRrlaEzKJi
-	 notV2IH5eyWDLwa8S3K7vI5LJ+hcAtOz2OmpyDgVq3q5GsRmsdhOtzSdsQkvz4l5QB+tX
-	 B/UN7EGMg/FYi2Ig6CAnTN37i14aP4L4ouEXrx24zaGHiJyq3/q3AByro5r1lLnA7op+0
-	 vN+1CG2eU71xrIYCyhkIIVahut9hvCWinBwv/z8YE1m+8pCkXoON9uShfb401vL0beA==
+	bh=poQ1YG/iQmvTl3cN8cTA/VWHiQUF+/munM2IpZQMC5M=;
+	b=Fo4p685xUJKsi2hOaacGZjYxgu8MROdGmdkhW7DumtzxycKk8XV3v76161kXpX3Pq2e3
+	 nbfLNWMA172+JBHkuZQ3uER2UEtKgSRIxrx3ZTcaT4hUostCKyvjMGAHOH9MZxhoApaT8
+	 iCa6bD/XHlWSpE+lPFe7sUrR87MHLWwN8n8Y10tQ2jbUUb9uOdqD6nc/UPCUebOO4O1kr
+	 W9cz7K9hBlfkEVK7/N2qEF2rG5d4DdHTLNREJHmC875TNe8z4L3/FKE/4MU3dT+M1XjXz
+	 8ZdNxDnFdgLpU5YWt2S1QVRi5IVvL07wUGd+xlYPh5nkbOcs4tPA5UPgNR1abqrbpmQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=canonical.com;
 	spf=pass smtp.mailfrom=canonical.com;
-	dkim=pass header.d=canonical.com header.i=@canonical.com header.a=rsa-sha256 header.s=20251003 header.b=TrYxsU26;
-	arc=none smtp.remote-ip=185.125.188.120
-Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
+	dkim=pass header.d=canonical.com header.i=@canonical.com header.a=rsa-sha256 header.s=20251003 header.b=HwNdlCFv;
+	arc=none smtp.remote-ip=185.125.188.121
+Received: from smtp-relay-canonical-1.canonical.com (smtp-relay-canonical-1.canonical.com [185.125.188.121])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0EB0606A325
-	for <linux-trace-devel@vger.kernel.org>; Wed, 18 Nov 2026 10:26:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B0EB0606A325
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E282606A325
+	for <linux-trace-devel@vger.kernel.org>; Wed, 18 Nov 2026 13:31:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4E282606A325
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=canonical.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key, unprotected) header.d=canonical.com header.i=@canonical.com header.a=rsa-sha256 header.s=20251003 header.b=TrYxsU26
+	dkim=pass (4096-bit key, unprotected) header.d=canonical.com header.i=@canonical.com header.a=rsa-sha256 header.s=20251003 header.b=HwNdlCFv
 Received: from openrouter-r.lxd (2.general.fheimes.us.vpn [10.172.66.67])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id C61CB42276;
-	Wed, 18 Nov 2026 10:26:46 +0000 (UTC)
+	by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 354203F144;
+	Wed, 18 Nov 2026 13:30:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20251003; t=1794997607;
-	bh=h682x+PORbOc+0SyWsUsKzzjdbNhO7OC4YDOv6dQXq0=;
+	s=20251003; t=1795008656;
+	bh=poQ1YG/iQmvTl3cN8cTA/VWHiQUF+/munM2IpZQMC5M=;
 	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version;
-	b=TrYxsU26j+z4oRaYHTpKTADL3SRQcHtOiyGi+F5VI18nQYF5BewJTk1UCVz/V2Y6O
-	 +iVN3TQi5ba4R7E1qLeTcdiEapOhOwO7WVKPKyzbOUqYazqe2Zt4xdorVjB5h5uu7K
-	 qIucZ7G6iC1taWNni7aa6+mDe8sUy1IcZ4QuwVEO9GJgWoh9YGnGzg1Q2/DS5aBl5A
-	 acHukHr0x6MqDjFWyx/EJxaYemRJHXNxJFPVM3d1PrMGt8ZqaDLwmCnEPrhcRm57d+
-	 nv2F7bV+LQsMZjiQKcLqV8arB+YZQaIFHC9Gn0Sj156WllpuK4PCVPsmPzSMusJje7
-	 p7C7sF5CwwYZZMHL5AbnPKv3DGJ6POYzWda8jOi66ko6qIhEMrsxsADW9jxrtyCWAe
-	 HCQSJsMkUw7bQH+q4UNriAcg96fRiWPzYMgEm3nSV0uzXDVvlGLt8IySqhnLGh5yLe
-	 wYxVu5XFc0Be3Dt2jytQKi7DkVNIgASZH9stFAOTMD/NdkYFiJ22OAXEgQearK8U30
-	 e3vDJ/lT1R8t7VFeumj1kRQZ0rjRBeBGz0CQc58YjlTCEbiPq6+XJSSBts1uMT220q
-	 YjvjOAGGk5XFTtSj8YVFz1FHLT+lWMDfwYlyjCkVTPloJX912B6BuCb4Vx13j+pUaG
-	 cW830+D8qW5LkezUh2ORRtrA=
+	b=HwNdlCFvmwOn6Zr1qXzMHjorqt49lw4/wOhUO7/sTnfuMe4xiF14oK1H39+sJN1bb
+	 d511U3Tt2AqE5+lUBZoEyLiofe3fAg3anFTM1F/IhTosnYjhrrl/WanN49uR/JbikN
+	 BWGGIPnlVr64b/Q39/r7vHiyY8aNG7sTFXrRxOAecs/wviEOgvUGyJw6pytwLottBl
+	 aDpaiqthgrRZTh30uImRUWVZ0u70ueSD9g93fR98nWYg/Wo3kUanibhB8dvoHqh0jD
+	 +oyqqOqPukP8hc2JdruasjVxFJgZ49LMckTg/UuezyZUiA0ShZCEmp+0G3xuNWNEr1
+	 iIBngzXIi4rcwENEVKPGnOAcKFw0X0HOb4mCzEVsXAwPGM26iGImd0bZZuFclIngU1
+	 jlrVQ5vlxGHL4I30VyTcErktenNkSY00eDZS4rEN6/jqHu/xpTeMoAeUb47Zb9qCjE
+	 3vW/p8+G0KtTSzyFEjVVkObK+FvYO0tTqP6pwsvl0zoioV9/Csyh4jskICjZAn3SCh
+	 29LFPfERr7RWG4Mp4CkXx/8lRSI65IfZVxq4jqxMN5BpMVH9QzB3nDDw83bqGoUOFf
+	 6hgipBbE30S0EtbnItv9zl7HDsYz5k0tPxLiaxPEbWkfbHu6ngKfnXMSYPZt15Nc80
+	 +xqREiO2mMLV/0DqKa4fEzyw=
 From: Frank Heimes <frank.heimes@canonical.com>
 To: linux-trace-devel@vger.kernel.org
 Cc: Steven Rostedt <rostedt@goodmis.org>,
 	Benjamin Drung <benjamin.drung@canonical.com>,
 	Jamie Dolan <jldolan@us.ibm.com>
-Subject: [PATCH] libtracefs: Do not miss sub-buffers when reading a memory mapped buffer
-Date: Wed, 18 Nov 2026 10:26:44 +0000
-Message-ID: <20261118102644.3392133-1-frank.heimes@canonical.com>
+Subject: [PATCH 0/3] libtracefs utest: Fix trace cpu pipe and test_mem failures
+Date: Wed, 18 Nov 2026 13:30:50 +0000
+Message-ID: <cover.1795008446.git.frank.heimes@canonical.com>
 X-Mailer: git-send-email 2.53.0
 X-Mailing-List: linux-trace-devel@vger.kernel.org
 List-Id: <linux-trace-devel.vger.kernel.org>
@@ -73,119 +73,45 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When the reader sub-buffer of a memory mapped ring buffer has no more
-events, tfs_mmap_load_subbuf() calls TRACE_MMAP_IOCTL_GET_READER to get
-the next sub-buffer, and if the reader sub-buffer did not change, it
-assumes that there are no more events to read.
+These fix unit test failures reported here:
 
-But the kernel only swaps in a new reader sub-buffer if it accounted all
-the events of the current one as read. Otherwise it only moves its read
-position to the end of the current sub-buffer and returns without
-swapping. This happens if events were added to the reader sub-buffer
-after it was swapped in (as the reader can swap in the sub-buffer that
-is being written to): ring_buffer_map_get_reader() marks the events of
-the sub-buffer at the time of the swap as read, but user space reads
-all the events that are on the sub-buffer when it loads it.
+  https://lore.kernel.org/linux-trace-devel/39efe87bec205b7f809b8aa49db635b6465ee530.camel@canonical.com/
 
-In that case tfs_mmap_load_subbuf() returns 0, although the next
-sub-buffer may have events. For tracefs_cpu_read() and
-tracefs_cpu_write() this is only a delay until the next call, but
-tracefs_cpu_flush() and tracefs_cpu_flush_write() stop on 0, so the
-last events of a trace are lost.
+ - Patch 1: on architectures with 64K pages (ppc64el), the large step of
+   "trace cpu pipe" writes more than 13 GB into /tmp with the memory
+   mapped buffer, which fails with ENOSPC on a tmpfs /tmp.
 
-This makes the "trace cpu pipe" unit test fail now and then for memory
-mapped buffers, in particular under valgrind, which widens the race
-window. For example on ppc64el, 1 of 3277 events stayed in the ring
-buffer. Tracing tfs_mmap_load_subbuf() shows:
+ - Patch 2: "make test_mem" hangs in "trace pid events filter", as the
+   spinning threads starve the main thread under valgrind.
 
-  GET_READER: id 20 -> 19, read 0 -> 51340, 65520 bytes loaded
-  GET_READER: id 19 -> 19, read 51340 -> 65520, returns 0
+ - Patch 3: "trace cpu pipe" fails under valgrind when the memory mapped
+   reader can not keep up and the kernel overwrites events.
 
-If the reader sub-buffer did not change but the kernel moved its read
-position, check the current sub-buffer for new events, and if there
-are none, call TRACE_MMAP_IOCTL_GET_READER again.
+The patches are independent of each other. I can also send them
+separately, if that's preferred.
 
-Fixes: 4ede86e9a48d ("libtracefs: Enable mmapped ring buffer")
-Link: https://bugs.launchpad.net/bugs/2172071
-Signed-off-by: Frank Heimes <frank.heimes@canonical.com>
----
+Related fixes for the same report:
 
-Notes:
-    This was found while looking into the libtracefs unit test failures
-    reported here:
-    
-      https://lore.kernel.org/linux-trace-devel/39efe87bec205b7f809b8aa49db635b6465ee530.camel@canonical.com/
-    
-    The kernel side is ring_buffer_map_get_reader(): if
-    cpu_buffer->reader_page->read < reader_size it only advances the reader
-    to the end of the page and does not call rb_get_reader_page().
-    
-    Tested on ppc64el (POWER9, 64K pages, kernel 7.3) with 20 runs of the
-    "trace cpu pipe" test under valgrind: without this patch 4 of 20 runs
-    lost an event (cnt=3276 expect=3277, 1 entry left in the ring buffer),
-    with it 0 of 20. With this patch, the kbuffer_read_buffer() fix in
-    libtraceevent [1] and the unit test fixes that I'll post separately,
-    "make test" and "make test_mem" pass (37/37) on top of master.
-    
-    [1] https://lore.kernel.org/linux-trace-devel/cover.1794988946.git.frank.heimes@canonical.com/T/#u
+ - kbuffer: Fix out-of-bounds write in kbuffer_read_buffer()
+   https://lore.kernel.org/linux-trace-devel/cover.1794988946.git.frank.heimes@canonical.com/T/#u
+ - libtracefs: Do not miss sub-buffers when reading a memory mapped buffer
+   https://lore.kernel.org/linux-trace-devel/20261118102644.3392133-1-frank.heimes@canonical.com/T/#u
+ - libtracefs utest: Fix buffer size in follow events clear test
+   https://lore.kernel.org/linux-trace-devel/20261116235650.21314-1-jldolan@us.ibm.com/
 
- src/tracefs-mmap.c | 43 +++++++++++++++++++++++++++++++------------
- 1 file changed, 31 insertions(+), 12 deletions(-)
+Tested on ppc64el (POWER9, 64K pages, kernel 7.3) on top of master,
+together with the related fixes above: "trace cpu pipe" passes in "make
+test" and "make test_mem", and "make test_mem" no longer hangs.
 
-diff --git a/src/tracefs-mmap.c b/src/tracefs-mmap.c
-index 7530805..39dad4c 100644
---- a/src/tracefs-mmap.c
-+++ b/src/tracefs-mmap.c
-@@ -205,18 +205,37 @@ __hidden int tfs_mmap_load_subbuf(void *mapping, struct kbuffer *kbuf)
- 		return 1;
- 	}
- 
--	/* See if a new page is ready? */
--	if (get_reader(tmap) < 0)
--		return -1;
--	id = tmap->map->reader.id;
--	data = tmap->data + tmap->map->subbuf_size * id;
--
--	/*
--	 * If the sub-buffer hasn't changed, then there's no more
--	 * events to read.
--	 */
--	if (data == kbuffer_subbuffer(kbuf))
--		return 0;
-+	for (;;) {
-+		__u32 read = tmap->map->reader.read;
-+
-+		/* See if a new page is ready? */
-+		if (get_reader(tmap) < 0)
-+			return -1;
-+		id = tmap->map->reader.id;
-+		data = tmap->data + tmap->map->subbuf_size * id;
-+
-+		if (data != kbuffer_subbuffer(kbuf))
-+			break;
-+
-+		/*
-+		 * If the sub-buffer hasn't changed and the kernel did not
-+		 * move its read position, then there's no more events to read.
-+		 */
-+		if (tmap->map->reader.read == read)
-+			return 0;
-+
-+		/*
-+		 * Events were added to the reader sub-buffer after it was
-+		 * swapped in. In that case the kernel only moves its read
-+		 * position forward to the end of the sub-buffer, and does
-+		 * not swap in a new one. Check for new events on the
-+		 * current sub-buffer, and if there are none, ask again
-+		 * for the next sub-buffer.
-+		 */
-+		kbuffer_refresh(kbuf);
-+		if (kbuffer_curr_size(kbuf))
-+			return 1;
-+	}
- 
- 	kbuffer_load_subbuffer(kbuf, data);
- 	return 1;
+Frank Heimes (3):
+  libtracefs utest: Scale trace cpu pipe test to the sub-buffer size
+  libtracefs utest: Run valgrind memory test with fair scheduling
+  libtracefs utest: Account for overruns in the trace cpu pipe test
+
+ Makefile              |  1 +
+ utest/tracefs-utest.c | 42 ++++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 41 insertions(+), 2 deletions(-)
+
 -- 
 2.53.0
 
